@@ -1,5 +1,5 @@
-﻿@model IEnumerable <tb_MemberMaster>
-    @{
+﻿@model IEnumerable<tb_MemberMaster>
+@{
     ViewBag.Title = "Home Page";
 }
 
@@ -7,28 +7,48 @@
     <h3>Members List</h3>
 </div>
 
+<div id="modDialog" class="modal fade">
+    <div id="dialogContent" class="modal-dialog"></div>
+</div>
+
 <div class="row">
     <table class="table table-bordered table-hover">
         <tr>
             <th><p>#</p></th>
-            <th><p class="">Last Name</p></th>
             <th><p>First Name</p></th>
+            <th><p>Last Name</p></th>
             <th><p>Department</p></th>
             <th><p>Area</p></th>
         </tr>
         @foreach (var b in Model)
         {
-            <tr>
-                <td><p>@b.FirstName</p></td>
-                <td><p>@b.FirstName</p></td>
-                <td><p>@b.LastName</p></td>
-                <td><p>@b.tb_Department.DepartmentName</p></td>
-                <td><p>@b.tb_Area.AreaName</p></td>
-            </tr>
+        <tr>
+            <td>@Html.ActionLink(b.MemberIDNumber.ToString(), "MemberDetails", new { id = b.MemberID }, new { @class = "memberItem" })</td>
+            <td><p>@b.FirstName</p></td>
+            <td><p>@b.LastName</p></td>
+            <td><p>@b.tb_Department.DepartmentName</p></td>
+            <td><p>@b.tb_Area.AreaName</p></td>
+        </tr>
         }
     </table>
 </div>
+@section scripts
+{
+    <script type="text/javascript">
 
+        $(function () {
+            $.ajaxSetup({ cache: false });
+           $(".memberItem").click(function (e) {
+
+                e.preventDefault();
+                $.get(this.href, function (data) {
+                    $('#dialogContent').html(data);
+                    $('#modDialog').modal('show');
+                });
+            });
+        })
+    </script>
+}
 @*<div class="row">
         <div class="col-md-4">
             <h2>Getting started</h2>

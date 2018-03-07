@@ -16,27 +16,8 @@ namespace LRC_NET_Framework.Controllers
         public ActionResult Index()
         {
             // getting all Member objects from DB
+            var members = db.tb_MemberMasters.Include(p => p.tb_Area).Include(p => p.tb_Department);
 
-            //var members = db.tb_MemberMasters.Join(db.tb_Area, m => m.AreaID, a=> a.AreaID, (m, a) => new // результат
-            //{
-            //    MemberIDNumber = m.MemberIDNumber,
-            //    FirstName = m.FirstName,
-            //    LastName = m.LastName,
-            //    DepartmentID = m.DepartmentID,
-            //    AreaName = a.AreaName
-            //});
-
-            var members = db.tb_MemberMasters.Include(p => p.tb_Area);
-            members = members.Include(p => p.tb_Department);
-
-            // Filter: db.tb_MemberMasters.Where(x=>x.AreaID==1);
-            // передаем все объекты в динамическое свойство Books в ViewBag
-            //ViewBag.MemberMasterModel = members;
-            //// getting all Member objects from DB
-            //IEnumerable<MemberMasterModel> members = db.tb_MemberMaster;
-            //// передаем все объекты в динамическое свойство Books в ViewBag
-            //ViewBag.MemberMasterModel = members;
-            // возвращаем представление
             return View(members.ToList());
         }
 
@@ -52,6 +33,15 @@ namespace LRC_NET_Framework.Controllers
             ViewBag.Message = "Your contact page.";
 
             return View();
+        }
+
+        public ActionResult MemberDetails(int id)
+        {
+            var members = db.tb_MemberMasters.Include(p => p.tb_Area).Include(p => p.tb_Department);
+            tb_MemberMaster c = members.FirstOrDefault(com => com.MemberID == id);
+            if (c != null)
+                return PartialView(c);
+            return HttpNotFound();
         }
 
 

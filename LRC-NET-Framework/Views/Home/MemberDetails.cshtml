@@ -1,0 +1,20 @@
+﻿@model tb_MemberMaster
+
+<div class="modal-content">
+    <div class="modal-header">
+        <button class="close" data-dismiss="modal" area-hidden="true">X</button>
+        <h4>Member Details</h4>
+    </div>
+    <div class="modal-body">
+        <dl class="dl-horizontal">
+            <dt>First Name:</dt>
+            <dd>@Html.DisplayFor(model => model.FirstName)</dd>
+
+            <dt>Last Name:</dt>
+            <dd>@Html.DisplayFor(model => model.LastName)</dd>
+
+            <dt>Area:</dt>
+            <dd>@Html.DisplayFor(model => model.tb_Area.AreaName)</dd>
+        </dl>
+    </div>
+</div>
