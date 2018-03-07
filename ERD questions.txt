@@ -1,0 +1,4 @@
+ERD questions
+
+1. PoliticalActivitiesID in MemmberMaster - Multiple Choice ?
+
