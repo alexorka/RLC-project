@@ -15,10 +15,11 @@ namespace LRC_NET_Framework.Controllers
 
         public ActionResult Index()
         {
+            return RedirectToAction("Index", "tb_MemberMaster");
             // getting all Member objects from DB
-            var members = db.tb_MemberMasters.Include(p => p.tb_Area).Include(p => p.tb_Department);
+            //var members = db.tb_MemberMasters.Include(p => p.tb_Area).Include(p => p.tb_Department);
 
-            return View(members.ToList());
+            //return View(members.ToList());
         }
 
         public ActionResult About()

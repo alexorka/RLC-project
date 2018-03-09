@@ -23,7 +23,7 @@
         @foreach (var b in Model)
         {
         <tr>
-            <td>@Html.ActionLink(b.MemberIDNumber.ToString(), "MemberDetails", new { id = b.MemberID }, new { @class = "memberItem" })</td>
+            <td>@Html.ActionLink(b.MemberIDNumber.ToString(), "MemberDetails", new { id = b.MemberID }, new { @class = "memberItem badge badge-info" })</td>
             <td><p>@b.FirstName</p></td>
             <td><p>@b.LastName</p></td>
             <td><p>@b.tb_Department.DepartmentName</p></td>

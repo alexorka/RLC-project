@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model '\\THINKSERVER-PC\Users\ThinkServer\source\repos\LRC-NET-Framework\LRC-NET-Framework\DBModelContext.edmx'. 
+﻿// T4 code generation is enabled for model 'C:\Users\ThinkServer\Documents\Los Rios College\LRC-NET-Framework\DBModelContext.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.

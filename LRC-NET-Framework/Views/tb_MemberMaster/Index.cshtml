@@ -1,0 +1,71 @@
+﻿@model IEnumerable<LRC_NET_Framework.tb_MemberMaster>
+
+@{
+    ViewBag.Title = "Member List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Member List</h2>
+
+<span aria-hidden="true">
+    @Html.ActionLink("  Create New", "Create", null, new { @class = "btn btn-warning" })
+</span>
+@*<p>
+    @Html.ActionLink("Create New", "Create")
+</p>*@
+<table class="table">
+    <tr>
+        <th>
+            Last Name
+        </th>
+        <th>
+            First Name
+        </th>
+        <th>
+            Area
+        </th>
+        <th>
+            Department
+        </th>
+        <th>
+            College
+        </th>
+        <th>
+            Hire Date
+        </th>
+        <th>
+
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.LastName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FirstName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.tb_Area.AreaName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.tb_Department.DepartmentName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.tb_Department.tb_College.CollegeName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.HireDate)
+        </td>
+        <td>
+            <div class="btn-group" role="group" aria-label="...">
+                @Html.ActionLink("Edit", "Edit", new { id = item.MemberID }, new { @class = "btn btn-primary" }) 
+                @Html.ActionLink("Details", "Details", new { id = item.MemberID }, new { @class = "btn btn-info" }) 
+                @Html.ActionLink("Delete", "Delete", new { id = item.MemberID }, new { @class = "btn btn-danger" })
+            </div>
+        </td>
+    </tr>
+}
+
+</table>

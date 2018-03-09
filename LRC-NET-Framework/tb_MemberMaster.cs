@@ -78,5 +78,6 @@ namespace LRC_NET_Framework
         public virtual ICollection<tb_MemberNotes> tb_MemberNotes { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_Users> tb_Users { get; set; }
+        public virtual tb_Gender tb_Gender { get; set; }
     }
 }

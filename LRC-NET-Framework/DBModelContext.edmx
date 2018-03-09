@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="LRCModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="LRCModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="tb_Activity">
           <Key>
             <PropertyRef Name="ActivityID" />
@@ -103,6 +103,13 @@
           <Property Name="DuesID" Type="int" Nullable="false" />
           <Property Name="DuesName" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="DuesDesc" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="tb_Gender">
+          <Key>
+            <PropertyRef Name="GenderID" />
+          </Key>
+          <Property Name="GenderID" Type="tinyint" Nullable="false" />
+          <Property Name="GenderName" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="tb_LatestUnionAssessment">
           <Key>
@@ -419,6 +426,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_tb_MemberMaster_tb_Gender">
+          <End Role="tb_Gender" Type="Self.tb_Gender" Multiplicity="0..1" />
+          <End Role="tb_MemberMaster" Type="Self.tb_MemberMaster" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_Gender">
+              <PropertyRef Name="GenderID" />
+            </Principal>
+            <Dependent Role="tb_MemberMaster">
+              <PropertyRef Name="GenderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_tb_MemberMaster_tb_LatestUnionAssessment">
           <End Role="tb_LatestUnionAssessment" Type="Self.tb_LatestUnionAssessment" Multiplicity="0..1" />
           <End Role="tb_MemberMaster" Type="Self.tb_MemberMaster" Multiplicity="*" />
@@ -502,6 +521,7 @@
           <EntitySet Name="tb_Department" EntityType="Self.tb_Department" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_District" EntityType="Self.tb_District" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_Dues" EntityType="Self.tb_Dues" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tb_Gender" EntityType="Self.tb_Gender" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_LatestUnionAssessment" EntityType="Self.tb_LatestUnionAssessment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_MemberActivity" EntityType="Self.tb_MemberActivity" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_MemberAddress" EntityType="Self.tb_MemberAddress" Schema="dbo" store:Type="Tables" />
@@ -569,6 +589,10 @@
             <End Role="tb_Dues" EntitySet="tb_Dues" />
             <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
           </AssociationSet>
+          <AssociationSet Name="FK_tb_MemberMaster_tb_Gender" Association="Self.FK_tb_MemberMaster_tb_Gender">
+            <End Role="tb_Gender" EntitySet="tb_Gender" />
+            <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
+          </AssociationSet>
           <AssociationSet Name="FK_tb_MemberMaster_tb_LatestUnionAssessment" Association="Self.FK_tb_MemberMaster_tb_LatestUnionAssessment">
             <End Role="tb_LatestUnionAssessment" EntitySet="tb_LatestUnionAssessment" />
             <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
@@ -594,8 +618,7 @@
             <End Role="tb_Users" EntitySet="tb_Users" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="LRCModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -816,6 +839,7 @@
           <NavigationProperty Name="tb_MemberPhoneNumbers" Relationship="Self.FK_tb_MemberMaster_tb_MemberPhoneNumbers" FromRole="tb_MemberMaster" ToRole="tb_MemberPhoneNumbers" />
           <NavigationProperty Name="tb_MemberNotes" Relationship="Self.FK_tb_MemberNotes_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_MemberNotes" />
           <NavigationProperty Name="tb_Users" Relationship="Self.FK_tb_Users_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_Users" />
+          <NavigationProperty Name="tb_Gender" Relationship="LRCModel.FK_tb_MemberMaster_tb_Gender" FromRole="tb_MemberMaster" ToRole="tb_Gender" />
         </EntityType>
         <EntityType Name="tb_MemberNotes">
           <Key>
@@ -1227,7 +1251,32 @@
             <End Role="tb_UsersCredential" EntitySet="tb_UsersCredential" />
             <End Role="tb_Users" EntitySet="tb_Users" />
           </AssociationSet>
+          <EntitySet Name="tb_Gender" EntityType="LRCModel.tb_Gender" />
+          <AssociationSet Name="FK_tb_MemberMaster_tb_Gender" Association="LRCModel.FK_tb_MemberMaster_tb_Gender">
+            <End Role="tb_Gender" EntitySet="tb_Gender" />
+            <End Role="tb_MemberMaster" EntitySet="tb_MemberMasters" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="tb_Gender">
+          <Key>
+            <PropertyRef Name="GenderID" />
+          </Key>
+          <Property Name="GenderID" Type="Byte" Nullable="false" />
+          <Property Name="GenderName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="tb_MemberMaster" Relationship="LRCModel.FK_tb_MemberMaster_tb_Gender" FromRole="tb_Gender" ToRole="tb_MemberMaster" />
+        </EntityType>
+        <Association Name="FK_tb_MemberMaster_tb_Gender">
+          <End Type="LRCModel.tb_Gender" Role="tb_Gender" Multiplicity="0..1" />
+          <End Type="LRCModel.tb_MemberMaster" Role="tb_MemberMaster" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_Gender">
+              <PropertyRef Name="GenderID" />
+            </Principal>
+            <Dependent Role="tb_MemberMaster">
+              <PropertyRef Name="GenderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1498,6 +1547,14 @@
               <MappingFragment StoreEntitySet="tb_UsersCredential">
                 <ScalarProperty Name="CredentialsID" ColumnName="CredentialsID" />
                 <ScalarProperty Name="CredentialsName" ColumnName="CredentialsName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tb_Gender">
+            <EntityTypeMapping TypeName="LRCModel.tb_Gender">
+              <MappingFragment StoreEntitySet="tb_Gender">
+                <ScalarProperty Name="GenderName" ColumnName="GenderName" />
+                <ScalarProperty Name="GenderID" ColumnName="GenderID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

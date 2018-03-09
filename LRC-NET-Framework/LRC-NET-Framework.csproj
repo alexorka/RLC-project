@@ -200,6 +200,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\tb_MemberMasterController.cs" />
     <Compile Include="DBModelContext.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -251,6 +252,9 @@
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
     <Compile Include="tb_Dues.cs">
+      <DependentUpon>DBModelContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tb_Gender.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
     <Compile Include="tb_LatestUnionAssessment.cs">
@@ -362,6 +366,11 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Home\MemberDetails.cshtml" />
+    <Content Include="Views\tb_MemberMaster\Create.cshtml" />
+    <Content Include="Views\tb_MemberMaster\Delete.cshtml" />
+    <Content Include="Views\tb_MemberMaster\Details.cshtml" />
+    <Content Include="Views\tb_MemberMaster\Edit.cshtml" />
+    <Content Include="Views\tb_MemberMaster\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

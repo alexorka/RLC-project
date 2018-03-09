@@ -1,0 +1,245 @@
+﻿@model LRC_NET_Framework.tb_MemberMaster
+
+@{
+    ViewBag.Title = "Worker Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4 class="text-primary">Worker Details</h4>
+
+<div>
+    <h3>
+        @Html.DisplayFor(model => model.LastName), @Html.DisplayFor(model => model.FirstName)
+    </h3>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            Member ID Number
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MemberIDNumber)
+        </dd>
+
+        <dt>
+            Cope Status
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CopeStatus)
+        </dd>
+
+        <dt>
+            Cope Amount
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CopeAmount)
+        </dd>
+
+        <dt>
+            Counselors
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Counselors)
+        </dd>
+
+        <dt>
+            Campaign Volunteer
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CampaignVolunteer)
+        </dd>
+
+        <dt>
+            Mail Code
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MailCodeID)
+        </dd>
+
+        <dt>
+            Dues Category Eff Date
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DuesCategoryEffDate)
+        </dd>
+
+        <dt>
+            Union Initiation Date
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UnionInitiationDate)
+        </dd>
+
+        <dt>
+            HireDate
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HireDate)
+        </dd>
+
+        <dt>
+            Date Of Birth
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateOfBirth)
+        </dd>
+
+        <dt>
+            Retired Eff Date
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RetiredEffDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DeactivateEffDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DeactivateEffDate)
+        </dd>
+
+        <dt>
+            Deactivate Reason
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DeactivateReasonID)
+        </dd>
+
+        <dt>
+            Leadership Position
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LeadershipPositionID)
+        </dd>
+
+        <dt>
+            Political Assessment
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PoliticalAssessmentID)
+        </dd>
+
+        <dt>
+            Participate Political
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ParticipatePolitical)
+        </dd>
+
+        <dt>
+            Political Activities
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PoliticalActivitiesID)
+        </dd>
+
+        <dt>
+            Member Address
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MemberAddressID)
+        </dd>
+
+        <dt>
+            Added By
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AddedBy)
+        </dd>
+
+        <dt>
+            Added Date/Time
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AddedDateTime)
+        </dd>
+
+        <dt>
+            Modified By
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ModifiedBy)
+        </dd>
+
+        <dt>
+            Modified Date/Time
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ModifiedDateTime)
+        </dd>
+
+        <dt>
+            Area Name
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.tb_Area.AreaName)
+        </dd>
+
+        <dt>
+            Department Name
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.tb_Department.DepartmentName)
+        </dd>
+
+        <dt>
+            Dues Name
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.tb_Dues.DuesName)
+        </dd>
+
+        <dt>
+            LatestUnion Assessment Desc
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.tb_LatestUnionAssessment.LatestUnionAssessmentDesc)
+        </dd>
+
+        <dt>
+            PhoneType
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.tb_MemberPhoneNumbers.PhoneType)
+        </dd>
+
+        <dt>
+            Gender
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.tb_Gender.GenderName)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.MemberID }, new { @class = "btn btn-info" }) |
+    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })
+</p>
