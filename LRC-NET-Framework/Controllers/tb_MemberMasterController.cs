@@ -15,11 +15,36 @@ namespace LRC_NET_Framework.Controllers
         private LRCEntities db = new LRCEntities();
 
         // GET: tb_MemberMaster
-        public ActionResult Index()
+        public ActionResult Index(string sortOrder, string searchString)
         {
             var tb_MemberMasters = db.tb_MemberMasters.Include(t => t.tb_Area).Include(t => t.tb_Department).Include(t => t.tb_Dues).Include(t => t.tb_LatestUnionAssessment).Include(t => t.tb_MemberPhoneNumbers).Include(t => t.tb_Gender);
-            //var tb_MemberMasters = db.tb_MemberMasters.Include(t => t.tb_Area).Include(t => t.tb_Department).ThenInclude(d => d.tb_College).Include(t => t.tb_Dues).Include(t => t.tb_LatestUnionAssessment).Include(t => t.tb_MemberPhoneNumbers).Include(t => t.tb_Gender);
+
             tb_MemberMasters.Select(t => t.tb_Department.tb_College);
+
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Name desc" : "";
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                tb_MemberMasters = tb_MemberMasters.Where(s => s.LastName.ToUpper().Contains(searchString.ToUpper())
+                                       || s.FirstName.ToUpper().Contains(searchString.ToUpper()));
+            }
+
+            switch (sortOrder)
+            {
+                case "Name desc":
+                    tb_MemberMasters = tb_MemberMasters.OrderByDescending(s => s.LastName);
+                    break;
+                //case "Date":
+                //    tb_MemberMasters = tb_MemberMasters.OrderBy(s => s.HireDate);
+                //    break;
+                //case "Date desc":
+                //    tb_MemberMasters = tb_MemberMasters.OrderByDescending(s => s.HireDate);
+                //    break;
+                default:
+                    tb_MemberMasters = tb_MemberMasters.OrderBy(s => s.LastName);
+                    break;
+            }
+
             return View(tb_MemberMasters.ToList());
         }
 
