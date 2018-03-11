@@ -48,6 +48,11 @@
         <AssociationConnector Association="LRCModel.FK_tb_Users_tb_UsersCredential" ManuallyRouted="false" />
         <EntityTypeShape EntityType="LRCModel.tb_Gender" Width="1.5" PointX="8" PointY="9.25" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberMaster_tb_Gender" />
+        <AssociationConnector Association="LRCModel.FK_tb_MemberPhoneNumbers_tb_MemberMaster" />
+        <EntityTypeShape EntityType="LRCModel.tb_Building" Width="1.5" PointX="3" PointY="12.5" />
+        <EntityTypeShape EntityType="LRCModel.tb_Room" Width="1.5" PointX="3" PointY="10.25" />
+        <AssociationConnector Association="LRCModel.FK_tb_Building_tb_Campus" />
+        <AssociationConnector Association="LRCModel.FK_tb_Room_tb_Building" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -75,6 +75,12 @@
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.8\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList.Mvc, Version=4.5.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -236,6 +242,9 @@
     <Compile Include="tb_Attribute.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
+    <Compile Include="tb_Building.cs">
+      <DependentUpon>DBModelContext.tt</DependentUpon>
+    </Compile>
     <Compile Include="tb_Campus.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
@@ -281,6 +290,9 @@
     <Compile Include="tb_NoteType.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
+    <Compile Include="tb_Room.cs">
+      <DependentUpon>DBModelContext.tt</DependentUpon>
+    </Compile>
     <Compile Include="tb_States.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
@@ -294,6 +306,7 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\PagedList.css" />
     <Content Include="DBModelContext.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>DBModelContext.edmx</DependentUpon>

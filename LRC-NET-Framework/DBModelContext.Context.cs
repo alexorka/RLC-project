@@ -22,7 +22,6 @@ namespace LRC_NET_Framework
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<LRCEntities>().HasOptional(p => p.OfficeAssignment).WithRequired(p => p.Instructor);
             throw new UnintentionalCodeFirstException();
         }
     
@@ -48,5 +47,7 @@ namespace LRC_NET_Framework
         public virtual DbSet<tb_Users> tb_Users { get; set; }
         public virtual DbSet<tb_UsersCredential> tb_UsersCredential { get; set; }
         public virtual DbSet<tb_Gender> tb_Gender { get; set; }
+        public virtual DbSet<tb_Building> tb_Building { get; set; }
+        public virtual DbSet<tb_Room> tb_Room { get; set; }
     }
 }

@@ -12,21 +12,20 @@ namespace LRC_NET_Framework
     using System;
     using System.Collections.Generic;
     
-    public partial class tb_Campus
+    public partial class tb_Building
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public tb_Campus()
+        public tb_Building()
         {
-            this.tb_Building = new HashSet<tb_Building>();
+            this.tb_Room = new HashSet<tb_Room>();
         }
     
-        public int CampusID { get; set; }
-        public byte CollegeID { get; set; }
-        public string CampusCode { get; set; }
-        public string CampusName { get; set; }
+        public int BuildingID { get; set; }
+        public string BuildingName { get; set; }
+        public Nullable<int> CampusID { get; set; }
     
-        public virtual tb_College tb_College { get; set; }
+        public virtual tb_Campus tb_Campus { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tb_Building> tb_Building { get; set; }
+        public virtual ICollection<tb_Room> tb_Room { get; set; }
     }
 }

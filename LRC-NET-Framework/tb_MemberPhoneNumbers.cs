@@ -32,5 +32,6 @@ namespace LRC_NET_Framework
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_MemberMaster> tb_MemberMaster { get; set; }
+        public virtual tb_MemberMaster tb_MemberMaster1 { get; set; }
     }
 }

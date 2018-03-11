@@ -53,6 +53,14 @@
           <Property Name="ModifiedBy" Type="int" />
           <Property Name="ModifiedDateTime" Type="datetime" />
         </EntityType>
+        <EntityType Name="tb_Building">
+          <Key>
+            <PropertyRef Name="BuildingID" />
+          </Key>
+          <Property Name="BuildingID" Type="int" Nullable="false" />
+          <Property Name="BuildingName" Type="nvarchar" MaxLength="50" />
+          <Property Name="CampusID" Type="int" />
+        </EntityType>
         <EntityType Name="tb_Campus">
           <Key>
             <PropertyRef Name="CampusID" />
@@ -85,7 +93,7 @@
           <Key>
             <PropertyRef Name="DepartmentID" />
           </Key>
-          <Property Name="DepartmentID" Type="int" Nullable="false" />
+          <Property Name="DepartmentID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="DepartmentName" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="CollegeID" Type="tinyint" />
         </EntityType>
@@ -234,6 +242,14 @@
           <Property Name="NoteTypeID" Type="int" Nullable="false" />
           <Property Name="NoteType" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
+        <EntityType Name="tb_Room">
+          <Key>
+            <PropertyRef Name="RoomID" />
+          </Key>
+          <Property Name="RoomID" Type="int" Nullable="false" />
+          <Property Name="RoomName" Type="nvarchar" MaxLength="50" />
+          <Property Name="BuildingID" Type="int" />
+        </EntityType>
         <EntityType Name="tb_States">
           <Key>
             <PropertyRef Name="StateCode" />
@@ -279,6 +295,18 @@
             </Principal>
             <Dependent Role="tb_Attribute">
               <PropertyRef Name="MemberID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tb_Building_tb_Campus">
+          <End Role="tb_Campus" Type="Self.tb_Campus" Multiplicity="0..1" />
+          <End Role="tb_Building" Type="Self.tb_Building" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_Campus">
+              <PropertyRef Name="CampusID" />
+            </Principal>
+            <Dependent Role="tb_Building">
+              <PropertyRef Name="CampusID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -450,18 +478,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_tb_MemberMaster_tb_MemberPhoneNumbers">
-          <End Role="tb_MemberPhoneNumbers" Type="Self.tb_MemberPhoneNumbers" Multiplicity="0..1" />
-          <End Role="tb_MemberMaster" Type="Self.tb_MemberMaster" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tb_MemberPhoneNumbers">
-              <PropertyRef Name="PhoneRecID" />
-            </Principal>
-            <Dependent Role="tb_MemberMaster">
-              <PropertyRef Name="PhoneRecID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_tb_MemberNotes_tb_MemberMaster">
           <End Role="tb_MemberMaster" Type="Self.tb_MemberMaster" Multiplicity="1" />
           <End Role="tb_MemberNotes" Type="Self.tb_MemberNotes" Multiplicity="*" />
@@ -483,6 +499,30 @@
             </Principal>
             <Dependent Role="tb_MemberNotes">
               <PropertyRef Name="NoteTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tb_MemberPhoneNumbers_tb_MemberMaster">
+          <End Role="tb_MemberMaster" Type="Self.tb_MemberMaster" Multiplicity="1" />
+          <End Role="tb_MemberPhoneNumbers" Type="Self.tb_MemberPhoneNumbers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_MemberMaster">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="tb_MemberPhoneNumbers">
+              <PropertyRef Name="MemberID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tb_Room_tb_Building">
+          <End Role="tb_Building" Type="Self.tb_Building" Multiplicity="0..1" />
+          <End Role="tb_Room" Type="Self.tb_Room" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_Building">
+              <PropertyRef Name="BuildingID" />
+            </Principal>
+            <Dependent Role="tb_Room">
+              <PropertyRef Name="BuildingID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -515,6 +555,7 @@
           <EntitySet Name="tb_Area" EntityType="Self.tb_Area" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_Assessment" EntityType="Self.tb_Assessment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_Attribute" EntityType="Self.tb_Attribute" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tb_Building" EntityType="Self.tb_Building" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_Campus" EntityType="Self.tb_Campus" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_CityState" EntityType="Self.tb_CityState" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_College" EntityType="Self.tb_College" Schema="dbo" store:Type="Tables" />
@@ -530,6 +571,7 @@
           <EntitySet Name="tb_MemberNotes" EntityType="Self.tb_MemberNotes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_MemberPhoneNumbers" EntityType="Self.tb_MemberPhoneNumbers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_NoteType" EntityType="Self.tb_NoteType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tb_Room" EntityType="Self.tb_Room" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_States" EntityType="Self.tb_States" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_Users" EntityType="Self.tb_Users" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_UsersCredential" EntityType="Self.tb_UsersCredential" Schema="dbo" store:Type="Tables" />
@@ -540,6 +582,10 @@
           <AssociationSet Name="FK_tb_Attribute_tb_MemberMaster" Association="Self.FK_tb_Attribute_tb_MemberMaster">
             <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
             <End Role="tb_Attribute" EntitySet="tb_Attribute" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tb_Building_tb_Campus" Association="Self.FK_tb_Building_tb_Campus">
+            <End Role="tb_Campus" EntitySet="tb_Campus" />
+            <End Role="tb_Building" EntitySet="tb_Building" />
           </AssociationSet>
           <AssociationSet Name="FK_tb_Campus_tb_College" Association="Self.FK_tb_Campus_tb_College">
             <End Role="tb_College" EntitySet="tb_College" />
@@ -597,10 +643,6 @@
             <End Role="tb_LatestUnionAssessment" EntitySet="tb_LatestUnionAssessment" />
             <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
           </AssociationSet>
-          <AssociationSet Name="FK_tb_MemberMaster_tb_MemberPhoneNumbers" Association="Self.FK_tb_MemberMaster_tb_MemberPhoneNumbers">
-            <End Role="tb_MemberPhoneNumbers" EntitySet="tb_MemberPhoneNumbers" />
-            <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
-          </AssociationSet>
           <AssociationSet Name="FK_tb_MemberNotes_tb_MemberMaster" Association="Self.FK_tb_MemberNotes_tb_MemberMaster">
             <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
             <End Role="tb_MemberNotes" EntitySet="tb_MemberNotes" />
@@ -608,6 +650,14 @@
           <AssociationSet Name="FK_tb_MemberNotes_tb_NoteType" Association="Self.FK_tb_MemberNotes_tb_NoteType">
             <End Role="tb_NoteType" EntitySet="tb_NoteType" />
             <End Role="tb_MemberNotes" EntitySet="tb_MemberNotes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tb_MemberPhoneNumbers_tb_MemberMaster" Association="Self.FK_tb_MemberPhoneNumbers_tb_MemberMaster">
+            <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
+            <End Role="tb_MemberPhoneNumbers" EntitySet="tb_MemberPhoneNumbers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tb_Room_tb_Building" Association="Self.FK_tb_Room_tb_Building">
+            <End Role="tb_Building" EntitySet="tb_Building" />
+            <End Role="tb_Room" EntitySet="tb_Room" />
           </AssociationSet>
           <AssociationSet Name="FK_tb_Users_tb_MemberMaster" Association="Self.FK_tb_Users_tb_MemberMaster">
             <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
@@ -683,6 +733,7 @@
           <Property Name="CampusCode" Type="String" MaxLength="12" FixedLength="false" Unicode="true" />
           <Property Name="CampusName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="tb_College" Relationship="Self.FK_tb_Campus_tb_College" FromRole="tb_Campus" ToRole="tb_College" />
+          <NavigationProperty Name="tb_Building" Relationship="LRCModel.FK_tb_Building_tb_Campus" FromRole="tb_Campus" ToRole="tb_Building" />
         </EntityType>
         <EntityType Name="tb_CityState">
           <Key>
@@ -840,6 +891,7 @@
           <NavigationProperty Name="tb_MemberNotes" Relationship="Self.FK_tb_MemberNotes_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_MemberNotes" />
           <NavigationProperty Name="tb_Users" Relationship="Self.FK_tb_Users_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_Users" />
           <NavigationProperty Name="tb_Gender" Relationship="LRCModel.FK_tb_MemberMaster_tb_Gender" FromRole="tb_MemberMaster" ToRole="tb_Gender" />
+          <NavigationProperty Name="tb_MemberPhoneNumbers1" Relationship="LRCModel.FK_tb_MemberPhoneNumbers_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_MemberPhoneNumbers" />
         </EntityType>
         <EntityType Name="tb_MemberNotes">
           <Key>
@@ -872,6 +924,7 @@
           <Property Name="ModifiedBy" Type="Int32" />
           <Property Name="ModifiedDateTime" Type="DateTime" Precision="3" />
           <NavigationProperty Name="tb_MemberMaster" Relationship="Self.FK_tb_MemberMaster_tb_MemberPhoneNumbers" FromRole="tb_MemberPhoneNumbers" ToRole="tb_MemberMaster" />
+          <NavigationProperty Name="tb_MemberMaster1" Relationship="LRCModel.FK_tb_MemberPhoneNumbers_tb_MemberMaster" FromRole="tb_MemberPhoneNumbers" ToRole="tb_MemberMaster" />
         </EntityType>
         <EntityType Name="tb_NoteType">
           <Key>
@@ -1256,6 +1309,20 @@
             <End Role="tb_Gender" EntitySet="tb_Gender" />
             <End Role="tb_MemberMaster" EntitySet="tb_MemberMasters" />
           </AssociationSet>
+          <AssociationSet Name="FK_tb_MemberPhoneNumbers_tb_MemberMaster" Association="LRCModel.FK_tb_MemberPhoneNumbers_tb_MemberMaster">
+            <End Role="tb_MemberMaster" EntitySet="tb_MemberMasters" />
+            <End Role="tb_MemberPhoneNumbers" EntitySet="tb_MemberPhoneNumbers" />
+          </AssociationSet>
+          <EntitySet Name="tb_Building" EntityType="LRCModel.tb_Building" />
+          <EntitySet Name="tb_Room" EntityType="LRCModel.tb_Room" />
+          <AssociationSet Name="FK_tb_Building_tb_Campus" Association="LRCModel.FK_tb_Building_tb_Campus">
+            <End Role="tb_Campus" EntitySet="tb_Campus" />
+            <End Role="tb_Building" EntitySet="tb_Building" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tb_Room_tb_Building" Association="LRCModel.FK_tb_Room_tb_Building">
+            <End Role="tb_Building" EntitySet="tb_Building" />
+            <End Role="tb_Room" EntitySet="tb_Room" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="tb_Gender">
           <Key>
@@ -1274,6 +1341,61 @@
             </Principal>
             <Dependent Role="tb_MemberMaster">
               <PropertyRef Name="GenderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tb_MemberPhoneNumbers_tb_MemberMaster">
+          <End Type="LRCModel.tb_MemberMaster" Role="tb_MemberMaster" Multiplicity="1" />
+          <End Type="LRCModel.tb_MemberPhoneNumbers" Role="tb_MemberPhoneNumbers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_MemberMaster">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="tb_MemberPhoneNumbers">
+              <PropertyRef Name="MemberID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="tb_Building">
+          <Key>
+            <PropertyRef Name="BuildingID" />
+          </Key>
+          <Property Name="BuildingID" Type="Int32" Nullable="false" />
+          <Property Name="BuildingName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CampusID" Type="Int32" />
+          <NavigationProperty Name="tb_Campus" Relationship="LRCModel.FK_tb_Building_tb_Campus" FromRole="tb_Building" ToRole="tb_Campus" />
+          <NavigationProperty Name="tb_Room" Relationship="LRCModel.FK_tb_Room_tb_Building" FromRole="tb_Building" ToRole="tb_Room" />
+        </EntityType>
+        <EntityType Name="tb_Room">
+          <Key>
+            <PropertyRef Name="RoomID" />
+          </Key>
+          <Property Name="RoomID" Type="Int32" Nullable="false" />
+          <Property Name="RoomName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BuildingID" Type="Int32" />
+          <NavigationProperty Name="tb_Building" Relationship="LRCModel.FK_tb_Room_tb_Building" FromRole="tb_Room" ToRole="tb_Building" />
+        </EntityType>
+        <Association Name="FK_tb_Building_tb_Campus">
+          <End Type="LRCModel.tb_Campus" Role="tb_Campus" Multiplicity="0..1" />
+          <End Type="LRCModel.tb_Building" Role="tb_Building" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_Campus">
+              <PropertyRef Name="CampusID" />
+            </Principal>
+            <Dependent Role="tb_Building">
+              <PropertyRef Name="CampusID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tb_Room_tb_Building">
+          <End Type="LRCModel.tb_Building" Role="tb_Building" Multiplicity="0..1" />
+          <End Type="LRCModel.tb_Room" Role="tb_Room" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_Building">
+              <PropertyRef Name="BuildingID" />
+            </Principal>
+            <Dependent Role="tb_Room">
+              <PropertyRef Name="BuildingID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1555,6 +1677,24 @@
               <MappingFragment StoreEntitySet="tb_Gender">
                 <ScalarProperty Name="GenderName" ColumnName="GenderName" />
                 <ScalarProperty Name="GenderID" ColumnName="GenderID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tb_Building">
+            <EntityTypeMapping TypeName="LRCModel.tb_Building">
+              <MappingFragment StoreEntitySet="tb_Building">
+                <ScalarProperty Name="CampusID" ColumnName="CampusID" />
+                <ScalarProperty Name="BuildingName" ColumnName="BuildingName" />
+                <ScalarProperty Name="BuildingID" ColumnName="BuildingID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tb_Room">
+            <EntityTypeMapping TypeName="LRCModel.tb_Room">
+              <MappingFragment StoreEntitySet="tb_Room">
+                <ScalarProperty Name="BuildingID" ColumnName="BuildingID" />
+                <ScalarProperty Name="RoomName" ColumnName="RoomName" />
+                <ScalarProperty Name="RoomID" ColumnName="RoomID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

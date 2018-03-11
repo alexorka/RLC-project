@@ -7,6 +7,8 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using LRC_NET_Framework;
+using PagedList;
+using PagedList.Mvc;
 
 namespace LRC_NET_Framework.Controllers
 {
@@ -15,9 +17,9 @@ namespace LRC_NET_Framework.Controllers
         private LRCEntities db = new LRCEntities();
 
         // GET: tb_MemberMaster
-        public ActionResult Index(string sortOrder, string searchString)
+        public ActionResult Index(string sortOrder, string searchString, int? page)
         {
-            var tb_MemberMasters = db.tb_MemberMasters.Include(t => t.tb_Area).Include(t => t.tb_Department).Include(t => t.tb_Dues).Include(t => t.tb_LatestUnionAssessment).Include(t => t.tb_MemberPhoneNumbers).Include(t => t.tb_Gender);
+            var tb_MemberMasters = db.tb_MemberMasters.Include(t => t.tb_Area).Include(t => t.tb_Department).Include(t => t.tb_Dues).Include(t => t.tb_LatestUnionAssessment).Include(t => t.tb_MemberPhoneNumbers).Include(t => t.tb_Dues);
 
             tb_MemberMasters.Select(t => t.tb_Department.tb_College);
 
@@ -44,8 +46,11 @@ namespace LRC_NET_Framework.Controllers
                     tb_MemberMasters = tb_MemberMasters.OrderBy(s => s.LastName);
                     break;
             }
+            int pageSize = 3;
+            int pageNumber = (page ?? 1);
 
-            return View(tb_MemberMasters.ToList());
+
+            return View(tb_MemberMasters.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: tb_MemberMaster/Details/5
