@@ -22,6 +22,10 @@ namespace LRC_NET_Framework.Controllers
             var tb_MemberMasters = db.tb_MemberMasters.Include(t => t.tb_Area).Include(t => t.tb_Department).Include(t => t.tb_Dues).Include(t => t.tb_LatestUnionAssessment).Include(t => t.tb_MemberPhoneNumbers).Include(t => t.tb_Dues);
 
             tb_MemberMasters.Select(t => t.tb_Department.tb_College);
+            ViewData["MemberQty"] = tb_MemberMasters.Count();
+
+            SelectList colleges = new SelectList(db.tb_College, "CollegeID", "CollegeDesc");
+            ViewBag.Colleges = colleges;
 
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Name desc" : "";
 
@@ -48,7 +52,6 @@ namespace LRC_NET_Framework.Controllers
             }
             int pageSize = 3;
             int pageNumber = (page ?? 1);
-
 
             return View(tb_MemberMasters.ToPagedList(pageNumber, pageSize));
         }
