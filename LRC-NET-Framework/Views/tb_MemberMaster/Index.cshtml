@@ -9,8 +9,8 @@
 @*<h2 style = "font-family:sans-serif">Member List</h2>*@
 
 @*<div aria-hidden="true" class="col-md-4">
-    @Html.ActionLink("  Create New", "Create", null, new { @class = "btn btn-warning" })
-</div>*@
+        @Html.ActionLink("  Create New", "Create", null, new { @class = "btn btn-warning" })
+    </div>*@
 <hr />
 <ul class="list-inline">
     <li role="button">
@@ -22,7 +22,6 @@
                 @foreach (var c in ViewBag.Colleges)
                 {
                     <li role="button"><a href="@Url.Action("Details", "tb_MemberMaster", new { id = @c.Value })" class="btn btn-link">@c.Text</a></li>
-                    @*<li>@c.Text</li>*@
                 }
             </ul>
         </div>
@@ -38,114 +37,145 @@
     <li role="button"><a href="#" class="btn btn-info">Local&nbsp;<span class="glyphicon glyphicon-stats" aria-hidden="true"></span></a></li>
 </ul>
 
-<div class="row">
-    @using (Html.BeginForm("Index", "tb_MemberMaster", FormMethod.Post, new { @class = "margin-right: 0" }))
-    {
-        <div class="col-lg-6">
-            <div class="input-group">
-                <span class="input-group-btn">
-                    <button class="btn btn-default" type="submit">
-                        <i class="glyphicon glyphicon-search"></i>
-                    </button>
-                </span>
-                @Html.TextBox("SearchString", null, new { @class = "form-control", placeholder = "Search" })
+@*<div class="row">
+            <div class="col-md-12">
+                <div class="input-group">
+                    <span class="input-group-btn">
+                    </span>
+                </div>
             </div>
+    </div>*@
+
+@using (Html.BeginForm("Index", "tb_MemberMaster", FormMethod.Post, new { @class = "margin-right: 0" }))
+{
+<div class="form-group row list-inline">
+    <div class="col-xs-2">
+        <div class="input-group">
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="submit">
+                    <i class="glyphicon glyphicon-search"></i>
+                </button>
+            </span>
+            @Html.TextBox("SearchString", null, new { @class = "form-control", placeholder = "Search" })
         </div>
-    }
+    </div>
+    <div class="col-xs-1">
+        <span data-toggle="tooltip" title="Filter by Department">
+            @Html.DropDownList("DepartmentID", null, htmlAttributes: new { @class = "form-control " })
+        </span>
+    </div>
+    <div class="col-xs-1">
+        <span data-toggle="tooltip" title="Filter by College">
+            @Html.DropDownList("CollegeID", null, htmlAttributes: new { @class = "form-control" })
+        </span>
+    </div>
+    <div class="col-xs-1">
+    </div>
+    <div class="col-xs-1">
+        <small><strong><a href="#" class="disabled">Active Status</a></strong></small>
+    </div>
+    <div class="col-xs-5 ">
+        <small><a href="#" class="disabled">export</a></small>
+    </div>
 </div>
+}
 
 <div class="row ex1">
     <div class="col-md-2 align-text-top"><small>Showing @Model.FirstItemOnPage - @Model.Count()&nbsp;&nbsp;of&nbsp;&nbsp;@ViewData["MemberQty"]</small></div>
-    <div class="col-md-3 align-text-top"><small><strong>Active Status</strong></small></div>
-    <div class="col-md-1 align-text-top"><a href="#">add filter</a></div>
-    <div class="col-md-2 align-text-top"><a href="#">export</a></div>
-    <div class="col-md-4"> </div>
+    <div class="col-md-3 align-text-top"></div>
+    <div class="col-md-7"></div>
 </div>
 
-    <div class="ex1">
-        <table class="table table-striped table-sm">
+<div class="ex1">
+    <table class="table table-striped table-sm">
+        <tr>
+            <th>
+                @Html.ActionLink("Worker", "Index", new { sortOrder = ViewBag.NameSortParm })
+            </th>
+            <th>
+                Home&nbsp;School
+            </th>
+            <th>
+                Class&nbsp;Category
+            </th>
+            <th>
+                Department
+            </th>
+            <th>
+                Role
+            </th>
+            <th>
+                COPE
+            </th>
+            <th>
+                Dues
+            </th>
+            <th>
+                Membership
+            </th>
+            <th>
+                Member&nbsp;Form
+            </th>
+            <th>
+                Fee&nbsp;Payer&nbsp;Assess
+            </th>
+            <th>
+                Membership&nbsp;Commitment
+            </th>
+            <th>
+                Phone
+            </th>
+            <th>
+                Address
+            </th>
+            <th>
+                Active&nbsp;Status
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
             <tr>
-                <th>
-                    @Html.ActionLink("Worker", "Index", new { sortOrder = ViewBag.NameSortParm })
-                </th>
-                <th>
-                    Home&nbsp;School
-                </th>
-                <th>
-                    Class&nbsp;Category
-                </th>
-                <th>
-                    Department
-                </th>
-                <th>
-                    Role
-                </th>
-                <th>
-                    COPE
-                </th>
-                <th>
-                    Dues
-                </th>
-                <th>
-                    Membership
-                </th>
-                <th>
-                    Member&nbsp;Form
-                </th>
-                <th>
-                    Fee&nbsp;Payer&nbsp;Assess
-                </th>
-                <th>
-                    Membership&nbsp;Commitment
-                </th>
-                <th>
-                    Phone
-                </th>
-                <th>
-                    Address
-                </th>
-                <th>
-                    Active&nbsp;Status
-                </th>
+                <td>
+                    @Html.ActionLink(item.LastName + ", " + item.FirstName, "Edit", new { id = item.MemberID }, new { @class = "text-info" })
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_Department.tb_College.CollegeName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_Dues.DuesName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_Department.DepartmentName)
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                @*<td>
+                        <div class="btn-group" role="group" aria-label="...">
+                            @Html.ActionLink("Edit", "Edit", new { id = item.MemberID }, new { @class = "btn btn-primary" })
+                            @Html.ActionLink("Details", "Details", new { id = item.MemberID }, new { @class = "btn btn-info" })
+                            @Html.ActionLink("Delete", "Delete", new { id = item.MemberID }, new { @class = "btn btn-danger" })
+                        </div>
+                    </td>*@
             </tr>
+        }
+    </table>
+    <br />
+    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
 
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.ActionLink(item.LastName + ", " + item.FirstName, "Details", new { id = item.MemberID }, new { @class = "text-info" })
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.tb_Department.tb_College.CollegeName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.tb_Dues.DuesName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.tb_Department.DepartmentName)
-                    </td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    @*<td>
-                            <div class="btn-group" role="group" aria-label="...">
-                                @Html.ActionLink("Edit", "Edit", new { id = item.MemberID }, new { @class = "btn btn-primary" })
-                                @Html.ActionLink("Details", "Details", new { id = item.MemberID }, new { @class = "btn btn-info" })
-                                @Html.ActionLink("Delete", "Delete", new { id = item.MemberID }, new { @class = "btn btn-danger" })
-                            </div>
-                        </td>*@
-                </tr>
-            }
-        </table>
-        <br />
-        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+</div>
 
-        @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
-    </div>
+<script>
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});
+</script>

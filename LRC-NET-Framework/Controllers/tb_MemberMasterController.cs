@@ -9,6 +9,8 @@ using System.Web.Mvc;
 using LRC_NET_Framework;
 using PagedList;
 using PagedList.Mvc;
+using LRC_NET_Framework.Models;
+//using static LRC_NET_Framework.Models.MemberMaster.MemberFilterViewModel;
 
 namespace LRC_NET_Framework.Controllers
 {
@@ -16,25 +18,62 @@ namespace LRC_NET_Framework.Controllers
     {
         private LRCEntities db = new LRCEntities();
 
+        public static SelectList AddFirstItem(SelectList origList, SelectListItem firstItem)
+        {
+            List<SelectListItem> newList = origList.ToList();
+            newList.Insert(0, firstItem);
+
+            //var selectedItem = newList.FirstOrDefault(item => item.Selected);
+            var selectedItem = newList.First();
+            var selectedItemValue = String.Empty;
+            if (selectedItem != null)
+            {
+                selectedItemValue = selectedItem.Value;
+            }
+
+            return new SelectList(newList, "Value", "Text", selectedItemValue);
+        }
+
         // GET: tb_MemberMaster
-        public ActionResult Index(string sortOrder, string searchString, int? page)
+        public ActionResult Index(string sortOrder, string searchString, int? page, int? CollegeID, int? DepartmentID)
         {
             var tb_MemberMasters = db.tb_MemberMasters.Include(t => t.tb_Area).Include(t => t.tb_Department).Include(t => t.tb_Dues).Include(t => t.tb_LatestUnionAssessment).Include(t => t.tb_MemberPhoneNumbers).Include(t => t.tb_Dues);
 
             tb_MemberMasters.Select(t => t.tb_Department.tb_College);
             ViewData["MemberQty"] = tb_MemberMasters.Count();
 
-            SelectList colleges = new SelectList(db.tb_College, "CollegeID", "CollegeDesc");
-            ViewBag.Colleges = colleges;
+            //SelectList colleges = new SelectList(db.tb_College, "CollegeID", "CollegeDesc");
 
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Name desc" : "";
 
+            //Searching @ Filtering
             if (!String.IsNullOrEmpty(searchString))
             {
                 tb_MemberMasters = tb_MemberMasters.Where(s => s.LastName.ToUpper().Contains(searchString.ToUpper())
                                        || s.FirstName.ToUpper().Contains(searchString.ToUpper()));
             }
+            if (CollegeID != null && CollegeID != 0)
+            {
+                tb_MemberMasters = tb_MemberMasters.Where(f => f.tb_Department.CollegeID == CollegeID);
+            }
+            if (DepartmentID != null && DepartmentID != 0)
+            {
+                tb_MemberMasters = tb_MemberMasters.Where(f => f.DepartmentID == DepartmentID);
+            }
+            List<tb_College> colleges = db.tb_College.ToList();
+            // устанавливаем начальный элемент, который позволит выбрать всех
+            //_colleges.Insert(0, new tb_College { CollegeDesc = "All", CollegeID = 0 });
+            ViewBag.Colleges = new SelectList(colleges, "CollegeID", "CollegeName");
+            List<tb_Department> departments = db.tb_Department.ToList();
+            tb_MemberMaster tb_MemberMaster = db.tb_MemberMasters.Find(1);
+            SelectList Departments = new SelectList(db.tb_Department, "DepartmentID", "DepartmentName", tb_MemberMaster.DepartmentID);
+            SelectListItem selListItem = new SelectListItem() { Value = "0", Text = " + Filter by Department " };
+            ViewBag.DepartmentID = AddFirstItem(Departments, selListItem);
+            SelectList Colleges = new SelectList(db.tb_College, "CollegeID", "CollegeName", tb_MemberMaster.tb_Department.CollegeID);
+            selListItem = new SelectListItem() { Value = "0", Text = " + Filter by College " };
+            ViewBag.CollegeID = AddFirstItem(Colleges, selListItem);
 
+            //Sorting
             switch (sortOrder)
             {
                 case "Name desc":
@@ -50,11 +89,14 @@ namespace LRC_NET_Framework.Controllers
                     tb_MemberMasters = tb_MemberMasters.OrderBy(s => s.LastName);
                     break;
             }
+
+            //Paging
             int pageSize = 3;
             int pageNumber = (page ?? 1);
 
             return View(tb_MemberMasters.ToPagedList(pageNumber, pageSize));
         }
+
 
         // GET: tb_MemberMaster/Details/5
         public ActionResult Details(int? id)
@@ -88,7 +130,7 @@ namespace LRC_NET_Framework.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "MemberID,MemberIDNumber,LastName,FirstName,MiddleName,DepartmentID,AreaID,CopeStatus,CopeAmount,Counselors,CampaignVolunteer,LatestUnionAssessment,MailCodeID,DuesCategoryEffDate,UnionInitiationDate,HireDate,DateOfBirth,GenderID,RetiredEffDate,DeactivateEffDate,DeactivateReasonID,LeadershipPositionID,PoliticalAssessmentID,ParticipatePolitical,PoliticalActivitiesID,MemberAddressID,PhoneRecID,DuesID,AddedBy,AddedDateTime,ModifiedBy,ModifiedDateTime")] tb_MemberMaster tb_MemberMaster)
+        public ActionResult Create([Bind(Include = "MemberID,CollegeID,MemberIDNumber,LastName,FirstName,MiddleName,DepartmentID,AreaID,CopeStatus,CopeAmount,Counselors,CampaignVolunteer,LatestUnionAssessment,MailCodeID,DuesCategoryEffDate,UnionInitiationDate,HireDate,DateOfBirth,GenderID,RetiredEffDate,DeactivateEffDate,DeactivateReasonID,LeadershipPositionID,PoliticalAssessmentID,ParticipatePolitical,PoliticalActivitiesID,MemberAddressID,PhoneRecID,DuesID,AddedBy,AddedDateTime,ModifiedBy,ModifiedDateTime")] tb_MemberMaster tb_MemberMaster)
         {
             if (ModelState.IsValid)
             {
@@ -118,6 +160,7 @@ namespace LRC_NET_Framework.Controllers
             {
                 return HttpNotFound();
             }
+            ViewBag.CollegeID = new SelectList(db.tb_College, "CollegeID", "CollegeName", tb_MemberMaster.tb_Department.CollegeID);
             ViewBag.AreaID = new SelectList(db.tb_Area, "AreaID", "AreaName", tb_MemberMaster.AreaID);
             ViewBag.DepartmentID = new SelectList(db.tb_Department, "DepartmentID", "DepartmentName", tb_MemberMaster.DepartmentID);
             ViewBag.DuesID = new SelectList(db.tb_Dues, "DuesID", "DuesName", tb_MemberMaster.DuesID);
