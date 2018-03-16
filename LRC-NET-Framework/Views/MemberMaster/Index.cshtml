@@ -1,0 +1,220 @@
+﻿@model IEnumerable<LRC_NET_Framework.tb_MemberMaster>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.MemberIDNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LastName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MiddleName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CopeStatus)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CopeAmount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Counselors)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CampaignVolunteer)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MailCodeID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DuesCategoryEffDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UnionInitiationDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.HireDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DateOfBirth)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RetiredEffDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DeactivateEffDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DeactivateReasonID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LeadershipPositionID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PoliticalAssessmentID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ParticipatePolitical)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PoliticalActivitiesID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MemberAddressID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PhoneRecID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AddedBy)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AddedDateTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ModifiedBy)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ModifiedDateTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.tb_Area.AreaName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.tb_Department.DepartmentName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.tb_Division.DivisionName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.tb_Dues.DuesName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.tb_Gender.GenderName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.tb_LatestUnionAssessment.LatestUnionAssessmentDesc)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.MemberIDNumber)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LastName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FirstName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MiddleName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CopeStatus)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CopeAmount)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Counselors)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CampaignVolunteer)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MailCodeID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DuesCategoryEffDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.UnionInitiationDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.HireDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DateOfBirth)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.RetiredEffDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DeactivateEffDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DeactivateReasonID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LeadershipPositionID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PoliticalAssessmentID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ParticipatePolitical)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PoliticalActivitiesID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MemberAddressID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PhoneRecID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AddedBy)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AddedDateTime)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ModifiedBy)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ModifiedDateTime)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.tb_Area.AreaName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.tb_Department.DepartmentName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.tb_Division.DivisionName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.tb_Dues.DuesName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.tb_Gender.GenderName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.tb_LatestUnionAssessment.LatestUnionAssessmentDesc)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.MemberID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.MemberID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.MemberID })
+        </td>
+    </tr>
+}
+
+</table>

@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27428.1
+VisualStudioVersion = 15.0.27428.2005
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LRC-NET-Framework", "LRC-NET-Framework\LRC-NET-Framework.csproj", "{6E17A91C-45D4-4B56-B5AF-5F29FA9F796C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LRC-NET-Framework", "LRC-NET-Framework\LRC-NET-Framework.csproj", "{BE832371-61B7-467E-87C0-A9C7F7175EC6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6E17A91C-45D4-4B56-B5AF-5F29FA9F796C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6E17A91C-45D4-4B56-B5AF-5F29FA9F796C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6E17A91C-45D4-4B56-B5AF-5F29FA9F796C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6E17A91C-45D4-4B56-B5AF-5F29FA9F796C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE832371-61B7-467E-87C0-A9C7F7175EC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE832371-61B7-467E-87C0-A9C7F7175EC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE832371-61B7-467E-87C0-A9C7F7175EC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE832371-61B7-467E-87C0-A9C7F7175EC6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {F505131D-2C71-4E26-AB3F-4CCCFA7C28B3}
+		SolutionGuid = {8CA8F0F4-4D07-4E19-9DA8-B536684E7A53}
 	EndGlobalSection
 EndGlobal

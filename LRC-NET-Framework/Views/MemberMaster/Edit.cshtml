@@ -1,0 +1,183 @@
+﻿@model LRC_NET_Framework.tb_MemberMaster
+
+@{
+    ViewBag.Title = "Edit Worker Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="font-weight-bold" style="background-color: #357ebd; color:gainsboro; padding-top:10px; padding-bottom:5px; padding-left: 30px;"><h4>Edit Worker Details</h4></div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h3 style="padding-left: 70px;">
+            @Html.DisplayFor(model => model.LastName), @Html.DisplayFor(model => model.FirstName)
+        </h3>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.MemberID)
+
+        <div class="form-group">
+            <div class="col-md-3">
+                <p class="control-label">Home School</p>
+            </div>
+            <div class="col-md-9">
+                @Html.DropDownList("CollegeID", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.tb_Department.CollegeID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                <p class="control-label text-danger">Local ID ???</p>
+            </div>
+            <div class="col-md-9">
+                <input type="text" class="form-control" placeholder=" - not in the ERD - ">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                <p class="control-label text-danger">Job Status ???</p>
+            </div>
+            <div class="col-md-9">
+                <select class="form-control" id="sel1">
+                    <option> - not in the ERD - </option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                <p class="control-label text-danger">JobClass  ???</p>
+            </div>
+            <div class="col-md-9">
+                <input type="text" class="form-control" placeholder=" - not in the ERD - ">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3 text-danger">
+                <p class="control-label">(Added "tb_Division" to ERD) Division</p>
+            </div>
+            <div class="col-md-9" style="overflow:hidden;">
+                <div style="width: 1000%;">
+                    <div style="float: left;">
+                        @Html.DropDownList("DivisionID", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.DivisionID, "", new { @class = "text-danger" })
+                    </div>
+                    <div style="float: left; margin-left:10px">
+                        <button type="button" class="btn btn-secondary">
+                            <span class="glyphicon glyphicon-plus"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                <p class="control-label">Department</p>
+            </div>
+            <div class="col-md-9" style="overflow:hidden;">
+                <div style="width: 1000%;">
+                    <div style="float: left;">
+                        @Html.DropDownList("DepartmentID", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.DepartmentID, "", new { @class = "text-danger" })
+                    </div>
+                    <div style="float: left; margin-left:10px">
+                        <button type="button" class="btn btn-secondary">
+                            <span class="glyphicon glyphicon-plus"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                <p class="control-label text-danger">Class Category ???</p>
+            </div>
+            <div class="col-md-9">
+                <select class="form-control" id="sel1">
+                    <option> - not in the ERD - </option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                <p class="control-label">Hire Date (Aprox)</p>
+            </div>
+            <div class="col-md-9">
+                <fieldset>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.HireDate, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.HireDate)
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                <p class="control-label text-danger">Salary  ???</p>
+            </div>
+            <div class="col-md-9">
+                <input type="text" class="form-control" placeholder=" - not in the ERD - ">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                <p class="control-label text-danger">Twitter  ???</p>
+            </div>
+            <div class="col-md-9">
+                <input type="text" class="form-control" placeholder=" - not in the ERD - ">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                <p class="control-label text-danger">Facebook  ???</p>
+            </div>
+            <div class="col-md-9">
+                <input type="text" class="form-control" placeholder=" - not in the ERD - ">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                <p class="control-label text-danger">Active Status ???</p>
+            </div>
+            <div class="col-md-9">
+                <select class="form-control" id="sel1">
+                    <option> - not in the ERD - </option>
+                    <option>Y</option>
+                    <option>N</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-9">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-info" })
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

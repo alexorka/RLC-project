@@ -14,12 +14,6 @@ namespace LRC_NET_Framework
     
     public partial class tb_MemberPhoneNumbers
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public tb_MemberPhoneNumbers()
-        {
-            this.tb_MemberMaster = new HashSet<tb_MemberMaster>();
-        }
-    
         public int PhoneRecID { get; set; }
         public int MemberID { get; set; }
         public string PhoneType { get; set; }
@@ -30,8 +24,6 @@ namespace LRC_NET_Framework
         public Nullable<int> ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedDateTime { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tb_MemberMaster> tb_MemberMaster { get; set; }
-        public virtual tb_MemberMaster tb_MemberMaster1 { get; set; }
+        public virtual tb_MemberMaster tb_MemberMaster { get; set; }
     }
 }
