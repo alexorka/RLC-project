@@ -21,7 +21,7 @@
             <ul class="dropdown-menu" role="menu">
                 @foreach (var c in ViewBag.Colleges)
                 {
-                    <li role="button"><a href="@Url.Action("Details", "MemberMaster", new { id = @c.Value })" class="btn btn-link">@c.Text</a></li>
+                    <li role="button"><a href="@Url.Action("Index", "SchoolList", new { CollegeID = @c.Value })" class="btn btn-link">@c.Text</a></li>
                 }
             </ul>
         </div>
@@ -169,7 +169,7 @@
         }
     </table>
     <br />
-    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) from @Model.PageCount
 
     @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
 </div>

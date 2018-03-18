@@ -201,6 +201,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MemberMasterController.cs" />
+    <Compile Include="Controllers\SchoolListController.cs" />
     <Compile Include="DBModelContext.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -243,6 +244,9 @@
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
     <Compile Include="tb_CityState.cs">
+      <DependentUpon>DBModelContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tb_Class.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
     <Compile Include="tb_College.cs">
@@ -288,6 +292,15 @@
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
     <Compile Include="tb_Room.cs">
+      <DependentUpon>DBModelContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tb_SemesterName.cs">
+      <DependentUpon>DBModelContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tb_Semesters.cs">
+      <DependentUpon>DBModelContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tb_SemesterTaught.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
     <Compile Include="tb_States.cs">
@@ -379,6 +392,12 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
+    <Content Include="Views\MemberMaster\MembersByCollege.cshtml" />
+    <Content Include="Views\SchoolList\Create.cshtml" />
+    <Content Include="Views\SchoolList\Delete.cshtml" />
+    <Content Include="Views\SchoolList\Details.cshtml" />
+    <Content Include="Views\SchoolList\Edit.cshtml" />
+    <Content Include="Views\SchoolList\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

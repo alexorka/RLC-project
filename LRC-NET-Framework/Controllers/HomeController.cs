@@ -37,7 +37,7 @@ namespace LRC_NET_Framework.Controllers
         // GET: tb_MemberMaster
         public ActionResult Index(string sortOrder, string searchString, int? page, int? CollegeID, int? DepartmentID)
         {
-            var tb_MemberMasters = db.tb_MemberMasters.Include(t => t.tb_Area).Include(t => t.tb_Department).Include(t => t.tb_Dues).Include(t => t.tb_LatestUnionAssessment).Include(t => t.tb_Dues);
+            var tb_MemberMasters = db.tb_MemberMaster.Include(t => t.tb_Area).Include(t => t.tb_Department).Include(t => t.tb_Dues).Include(t => t.tb_LatestUnionAssessment).Include(t => t.tb_Dues);
 
             tb_MemberMasters.Select(t => t.tb_Department.tb_College);
             ViewData["MemberQty"] = tb_MemberMasters.Count();
@@ -65,7 +65,7 @@ namespace LRC_NET_Framework.Controllers
             //_colleges.Insert(0, new tb_College { CollegeDesc = "All", CollegeID = 0 });
             ViewBag.Colleges = new SelectList(colleges, "CollegeID", "CollegeName");
             List<tb_Department> departments = db.tb_Department.ToList();
-            tb_MemberMaster tb_MemberMaster = db.tb_MemberMasters.Find(1);
+            tb_MemberMaster tb_MemberMaster = db.tb_MemberMaster.Find(1);
             SelectList Departments = new SelectList(db.tb_Department, "DepartmentID", "DepartmentName", tb_MemberMaster.DepartmentID);
             SelectListItem selListItem = new SelectListItem() { Value = "0", Text = " + Filter by Department " };
             ViewBag.DepartmentID = AddFirstItem(Departments, selListItem);

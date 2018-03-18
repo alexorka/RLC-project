@@ -1,0 +1,117 @@
+﻿@model PagedList.IPagedList<LRC_NET_Framework.tb_SemesterTaught>
+@using PagedList.Mvc
+
+
+@{
+    ViewBag.Title = "School List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewBag.CollegeName</h2>
+
+<div class="row ex1">
+    <div class="col-md-2 align-text-top"><small>Showing @Model.FirstItemOnPage - @Model.Count()&nbsp;&nbsp;of&nbsp;&nbsp;@ViewData["MemberQty"]</small></div>
+    <div class="col-md-3 align-text-top"></div>
+    <div class="col-md-7"></div>
+</div>
+<div class="ex1">
+    <table class="table table-striped table-sm">
+        <tr>
+            <th>
+                @Html.ActionLink("Faculty Member", "Index", new { sortOrder = ViewBag.NameSortParm })
+            </th>
+            <th>
+                Category
+            </th>
+            <th>
+                Department
+            </th>
+            <th>
+                Campus
+            </th>
+            <th>
+                Building
+            </th>
+            <th>
+                Room
+            </th>
+            <th>
+                Note
+            </th>
+            <th>
+                Class
+            </th>
+            <th>
+                Start
+            </th>
+            <th>
+                End
+            </th>
+            <th>
+                Days
+            </th>
+            <th>
+                Membership
+            </th>
+            <th>
+                Phone
+            </th>
+            <th>
+                Membership Commitment
+            </th>
+            <th>
+                Assess/Activity
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.ActionLink(item.tb_MemberMaster.LastName + ", " + item.tb_MemberMaster.FirstName, "Edit", "MemberMaster", new { id = item.MemberID }, new { @class = "text -info" })
+            </td>
+            <td></td>
+            <td>
+                @Html.DisplayFor(modelItem => item.tb_MemberMaster.tb_Department.DepartmentName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.tb_Room.tb_Building.tb_Campus.CampusName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.tb_Room.tb_Building.BuildingName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.tb_Room.RoomName)
+            </td>
+            <td></td>
+            <td>
+                @Html.DisplayFor(modelItem => item.tb_Class.ClassName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ClassStart)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ClassEnd)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ClassWeekDayID)
+            </td>
+            <td></td>
+            <td></td>
+            <td>
+                @*<div class="btn-group" role="group" aria-label="...">
+                @Html.ActionLink("Edit", "Edit", new { id = item.SemesterTaughtID }) |
+                @Html.ActionLink("Details", "Details", new { id = item.SemesterTaughtID }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.SemesterTaughtID })
+            </div>*@
+            </td>
+        </tr>
+        }
+    </table>
+    <br />
+    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) from @Model.PageCount
+
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+</div>
+
+

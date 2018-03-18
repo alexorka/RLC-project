@@ -14,10 +14,18 @@ namespace LRC_NET_Framework
     
     public partial class tb_Room
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public tb_Room()
+        {
+            this.tb_SemesterTaught = new HashSet<tb_SemesterTaught>();
+        }
+    
         public int RoomID { get; set; }
         public string RoomName { get; set; }
         public Nullable<int> BuildingID { get; set; }
     
         public virtual tb_Building tb_Building { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tb_SemesterTaught> tb_SemesterTaught { get; set; }
     }
 }

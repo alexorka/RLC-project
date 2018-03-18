@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="LRCModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="LRCModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="tb_Activity">
           <Key>
             <PropertyRef Name="ActivityID" />
@@ -57,18 +57,18 @@
           <Key>
             <PropertyRef Name="BuildingID" />
           </Key>
-          <Property Name="BuildingID" Type="int" Nullable="false" />
-          <Property Name="BuildingName" Type="nvarchar" MaxLength="50" />
+          <Property Name="BuildingID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BuildingName" Type="nvarchar" MaxLength="255" />
           <Property Name="CampusID" Type="int" />
         </EntityType>
         <EntityType Name="tb_Campus">
           <Key>
             <PropertyRef Name="CampusID" />
           </Key>
-          <Property Name="CampusID" Type="int" Nullable="false" />
+          <Property Name="CampusID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="CollegeID" Type="tinyint" Nullable="false" />
           <Property Name="CampusCode" Type="nvarchar" MaxLength="12" />
-          <Property Name="CampusName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CampusName" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="tb_CityState">
           <Key>
@@ -79,6 +79,14 @@
           <Property Name="CityName" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Country" Type="nchar" MaxLength="10" />
           <Property Name="CityAlias" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="tb_Class">
+          <Key>
+            <PropertyRef Name="ClassID" />
+          </Key>
+          <Property Name="ClassID" Type="int" Nullable="false" />
+          <Property Name="ClassName" Type="nvarchar" MaxLength="50" />
+          <Property Name="ClassDesc" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="tb_College">
           <Key>
@@ -257,6 +265,36 @@
           <Property Name="RoomID" Type="int" Nullable="false" />
           <Property Name="RoomName" Type="nvarchar" MaxLength="50" />
           <Property Name="BuildingID" Type="int" />
+        </EntityType>
+        <EntityType Name="tb_SemesterName">
+          <Key>
+            <PropertyRef Name="SemesterID" />
+          </Key>
+          <Property Name="SemesterID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SemesterName" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="tb_Semesters">
+          <Key>
+            <PropertyRef Name="SemesterRecID" />
+          </Key>
+          <Property Name="SemesterRecID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="DateFrom" Type="date" />
+          <Property Name="DateTo" Type="date" />
+          <Property Name="FiscalYear" Type="nvarchar" MaxLength="4" />
+          <Property Name="SemesterID" Type="int" />
+        </EntityType>
+        <EntityType Name="tb_SemesterTaught">
+          <Key>
+            <PropertyRef Name="SemesterTaughtID" />
+          </Key>
+          <Property Name="SemesterTaughtID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="SemesterRecID" Type="int" />
+          <Property Name="MemberID" Type="int" />
+          <Property Name="RoomID" Type="int" />
+          <Property Name="ClassID" Type="int" />
+          <Property Name="ClassStart" Type="time" Precision="7" />
+          <Property Name="ClassEnd" Type="time" Precision="7" />
+          <Property Name="ClassWeekDayID" Type="int" />
         </EntityType>
         <EntityType Name="tb_States">
           <Key>
@@ -546,6 +584,66 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_tb_Semesters_tb_SemesterName">
+          <End Role="tb_SemesterName" Type="Self.tb_SemesterName" Multiplicity="0..1" />
+          <End Role="tb_Semesters" Type="Self.tb_Semesters" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_SemesterName">
+              <PropertyRef Name="SemesterID" />
+            </Principal>
+            <Dependent Role="tb_Semesters">
+              <PropertyRef Name="SemesterID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tb_SemesterTaught_tb_Class">
+          <End Role="tb_Class" Type="Self.tb_Class" Multiplicity="0..1" />
+          <End Role="tb_SemesterTaught" Type="Self.tb_SemesterTaught" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_Class">
+              <PropertyRef Name="ClassID" />
+            </Principal>
+            <Dependent Role="tb_SemesterTaught">
+              <PropertyRef Name="ClassID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tb_SemesterTaught_tb_MemberMaster">
+          <End Role="tb_MemberMaster" Type="Self.tb_MemberMaster" Multiplicity="0..1" />
+          <End Role="tb_SemesterTaught" Type="Self.tb_SemesterTaught" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_MemberMaster">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="tb_SemesterTaught">
+              <PropertyRef Name="MemberID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tb_SemesterTaught_tb_Room">
+          <End Role="tb_Room" Type="Self.tb_Room" Multiplicity="0..1" />
+          <End Role="tb_SemesterTaught" Type="Self.tb_SemesterTaught" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_Room">
+              <PropertyRef Name="RoomID" />
+            </Principal>
+            <Dependent Role="tb_SemesterTaught">
+              <PropertyRef Name="RoomID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tb_SemesterTaught_tb_Semesters">
+          <End Role="tb_Semesters" Type="Self.tb_Semesters" Multiplicity="0..1" />
+          <End Role="tb_SemesterTaught" Type="Self.tb_SemesterTaught" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_Semesters">
+              <PropertyRef Name="SemesterRecID" />
+            </Principal>
+            <Dependent Role="tb_SemesterTaught">
+              <PropertyRef Name="SemesterRecID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_tb_Users_tb_MemberMaster">
           <End Role="tb_MemberMaster" Type="Self.tb_MemberMaster" Multiplicity="0..1" />
           <End Role="tb_Users" Type="Self.tb_Users" Multiplicity="*" />
@@ -578,6 +676,7 @@
           <EntitySet Name="tb_Building" EntityType="Self.tb_Building" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_Campus" EntityType="Self.tb_Campus" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_CityState" EntityType="Self.tb_CityState" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tb_Class" EntityType="Self.tb_Class" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_College" EntityType="Self.tb_College" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_Department" EntityType="Self.tb_Department" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_District" EntityType="Self.tb_District" Schema="dbo" store:Type="Tables" />
@@ -593,6 +692,9 @@
           <EntitySet Name="tb_MemberPhoneNumbers" EntityType="Self.tb_MemberPhoneNumbers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_NoteType" EntityType="Self.tb_NoteType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_Room" EntityType="Self.tb_Room" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tb_SemesterName" EntityType="Self.tb_SemesterName" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tb_Semesters" EntityType="Self.tb_Semesters" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tb_SemesterTaught" EntityType="Self.tb_SemesterTaught" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_States" EntityType="Self.tb_States" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_Users" EntityType="Self.tb_Users" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_UsersCredential" EntityType="Self.tb_UsersCredential" Schema="dbo" store:Type="Tables" />
@@ -684,6 +786,26 @@
             <End Role="tb_Building" EntitySet="tb_Building" />
             <End Role="tb_Room" EntitySet="tb_Room" />
           </AssociationSet>
+          <AssociationSet Name="FK_tb_Semesters_tb_SemesterName" Association="Self.FK_tb_Semesters_tb_SemesterName">
+            <End Role="tb_SemesterName" EntitySet="tb_SemesterName" />
+            <End Role="tb_Semesters" EntitySet="tb_Semesters" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tb_SemesterTaught_tb_Class" Association="Self.FK_tb_SemesterTaught_tb_Class">
+            <End Role="tb_Class" EntitySet="tb_Class" />
+            <End Role="tb_SemesterTaught" EntitySet="tb_SemesterTaught" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tb_SemesterTaught_tb_MemberMaster" Association="Self.FK_tb_SemesterTaught_tb_MemberMaster">
+            <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
+            <End Role="tb_SemesterTaught" EntitySet="tb_SemesterTaught" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tb_SemesterTaught_tb_Room" Association="Self.FK_tb_SemesterTaught_tb_Room">
+            <End Role="tb_Room" EntitySet="tb_Room" />
+            <End Role="tb_SemesterTaught" EntitySet="tb_SemesterTaught" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tb_SemesterTaught_tb_Semesters" Association="Self.FK_tb_SemesterTaught_tb_Semesters">
+            <End Role="tb_Semesters" EntitySet="tb_Semesters" />
+            <End Role="tb_SemesterTaught" EntitySet="tb_SemesterTaught" />
+          </AssociationSet>
           <AssociationSet Name="FK_tb_Users_tb_MemberMaster" Association="Self.FK_tb_Users_tb_MemberMaster">
             <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
             <End Role="tb_Users" EntitySet="tb_Users" />
@@ -693,8 +815,7 @@
             <End Role="tb_Users" EntitySet="tb_Users" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="LRCModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -750,27 +871,6 @@
           <Property Name="ModifiedDateTime" Type="DateTime" Precision="3" />
           <NavigationProperty Name="tb_MemberMaster" Relationship="Self.FK_tb_Attribute_tb_MemberMaster" FromRole="tb_Attribute" ToRole="tb_MemberMaster" />
         </EntityType>
-        <EntityType Name="tb_Building">
-          <Key>
-            <PropertyRef Name="BuildingID" />
-          </Key>
-          <Property Name="BuildingID" Type="Int32" Nullable="false" />
-          <Property Name="BuildingName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CampusID" Type="Int32" />
-          <NavigationProperty Name="tb_Campus" Relationship="Self.FK_tb_Building_tb_Campus" FromRole="tb_Building" ToRole="tb_Campus" />
-          <NavigationProperty Name="tb_Room" Relationship="Self.FK_tb_Room_tb_Building" FromRole="tb_Building" ToRole="tb_Room" />
-        </EntityType>
-        <EntityType Name="tb_Campus">
-          <Key>
-            <PropertyRef Name="CampusID" />
-          </Key>
-          <Property Name="CampusID" Type="Int32" Nullable="false" />
-          <Property Name="CollegeID" Type="Byte" Nullable="false" />
-          <Property Name="CampusCode" Type="String" MaxLength="12" FixedLength="false" Unicode="true" />
-          <Property Name="CampusName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="tb_Building" Relationship="Self.FK_tb_Building_tb_Campus" FromRole="tb_Campus" ToRole="tb_Building" />
-          <NavigationProperty Name="tb_College" Relationship="Self.FK_tb_Campus_tb_College" FromRole="tb_Campus" ToRole="tb_College" />
-        </EntityType>
         <EntityType Name="tb_CityState">
           <Key>
             <PropertyRef Name="CityID" />
@@ -791,9 +891,9 @@
           <Property Name="DistrictID" Type="Byte" />
           <Property Name="CollegeName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="CollegeDesc" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="tb_Campus" Relationship="Self.FK_tb_Campus_tb_College" FromRole="tb_College" ToRole="tb_Campus" />
           <NavigationProperty Name="tb_District" Relationship="Self.FK_tb_College_tb_District" FromRole="tb_College" ToRole="tb_District" />
           <NavigationProperty Name="tb_Department" Relationship="Self.FK_tb_Department_tb_College" FromRole="tb_College" ToRole="tb_Department" />
+          <NavigationProperty Name="tb_Campus" Relationship="LRCModel.FK_tb_Campus_tb_College" FromRole="tb_College" ToRole="tb_Campus" />
         </EntityType>
         <EntityType Name="tb_Department">
           <Key>
@@ -945,6 +1045,7 @@
           <NavigationProperty Name="tb_MemberNotes" Relationship="Self.FK_tb_MemberNotes_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_MemberNotes" />
           <NavigationProperty Name="tb_MemberPhoneNumbers" Relationship="Self.FK_tb_MemberPhoneNumbers_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_MemberPhoneNumbers" />
           <NavigationProperty Name="tb_Users" Relationship="Self.FK_tb_Users_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_Users" />
+          <NavigationProperty Name="tb_SemesterTaught" Relationship="LRCModel.FK_tb_SemesterTaught_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_SemesterTaught" />
         </EntityType>
         <EntityType Name="tb_MemberNotes">
           <Key>
@@ -985,15 +1086,6 @@
           <Property Name="NoteTypeID" Type="Int32" Nullable="false" />
           <Property Name="NoteType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="tb_MemberNotes" Relationship="Self.FK_tb_MemberNotes_tb_NoteType" FromRole="tb_NoteType" ToRole="tb_MemberNotes" />
-        </EntityType>
-        <EntityType Name="tb_Room">
-          <Key>
-            <PropertyRef Name="RoomID" />
-          </Key>
-          <Property Name="RoomID" Type="Int32" Nullable="false" />
-          <Property Name="RoomName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="BuildingID" Type="Int32" />
-          <NavigationProperty Name="tb_Building" Relationship="Self.FK_tb_Room_tb_Building" FromRole="tb_Room" ToRole="tb_Building" />
         </EntityType>
         <EntityType Name="tb_States">
           <Key>
@@ -1068,42 +1160,6 @@
             </Principal>
             <Dependent Role="tb_Attribute">
               <PropertyRef Name="MemberID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_tb_Building_tb_Campus">
-          <End Role="tb_Campus" Type="Self.tb_Campus" Multiplicity="0..1" />
-          <End Role="tb_Building" Type="Self.tb_Building" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tb_Campus">
-              <PropertyRef Name="CampusID" />
-            </Principal>
-            <Dependent Role="tb_Building">
-              <PropertyRef Name="CampusID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_tb_Room_tb_Building">
-          <End Role="tb_Building" Type="Self.tb_Building" Multiplicity="0..1" />
-          <End Role="tb_Room" Type="Self.tb_Room" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tb_Building">
-              <PropertyRef Name="BuildingID" />
-            </Principal>
-            <Dependent Role="tb_Room">
-              <PropertyRef Name="BuildingID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_tb_Campus_tb_College">
-          <End Role="tb_College" Type="Self.tb_College" Multiplicity="1" />
-          <End Role="tb_Campus" Type="Self.tb_Campus" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tb_College">
-              <PropertyRef Name="CollegeID" />
-            </Principal>
-            <Dependent Role="tb_Campus">
-              <PropertyRef Name="CollegeID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1316,8 +1372,6 @@
           <EntitySet Name="tb_Area" EntityType="Self.tb_Area" />
           <EntitySet Name="tb_Assessment" EntityType="Self.tb_Assessment" />
           <EntitySet Name="tb_Attribute" EntityType="Self.tb_Attribute" />
-          <EntitySet Name="tb_Building" EntityType="Self.tb_Building" />
-          <EntitySet Name="tb_Campus" EntityType="Self.tb_Campus" />
           <EntitySet Name="tb_CityState" EntityType="Self.tb_CityState" />
           <EntitySet Name="tb_College" EntityType="Self.tb_College" />
           <EntitySet Name="tb_Department" EntityType="Self.tb_Department" />
@@ -1333,7 +1387,6 @@
           <EntitySet Name="tb_MemberNotes" EntityType="Self.tb_MemberNotes" />
           <EntitySet Name="tb_MemberPhoneNumbers" EntityType="Self.tb_MemberPhoneNumbers" />
           <EntitySet Name="tb_NoteType" EntityType="Self.tb_NoteType" />
-          <EntitySet Name="tb_Room" EntityType="Self.tb_Room" />
           <EntitySet Name="tb_States" EntityType="Self.tb_States" />
           <EntitySet Name="tb_Users" EntityType="Self.tb_Users" />
           <EntitySet Name="tb_UsersCredential" EntityType="Self.tb_UsersCredential" />
@@ -1352,18 +1405,6 @@
           <AssociationSet Name="FK_tb_Attribute_tb_MemberMaster" Association="Self.FK_tb_Attribute_tb_MemberMaster">
             <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
             <End Role="tb_Attribute" EntitySet="tb_Attribute" />
-          </AssociationSet>
-          <AssociationSet Name="FK_tb_Building_tb_Campus" Association="Self.FK_tb_Building_tb_Campus">
-            <End Role="tb_Campus" EntitySet="tb_Campus" />
-            <End Role="tb_Building" EntitySet="tb_Building" />
-          </AssociationSet>
-          <AssociationSet Name="FK_tb_Room_tb_Building" Association="Self.FK_tb_Room_tb_Building">
-            <End Role="tb_Building" EntitySet="tb_Building" />
-            <End Role="tb_Room" EntitySet="tb_Room" />
-          </AssociationSet>
-          <AssociationSet Name="FK_tb_Campus_tb_College" Association="Self.FK_tb_Campus_tb_College">
-            <End Role="tb_College" EntitySet="tb_College" />
-            <End Role="tb_Campus" EntitySet="tb_Campus" />
           </AssociationSet>
           <AssociationSet Name="FK_tb_CityState_tb_States" Association="Self.FK_tb_CityState_tb_States">
             <End Role="tb_States" EntitySet="tb_States" />
@@ -1433,7 +1474,219 @@
             <End Role="tb_UsersCredential" EntitySet="tb_UsersCredential" />
             <End Role="tb_Users" EntitySet="tb_Users" />
           </AssociationSet>
+          <EntitySet Name="tb_SemesterName" EntityType="LRCModel.tb_SemesterName" />
+          <EntitySet Name="tb_Semesters" EntityType="LRCModel.tb_Semesters" />
+          <EntitySet Name="tb_SemesterTaught" EntityType="LRCModel.tb_SemesterTaught" />
+          <AssociationSet Name="FK_tb_SemesterTaught_tb_MemberMaster" Association="LRCModel.FK_tb_SemesterTaught_tb_MemberMaster">
+            <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
+            <End Role="tb_SemesterTaught" EntitySet="tb_SemesterTaught" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tb_Semesters_tb_SemesterName" Association="LRCModel.FK_tb_Semesters_tb_SemesterName">
+            <End Role="tb_SemesterName" EntitySet="tb_SemesterName" />
+            <End Role="tb_Semesters" EntitySet="tb_Semesters" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tb_SemesterTaught_tb_Semesters" Association="LRCModel.FK_tb_SemesterTaught_tb_Semesters">
+            <End Role="tb_Semesters" EntitySet="tb_Semesters" />
+            <End Role="tb_SemesterTaught" EntitySet="tb_SemesterTaught" />
+          </AssociationSet>
+          <EntitySet Name="tb_Building" EntityType="LRCModel.tb_Building" />
+          <EntitySet Name="tb_Campus" EntityType="LRCModel.tb_Campus" />
+          <EntitySet Name="tb_Class" EntityType="LRCModel.tb_Class" />
+          <EntitySet Name="tb_Room" EntityType="LRCModel.tb_Room" />
+          <AssociationSet Name="FK_tb_Building_tb_Campus" Association="LRCModel.FK_tb_Building_tb_Campus">
+            <End Role="tb_Campus" EntitySet="tb_Campus" />
+            <End Role="tb_Building" EntitySet="tb_Building" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tb_Room_tb_Building" Association="LRCModel.FK_tb_Room_tb_Building">
+            <End Role="tb_Building" EntitySet="tb_Building" />
+            <End Role="tb_Room" EntitySet="tb_Room" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tb_Campus_tb_College" Association="LRCModel.FK_tb_Campus_tb_College">
+            <End Role="tb_College" EntitySet="tb_College" />
+            <End Role="tb_Campus" EntitySet="tb_Campus" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tb_SemesterTaught_tb_Class" Association="LRCModel.FK_tb_SemesterTaught_tb_Class">
+            <End Role="tb_Class" EntitySet="tb_Class" />
+            <End Role="tb_SemesterTaught" EntitySet="tb_SemesterTaught" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tb_SemesterTaught_tb_Room" Association="LRCModel.FK_tb_SemesterTaught_tb_Room">
+            <End Role="tb_Room" EntitySet="tb_Room" />
+            <End Role="tb_SemesterTaught" EntitySet="tb_SemesterTaught" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="tb_SemesterName">
+          <Key>
+            <PropertyRef Name="SemesterID" />
+          </Key>
+          <Property Name="SemesterID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SemesterName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="tb_Semesters" Relationship="LRCModel.FK_tb_Semesters_tb_SemesterName" FromRole="tb_SemesterName" ToRole="tb_Semesters" />
+        </EntityType>
+        <EntityType Name="tb_Semesters">
+          <Key>
+            <PropertyRef Name="SemesterRecID" />
+          </Key>
+          <Property Name="SemesterRecID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DateFrom" Type="DateTime" Precision="0" />
+          <Property Name="DateTo" Type="DateTime" Precision="0" />
+          <Property Name="FiscalYear" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="SemesterID" Type="Int32" />
+          <NavigationProperty Name="tb_SemesterName" Relationship="LRCModel.FK_tb_Semesters_tb_SemesterName" FromRole="tb_Semesters" ToRole="tb_SemesterName" />
+          <NavigationProperty Name="tb_SemesterTaught" Relationship="LRCModel.FK_tb_SemesterTaught_tb_Semesters" FromRole="tb_Semesters" ToRole="tb_SemesterTaught" />
+        </EntityType>
+        <EntityType Name="tb_SemesterTaught">
+          <Key>
+            <PropertyRef Name="SemesterTaughtID" />
+          </Key>
+          <Property Name="SemesterTaughtID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SemesterRecID" Type="Int32" />
+          <Property Name="MemberID" Type="Int32" />
+          <NavigationProperty Name="tb_MemberMaster" Relationship="LRCModel.FK_tb_SemesterTaught_tb_MemberMaster" FromRole="tb_SemesterTaught" ToRole="tb_MemberMaster" />
+          <NavigationProperty Name="tb_Semesters" Relationship="LRCModel.FK_tb_SemesterTaught_tb_Semesters" FromRole="tb_SemesterTaught" ToRole="tb_Semesters" />
+          <Property Name="RoomID" Type="Int32" />
+          <Property Name="ClassID" Type="Int32" />
+          <Property Name="ClassStart" Type="Time" Precision="7" />
+          <Property Name="ClassEnd" Type="Time" Precision="7" />
+          <Property Name="ClassWeekDayID" Type="Int32" />
+          <NavigationProperty Name="tb_Class" Relationship="LRCModel.FK_tb_SemesterTaught_tb_Class" FromRole="tb_SemesterTaught" ToRole="tb_Class" />
+          <NavigationProperty Name="tb_Room" Relationship="LRCModel.FK_tb_SemesterTaught_tb_Room" FromRole="tb_SemesterTaught" ToRole="tb_Room" />
+        </EntityType>
+        <Association Name="FK_tb_SemesterTaught_tb_MemberMaster">
+          <End Type="LRCModel.tb_MemberMaster" Role="tb_MemberMaster" Multiplicity="0..1" />
+          <End Type="LRCModel.tb_SemesterTaught" Role="tb_SemesterTaught" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_MemberMaster">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="tb_SemesterTaught">
+              <PropertyRef Name="MemberID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tb_Semesters_tb_SemesterName">
+          <End Type="LRCModel.tb_SemesterName" Role="tb_SemesterName" Multiplicity="0..1" />
+          <End Type="LRCModel.tb_Semesters" Role="tb_Semesters" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_SemesterName">
+              <PropertyRef Name="SemesterID" />
+            </Principal>
+            <Dependent Role="tb_Semesters">
+              <PropertyRef Name="SemesterID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tb_SemesterTaught_tb_Semesters">
+          <End Type="LRCModel.tb_Semesters" Role="tb_Semesters" Multiplicity="0..1" />
+          <End Type="LRCModel.tb_SemesterTaught" Role="tb_SemesterTaught" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_Semesters">
+              <PropertyRef Name="SemesterRecID" />
+            </Principal>
+            <Dependent Role="tb_SemesterTaught">
+              <PropertyRef Name="SemesterRecID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="tb_Building">
+          <Key>
+            <PropertyRef Name="BuildingID" />
+          </Key>
+          <Property Name="BuildingID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BuildingName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CampusID" Type="Int32" />
+          <NavigationProperty Name="tb_Campus" Relationship="LRCModel.FK_tb_Building_tb_Campus" FromRole="tb_Building" ToRole="tb_Campus" />
+          <NavigationProperty Name="tb_Room" Relationship="LRCModel.FK_tb_Room_tb_Building" FromRole="tb_Building" ToRole="tb_Room" />
+        </EntityType>
+        <EntityType Name="tb_Campus">
+          <Key>
+            <PropertyRef Name="CampusID" />
+          </Key>
+          <Property Name="CampusID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CollegeID" Type="Byte" Nullable="false" />
+          <Property Name="CampusCode" Type="String" MaxLength="12" FixedLength="false" Unicode="true" />
+          <Property Name="CampusName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="tb_Building" Relationship="LRCModel.FK_tb_Building_tb_Campus" FromRole="tb_Campus" ToRole="tb_Building" />
+          <NavigationProperty Name="tb_College" Relationship="LRCModel.FK_tb_Campus_tb_College" FromRole="tb_Campus" ToRole="tb_College" />
+        </EntityType>
+        <EntityType Name="tb_Class">
+          <Key>
+            <PropertyRef Name="ClassID" />
+          </Key>
+          <Property Name="ClassID" Type="Int32" Nullable="false" />
+          <Property Name="ClassName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ClassDesc" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="tb_SemesterTaught" Relationship="LRCModel.FK_tb_SemesterTaught_tb_Class" FromRole="tb_Class" ToRole="tb_SemesterTaught" />
+        </EntityType>
+        <EntityType Name="tb_Room">
+          <Key>
+            <PropertyRef Name="RoomID" />
+          </Key>
+          <Property Name="RoomID" Type="Int32" Nullable="false" />
+          <Property Name="RoomName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BuildingID" Type="Int32" />
+          <NavigationProperty Name="tb_Building" Relationship="LRCModel.FK_tb_Room_tb_Building" FromRole="tb_Room" ToRole="tb_Building" />
+          <NavigationProperty Name="tb_SemesterTaught" Relationship="LRCModel.FK_tb_SemesterTaught_tb_Room" FromRole="tb_Room" ToRole="tb_SemesterTaught" />
+        </EntityType>
+        <Association Name="FK_tb_Building_tb_Campus">
+          <End Type="LRCModel.tb_Campus" Role="tb_Campus" Multiplicity="0..1" />
+          <End Type="LRCModel.tb_Building" Role="tb_Building" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_Campus">
+              <PropertyRef Name="CampusID" />
+            </Principal>
+            <Dependent Role="tb_Building">
+              <PropertyRef Name="CampusID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tb_Room_tb_Building">
+          <End Type="LRCModel.tb_Building" Role="tb_Building" Multiplicity="0..1" />
+          <End Type="LRCModel.tb_Room" Role="tb_Room" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_Building">
+              <PropertyRef Name="BuildingID" />
+            </Principal>
+            <Dependent Role="tb_Room">
+              <PropertyRef Name="BuildingID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tb_Campus_tb_College">
+          <End Type="LRCModel.tb_College" Role="tb_College" Multiplicity="1" />
+          <End Type="LRCModel.tb_Campus" Role="tb_Campus" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_College">
+              <PropertyRef Name="CollegeID" />
+            </Principal>
+            <Dependent Role="tb_Campus">
+              <PropertyRef Name="CollegeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tb_SemesterTaught_tb_Class">
+          <End Type="LRCModel.tb_Class" Role="tb_Class" Multiplicity="0..1" />
+          <End Type="LRCModel.tb_SemesterTaught" Role="tb_SemesterTaught" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_Class">
+              <PropertyRef Name="ClassID" />
+            </Principal>
+            <Dependent Role="tb_SemesterTaught">
+              <PropertyRef Name="ClassID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tb_SemesterTaught_tb_Room">
+          <End Type="LRCModel.tb_Room" Role="tb_Room" Multiplicity="0..1" />
+          <End Type="LRCModel.tb_SemesterTaught" Role="tb_SemesterTaught" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_Room">
+              <PropertyRef Name="RoomID" />
+            </Principal>
+            <Dependent Role="tb_SemesterTaught">
+              <PropertyRef Name="RoomID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1489,25 +1742,6 @@
                 <ScalarProperty Name="AddedDateTime" ColumnName="AddedDateTime" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="ModifiedDateTime" ColumnName="ModifiedDateTime" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="tb_Building">
-            <EntityTypeMapping TypeName="LRCModel.tb_Building">
-              <MappingFragment StoreEntitySet="tb_Building">
-                <ScalarProperty Name="BuildingID" ColumnName="BuildingID" />
-                <ScalarProperty Name="BuildingName" ColumnName="BuildingName" />
-                <ScalarProperty Name="CampusID" ColumnName="CampusID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="tb_Campus">
-            <EntityTypeMapping TypeName="LRCModel.tb_Campus">
-              <MappingFragment StoreEntitySet="tb_Campus">
-                <ScalarProperty Name="CampusID" ColumnName="CampusID" />
-                <ScalarProperty Name="CollegeID" ColumnName="CollegeID" />
-                <ScalarProperty Name="CampusCode" ColumnName="CampusCode" />
-                <ScalarProperty Name="CampusName" ColumnName="CampusName" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1706,15 +1940,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="tb_Room">
-            <EntityTypeMapping TypeName="LRCModel.tb_Room">
-              <MappingFragment StoreEntitySet="tb_Room">
-                <ScalarProperty Name="RoomID" ColumnName="RoomID" />
-                <ScalarProperty Name="RoomName" ColumnName="RoomName" />
-                <ScalarProperty Name="BuildingID" ColumnName="BuildingID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="tb_States">
             <EntityTypeMapping TypeName="LRCModel.tb_States">
               <MappingFragment StoreEntitySet="tb_States">
@@ -1739,6 +1964,76 @@
               <MappingFragment StoreEntitySet="tb_UsersCredential">
                 <ScalarProperty Name="CredentialsID" ColumnName="CredentialsID" />
                 <ScalarProperty Name="CredentialsName" ColumnName="CredentialsName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tb_SemesterName">
+            <EntityTypeMapping TypeName="LRCModel.tb_SemesterName">
+              <MappingFragment StoreEntitySet="tb_SemesterName">
+                <ScalarProperty Name="SemesterName" ColumnName="SemesterName" />
+                <ScalarProperty Name="SemesterID" ColumnName="SemesterID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tb_Semesters">
+            <EntityTypeMapping TypeName="LRCModel.tb_Semesters">
+              <MappingFragment StoreEntitySet="tb_Semesters">
+                <ScalarProperty Name="SemesterID" ColumnName="SemesterID" />
+                <ScalarProperty Name="FiscalYear" ColumnName="FiscalYear" />
+                <ScalarProperty Name="DateTo" ColumnName="DateTo" />
+                <ScalarProperty Name="DateFrom" ColumnName="DateFrom" />
+                <ScalarProperty Name="SemesterRecID" ColumnName="SemesterRecID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tb_SemesterTaught">
+            <EntityTypeMapping TypeName="LRCModel.tb_SemesterTaught">
+              <MappingFragment StoreEntitySet="tb_SemesterTaught">
+                <ScalarProperty Name="ClassWeekDayID" ColumnName="ClassWeekDayID" />
+                <ScalarProperty Name="ClassEnd" ColumnName="ClassEnd" />
+                <ScalarProperty Name="ClassStart" ColumnName="ClassStart" />
+                <ScalarProperty Name="ClassID" ColumnName="ClassID" />
+                <ScalarProperty Name="RoomID" ColumnName="RoomID" />
+                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
+                <ScalarProperty Name="SemesterRecID" ColumnName="SemesterRecID" />
+                <ScalarProperty Name="SemesterTaughtID" ColumnName="SemesterTaughtID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tb_Building">
+            <EntityTypeMapping TypeName="LRCModel.tb_Building">
+              <MappingFragment StoreEntitySet="tb_Building">
+                <ScalarProperty Name="CampusID" ColumnName="CampusID" />
+                <ScalarProperty Name="BuildingName" ColumnName="BuildingName" />
+                <ScalarProperty Name="BuildingID" ColumnName="BuildingID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tb_Campus">
+            <EntityTypeMapping TypeName="LRCModel.tb_Campus">
+              <MappingFragment StoreEntitySet="tb_Campus">
+                <ScalarProperty Name="CampusName" ColumnName="CampusName" />
+                <ScalarProperty Name="CampusCode" ColumnName="CampusCode" />
+                <ScalarProperty Name="CollegeID" ColumnName="CollegeID" />
+                <ScalarProperty Name="CampusID" ColumnName="CampusID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tb_Class">
+            <EntityTypeMapping TypeName="LRCModel.tb_Class">
+              <MappingFragment StoreEntitySet="tb_Class">
+                <ScalarProperty Name="ClassDesc" ColumnName="ClassDesc" />
+                <ScalarProperty Name="ClassName" ColumnName="ClassName" />
+                <ScalarProperty Name="ClassID" ColumnName="ClassID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tb_Room">
+            <EntityTypeMapping TypeName="LRCModel.tb_Room">
+              <MappingFragment StoreEntitySet="tb_Room">
+                <ScalarProperty Name="BuildingID" ColumnName="BuildingID" />
+                <ScalarProperty Name="RoomName" ColumnName="RoomName" />
+                <ScalarProperty Name="RoomID" ColumnName="RoomID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

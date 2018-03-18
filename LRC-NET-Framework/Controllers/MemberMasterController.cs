@@ -38,7 +38,7 @@ namespace LRC_NET_Framework.Controllers
         // GET: tb_MemberMaster
         public ActionResult Index(string sortOrder, string searchString, int? page, int? CollegeID, int? DepartmentID)
         {
-            var tb_MemberMasters = db.tb_MemberMasters.Include(t => t.tb_Area).Include(t => t.tb_Department).Include(t => t.tb_Dues).Include(t => t.tb_LatestUnionAssessment).Include(t => t.tb_Dues);
+            var tb_MemberMasters = db.tb_MemberMaster.Include(t => t.tb_Area).Include(t => t.tb_Department).Include(t => t.tb_Dues).Include(t => t.tb_LatestUnionAssessment).Include(t => t.tb_Dues);
 
             tb_MemberMasters.Select(t => t.tb_Department.tb_College);
             ViewData["MemberQty"] = tb_MemberMasters.Count();
@@ -66,7 +66,7 @@ namespace LRC_NET_Framework.Controllers
             //_colleges.Insert(0, new tb_College { CollegeDesc = "All", CollegeID = 0 });
             ViewBag.Colleges = new SelectList(colleges, "CollegeID", "CollegeName");
             List<tb_Department> departments = db.tb_Department.ToList();
-            tb_MemberMaster tb_MemberMaster = db.tb_MemberMasters.Find(1);
+            tb_MemberMaster tb_MemberMaster = db.tb_MemberMaster.FirstOrDefault();
             SelectList Departments = new SelectList(db.tb_Department, "DepartmentID", "DepartmentName", tb_MemberMaster.DepartmentID);
             SelectListItem selListItem = new SelectListItem() { Value = "0", Text = " + Filter by Department " };
             ViewBag.DepartmentID = AddFirstItem(Departments, selListItem);
@@ -98,6 +98,50 @@ namespace LRC_NET_Framework.Controllers
             return View(tb_MemberMasters.ToPagedList(pageNumber, pageSize));
         }
 
+        // GET: tb_MemberMaster
+        public ActionResult MembersByCollege(string sortOrder, string searchString, int? page, int? CollegeID)
+        {
+            var tb_MemberMasters = db.tb_MemberMaster.Include(t => t.tb_Department).Include(t => t.tb_SemesterTaught);
+
+            tb_MemberMasters.Select(t => t.tb_Department.tb_College);
+            tb_MemberMasters.Select(t => t.tb_SemesterTaught);
+            //tb_MemberMasters = tb_MemberMasters.Where(t => t.tb_SemesterTaught.CollegeID == CollegeID);
+            ViewData["MemberQty"] = tb_MemberMasters.Count();
+
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Name desc" : "";
+
+            //Searching @ Filtering
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                tb_MemberMasters = tb_MemberMasters.Where(s => s.LastName.ToUpper().Contains(searchString.ToUpper())
+                                       || s.FirstName.ToUpper().Contains(searchString.ToUpper()));
+            }
+            if (CollegeID != null && CollegeID != 0)
+            {
+                tb_MemberMasters = tb_MemberMasters.Where(f => f.tb_Department.CollegeID == CollegeID);
+                tb_MemberMaster tb_MemberMaster = db.tb_MemberMaster.FirstOrDefault();
+                var tb_College = db.tb_College.Where(f => f.CollegeID == CollegeID).FirstOrDefault();;
+                ViewBag.CollegeName = tb_College.CollegeDesc;
+            }
+            //List<tb_College> colleges = db.tb_College.ToList();
+            //Sorting
+            switch (sortOrder)
+            {
+                case "Name desc":
+                    tb_MemberMasters = tb_MemberMasters.OrderByDescending(s => s.LastName);
+                    break;
+                default:
+                    tb_MemberMasters = tb_MemberMasters.OrderBy(s => s.LastName);
+                    break;
+            }
+
+            //Paging
+            int pageSize = 3;
+            int pageNumber = (page ?? 1);
+
+            return View(tb_MemberMasters.ToPagedList(pageNumber, pageSize));
+        }
+
 
         // GET: tb_MemberMaster/Details/5
         public ActionResult Details(int? id)
@@ -106,7 +150,7 @@ namespace LRC_NET_Framework.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            tb_MemberMaster tb_MemberMaster = db.tb_MemberMasters.Find(id);
+            tb_MemberMaster tb_MemberMaster = db.tb_MemberMaster.Find(id);
             if (tb_MemberMaster == null)
             {
                 return HttpNotFound();
@@ -135,7 +179,7 @@ namespace LRC_NET_Framework.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.tb_MemberMasters.Add(tb_MemberMaster);
+                db.tb_MemberMaster.Add(tb_MemberMaster);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -156,7 +200,7 @@ namespace LRC_NET_Framework.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            tb_MemberMaster tb_MemberMaster = db.tb_MemberMasters.Find(id);
+            tb_MemberMaster tb_MemberMaster = db.tb_MemberMaster.Find(id);
             if (tb_MemberMaster == null)
             {
                 return HttpNotFound();
@@ -182,14 +226,14 @@ namespace LRC_NET_Framework.Controllers
             if (ModelState.IsValid)
             {
                 //db.Entry(tb_MemberMaster).State = EntityState.Modified;
-                db.tb_MemberMasters.Attach(tb_MemberMaster);
+                db.tb_MemberMaster.Attach(tb_MemberMaster);
                 var entry = db.Entry(tb_MemberMaster);
 
                 //entry.State = EntityState.Modified;
                 //entry.Property(e => e.tb_Department.CollegeID).IsModified = true;
-                entry.Property(e => e.tb_Department).IsModified = true;
                 entry.Property(e => e.DivisionID).IsModified = true;
                 entry.Property(e => e.DepartmentID).IsModified = true;
+                entry.Property(e => e.HireDate).IsModified = true;
                 //db.Entry(tb_MemberMaster).State = EntityState.Modified;
 
                 try
@@ -208,7 +252,7 @@ namespace LRC_NET_Framework.Controllers
                         }
                     }
                 }
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home", null);
             }
             ViewBag.AreaID = new SelectList(db.tb_Area, "AreaID", "AreaName", tb_MemberMaster.AreaID);
             ViewBag.DepartmentID = new SelectList(db.tb_Department, "DepartmentID", "DepartmentName", tb_MemberMaster.DepartmentID);
@@ -226,7 +270,7 @@ namespace LRC_NET_Framework.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            tb_MemberMaster tb_MemberMaster = db.tb_MemberMasters.Find(id);
+            tb_MemberMaster tb_MemberMaster = db.tb_MemberMaster.Find(id);
             if (tb_MemberMaster == null)
             {
                 return HttpNotFound();
@@ -239,8 +283,8 @@ namespace LRC_NET_Framework.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            tb_MemberMaster tb_MemberMaster = db.tb_MemberMasters.Find(id);
-            db.tb_MemberMasters.Remove(tb_MemberMaster);
+            tb_MemberMaster tb_MemberMaster = db.tb_MemberMaster.Find(id);
+            db.tb_MemberMaster.Remove(tb_MemberMaster);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
