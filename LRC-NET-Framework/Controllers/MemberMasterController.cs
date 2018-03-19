@@ -98,101 +98,6 @@ namespace LRC_NET_Framework.Controllers
             return View(tb_MemberMasters.ToPagedList(pageNumber, pageSize));
         }
 
-        // GET: tb_MemberMaster
-        public ActionResult MembersByCollege(string sortOrder, string searchString, int? page, int? CollegeID)
-        {
-            var tb_MemberMasters = db.tb_MemberMaster.Include(t => t.tb_Department).Include(t => t.tb_SemesterTaught);
-
-            tb_MemberMasters.Select(t => t.tb_Department.tb_College);
-            tb_MemberMasters.Select(t => t.tb_SemesterTaught);
-            //tb_MemberMasters = tb_MemberMasters.Where(t => t.tb_SemesterTaught.CollegeID == CollegeID);
-            ViewData["MemberQty"] = tb_MemberMasters.Count();
-
-            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Name desc" : "";
-
-            //Searching @ Filtering
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                tb_MemberMasters = tb_MemberMasters.Where(s => s.LastName.ToUpper().Contains(searchString.ToUpper())
-                                       || s.FirstName.ToUpper().Contains(searchString.ToUpper()));
-            }
-            if (CollegeID != null && CollegeID != 0)
-            {
-                tb_MemberMasters = tb_MemberMasters.Where(f => f.tb_Department.CollegeID == CollegeID);
-                tb_MemberMaster tb_MemberMaster = db.tb_MemberMaster.FirstOrDefault();
-                var tb_College = db.tb_College.Where(f => f.CollegeID == CollegeID).FirstOrDefault();;
-                ViewBag.CollegeName = tb_College.CollegeDesc;
-            }
-            //List<tb_College> colleges = db.tb_College.ToList();
-            //Sorting
-            switch (sortOrder)
-            {
-                case "Name desc":
-                    tb_MemberMasters = tb_MemberMasters.OrderByDescending(s => s.LastName);
-                    break;
-                default:
-                    tb_MemberMasters = tb_MemberMasters.OrderBy(s => s.LastName);
-                    break;
-            }
-
-            //Paging
-            int pageSize = 3;
-            int pageNumber = (page ?? 1);
-
-            return View(tb_MemberMasters.ToPagedList(pageNumber, pageSize));
-        }
-
-
-        // GET: tb_MemberMaster/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            tb_MemberMaster tb_MemberMaster = db.tb_MemberMaster.Find(id);
-            if (tb_MemberMaster == null)
-            {
-                return HttpNotFound();
-            }
-            return View(tb_MemberMaster);
-        }
-
-        // GET: tb_MemberMaster/Create
-        public ActionResult Create()
-        {
-            ViewBag.AreaID = new SelectList(db.tb_Area, "AreaID", "AreaName");
-            ViewBag.DepartmentID = new SelectList(db.tb_Department, "DepartmentID", "DepartmentName");
-            ViewBag.DuesID = new SelectList(db.tb_Dues, "DuesID", "DuesName");
-            ViewBag.LatestUnionAssessment = new SelectList(db.tb_LatestUnionAssessment, "LatestUnionAssessment", "LatestUnionAssessmentDesc");
-            ViewBag.PhoneRecID = new SelectList(db.tb_MemberPhoneNumbers, "PhoneRecID", "PhoneType");
-            ViewBag.GenderID = new SelectList(db.tb_Gender, "GenderID", "GenderName");
-            return View();
-        }
-
-        // POST: tb_MemberMaster/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "MemberID,CollegeID,DivisionID,LastName,FirstName,MiddleName,DepartmentID,AreaID,CopeStatus,CopeAmount,Counselors,CampaignVolunteer,LatestUnionAssessment,MailCodeID,DuesCategoryEffDate,UnionInitiationDate,HireDate,DateOfBirth,GenderID,RetiredEffDate,DeactivateEffDate,DeactivateReasonID,LeadershipPositionID,PoliticalAssessmentID,ParticipatePolitical,PoliticalActivitiesID,MemberAddressID,PhoneRecID,DuesID,AddedBy,AddedDateTime,ModifiedBy,ModifiedDateTime")] tb_MemberMaster tb_MemberMaster)
-        {
-            if (ModelState.IsValid)
-            {
-                db.tb_MemberMaster.Add(tb_MemberMaster);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-
-            ViewBag.AreaID = new SelectList(db.tb_Area, "AreaID", "AreaName", tb_MemberMaster.AreaID);
-            ViewBag.DepartmentID = new SelectList(db.tb_Department, "DepartmentID", "DepartmentName", tb_MemberMaster.DepartmentID);
-            ViewBag.DuesID = new SelectList(db.tb_Dues, "DuesID", "DuesName", tb_MemberMaster.DuesID);
-            ViewBag.LatestUnionAssessment = new SelectList(db.tb_LatestUnionAssessment, "LatestUnionAssessment", "LatestUnionAssessmentDesc", tb_MemberMaster.LatestUnionAssessment);
-            ViewBag.PhoneRecID = new SelectList(db.tb_MemberPhoneNumbers, "PhoneRecID", "PhoneType", tb_MemberMaster.PhoneRecID);
-            ViewBag.GenderID = new SelectList(db.tb_Gender, "GenderID", "GenderName", tb_MemberMaster.GenderID);
-            return View(tb_MemberMaster);
-        }
-
         // GET: tb_MemberMaster/Edit/5
         public ActionResult Edit(int? id)
         {
@@ -263,31 +168,126 @@ namespace LRC_NET_Framework.Controllers
             return View(tb_MemberMaster);
         }
 
-        // GET: tb_MemberMaster/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            tb_MemberMaster tb_MemberMaster = db.tb_MemberMaster.Find(id);
-            if (tb_MemberMaster == null)
-            {
-                return HttpNotFound();
-            }
-            return View(tb_MemberMaster);
-        }
+        //// GET: tb_MemberMaster
+        //public ActionResult MembersByCollege(string sortOrder, string searchString, int? page, int? CollegeID)
+        //{
+        //    var tb_MemberMasters = db.tb_MemberMaster.Include(t => t.tb_Department).Include(t => t.tb_SemesterTaught);
 
-        // POST: tb_MemberMaster/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            tb_MemberMaster tb_MemberMaster = db.tb_MemberMaster.Find(id);
-            db.tb_MemberMaster.Remove(tb_MemberMaster);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
+        //    tb_MemberMasters.Select(t => t.tb_Department.tb_College);
+        //    tb_MemberMasters.Select(t => t.tb_SemesterTaught);
+        //    //tb_MemberMasters = tb_MemberMasters.Where(t => t.tb_SemesterTaught.CollegeID == CollegeID);
+        //    ViewData["MemberQty"] = tb_MemberMasters.Count();
+
+        //    ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Name desc" : "";
+
+        //    //Searching @ Filtering
+        //    if (!String.IsNullOrEmpty(searchString))
+        //    {
+        //        tb_MemberMasters = tb_MemberMasters.Where(s => s.LastName.ToUpper().Contains(searchString.ToUpper())
+        //                               || s.FirstName.ToUpper().Contains(searchString.ToUpper()));
+        //    }
+        //    if (CollegeID != null && CollegeID != 0)
+        //    {
+        //        tb_MemberMasters = tb_MemberMasters.Where(f => f.tb_Department.CollegeID == CollegeID);
+        //        tb_MemberMaster tb_MemberMaster = db.tb_MemberMaster.FirstOrDefault();
+        //        var tb_College = db.tb_College.Where(f => f.CollegeID == CollegeID).FirstOrDefault();;
+        //        ViewBag.CollegeName = tb_College.CollegeDesc;
+        //    }
+        //    //List<tb_College> colleges = db.tb_College.ToList();
+        //    //Sorting
+        //    switch (sortOrder)
+        //    {
+        //        case "Name desc":
+        //            tb_MemberMasters = tb_MemberMasters.OrderByDescending(s => s.LastName);
+        //            break;
+        //        default:
+        //            tb_MemberMasters = tb_MemberMasters.OrderBy(s => s.LastName);
+        //            break;
+        //    }
+
+        //    //Paging
+        //    int pageSize = 3;
+        //    int pageNumber = (page ?? 1);
+
+        //    return View(tb_MemberMasters.ToPagedList(pageNumber, pageSize));
+        //}
+
+
+        //// GET: tb_MemberMaster/Details/5
+        //public ActionResult Details(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    tb_MemberMaster tb_MemberMaster = db.tb_MemberMaster.Find(id);
+        //    if (tb_MemberMaster == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(tb_MemberMaster);
+        //}
+
+        //// GET: tb_MemberMaster/Create
+        //public ActionResult Create()
+        //{
+        //    ViewBag.AreaID = new SelectList(db.tb_Area, "AreaID", "AreaName");
+        //    ViewBag.DepartmentID = new SelectList(db.tb_Department, "DepartmentID", "DepartmentName");
+        //    ViewBag.DuesID = new SelectList(db.tb_Dues, "DuesID", "DuesName");
+        //    ViewBag.LatestUnionAssessment = new SelectList(db.tb_LatestUnionAssessment, "LatestUnionAssessment", "LatestUnionAssessmentDesc");
+        //    ViewBag.PhoneRecID = new SelectList(db.tb_MemberPhoneNumbers, "PhoneRecID", "PhoneType");
+        //    ViewBag.GenderID = new SelectList(db.tb_Gender, "GenderID", "GenderName");
+        //    return View();
+        //}
+
+        //// POST: tb_MemberMaster/Create
+        //// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        //// more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Create([Bind(Include = "MemberID,CollegeID,DivisionID,LastName,FirstName,MiddleName,DepartmentID,AreaID,CopeStatus,CopeAmount,Counselors,CampaignVolunteer,LatestUnionAssessment,MailCodeID,DuesCategoryEffDate,UnionInitiationDate,HireDate,DateOfBirth,GenderID,RetiredEffDate,DeactivateEffDate,DeactivateReasonID,LeadershipPositionID,PoliticalAssessmentID,ParticipatePolitical,PoliticalActivitiesID,MemberAddressID,PhoneRecID,DuesID,AddedBy,AddedDateTime,ModifiedBy,ModifiedDateTime")] tb_MemberMaster tb_MemberMaster)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        db.tb_MemberMaster.Add(tb_MemberMaster);
+        //        db.SaveChanges();
+        //        return RedirectToAction("Index");
+        //    }
+
+        //    ViewBag.AreaID = new SelectList(db.tb_Area, "AreaID", "AreaName", tb_MemberMaster.AreaID);
+        //    ViewBag.DepartmentID = new SelectList(db.tb_Department, "DepartmentID", "DepartmentName", tb_MemberMaster.DepartmentID);
+        //    ViewBag.DuesID = new SelectList(db.tb_Dues, "DuesID", "DuesName", tb_MemberMaster.DuesID);
+        //    ViewBag.LatestUnionAssessment = new SelectList(db.tb_LatestUnionAssessment, "LatestUnionAssessment", "LatestUnionAssessmentDesc", tb_MemberMaster.LatestUnionAssessment);
+        //    ViewBag.PhoneRecID = new SelectList(db.tb_MemberPhoneNumbers, "PhoneRecID", "PhoneType", tb_MemberMaster.PhoneRecID);
+        //    ViewBag.GenderID = new SelectList(db.tb_Gender, "GenderID", "GenderName", tb_MemberMaster.GenderID);
+        //    return View(tb_MemberMaster);
+        //}
+
+        //// GET: tb_MemberMaster/Delete/5
+        //public ActionResult Delete(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    tb_MemberMaster tb_MemberMaster = db.tb_MemberMaster.Find(id);
+        //    if (tb_MemberMaster == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(tb_MemberMaster);
+        //}
+
+        //// POST: tb_MemberMaster/Delete/5
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult DeleteConfirmed(int id)
+        //{
+        //    tb_MemberMaster tb_MemberMaster = db.tb_MemberMaster.Find(id);
+        //    db.tb_MemberMaster.Remove(tb_MemberMaster);
+        //    db.SaveChanges();
+        //    return RedirectToAction("Index");
+        //}
 
         protected override void Dispose(bool disposing)
         {

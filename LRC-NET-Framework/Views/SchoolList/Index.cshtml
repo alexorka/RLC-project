@@ -83,7 +83,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.tb_Room.RoomName)
             </td>
-            <td></td>
+            <td>???</td>
             <td>
                 @Html.DisplayFor(modelItem => item.tb_Class.ClassName)
             </td>
@@ -93,17 +93,27 @@
             <td>
                 @Html.DisplayFor(modelItem => item.ClassEnd)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ClassWeekDayID)
+            <td align="center">
+                @Html.DisplayFor(modelItem => item.tb_WeekDay.WeekDayName)
             </td>
-            <td></td>
-            <td></td>
+            <td align="center">
+                @(item.tb_MemberMaster.tb_MemberActivity.FirstOrDefault().Membership ? "Yes" : "No")
+            </td>
             <td>
+                @Html.DisplayFor(modelItem => item.tb_MemberMaster.tb_MemberPhoneNumbers.FirstOrDefault().PhoneNumber)
+            </td>
+            <td align="center">
+                @Html.DisplayFor(modelItem => item.tb_MemberMaster.tb_MemberActivity.FirstOrDefault().MembershipCommitment)
+            <td align="center">
+                <button type="button" class="btn btn-secondary">
+                    <a href="@Url.Action("Create", "Assessment", new { id = @item.MemberID })" class="glyphicon glyphicon-plus"></a>
+                    @*<span class="glyphicon glyphicon-plus"></span>*@
+                </button>
                 @*<div class="btn-group" role="group" aria-label="...">
-                @Html.ActionLink("Edit", "Edit", new { id = item.SemesterTaughtID }) |
-                @Html.ActionLink("Details", "Details", new { id = item.SemesterTaughtID }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.SemesterTaughtID })
-            </div>*@
+            @Html.ActionLink("Edit", "Edit", new { id = item.SemesterTaughtID }) |
+            @Html.ActionLink("Details", "Details", new { id = item.SemesterTaughtID }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.SemesterTaughtID })
+        </div>*@
             </td>
         </tr>
         }

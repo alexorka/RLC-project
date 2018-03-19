@@ -12,17 +12,18 @@ namespace LRC_NET_Framework
     using System;
     using System.Collections.Generic;
     
-    public partial class tb_MemberActivity
+    public partial class tb_ActivityStatus
     {
-        public int MemberActivityID { get; set; }
-        public int ActivityID { get; set; }
-        public int ActivityStatusID { get; set; }
-        public bool Membership { get; set; }
-        public Nullable<byte> MembershipCommitment { get; set; }
-        public int MemberID { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public tb_ActivityStatus()
+        {
+            this.tb_MemberActivity = new HashSet<tb_MemberActivity>();
+        }
     
-        public virtual tb_Activity tb_Activity { get; set; }
-        public virtual tb_ActivityStatus tb_ActivityStatus { get; set; }
-        public virtual tb_MemberMaster tb_MemberMaster { get; set; }
+        public int ActivityStatusID { get; set; }
+        public string ActivityStatusName { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tb_MemberActivity> tb_MemberActivity { get; set; }
     }
 }

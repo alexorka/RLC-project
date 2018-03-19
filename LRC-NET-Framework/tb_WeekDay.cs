@@ -12,24 +12,18 @@ namespace LRC_NET_Framework
     using System;
     using System.Collections.Generic;
     
-    public partial class tb_Activity
+    public partial class tb_WeekDay
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public tb_Activity()
+        public tb_WeekDay()
         {
-            this.tb_MemberActivity = new HashSet<tb_MemberActivity>();
+            this.tb_SemesterTaught = new HashSet<tb_SemesterTaught>();
         }
     
-        public int ActivityID { get; set; }
-        public int ActivityStatusID { get; set; }
-        public System.DateTime ActivityDate { get; set; }
-        public string ActivityNote { get; set; }
-        public Nullable<int> AddedBy { get; set; }
-        public Nullable<System.DateTime> AddedDateTime { get; set; }
-        public Nullable<int> ModifiedBy { get; set; }
-        public Nullable<System.DateTime> ModifiedDateTime { get; set; }
+        public int ClassWeekDayID { get; set; }
+        public string WeekDayName { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tb_MemberActivity> tb_MemberActivity { get; set; }
+        public virtual ICollection<tb_SemesterTaught> tb_SemesterTaught { get; set; }
     }
 }

@@ -19,7 +19,7 @@ namespace LRC_NET_Framework
         public Nullable<int> MemberID { get; set; }
         public Nullable<int> RoomID { get; set; }
         public Nullable<int> ClassID { get; set; }
-        public Nullable<System.TimeSpan> ClassStart { get; set; }
+        public System.TimeSpan ClassStart { get; set; }
         public Nullable<System.TimeSpan> ClassEnd { get; set; }
         public Nullable<int> ClassWeekDayID { get; set; }
     
@@ -27,5 +27,6 @@ namespace LRC_NET_Framework
         public virtual tb_Semesters tb_Semesters { get; set; }
         public virtual tb_Class tb_Class { get; set; }
         public virtual tb_Room tb_Room { get; set; }
+        public virtual tb_WeekDay tb_WeekDay { get; set; }
     }
 }

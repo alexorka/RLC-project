@@ -16,6 +16,7 @@ namespace LRC_NET_Framework
     {
         public int AssessmentID { get; set; }
         public int MemberID { get; set; }
+        public int AssessmentNameID { get; set; }
         public string AssessmentDesc { get; set; }
         public byte Value { get; set; }
         public System.DateTime AssessmentDate { get; set; }
@@ -25,6 +26,7 @@ namespace LRC_NET_Framework
         public Nullable<int> ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedDateTime { get; set; }
     
+        public virtual tb_AssessmentName tb_AssessmentName { get; set; }
         public virtual tb_MemberMaster tb_MemberMaster { get; set; }
     }
 }

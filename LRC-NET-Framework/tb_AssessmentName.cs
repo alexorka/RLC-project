@@ -12,24 +12,18 @@ namespace LRC_NET_Framework
     using System;
     using System.Collections.Generic;
     
-    public partial class tb_Activity
+    public partial class tb_AssessmentName
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public tb_Activity()
+        public tb_AssessmentName()
         {
-            this.tb_MemberActivity = new HashSet<tb_MemberActivity>();
+            this.tb_Assessment = new HashSet<tb_Assessment>();
         }
     
-        public int ActivityID { get; set; }
-        public int ActivityStatusID { get; set; }
-        public System.DateTime ActivityDate { get; set; }
-        public string ActivityNote { get; set; }
-        public Nullable<int> AddedBy { get; set; }
-        public Nullable<System.DateTime> AddedDateTime { get; set; }
-        public Nullable<int> ModifiedBy { get; set; }
-        public Nullable<System.DateTime> ModifiedDateTime { get; set; }
+        public int AssessmentNameID { get; set; }
+        public string AssessmentName { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tb_MemberActivity> tb_MemberActivity { get; set; }
+        public virtual ICollection<tb_Assessment> tb_Assessment { get; set; }
     }
 }
