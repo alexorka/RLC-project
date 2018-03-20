@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="0440ca77908841ea9f47cfe419dc968d" Name="Diagram1" ZoomLevel="48">
+      <Diagram DiagramId="0440ca77908841ea9f47cfe419dc968d" Name="Diagram1" ZoomLevel="63">
         <EntityTypeShape EntityType="LRCModel.tb_Area" Width="1.5" PointX="5.25" PointY="23.375" IsExpanded="true" />
         <EntityTypeShape EntityType="LRCModel.tb_Attribute" Width="1.5" PointX="9.75" PointY="22.875" IsExpanded="true" />
         <EntityTypeShape EntityType="LRCModel.tb_CityState" Width="1.5" PointX="11.75" PointY="30.5" IsExpanded="true" />
@@ -65,8 +65,8 @@
         <AssociationConnector Association="LRCModel.FK_tb_MemberActivity_tb_Activity1" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberActivity_tb_ActivityStatus" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberActivity_tb_MemberMaster" />
-        <EntityTypeShape EntityType="LRCModel.tb_Assessment" Width="1.5" PointX="9.75" PointY="19" />
         <EntityTypeShape EntityType="LRCModel.tb_AssessmentName" Width="1.5" PointX="11.75" PointY="20.625" />
+        <EntityTypeShape EntityType="LRCModel.tb_Assessment" Width="1.5" PointX="9.75" PointY="19.125" />
         <AssociationConnector Association="LRCModel.FK_tb_Assessment_tb_AssessmentName" />
         <AssociationConnector Association="LRCModel.FK_tb_Assessment_tb_MemberMaster" />
       </Diagram>

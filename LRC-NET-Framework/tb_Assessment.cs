@@ -11,18 +11,23 @@ namespace LRC_NET_Framework
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class tb_Assessment
     {
         public int AssessmentID { get; set; }
         public int MemberID { get; set; }
+        [Required(ErrorMessage = "Select value")]
+        [Display(Name = "Assessment")]
         public int AssessmentNameID { get; set; }
         public string AssessmentDesc { get; set; }
         public byte Value { get; set; }
-        public System.DateTime AssessmentDate { get; set; }
-        public int AssesedBy { get; set; }
-        public int AddedBy { get; set; }
-        public System.DateTime AddedDateTime { get; set; }
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public Nullable<System.DateTime> AssessmentDate { get; set; }
+        public Nullable<int> AssesedBy { get; set; }
+        public Nullable<int> AddedBy { get; set; }
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public Nullable<System.DateTime> AddedDateTime { get; set; }
         public Nullable<int> ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedDateTime { get; set; }
     

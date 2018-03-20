@@ -18,22 +18,6 @@ namespace LRC_NET_Framework.Controllers
     {
         private LRCEntities db = new LRCEntities();
 
-        public static SelectList AddFirstItem(SelectList origList, SelectListItem firstItem)
-        {
-            List<SelectListItem> newList = origList.ToList();
-            newList.Insert(0, firstItem);
-
-            //var selectedItem = newList.FirstOrDefault(item => item.Selected);
-            var selectedItem = newList.First();
-            var selectedItemValue = String.Empty;
-            if (selectedItem != null)
-            {
-                selectedItemValue = selectedItem.Value;
-            }
-
-            return new SelectList(newList, "Value", "Text", selectedItemValue);
-        }
-
         // GET: tb_MemberMaster
         public ActionResult Index(string sortOrder, string searchString, int? page, int? CollegeID, int? DepartmentID)
         {
@@ -68,10 +52,10 @@ namespace LRC_NET_Framework.Controllers
             tb_MemberMaster tb_MemberMaster = db.tb_MemberMaster.Find(1);
             SelectList Departments = new SelectList(db.tb_Department, "DepartmentID", "DepartmentName", tb_MemberMaster.DepartmentID);
             SelectListItem selListItem = new SelectListItem() { Value = "0", Text = " + Filter by Department " };
-            ViewBag.DepartmentID = AddFirstItem(Departments, selListItem);
+            ViewBag.DepartmentID = CommonFunctions.AddFirstItem(Departments, selListItem);
             SelectList Colleges = new SelectList(db.tb_College, "CollegeID", "CollegeName", tb_MemberMaster.tb_Department.CollegeID);
             selListItem = new SelectListItem() { Value = "0", Text = " + Filter by College " };
-            ViewBag.CollegeID = AddFirstItem(Colleges, selListItem);
+            ViewBag.CollegeID = CommonFunctions.AddFirstItem(Colleges, selListItem);
 
             //Sorting
             switch (sortOrder)

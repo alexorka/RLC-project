@@ -37,15 +37,15 @@
           <Key>
             <PropertyRef Name="AssessmentID" />
           </Key>
-          <Property Name="AssessmentID" Type="int" Nullable="false" />
+          <Property Name="AssessmentID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MemberID" Type="int" Nullable="false" />
           <Property Name="AssessmentNameID" Type="int" Nullable="false" />
-          <Property Name="AssessmentDesc" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="AssessmentDesc" Type="nvarchar(max)" />
           <Property Name="Value" Type="tinyint" Nullable="false" />
-          <Property Name="AssessmentDate" Type="datetime" Nullable="false" />
-          <Property Name="AssesedBy" Type="int" Nullable="false" />
-          <Property Name="AddedBy" Type="int" Nullable="false" />
-          <Property Name="AddedDateTime" Type="datetime" Nullable="false" />
+          <Property Name="AssessmentDate" Type="datetime" />
+          <Property Name="AssesedBy" Type="int" />
+          <Property Name="AddedBy" Type="int" />
+          <Property Name="AddedDateTime" Type="datetime" />
           <Property Name="ModifiedBy" Type="int" />
           <Property Name="ModifiedDateTime" Type="datetime" />
         </EntityType>
@@ -1512,8 +1512,8 @@
             <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
             <End Role="tb_MemberActivity" EntitySet="tb_MemberActivity" />
           </AssociationSet>
-          <EntitySet Name="tb_Assessment" EntityType="LRCModel.tb_Assessment" />
           <EntitySet Name="tb_AssessmentName" EntityType="LRCModel.tb_AssessmentName" />
+          <EntitySet Name="tb_Assessment" EntityType="LRCModel.tb_Assessment" />
           <AssociationSet Name="FK_tb_Assessment_tb_AssessmentName" Association="LRCModel.FK_tb_Assessment_tb_AssessmentName">
             <End Role="tb_AssessmentName" EntitySet="tb_AssessmentName" />
             <End Role="tb_Assessment" EntitySet="tb_Assessment" />
@@ -1522,7 +1522,7 @@
             <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
             <End Role="tb_Assessment" EntitySet="tb_Assessment" />
           </AssociationSet>
-        </EntityContainer>
+          </EntityContainer>
         <EntityType Name="tb_SemesterName">
           <Key>
             <PropertyRef Name="SemesterID" />
@@ -1789,24 +1789,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="tb_Assessment">
-          <Key>
-            <PropertyRef Name="AssessmentID" />
-          </Key>
-          <Property Name="AssessmentID" Type="Int32" Nullable="false" />
-          <Property Name="MemberID" Type="Int32" Nullable="false" />
-          <Property Name="AssessmentNameID" Type="Int32" Nullable="false" />
-          <Property Name="AssessmentDesc" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Value" Type="Byte" Nullable="false" />
-          <Property Name="AssessmentDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="AssesedBy" Type="Int32" Nullable="false" />
-          <Property Name="AddedBy" Type="Int32" Nullable="false" />
-          <Property Name="AddedDateTime" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ModifiedBy" Type="Int32" />
-          <Property Name="ModifiedDateTime" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="tb_AssessmentName" Relationship="LRCModel.FK_tb_Assessment_tb_AssessmentName" FromRole="tb_Assessment" ToRole="tb_AssessmentName" />
-          <NavigationProperty Name="tb_MemberMaster" Relationship="LRCModel.FK_tb_Assessment_tb_MemberMaster" FromRole="tb_Assessment" ToRole="tb_MemberMaster" />
-        </EntityType>
         <EntityType Name="tb_AssessmentName">
           <Key>
             <PropertyRef Name="AssessmentNameID" />
@@ -1814,6 +1796,24 @@
           <Property Name="AssessmentNameID" Type="Int32" Nullable="false" />
           <Property Name="AssessmentName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="tb_Assessment" Relationship="LRCModel.FK_tb_Assessment_tb_AssessmentName" FromRole="tb_AssessmentName" ToRole="tb_Assessment" />
+        </EntityType>
+        <EntityType Name="tb_Assessment">
+          <Key>
+            <PropertyRef Name="AssessmentID" />
+          </Key>
+          <Property Name="AssessmentID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MemberID" Type="Int32" Nullable="false" />
+          <Property Name="AssessmentNameID" Type="Int32" Nullable="false" />
+          <Property Name="AssessmentDesc" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Value" Type="Byte" Nullable="false" />
+          <Property Name="AssessmentDate" Type="DateTime" Precision="3" />
+          <Property Name="AssesedBy" Type="Int32" />
+          <Property Name="AddedBy" Type="Int32" />
+          <Property Name="AddedDateTime" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedDateTime" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="tb_AssessmentName" Relationship="LRCModel.FK_tb_Assessment_tb_AssessmentName" FromRole="tb_Assessment" ToRole="tb_AssessmentName" />
+          <NavigationProperty Name="tb_MemberMaster" Relationship="LRCModel.FK_tb_Assessment_tb_MemberMaster" FromRole="tb_Assessment" ToRole="tb_MemberMaster" />
         </EntityType>
         <Association Name="FK_tb_Assessment_tb_AssessmentName">
           <End Type="LRCModel.tb_AssessmentName" Role="tb_AssessmentName" Multiplicity="1" />
@@ -1839,7 +1839,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-      </Schema>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -2189,6 +2189,14 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="tb_AssessmentName">
+            <EntityTypeMapping TypeName="LRCModel.tb_AssessmentName">
+              <MappingFragment StoreEntitySet="tb_AssessmentName">
+                <ScalarProperty Name="AssessmentName" ColumnName="AssessmentName" />
+                <ScalarProperty Name="AssessmentNameID" ColumnName="AssessmentNameID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="tb_Assessment">
             <EntityTypeMapping TypeName="LRCModel.tb_Assessment">
               <MappingFragment StoreEntitySet="tb_Assessment">
@@ -2203,14 +2211,6 @@
                 <ScalarProperty Name="AssessmentNameID" ColumnName="AssessmentNameID" />
                 <ScalarProperty Name="MemberID" ColumnName="MemberID" />
                 <ScalarProperty Name="AssessmentID" ColumnName="AssessmentID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="tb_AssessmentName">
-            <EntityTypeMapping TypeName="LRCModel.tb_AssessmentName">
-              <MappingFragment StoreEntitySet="tb_AssessmentName">
-                <ScalarProperty Name="AssessmentName" ColumnName="AssessmentName" />
-                <ScalarProperty Name="AssessmentNameID" ColumnName="AssessmentNameID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
