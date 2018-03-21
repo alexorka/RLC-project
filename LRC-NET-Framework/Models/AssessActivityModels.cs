@@ -9,6 +9,7 @@ namespace LRC_NET_Framework.Models
     {
         public tb_Assessment _Assessment { get; set; }
         public tb_Activity _Activity { get; set; }
-        public tb_ActivityStatus _ActivityStatus { get; set; }
+        public IEnumerable<tb_ActivityStatus> _ActivityStatus { get; set; }
+        public IEnumerable<tb_MemberActivity> _MemberActivity { get; set; }
     }
 }

@@ -24,8 +24,8 @@ namespace LRC_NET_Framework
             this.tb_MemberPhoneNumbers = new HashSet<tb_MemberPhoneNumbers>();
             this.tb_Users = new HashSet<tb_Users>();
             this.tb_SemesterTaught = new HashSet<tb_SemesterTaught>();
-            this.tb_MemberActivity = new HashSet<tb_MemberActivity>();
             this.tb_Assessment = new HashSet<tb_Assessment>();
+            this.tb_MemberActivity = new HashSet<tb_MemberActivity>();
         }
     
         public int MemberID { get; set; }
@@ -83,8 +83,8 @@ namespace LRC_NET_Framework
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_SemesterTaught> tb_SemesterTaught { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tb_MemberActivity> tb_MemberActivity { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_Assessment> tb_Assessment { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tb_MemberActivity> tb_MemberActivity { get; set; }
     }
 }

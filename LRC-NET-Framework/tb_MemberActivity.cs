@@ -18,7 +18,7 @@ namespace LRC_NET_Framework
         public int ActivityID { get; set; }
         public int ActivityStatusID { get; set; }
         public bool Membership { get; set; }
-        public Nullable<byte> MembershipCommitment { get; set; }
+        public int MembershipCommitment { get; set; }
         public int MemberID { get; set; }
     
         public virtual tb_Activity tb_Activity { get; set; }

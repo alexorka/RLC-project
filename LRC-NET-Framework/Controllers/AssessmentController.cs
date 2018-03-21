@@ -69,16 +69,21 @@ namespace LRC_NET_Framework.Controllers
             SelectList FeePayerAssess = new SelectList(db.tb_AssessmentName, "AssessmentNameID", "AssessmentName", 0 /*0 - default FeePayerAssess Id (-Fee Payer Assess-)*/);
             ViewBag.AssessmentNameID = FeePayerAssess;
 
-            SelectList Activities = new SelectList(db.tb_Activity, "ActivityID", "ActivityNote");
+            SelectList Activities = new SelectList(db.tb_Activity, "ActivityID", "ActivityName");
             ViewBag.ActivityID = Activities;
 
-            //SelectList ActivityStatuses = new SelectList(db.tb_ActivityStatus, "ActivityStatusID", "ActivityStatusName");
-            //ViewBag.ActivityStatusID = ActivityStatuses;
+            List<tb_ActivityStatus> ActivityStatuses = new List<tb_ActivityStatus>();
+            ActivityStatuses = db.tb_ActivityStatus.ToList();
+
+            List<tb_MemberActivity> MemberActivities = new List<tb_MemberActivity>();
+            MemberActivities = db.tb_MemberActivity.ToList();
 
             var model = new AssessActivityModels()
             {
                 _Assessment = Assessment,
-                _Activity = db.tb_Activity.FirstOrDefault()
+                _Activity = db.tb_Activity.FirstOrDefault(),
+                _ActivityStatus = ActivityStatuses,
+                _MemberActivity = MemberActivities
             };
 
             return View(model);
@@ -90,49 +95,61 @@ namespace LRC_NET_Framework.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(string submit, int AssessmentNameID, AssessActivityModels tb_Assessment)
-            //[Bind(Include = "_Assessment.AssessmentID,_Assessment.MemberID,_Assessment.AssessmentNameID," +
-            //"_Assessment.AssessmentDesc,_Assessment.Value,_Assessment.AssessmentDate,_Assessment.AssesedBy,_Assessment.AddedBy," +
-            //"_Assessment.AddedDateTime,_Assessment.ModifiedBy,_Assessment.ModifiedDateTime")] AssessActivityModels tb_Assessment)
-                                   //[Bind(Include = "ActivityID,ActivityStatusID,ActivityDate,ActivityNote")] AssessActivityModels tb_Activity)
+        public ActionResult Create(string submit, int AssessmentNameID, int ActivityID, int ActivityStatusID, AssessActivityModels AssessActivity)
         {
-            if (submit == "Submit Assessment")
-            { 
-            tb_Assessment._Assessment.AddedDateTime = DateTime.Now;
-            tb_Assessment oldAssessment = db.tb_Assessment.Find(tb_Assessment._Assessment.MemberID);
-                if (ModelState.IsValid)
+            if (ModelState.IsValid)
+            {
+                if (submit == "Submit") //Adding Assessment
                 {
+                    AssessActivity._Assessment.AddedDateTime = DateTime.Now;
+                    tb_Assessment oldAssessment = db.tb_Assessment.Find(AssessActivity._Assessment.MemberID);
                     var Assessments = db.tb_Assessment;
                     if (oldAssessment == null)
                     {
-                        db.tb_Assessment.Add(tb_Assessment._Assessment);
+                        db.tb_Assessment.Add(AssessActivity._Assessment);
                     }
                     else
                     {
                         oldAssessment.AssessmentID = Assessments.FirstOrDefault().AssessmentID;
-                        oldAssessment.AddedBy = tb_Assessment._Assessment.AddedBy;
-                        oldAssessment.AddedDateTime = tb_Assessment._Assessment.AddedDateTime;
-                        oldAssessment.AssesedBy = tb_Assessment._Assessment.AssesedBy;
-                        oldAssessment.AssessmentDate = tb_Assessment._Assessment.AssessmentDate;
-                        oldAssessment.AssessmentDesc = tb_Assessment._Assessment.AssessmentDesc;
+                        oldAssessment.AddedBy = AssessActivity._Assessment.AddedBy;
+                        oldAssessment.AddedDateTime = AssessActivity._Assessment.AddedDateTime;
+                        oldAssessment.AssesedBy = AssessActivity._Assessment.AssesedBy;
+                        oldAssessment.AssessmentDate = AssessActivity._Assessment.AssessmentDate;
+                        oldAssessment.AssessmentDesc = AssessActivity._Assessment.AssessmentDesc;
                         oldAssessment.AssessmentNameID = AssessmentNameID; //from ViewBag.AssessmentNameID
-                        oldAssessment.ModifiedBy = tb_Assessment._Assessment.ModifiedBy;
-                        oldAssessment.AddedBy = tb_Assessment._Assessment.AddedBy;
-                        oldAssessment.Value = tb_Assessment._Assessment.Value;
+                        oldAssessment.ModifiedBy = AssessActivity._Assessment.ModifiedBy;
+                        oldAssessment.AddedBy = AssessActivity._Assessment.AddedBy;
+                        oldAssessment.Value = AssessActivity._Assessment.Value;
                         db.Entry(oldAssessment).State = EntityState.Modified;
                     }
                     db.SaveChanges();
-                    return RedirectToAction("Index");
+                    //return RedirectToAction("Create");
+                }
+
+                else if (submit == "Assign") //Adding Person to Activity
+                {
+                    IQueryable<tb_MemberActivity> memberActivities = db.tb_MemberActivity;
+                    memberActivities = memberActivities.Where(p => p.ActivityID == ActivityID).Where(p => p.MemberID == AssessActivity._Assessment.MemberID);
+                    if (memberActivities.Count() == 0) //Action isnt assigned for this member
+                    {
+                        tb_MemberActivity memberActivity = new tb_MemberActivity();
+                        //tb_MemberActivity = db.tb_MemberActivity.Where(f => f.MemberID == AssessActivity._Assessment.MemberID);
+                        memberActivity.MemberID = AssessActivity._Assessment.MemberID;
+                        memberActivity.ActivityID = ActivityID;
+                        memberActivity.ActivityStatusID = ActivityStatusID;
+                        if (ActivityStatusID == 1) // 1 - Committed
+                            memberActivity.Membership = true;
+                        else
+                            memberActivity.Membership = true;
+                        memberActivity.MembershipCommitment++;
+
+                        db.tb_MemberActivity.Add(memberActivity);
+                        db.SaveChanges();
+                        //return RedirectToAction("Create");
+                    }
                 }
             }
-            else if (submit == "Submit Activity")
-            {
-
-            }
-
-            //ViewBag.AssessmentNameID = new SelectList(db.tb_AssessmentName, "AssessmentNameID", "AssessmentName", tb_Assessment.AssessmentNameID);
-            //ViewBag.MemberID = new SelectList(db.tb_MemberMaster, "MemberID", "LastName", tb_Assessment.MemberID);
-            return View(tb_Assessment);
+            return RedirectToAction("Create");
         }
 
         // GET: Assessment/Edit/5

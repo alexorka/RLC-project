@@ -23,6 +23,7 @@ namespace LRC_NET_Framework
         public int ActivityID { get; set; }
         public int ActivityStatusID { get; set; }
         public System.DateTime ActivityDate { get; set; }
+        public string ActivityName { get; set; }
         public string ActivityNote { get; set; }
         public Nullable<int> AddedBy { get; set; }
         public Nullable<System.DateTime> AddedDateTime { get; set; }

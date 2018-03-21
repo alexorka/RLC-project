@@ -52,10 +52,10 @@ namespace LRC_NET_Framework
         public virtual DbSet<tb_Class> tb_Class { get; set; }
         public virtual DbSet<tb_Room> tb_Room { get; set; }
         public virtual DbSet<tb_WeekDay> tb_WeekDay { get; set; }
-        public virtual DbSet<tb_Activity> tb_Activity { get; set; }
         public virtual DbSet<tb_ActivityStatus> tb_ActivityStatus { get; set; }
-        public virtual DbSet<tb_MemberActivity> tb_MemberActivity { get; set; }
         public virtual DbSet<tb_AssessmentName> tb_AssessmentName { get; set; }
         public virtual DbSet<tb_Assessment> tb_Assessment { get; set; }
+        public virtual DbSet<tb_Activity> tb_Activity { get; set; }
+        public virtual DbSet<tb_MemberActivity> tb_MemberActivity { get; set; }
     }
 }

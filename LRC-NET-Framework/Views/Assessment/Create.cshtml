@@ -6,160 +6,188 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Create</h2>
 
+<div class="font-weight-bold" style="background-color: #357ebd; color:gainsboro; padding-top:10px; padding-bottom:5px; padding-left: 30px;"><h4>Add Assess or Action</h4></div>
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
 
-    <div class="form-horizontal">
-        <h4>Add Assessment</h4>
-        <hr />
+    <div class="form-horizontal" style="padding-left:50px">
+        <h3>Add Assessment</h3>
+        <hr>
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model._Assessment.MemberID)
         <div class="form-group">
-            <div class="col-md-2" style="text-align:right; font-weight:bold; text-align:right">
-                <p class="control-label"><span class="text-danger">*&nbsp;&nbsp;</span>Assessment</p>
-            </div>
-            <div class="col-md-10">
+            <span style="padding-left:30px">
+                @Html.Label("Assessment", "Assessment")<span class="text-danger">&nbsp;&nbsp;*</span>
+            </span>
+            <div class="col-md-12" id="Assessment">
                 @Html.DropDownList("AssessmentNameID", null, htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model._Assessment.AssessmentNameID, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            <div class="col-md-2" style="text-align:right; font-weight:bold; text-align:">
-                <p class="control-label"><span class="text-danger">*&nbsp;&nbsp;</span>Assessment Value</p>
-            </div>
-            <div class="col-md-10">
+            <span style="padding-left:30px">
+                @Html.Label("AssessmentValue", "Assessment Value")<span class="text-danger">&nbsp;&nbsp;*</span>
+            </span>
+            <div class="col-md-12" id="AssessmentValue">
                 @Html.DropDownListFor(model => model._Assessment.Value, Enumerable.Range(0, 6).Select(i => new SelectListItem { Text = i.ToString(), Value = i.ToString() }), new { @class = "form-control", style = "width: 70px;" })
-                @*@Html.EditorFor(model => model._Assessment.Value, new { htmlAttributes = new { @class = "form-control" } })*@
                 @Html.ValidationMessageFor(model => model._Assessment.Value, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            <div class="col-md-2" style="text-align:right; font-weight:bold; text-align:">
-                <p class="control-label"><span class="text-danger">*&nbsp;&nbsp;</span>Assessment Date</p>
-            </div>
-            <div class="col-md-10">
+            <span style="padding-left:30px">
+                @Html.Label("AssessmentDate", "Assessment Date")<span class="text-danger">&nbsp;&nbsp;*</span>
+            </span>
+            <div class="col-md-12" id="AssessmentDate">
                 @Html.EditorFor(model => model._Assessment.AssessmentDate, new { htmlAttributes = new { @class = "form-control", style = "width: 100px;" } })
                 @Html.ValidationMessageFor(model => model._Assessment.AssessmentDate, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            <div class="col-md-2" style="text-align:right; font-weight:bold; text-align:">
-                <p class="control-label">Assessed By</p>
-            </div>
-            <div class="col-md-10">
+            <span style="padding-left:30px">
+                @Html.Label("AssessedBy", "Assessed By")
+            </span>
+            <div class="col-md-12" id="AssessedBy">
                 @Html.EditorFor(model => model._Assessment.AssesedBy, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model._Assessment.AssesedBy, "", new { @class = "text-danger" })
             </div>
         </div>
 
-        @*<div class="form-group">
-                @Html.LabelFor(model => model._Assessment.AddedBy, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model._Assessment.AddedBy, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model._Assessment.AddedBy, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model._Assessment.AddedDateTime, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model._Assessment.AddedDateTime, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model._Assessment.AddedDateTime, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model._Assessment.ModifiedBy, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model._Assessment.ModifiedBy, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model._Assessment.ModifiedBy, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model._Assessment.ModifiedDateTime, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model._Assessment.ModifiedDateTime, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model._Assessment.ModifiedDateTime, "", new { @class = "text-danger" })
-                </div>
-            </div>*@
-
         <div class="form-group">
-            <div class="col-md-2" style="text-align:right; font-weight:bold; text-align:">
-                <p class="control-label">Assessment Note</p>
-            </div>
-            <div class="col-md-10">
+            <span style="padding-left:30px">
+                @Html.Label("AssessmentNote", "Assessment Note")
+            </span>
+            <div class="col-md-12" id="AssessmentNote">
                 @Html.TextAreaFor(model => model._Assessment.AssessmentDesc, new { @class = "form-control", @cols = "100", @rows = "8", @style = "width:100%;" })
                 @Html.ValidationMessageFor(model => model._Assessment.AssessmentDesc, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input name="submit" type="submit" value="Submit Assessment"  id="Assessment" class="btn btn-primary" />
+            <div class="col-md-offset-1 col-md-11">
+                <input name="submit" type="submit" value="Submit" id="Assessment" class="btn btn-primary" />
             </div>
         </div>
     </div>
-    <div class="form-horizontal">
-        <h4>Add Activity</h4>
-        <hr />
+    <hr>
+    <div class="form-horizontal" style="padding-left:50px">
+        <h3>Add Activity</h3>
+        <hr>
         @*@Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model._Assessment.MemberID)*@
+            @Html.HiddenFor(model => model._Assessment.MemberID)*@
         <div class="form-group">
-            <div class="col-md-2" style="text-align:right; font-weight:bold; text-align:right">
-                <p class="control-label"><span class="text-danger">*&nbsp;&nbsp;</span>Activity</p>
-            </div>
-            <div class="col-md-10">
-                @Html.DropDownList("ActivityID", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model._Activity.ActivityID, "", new { @class = "text-danger" })
+            <span style="padding-left:30px">
+                @Html.Label("Activity", "Activity")<span class="text-danger">&nbsp;&nbsp;*</span>
+            </span>
+            <div class="col-md-12" id="Activity" style="overflow:hidden;">
+                <div style="width: 100%;">
+                    <div style="float: left;">
+                        @Html.DropDownList("ActivityID", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model._Activity.ActivityID, "", new { @class = "text-danger" })
+                    </div>
+                    <div style="float: left; margin-left:10px">
+                        <button type="button" class="btn btn-secondary">
+                            <a href="@Url.Action("actionname", "controllername", new { id = 1 })" class="glyphicon glyphicon-plus"></a>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="form-group">
-            <div class="col-md-2" style="text-align:right; font-weight:bold; text-align:">
-                <p class="control-label"><span class="text-danger">*&nbsp;&nbsp;</span>Activity Date</p>
-            </div>
-            <div class="col-md-10">
+            <span style="padding-left:30px">
+                @Html.Label("ActivityDate", "Activity Date")<span class="text-danger">&nbsp;&nbsp;*</span>
+            </span>
+            <div class="col-md-12" id="ActivityDate">
                 @Html.EditorFor(model => model._Activity.ActivityDate, new { htmlAttributes = new { @class = "form-control", style = "width: 100px;" } })
                 @Html.ValidationMessageFor(model => model._Activity.ActivityDate, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            <div class="col-md-2" style="text-align:right; font-weight:bold; text-align:">
-                <p class="control-label"><span class="text-danger">*&nbsp;&nbsp;</span>Activity Status</p>
-            </div>
-            <div class="col-md-10">
-            @*@foreach (var myValue in Model._ActivityStatus)
-            {
-                @Html.RadioButton("ActivityStatusID", myValue)
-            }*@
+            <span style="padding-left:30px">
+                @Html.Label("ActivityStatus", "Activity Status")<span class="text-danger">&nbsp;&nbsp;*</span>
+            </span>
+            <div class="col-md-12" id="ActivityStatus">
+                @foreach (var myValue in Model._ActivityStatus)
+                {
+                    <div class="checkbox">
+                        @if (myValue.ActivityStatusID == 1)
+                        {
+                            @Html.RadioButton("ActivityStatusID", myValue.ActivityStatusID, true, new { id = myValue.ActivityStatusName })
+                        }
+                        else
+                        {
+                            @Html.RadioButton("ActivityStatusID", myValue.ActivityStatusID, false, new { id = myValue.ActivityStatusName })
+                        }
+                        @Html.Label(myValue.ActivityStatusName, myValue.ActivityStatusName)
+                    </div>
+                }
+                @Html.ValidationMessageFor(model => model._Activity.ActivityStatusID, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input name="submit" type="submit" value="Submit Activity" id="Activity" class="btn btn-primary" />
+            <span style="padding-left:30px">
+                @Html.Label("ActivityNote", "Activity Note")
+            </span>
+            <div class="col-md-12" id="ActivityNote">
+                @Html.TextAreaFor(model => model._Activity.ActivityNote, new { @class = "form-control", @cols = "100", @rows = "8", @style = "width:100%;" })
+                @Html.ValidationMessageFor(model => model._Activity.ActivityNote, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-1 col-md-11">
+                <input name="submit" type="submit" value="Assign" id="Activity" class="btn btn-primary" />
             </div>
         </div>
     </div>
 
 }
 
+<div class="form-horizontal" style="padding-left:50px">
+    <h3>Activities</h3>
+    <div class="form-group">
+        <div class="col-md-2" style="font-weight:bold">Activity</div>
+        <div class="col-md-2" style="font-weight:bold">Activity Date</div>
+        <div class="col-md-2" style="font-weight:bold">Activity Status</div>
+        <div class="col-md-2" style="font-weight:bold">Activity Note</div>
+        <div class="col-md-4" style="font-weight:bold">Added By</div>
+        @foreach (var myVal in Model._MemberActivity)
+        {
+            <div class="col-md-2">
+                @Html.DisplayFor(m => myVal.tb_Activity.ActivityName)
+            </div>
+            <div class="col-md-2">
+                @Html.DisplayFor(m => myVal.tb_Activity.ActivityDate)
+            </div>
+            <div class="col-md-2">
+                @Html.DisplayFor(m => myVal.ActivityStatusID)
+            </div>
+            <div class="col-md-2">
+                @Html.DisplayFor(m => myVal.tb_Activity.ActivityNote)
+            </div>
+            <div class="col-md-4">
+                @Html.DisplayFor(m => myVal.tb_Activity.AddedBy).
+            </div>
+        }
+    </div>
+</div>
+
 @*@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
+    {
+        @Html.AntiForgeryToken()
 
 
-}*@
-<div>
+    }*@
+<hr>
+<div class="form-horizontal" style="padding-left:50px; padding-top:20px;">
     @Html.ActionLink("Back to List", "Index")
 </div>
 
