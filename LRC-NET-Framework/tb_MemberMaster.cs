@@ -17,15 +17,15 @@ namespace LRC_NET_Framework
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public tb_MemberMaster()
         {
+            this.tb_Assessment = new HashSet<tb_Assessment>();
             this.tb_Attribute = new HashSet<tb_Attribute>();
+            this.tb_MemberActivity = new HashSet<tb_MemberActivity>();
             this.tb_MemberAddress = new HashSet<tb_MemberAddress>();
             this.tb_MemberEmail = new HashSet<tb_MemberEmail>();
-            this.tb_MemberNotes = new HashSet<tb_MemberNotes>();
             this.tb_MemberPhoneNumbers = new HashSet<tb_MemberPhoneNumbers>();
-            this.tb_Users = new HashSet<tb_Users>();
             this.tb_SemesterTaught = new HashSet<tb_SemesterTaught>();
-            this.tb_MemberActivity = new HashSet<tb_MemberActivity>();
-            this.tb_Assessment = new HashSet<tb_Assessment>();
+            this.tb_Users = new HashSet<tb_Users>();
+            this.tb_MemberNotes = new HashSet<tb_MemberNotes>();
         }
     
         public int MemberID { get; set; }
@@ -35,7 +35,7 @@ namespace LRC_NET_Framework
         public string MiddleName { get; set; }
         public int DepartmentID { get; set; }
         public Nullable<int> AreaID { get; set; }
-        public Nullable<bool> CopeStatus { get; set; }
+        public bool CopeStatus { get; set; }
         public Nullable<decimal> CopeAmount { get; set; }
         public Nullable<bool> Counselors { get; set; }
         public Nullable<bool> CampaignVolunteer { get; set; }
@@ -64,6 +64,8 @@ namespace LRC_NET_Framework
     
         public virtual tb_Area tb_Area { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tb_Assessment> tb_Assessment { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_Attribute> tb_Attribute { get; set; }
         public virtual tb_Department tb_Department { get; set; }
         public virtual tb_Division tb_Division { get; set; }
@@ -71,20 +73,18 @@ namespace LRC_NET_Framework
         public virtual tb_Gender tb_Gender { get; set; }
         public virtual tb_LatestUnionAssessment tb_LatestUnionAssessment { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tb_MemberActivity> tb_MemberActivity { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_MemberAddress> tb_MemberAddress { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_MemberEmail> tb_MemberEmail { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tb_MemberNotes> tb_MemberNotes { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_MemberPhoneNumbers> tb_MemberPhoneNumbers { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tb_Users> tb_Users { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_SemesterTaught> tb_SemesterTaught { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tb_MemberActivity> tb_MemberActivity { get; set; }
+        public virtual ICollection<tb_Users> tb_Users { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tb_Assessment> tb_Assessment { get; set; }
+        public virtual ICollection<tb_MemberNotes> tb_MemberNotes { get; set; }
     }
 }

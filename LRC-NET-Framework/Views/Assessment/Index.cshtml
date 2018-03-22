@@ -1,88 +1,93 @@
-﻿@model IEnumerable<LRC_NET_Framework.tb_Assessment>
+﻿@*@model IEnumerable<LRC_NET_Framework.tb_Assessment>*@
+@model PagedList.IPagedList<LRC_NET_Framework.tb_Assessment>
+@using PagedList.Mvc
 
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
+<hr />
+<ul class="list-inline">
+    <li role="button"><a href="@Url.Action("Create", "Assessment")" class="btn btn-info">&nbsp;Assessment<span class="glyphicon glyphicon-plus pull-left" aria-hidden="true"></span></a></li>
+    @*<li role="button"><a href="#" class="btn btn-info">&nbsp;Reports<span class="glyphicon glyphicon-stats pull-left" aria-hidden="true"></span></a></li>*@
+</ul>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
+<h2>All Assessments</h2>
+@using (Html.BeginForm("Index", "Assessment", FormMethod.Post, new { @class = "margin-right: 0" }))
+{
+    <div class="form-group row list-inline">
+        <div class="col-md-2">
+            <div class="input-group">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit">
+                        <i class="glyphicon glyphicon-search"></i>
+                    </button>
+                </span>
+                @Html.TextBox("SearchString", null, new { @class = "form-control", placeholder = "Search" })
+            </div>
+        </div>
+    </div>
+}
+<div class="row ex1">
+    <div class="col-md-2 align-text-top"><small>Showing @Model.FirstItemOnPage - @Model.Count()&nbsp;&nbsp;of&nbsp;&nbsp;@ViewData["MemberQty"]</small></div>
+    <div class="col-md-3 align-text-top"></div>
+    <div class="col-md-7"></div>
+</div>
+
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.AssessmentDesc)
+            Worker
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Value)
+            Assessment
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.AssessmentDate)
+            Value
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.AssesedBy)
+            @Html.ActionLink("Assessment Date", "Index", new { sortOrder = ViewBag.NameSortParm })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.AddedBy)
+            Assessed By
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.AddedDateTime)
+            Added By
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ModifiedBy)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ModifiedDateTime)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.tb_AssessmentName.AssessmentName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.tb_MemberMaster.LastName)
-        </th>
-        <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.AssessmentDesc)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Value)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.AssessmentDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.AssesedBy)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.AddedBy)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.AddedDateTime)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ModifiedBy)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ModifiedDateTime)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.tb_AssessmentName.AssessmentName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.tb_MemberMaster.LastName)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.AssessmentID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.AssessmentID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.AssessmentID })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.ActionLink(item.tb_MemberMaster.LastName + ", " + item.tb_MemberMaster.FirstName, "Edit", "MemberMaster", new { id = item.tb_MemberMaster.MemberID }, new { @class = "text -info" })
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.tb_AssessmentName.AssessmentName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.tb_AssessmentValue.ValueName)
+            </td>
+            <td>
+                @Convert.ToDateTime(item.AssessmentDate).ToString("MM/dd/yyyy")
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AssesedBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AddedBy)
+            </td>
+        </tr>
+    }
 
 </table>
+<br />
+    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) from @Model.PageCount
+
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>

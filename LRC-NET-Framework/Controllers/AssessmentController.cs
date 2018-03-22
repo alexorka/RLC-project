@@ -7,6 +7,8 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using LRC_NET_Framework.Models;
+using PagedList;
+using PagedList.Mvc;
 
 namespace LRC_NET_Framework.Controllers
 {
@@ -15,10 +17,42 @@ namespace LRC_NET_Framework.Controllers
         private LRCEntities db = new LRCEntities();
 
         // GET: Assessment
-        public ActionResult Index()
+        public ActionResult Index(string sortOrder, string searchString, int? page)
         {
-            var tb_Assessment = db.tb_Assessment.Include(t => t.tb_AssessmentName).Include(t => t.tb_MemberMaster);
-            return View(tb_Assessment.ToList());
+            var Assessments = db.tb_Assessment.Include(t => t.tb_AssessmentName).Include(t => t.tb_MemberMaster).Include(t => t.tb_AssessmentValue);
+
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Date" : "";
+            //Searching @ Filtering
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                Assessments = Assessments.Where(s => s.tb_MemberMaster.LastName.ToUpper().Contains(searchString.ToUpper())
+                                       || s.tb_MemberMaster.FirstName.ToUpper().Contains(searchString.ToUpper()));
+            }
+            //Sorting
+            switch (sortOrder)
+            {
+                case "Name desc":
+                    //Activities = Activities.OrderByDescending(s => s.ActivityName);
+                    break;
+                case "Date":
+                    Assessments = Assessments.OrderBy(s => s.AssessmentDate);
+                    break;
+                //case "Date desc":
+                //    tb_MemberMasters = tb_MemberMasters.OrderByDescending(s => s.HireDate);
+                //    break;
+                default:
+                    Assessments = Assessments.OrderBy(s => s.AssessmentDate);
+                    break;
+            }
+
+            //Paging
+            int pageSize = 3;
+            int pageNumber = (page ?? 1);
+
+            ViewData["MemberQty"] = Assessments.Count();
+
+            return View(Assessments.ToPagedList(pageNumber, pageSize));
+            //return View(Assessments.ToList());
         }
 
         // GET: Assessment/Details/5

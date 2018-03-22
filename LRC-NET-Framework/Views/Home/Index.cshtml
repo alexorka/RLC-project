@@ -26,12 +26,12 @@
             </ul>
         </div>
     </li>
-    <li role="button"><a href="@Url.Action("Details", "MemberMaster", new { id = 1 })" class="btn btn-info">Activities&nbsp;<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
-    <li role="button"><a href="#" class="btn btn-info">Assessments&nbsp;<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="@Url.Action("Index", "Activities")" class="btn btn-info">Activities&nbsp;<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="@Url.Action("Index", "Assessment")" class="btn btn-info">Assessments&nbsp;<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
     <li role="button"><a href="#" class="btn btn-info">Attributes&nbsp;<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
-    <li role="button"><a href="#" class="btn btn-info">Notes&nbsp;<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="@Url.Action("Index", "Notes")" class="btn btn-info">Notes&nbsp;<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
     <li role="button"><a href="#" class="btn btn-info">Roles&nbsp;<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
-    <li role="button"><a href="#" class="btn btn-info">Dldgs & Depts&nbsp;<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="#" class="btn btn-info">Bldgs & Depts&nbsp;<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
     <li role="button"><a href="#" class="btn btn-info">Membership Forms&nbsp;<span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span></a></li>
     <li role="button"><a href="#" class="btn btn-info">COPE Forms&nbsp;<span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span></a></li>
     <li role="button"><a href="#" class="btn btn-info">Local&nbsp;<span class="glyphicon glyphicon-stats" aria-hidden="true"></span></a></li>
@@ -49,7 +49,7 @@
 @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @class = "margin-right: 0" }))
 {
     <div class="form-group row list-inline">
-        <div class="col-xs-2">
+        <div class="col-md-2">
             <div class="input-group">
                 <span class="input-group-btn">
                     <button class="btn btn-default" type="submit">
@@ -59,22 +59,22 @@
                 @Html.TextBox("SearchString", null, new { @class = "form-control", placeholder = "Search" })
             </div>
         </div>
-        <div class="col-xs-1">
+        <div class="col-md-1">
             <span data-toggle="tooltip" title="Filter by Department">
                 @Html.DropDownList("DepartmentID", null, htmlAttributes: new { @class = "form-control " })
             </span>
         </div>
-        <div class="col-xs-1">
+        <div class="col-md-1">
             <span data-toggle="tooltip" title="Filter by College">
                 @Html.DropDownList("CollegeID", null, htmlAttributes: new { @class = "form-control" })
             </span>
         </div>
-        <div class="col-xs-1">
+        <div class="col-md-1">
         </div>
-        <div class="col-xs-1">
+        <div class="col-md-1">
             <small><strong><a href="#" class="disabled">Active Status</a></strong></small>
         </div>
-        <div class="col-xs-5 ">
+        <div class="col-md-5 ">
             <small><a href="#" class="disabled">export</a></small>
         </div>
     </div>

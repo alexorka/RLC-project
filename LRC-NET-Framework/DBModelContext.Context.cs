@@ -37,10 +37,7 @@ namespace LRC_NET_Framework
         public virtual DbSet<tb_LatestUnionAssessment> tb_LatestUnionAssessment { get; set; }
         public virtual DbSet<tb_MemberAddress> tb_MemberAddress { get; set; }
         public virtual DbSet<tb_MemberEmail> tb_MemberEmail { get; set; }
-        public virtual DbSet<tb_MemberMaster> tb_MemberMaster { get; set; }
-        public virtual DbSet<tb_MemberNotes> tb_MemberNotes { get; set; }
         public virtual DbSet<tb_MemberPhoneNumbers> tb_MemberPhoneNumbers { get; set; }
-        public virtual DbSet<tb_NoteType> tb_NoteType { get; set; }
         public virtual DbSet<tb_States> tb_States { get; set; }
         public virtual DbSet<tb_Users> tb_Users { get; set; }
         public virtual DbSet<tb_UsersCredential> tb_UsersCredential { get; set; }
@@ -54,9 +51,12 @@ namespace LRC_NET_Framework
         public virtual DbSet<tb_WeekDay> tb_WeekDay { get; set; }
         public virtual DbSet<tb_ActivityStatus> tb_ActivityStatus { get; set; }
         public virtual DbSet<tb_Activity> tb_Activity { get; set; }
-        public virtual DbSet<tb_MemberActivity> tb_MemberActivity { get; set; }
         public virtual DbSet<tb_AssessmentName> tb_AssessmentName { get; set; }
         public virtual DbSet<tb_Assessment> tb_Assessment { get; set; }
         public virtual DbSet<tb_AssessmentValue> tb_AssessmentValue { get; set; }
+        public virtual DbSet<tb_MemberActivity> tb_MemberActivity { get; set; }
+        public virtual DbSet<tb_MemberMaster> tb_MemberMaster { get; set; }
+        public virtual DbSet<tb_MemberNotes> tb_MemberNotes { get; set; }
+        public virtual DbSet<tb_NoteType> tb_NoteType { get; set; }
     }
 }

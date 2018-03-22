@@ -17,11 +17,11 @@ namespace LRC_NET_Framework
         public int MemberNotesID { get; set; }
         public int MemberID { get; set; }
         public string Notes { get; set; }
-        public int NoteTypeID { get; set; }
+        public Nullable<int> NoteTypeID { get; set; }
         public System.DateTime NoteDate { get; set; }
-        public int TakenBy { get; set; }
-        public int AddedBy { get; set; }
-        public System.DateTime AddedDateTime { get; set; }
+        public Nullable<int> TakenBy { get; set; }
+        public Nullable<int> AddedBy { get; set; }
+        public Nullable<System.DateTime> AddedDateTime { get; set; }
         public Nullable<int> ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedDateTime { get; set; }
     

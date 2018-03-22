@@ -20,7 +20,7 @@ namespace LRC_NET_Framework
         public byte CredentialsID { get; set; }
         public Nullable<int> MemberID { get; set; }
     
-        public virtual tb_MemberMaster tb_MemberMaster { get; set; }
         public virtual tb_UsersCredential tb_UsersCredential { get; set; }
+        public virtual tb_MemberMaster tb_MemberMaster { get; set; }
     }
 }

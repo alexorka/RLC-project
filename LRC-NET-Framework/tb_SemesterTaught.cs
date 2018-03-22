@@ -23,10 +23,10 @@ namespace LRC_NET_Framework
         public Nullable<System.TimeSpan> ClassEnd { get; set; }
         public Nullable<int> ClassWeekDayID { get; set; }
     
-        public virtual tb_MemberMaster tb_MemberMaster { get; set; }
         public virtual tb_Semesters tb_Semesters { get; set; }
         public virtual tb_Class tb_Class { get; set; }
         public virtual tb_Room tb_Room { get; set; }
         public virtual tb_WeekDay tb_WeekDay { get; set; }
+        public virtual tb_MemberMaster tb_MemberMaster { get; set; }
     }
 }

@@ -1,0 +1,120 @@
+﻿@*@model IEnumerable<LRC_NET_Framework.tb_Activity>*@
+@model PagedList.IPagedList<LRC_NET_Framework.tb_Activity>
+@using PagedList.Mvc
+@{
+    ViewBag.Title = "All Activities";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<hr />
+<ul class="list-inline">
+    <li role="button"><a href="@Url.Action("Create", "Activities")" class="btn btn-info">&nbsp;Activity<span class="glyphicon glyphicon-plus pull-left" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="#" class="btn btn-info">&nbsp;Reports<span class="glyphicon glyphicon-stats pull-left" aria-hidden="true"></span></a></li>
+</ul>
+
+<h2>All Activities</h2>
+@using (Html.BeginForm("Index", "Activities", FormMethod.Post, new { @class = "margin-right: 0" }))
+{
+    <div class="form-group row list-inline">
+        <div class="col-md-2">
+            <div class="input-group">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit">
+                        <i class="glyphicon glyphicon-search"></i>
+                    </button>
+                </span>
+                @Html.TextBox("SearchString", null, new { @class = "form-control", placeholder = "Search" })
+            </div>
+        </div>
+    </div>
+}
+<div class="row ex1">
+    <div class="col-md-2 align-text-top"><small>Showing @Model.FirstItemOnPage - @Model.Count()&nbsp;&nbsp;of&nbsp;&nbsp;@ViewData["MemberQty"]</small></div>
+    <div class="col-md-3 align-text-top"></div>
+    <div class="col-md-7"></div>
+</div>
+<table class="table">
+    <tr>
+        <th>
+            @Html.ActionLink("Worker", "Index", new { sortOrder = ViewBag.NameSortParm })
+        </th>
+        <th>
+            Phone
+        </th>
+        <th>
+            Email
+        </th>
+        <th>
+            Status
+        </th>
+        <th>
+            Note
+        </th>
+        <th>
+            Membership
+        </th>
+        <th>
+            COPE Status
+        </th>
+        <th>
+            Fee Payer Assess
+        </th>
+        <th>
+            Membership Commitment
+        </th>
+    </tr>
+
+    @foreach (var action in Model)
+    {
+        <tr>
+            <td colspan="9" style="background-color:lightgray">
+                @Html.DisplayFor(modelItem => action.ActivityName)
+            </td>
+        </tr>
+        foreach (var item in action.tb_MemberActivity)
+        {
+            <tr>
+                <td>
+                    @Html.ActionLink(item.tb_MemberMaster.LastName + ", " + item.tb_MemberMaster.FirstName, "Edit", "MemberMaster", new { id = item.tb_MemberMaster.MemberID }, new { @class = "text -info" })
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_MemberMaster.tb_MemberPhoneNumbers.Where(t => t.tb_MemberMaster.MemberID == item.tb_MemberMaster.MemberID).FirstOrDefault().PhoneNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_MemberMaster.tb_MemberEmail.Where(t => t.tb_MemberMaster.MemberID == item.tb_MemberMaster.MemberID).FirstOrDefault().EmailAddress)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_ActivityStatus.ActivityStatusName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_Activity.ActivityNote)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Membership)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_MemberMaster.CopeStatus)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_MemberMaster.tb_Assessment.Where(t => t.tb_MemberMaster.MemberID == item.tb_MemberMaster.MemberID).FirstOrDefault().tb_AssessmentValue.ValueName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MembershipCommitment)
+                </td>
+            </tr>
+        }
+    }
+    @*@Html.ActionLink("Edit", "Edit", new { id = item.ActivityID }) |
+        @Html.ActionLink("Details", "Details", new { id = item.ActivityID }) |
+        @Html.ActionLink("Delete", "Delete", new { id = item.ActivityID })*@
+
+</table>
+<br />
+    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) from @Model.PageCount
+
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
