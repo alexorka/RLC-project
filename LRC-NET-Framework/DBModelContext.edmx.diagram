@@ -6,7 +6,7 @@
     <edmx:Diagrams>
       <Diagram DiagramId="0440ca77908841ea9f47cfe419dc968d" Name="Diagram1" ZoomLevel="62">
         <EntityTypeShape EntityType="LRCModel.tb_Area" Width="1.5" PointX="5.25" PointY="23.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="LRCModel.tb_Attribute" Width="1.5" PointX="9.75" PointY="22.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="LRCModel.tb_Attribute" Width="1.5" PointX="9.75" PointY="23.25" IsExpanded="true" />
         <EntityTypeShape EntityType="LRCModel.tb_CityState" Width="1.5" PointX="11.75" PointY="30.5" IsExpanded="true" />
         <EntityTypeShape EntityType="LRCModel.tb_College" Width="1.5" PointX="5.25" PointY="15.375" IsExpanded="true" />
         <EntityTypeShape EntityType="LRCModel.tb_Department" Width="1.5" PointX="5.25" PointY="18.125" IsExpanded="true" />
@@ -16,14 +16,14 @@
         <EntityTypeShape EntityType="LRCModel.tb_Gender" Width="1.5" PointX="6.25" PointY="30" IsExpanded="true" />
         <EntityTypeShape EntityType="LRCModel.tb_LatestUnionAssessment" Width="1.5" PointX="7.875" PointY="30" IsExpanded="true" />
         <EntityTypeShape EntityType="LRCModel.tb_MemberAddress" Width="1.5" PointX="9.625" PointY="28.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="LRCModel.tb_MemberEmail" Width="1.5" PointX="9.625" PointY="26" IsExpanded="true" />
+        <EntityTypeShape EntityType="LRCModel.tb_MemberEmail" Width="1.5" PointX="9.75" PointY="26" IsExpanded="true" />
         <EntityTypeShape EntityType="LRCModel.tb_MemberMaster" Width="1.5" PointX="7.5" PointY="18.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="LRCModel.tb_MemberNotes" Width="1.5" PointX="11.75" PointY="17" IsExpanded="true" />
+        <EntityTypeShape EntityType="LRCModel.tb_MemberNotes" Width="1.5" PointX="11.75" PointY="15.625" IsExpanded="true" />
         <EntityTypeShape EntityType="LRCModel.tb_MemberPhoneNumbers" Width="1.5" PointX="5.25" PointY="20.25" IsExpanded="true" />
         <EntityTypeShape EntityType="LRCModel.tb_NoteType" Width="1.5" PointX="13.875" PointY="17.25" IsExpanded="true" />
         <EntityTypeShape EntityType="LRCModel.tb_States" Width="1.5" PointX="14" PointY="30.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="LRCModel.tb_Users" Width="1.5" PointX="11.75" PointY="25.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="LRCModel.tb_UsersCredential" Width="1.5" PointX="14.125" PointY="25.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LRCModel.tb_Users" Width="1.5" PointX="11.75" PointY="25.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="LRCModel.tb_UsersCredential" Width="1.5" PointX="14.125" PointY="26.25" IsExpanded="true" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberMaster_tb_Area" ManuallyRouted="false" />
         <AssociationConnector Association="LRCModel.FK_tb_Attribute_tb_MemberMaster" ManuallyRouted="false" />
         <AssociationConnector Association="LRCModel.FK_tb_CityState_tb_States" ManuallyRouted="false" />
@@ -48,28 +48,30 @@
         <AssociationConnector Association="LRCModel.FK_tb_SemesterTaught_tb_MemberMaster" />
         <AssociationConnector Association="LRCModel.FK_tb_Semesters_tb_SemesterName" />
         <AssociationConnector Association="LRCModel.FK_tb_SemesterTaught_tb_Semesters" />
-        <EntityTypeShape EntityType="LRCModel.tb_Building" Width="1.5" PointX="12.125" PointY="9.375" />
-        <EntityTypeShape EntityType="LRCModel.tb_Campus" Width="1.5" PointX="9.75" PointY="9.375" />
+        <EntityTypeShape EntityType="LRCModel.tb_Building" Width="1.5" PointX="12.125" PointY="8.75" />
+        <EntityTypeShape EntityType="LRCModel.tb_Campus" Width="1.5" PointX="9.75" PointY="8.75" />
         <EntityTypeShape EntityType="LRCModel.tb_Class" Width="1.5" PointX="9.5" PointY="12.5" />
-        <EntityTypeShape EntityType="LRCModel.tb_Room" Width="1.5" PointX="12.25" PointY="11.875" />
+        <EntityTypeShape EntityType="LRCModel.tb_Room" Width="1.5" PointX="12.25" PointY="11.25" />
         <AssociationConnector Association="LRCModel.FK_tb_Building_tb_Campus" />
         <AssociationConnector Association="LRCModel.FK_tb_Room_tb_Building" />
         <AssociationConnector Association="LRCModel.FK_tb_Campus_tb_College" />
         <AssociationConnector Association="LRCModel.FK_tb_SemesterTaught_tb_Class" />
         <AssociationConnector Association="LRCModel.FK_tb_SemesterTaught_tb_Room" />
-        <EntityTypeShape EntityType="LRCModel.tb_WeekDay" Width="1.5" PointX="11.75" PointY="15.125" />
+        <EntityTypeShape EntityType="LRCModel.tb_WeekDay" Width="1.5" PointX="11.75" PointY="13.75" />
         <AssociationConnector Association="LRCModel.FK_tb_SemesterTaught_tb_WeekDay" />
-        <EntityTypeShape EntityType="LRCModel.tb_ActivityStatus" Width="1.5" PointX="14.125" PointY="23.75" />
-        <EntityTypeShape EntityType="LRCModel.tb_AssessmentName" Width="1.5" PointX="11.75" PointY="20.625" />
-        <EntityTypeShape EntityType="LRCModel.tb_Assessment" Width="1.5" PointX="9.75" PointY="19.125" />
-        <AssociationConnector Association="LRCModel.FK_tb_Assessment_tb_AssessmentName" />
-        <AssociationConnector Association="LRCModel.FK_tb_Assessment_tb_MemberMaster" />
-        <EntityTypeShape EntityType="LRCModel.tb_Activity" Width="1.5" PointX="14.125" PointY="20.5" />
-        <EntityTypeShape EntityType="LRCModel.tb_MemberActivity" Width="1.5" PointX="11.75" PointY="22.375" />
+        <EntityTypeShape EntityType="LRCModel.tb_ActivityStatus" Width="1.5" PointX="14.125" PointY="24.5" />
+        <EntityTypeShape EntityType="LRCModel.tb_Activity" Width="1.5" PointX="14.125" PointY="21.5" />
+        <EntityTypeShape EntityType="LRCModel.tb_MemberActivity" Width="1.5" PointX="11.75" PointY="22.75" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberActivity_tb_Activity1" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberActivity_tb_ActivityStatus" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberActivity_tb_MemberMaster" />
-      </Diagram>
+        <EntityTypeShape EntityType="LRCModel.tb_AssessmentName" Width="1.5" PointX="11.75" PointY="21" />
+        <EntityTypeShape EntityType="LRCModel.tb_Assessment" Width="1.5" PointX="9.75" PointY="19.25" />
+        <EntityTypeShape EntityType="LRCModel.tb_AssessmentValue" Width="1.5" PointX="11.75" PointY="19.125" />
+        <AssociationConnector Association="LRCModel.FK_tb_Assessment_tb_AssessmentName" />
+        <AssociationConnector Association="LRCModel.FK_tb_Assessment_tb_AssessmentValue" />
+        <AssociationConnector Association="LRCModel.FK_tb_Assessment_tb_MemberMaster" />
+        </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

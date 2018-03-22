@@ -50,7 +50,7 @@ namespace LRC_NET_Framework.Controllers
             var tb_Assessment = db.tb_Assessment.Include(t => t.tb_MemberMaster);
             tb_Assessment = tb_Assessment.Where(f => f.tb_MemberMaster.MemberID == id);
             tb_Assessment Assessment = new tb_Assessment();
-            if (tb_Assessment.Count() == 0)
+            if (tb_Assessment.Count() == 0) //1st Assessment
             {
                 Assessment.AddedBy = 1;
                 Assessment.AddedDateTime = DateTime.Now;
@@ -61,13 +61,16 @@ namespace LRC_NET_Framework.Controllers
                 Assessment.MemberID = id ?? default(int);
                 Assessment.ModifiedBy = 1;
                 Assessment.ModifiedDateTime = DateTime.Now;
-                Assessment.Value = 0;
+                Assessment.ValueID = 1;
             }
             else
                 Assessment = tb_Assessment.FirstOrDefault();
 
-            SelectList FeePayerAssess = new SelectList(db.tb_AssessmentName, "AssessmentNameID", "AssessmentName", 0 /*0 - default FeePayerAssess Id (-Fee Payer Assess-)*/);
+            SelectList FeePayerAssess = new SelectList(db.tb_AssessmentName, "AssessmentNameID", "AssessmentName", Assessment.AssessmentNameID /* selected value */);
             ViewBag.AssessmentNameID = FeePayerAssess;
+
+            SelectList AssessmentValue = new SelectList(db.tb_AssessmentValue, "ValueID", "ValueName", Assessment.ValueID /* selected value */);
+            ViewBag.ValueID = AssessmentValue;
 
             SelectList Activities = new SelectList(db.tb_Activity, "ActivityID", "ActivityName");
             ViewBag.ActivityID = Activities;
@@ -95,7 +98,7 @@ namespace LRC_NET_Framework.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(string submit, int AssessmentNameID, int ActivityID, int ActivityStatusID, AssessActivityModels AssessActivity)
+        public ActionResult Create(string submit, int AssessmentNameID, int ActivityID, int ActivityStatusID, int ValueID, AssessActivityModels AssessActivity)
         {
             if (ModelState.IsValid)
             {
@@ -119,7 +122,7 @@ namespace LRC_NET_Framework.Controllers
                         oldAssessment.AssessmentNameID = AssessmentNameID; //from ViewBag.AssessmentNameID
                         oldAssessment.ModifiedBy = AssessActivity._Assessment.ModifiedBy;
                         oldAssessment.AddedBy = AssessActivity._Assessment.AddedBy;
-                        oldAssessment.Value = AssessActivity._Assessment.Value;
+                        oldAssessment.ValueID = ValueID; // from ViewBag.ValueID
                         db.Entry(oldAssessment).State = EntityState.Modified;
                     }
                     db.SaveChanges();

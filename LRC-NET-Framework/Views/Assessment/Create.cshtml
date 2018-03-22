@@ -33,8 +33,9 @@
                 @Html.Label("AssessmentValue", "Assessment Value")<span class="text-danger">&nbsp;&nbsp;*</span>
             </span>
             <div class="col-md-12" id="AssessmentValue">
-                @Html.DropDownListFor(model => model._Assessment.Value, Enumerable.Range(0, 6).Select(i => new SelectListItem { Text = i.ToString(), Value = i.ToString() }), new { @class = "form-control", style = "width: 70px;" })
-                @Html.ValidationMessageFor(model => model._Assessment.Value, "", new { @class = "text-danger" })
+                @Html.DropDownList("ValueID", null, htmlAttributes: new { @class = "form-control", style = "width: 120px;" })
+                @*@Html.DropDownListFor(model => model._Assessment.Value, Enumerable.Range(0, 6).Select(i => new SelectListItem { Text = i.ToString(), Value = i.ToString() }), new { @class = "form-control", style = "width: 70px;" })*@
+                @Html.ValidationMessageFor(model => model._Assessment.ValueID, "", new { @class = "text-danger" })
             </div>
         </div>
 

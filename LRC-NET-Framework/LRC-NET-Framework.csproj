@@ -243,6 +243,9 @@
     <Compile Include="tb_AssessmentName.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
+    <Compile Include="tb_AssessmentValue.cs">
+      <DependentUpon>DBModelContext.tt</DependentUpon>
+    </Compile>
     <Compile Include="tb_Attribute.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
