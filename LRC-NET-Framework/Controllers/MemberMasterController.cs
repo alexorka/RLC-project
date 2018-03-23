@@ -115,7 +115,7 @@ namespace LRC_NET_Framework.Controllers
             ViewBag.AreaID = new SelectList(db.tb_Area, "AreaID", "AreaName", tb_MemberMaster.AreaID);
             ViewBag.DepartmentID = new SelectList(db.tb_Department, "DepartmentID", "DepartmentName", tb_MemberMaster.DepartmentID);
             ViewBag.DuesID = new SelectList(db.tb_Dues, "DuesID", "DuesName", tb_MemberMaster.DuesID);
-            ViewBag.LatestUnionAssessment = new SelectList(db.tb_LatestUnionAssessment, "LatestUnionAssessment", "LatestUnionAssessmentDesc", tb_MemberMaster.LatestUnionAssessment);
+            ViewBag.LatestUnionAssessmentID = new SelectList(db.tb_LatestUnionAssessment, "LatestUnionAssessmentID", "LatestUnionAssessmentDesc", tb_MemberMaster.LatestUnionAssessmentID);
             ViewBag.PhoneRecID = new SelectList(db.tb_MemberPhoneNumbers, "PhoneRecID", "PhoneType", tb_MemberMaster.PhoneRecID);
             ViewBag.GenderID = new SelectList(db.tb_Gender, "GenderID", "GenderName", tb_MemberMaster.GenderID);
             return View(tb_MemberMaster);
@@ -126,7 +126,7 @@ namespace LRC_NET_Framework.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "MemberID,MemberIDNumber,CollegeID, LastName,FirstName,MiddleName,DepartmentID,AreaID,CopeStatus,CopeAmount,Counselors,CampaignVolunteer,LatestUnionAssessment,MailCodeID,DuesCategoryEffDate,UnionInitiationDate,HireDate,DateOfBirth,GenderID,RetiredEffDate,DeactivateEffDate,DeactivateReasonID,LeadershipPositionID,PoliticalAssessmentID,ParticipatePolitical,PoliticalActivitiesID,MemberAddressID,PhoneRecID,DuesID,AddedBy,AddedDateTime,ModifiedBy,ModifiedDateTime")] tb_MemberMaster tb_MemberMaster)
+        public ActionResult Edit([Bind(Include = "MemberID,MemberIDNumber,CollegeID, LastName,FirstName,MiddleName,DepartmentID,AreaID,CopeStatus,CopeAmount,Counselors,CampaignVolunteer,LatestUnionAssessmentID,MailCodeID,DuesCategoryEffDate,UnionInitiationDate,HireDate,DateOfBirth,GenderID,RetiredEffDate,DeactivateEffDate,DeactivateReasonID,LeadershipPositionID,PoliticalAssessmentID,ParticipatePolitical,PoliticalActivitiesID,MemberAddressID,PhoneRecID,DuesID,AddedBy,AddedDateTime,ModifiedBy,ModifiedDateTime")] tb_MemberMaster tb_MemberMaster)
         {
             if (ModelState.IsValid)
             {
@@ -162,7 +162,7 @@ namespace LRC_NET_Framework.Controllers
             ViewBag.AreaID = new SelectList(db.tb_Area, "AreaID", "AreaName", tb_MemberMaster.AreaID);
             ViewBag.DepartmentID = new SelectList(db.tb_Department, "DepartmentID", "DepartmentName", tb_MemberMaster.DepartmentID);
             ViewBag.DuesID = new SelectList(db.tb_Dues, "DuesID", "DuesName", tb_MemberMaster.DuesID);
-            ViewBag.LatestUnionAssessment = new SelectList(db.tb_LatestUnionAssessment, "LatestUnionAssessment", "LatestUnionAssessmentDesc", tb_MemberMaster.LatestUnionAssessment);
+            ViewBag.LatestUnionAssessmentID = new SelectList(db.tb_LatestUnionAssessment, "LatestUnionAssessmentID", "LatestUnionAssessmentDesc", tb_MemberMaster.LatestUnionAssessmentID);
             ViewBag.PhoneRecID = new SelectList(db.tb_MemberPhoneNumbers, "PhoneRecID", "PhoneType", tb_MemberMaster.PhoneRecID);
             ViewBag.GenderID = new SelectList(db.tb_Gender, "GenderID", "GenderName", tb_MemberMaster.GenderID);
             return View(tb_MemberMaster);
@@ -234,7 +234,7 @@ namespace LRC_NET_Framework.Controllers
         //    ViewBag.AreaID = new SelectList(db.tb_Area, "AreaID", "AreaName");
         //    ViewBag.DepartmentID = new SelectList(db.tb_Department, "DepartmentID", "DepartmentName");
         //    ViewBag.DuesID = new SelectList(db.tb_Dues, "DuesID", "DuesName");
-        //    ViewBag.LatestUnionAssessment = new SelectList(db.tb_LatestUnionAssessment, "LatestUnionAssessment", "LatestUnionAssessmentDesc");
+        //    ViewBag.LatestUnionAssessmentID = new SelectList(db.tb_LatestUnionAssessment, "LatestUnionAssessmentID", "LatestUnionAssessmentDesc");
         //    ViewBag.PhoneRecID = new SelectList(db.tb_MemberPhoneNumbers, "PhoneRecID", "PhoneType");
         //    ViewBag.GenderID = new SelectList(db.tb_Gender, "GenderID", "GenderName");
         //    return View();
@@ -245,7 +245,7 @@ namespace LRC_NET_Framework.Controllers
         //// more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         //[HttpPost]
         //[ValidateAntiForgeryToken]
-        //public ActionResult Create([Bind(Include = "MemberID,CollegeID,DivisionID,LastName,FirstName,MiddleName,DepartmentID,AreaID,CopeStatus,CopeAmount,Counselors,CampaignVolunteer,LatestUnionAssessment,MailCodeID,DuesCategoryEffDate,UnionInitiationDate,HireDate,DateOfBirth,GenderID,RetiredEffDate,DeactivateEffDate,DeactivateReasonID,LeadershipPositionID,PoliticalAssessmentID,ParticipatePolitical,PoliticalActivitiesID,MemberAddressID,PhoneRecID,DuesID,AddedBy,AddedDateTime,ModifiedBy,ModifiedDateTime")] tb_MemberMaster tb_MemberMaster)
+        //public ActionResult Create([Bind(Include = "MemberID,CollegeID,DivisionID,LastName,FirstName,MiddleName,DepartmentID,AreaID,CopeStatus,CopeAmount,Counselors,CampaignVolunteer,LatestUnionAssessmentID,MailCodeID,DuesCategoryEffDate,UnionInitiationDate,HireDate,DateOfBirth,GenderID,RetiredEffDate,DeactivateEffDate,DeactivateReasonID,LeadershipPositionID,PoliticalAssessmentID,ParticipatePolitical,PoliticalActivitiesID,MemberAddressID,PhoneRecID,DuesID,AddedBy,AddedDateTime,ModifiedBy,ModifiedDateTime")] tb_MemberMaster tb_MemberMaster)
         //{
         //    if (ModelState.IsValid)
         //    {
@@ -257,7 +257,7 @@ namespace LRC_NET_Framework.Controllers
         //    ViewBag.AreaID = new SelectList(db.tb_Area, "AreaID", "AreaName", tb_MemberMaster.AreaID);
         //    ViewBag.DepartmentID = new SelectList(db.tb_Department, "DepartmentID", "DepartmentName", tb_MemberMaster.DepartmentID);
         //    ViewBag.DuesID = new SelectList(db.tb_Dues, "DuesID", "DuesName", tb_MemberMaster.DuesID);
-        //    ViewBag.LatestUnionAssessment = new SelectList(db.tb_LatestUnionAssessment, "LatestUnionAssessment", "LatestUnionAssessmentDesc", tb_MemberMaster.LatestUnionAssessment);
+        //    ViewBag.LatestUnionAssessmentID = new SelectList(db.tb_LatestUnionAssessment, "LatestUnionAssessmentID", "LatestUnionAssessmentDesc", tb_MemberMaster.LatestUnionAssessmentID);
         //    ViewBag.PhoneRecID = new SelectList(db.tb_MemberPhoneNumbers, "PhoneRecID", "PhoneType", tb_MemberMaster.PhoneRecID);
         //    ViewBag.GenderID = new SelectList(db.tb_Gender, "GenderID", "GenderName", tb_MemberMaster.GenderID);
         //    return View(tb_MemberMaster);

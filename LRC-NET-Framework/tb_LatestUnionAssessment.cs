@@ -20,7 +20,7 @@ namespace LRC_NET_Framework
             this.tb_MemberMaster = new HashSet<tb_MemberMaster>();
         }
     
-        public byte LatestUnionAssessment { get; set; }
+        public int LatestUnionAssessmentID { get; set; }
         public string LatestUnionAssessmentDesc { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

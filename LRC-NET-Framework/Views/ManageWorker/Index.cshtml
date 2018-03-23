@@ -1,0 +1,149 @@
+﻿@model LRC_NET_Framework.tb_MemberMaster
+
+
+@{
+    ViewBag.Title = "Manage Worker";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<hr />
+<ul class="list-inline">
+    <li role="button"><a href="#" class="btn btn-default">Schedules&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="#" class="btn btn-default">Assessments&nbsp;&nbsp;<span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="#" class="btn btn-default">Activities&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="#" class="btn btn-default">Contact Info&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="#" class="btn btn-default">Member Forms&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="#" class="btn btn-default">COPE Forms&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="#" class="btn btn-default">Notes&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="#" class="btn btn-default">Roles&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="#" class="btn btn-default">Als Works At&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
+</ul>
+
+<h2 style="font-family:sans-serif">@Html.DisplayFor(n => n.LastName), @Html.DisplayFor(n => n.FirstName)</h2>
+<div class="row ex1 h6">
+    <div class="col-md-3">
+        <div class="row" style="padding-bottom:5px">
+            <div class="col-md-5" style="font-weight:bold; text-align:right">
+                Home School
+            </div>
+            <div class="col-md-7 text-muted">
+                @Html.DisplayFor(n => n.tb_Department.tb_College.CollegeDesc)
+            </div>
+        </div>
+        <div class="row" style="padding-bottom:5px">
+            <div class="col-md-5" style="font-weight:bold; text-align:right">
+                Employee ID
+            </div>
+            <div class="col-md-7 text-muted">
+                @Html.DisplayFor(n => n.MemberIDNumber)
+            </div>
+        </div>
+        <div class="row" style="padding-bottom:5px">
+            <div class="col-md-5" style="font-weight:bold; text-align:right">
+                JobClass
+            </div>
+            <div class="col-md-7 text-danger">
+                LZ:keep it freeform
+            </div>
+        </div>
+        <div class="row" style="padding-bottom:5px">
+            <div class="col-md-5" style="font-weight:bold; text-align:right">
+                Department
+            </div>
+            <div class="col-md-7 text-muted">
+                @Html.DisplayFor(n => n.tb_Department.DepartmentName)
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="row" style="padding-bottom:5px">
+            <div class="col-md-5" style="font-weight:bold; text-align:right">
+                Category
+            </div>
+            <div class="col-md-7 text-muted">
+                @Html.DisplayFor(n => n.tb_Categories.CategoryName)
+            </div>
+        </div>
+        <div class="row" style="padding-bottom:5px">
+            <div class="col-md-5" style="font-weight:bold; text-align:right">
+                Hire Date (Aprox)
+            </div>
+            <div class="col-md-7 text-muted">
+                @if (Model.HireDate != null)
+                {
+                    @Convert.ToDateTime(Model.HireDate).ToString("MM/dd/yyyy")
+                }
+            </div>
+        </div>
+        <div class="row" style="padding-bottom:5px">
+            <div class="col-md-5" style="font-weight:bold; text-align:right">
+                Active
+            </div>
+            <div class="col-md-7 text-muted">
+                @if (Model.tb_SemesterTaught.Where(t => t.MemberID == Model.MemberID).Count() > 0)
+                {
+                    <p>Active</p>
+                }
+                else
+                {
+                    <p>Inactive</p>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="row" style="padding-bottom:5px">
+            <div class="col-md-7" style="font-weight:bold; text-align:right">
+                Member Status
+            </div>
+            <div class="col-md-5 text-muted">
+                @Html.DisplayFor(n => n.tb_MemberActivity.Where(t => t.MemberID == Model.MemberID).LastOrDefault().tb_ActivityStatus.ActivityStatusName)
+            </div>
+        </div>
+        <div class="row" style="padding-bottom:5px">
+            <div class="col-md-7" style="font-weight:bold; text-align:right">
+                Fee Payer Assess
+            </div>
+            <div class="col-md-5 text-muted">
+                @if (Model.LatestUnionAssessmentID != null)
+                {
+                    @Html.DisplayFor(n => n.tb_LatestUnionAssessment.LatestUnionAssessmentDesc)
+                }
+                else
+                {
+                    <span>0</span>
+                }
+            </div>
+        </div>
+        <div class="row" style="padding-bottom:5px">
+            <div class="col-md-7" style="font-weight:bold; text-align:right">
+                Membership&nbsp;Commitment
+            </div>
+            <div class="col-md-5 text-muted">
+
+                @Html.DisplayFor(n => n.tb_MemberActivity.Where(t => t.MemberID == Model.MemberID).LastOrDefault().MembershipCommitment)
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="row" style="padding-bottom:5px">
+            <div class="col-md-5" style="font-weight:bold; text-align:right">
+                Phone
+            </div>
+            <div class="col-md-7 text-muted">
+                @Html.DisplayFor(n => n.tb_MemberPhoneNumbers.Where(t => t.IsPrimary == true).FirstOrDefault().PhoneNumber)
+            </div>
+        </div>
+        <div class="row" style="padding-bottom:5px">
+            <div class="col-md-5" style="font-weight:bold; text-align:right">
+                Address
+            </div>
+            <div class="col-md-7 text-muted">
+                @ViewBag.MemberAddress
+            </div>
+        </div>
+    </div>
+</div>
+<hr />
+
+

@@ -201,8 +201,10 @@
     <Compile Include="Controllers\ActivitiesController.cs" />
     <Compile Include="Controllers\AssessmentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ManageWorkerController.cs" />
     <Compile Include="Controllers\MemberMasterController.cs" />
     <Compile Include="Controllers\NotesController.cs" />
+    <Compile Include="Controllers\RolesController.cs" />
     <Compile Include="Controllers\SchoolListController.cs" />
     <Compile Include="DBModelContext.Context.cs">
       <AutoGen>True</AutoGen>
@@ -250,10 +252,16 @@
     <Compile Include="tb_Attribute.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
+    <Compile Include="tb_Body.cs">
+      <DependentUpon>DBModelContext.tt</DependentUpon>
+    </Compile>
     <Compile Include="tb_Building.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
     <Compile Include="tb_Campus.cs">
+      <DependentUpon>DBModelContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tb_Categories.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
     <Compile Include="tb_CityState.cs">
@@ -301,7 +309,13 @@
     <Compile Include="tb_MemberPhoneNumbers.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
+    <Compile Include="tb_MemberRoles.cs">
+      <DependentUpon>DBModelContext.tt</DependentUpon>
+    </Compile>
     <Compile Include="tb_NoteType.cs">
+      <DependentUpon>DBModelContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tb_Roles.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
     <Compile Include="tb_Room.cs">
@@ -465,6 +479,16 @@
     <Content Include="Views\Notes\Details.cshtml" />
     <Content Include="Views\Notes\Edit.cshtml" />
     <Content Include="Views\Notes\Index.cshtml" />
+    <Content Include="Views\Roles\Create.cshtml" />
+    <Content Include="Views\Roles\Delete.cshtml" />
+    <Content Include="Views\Roles\Details.cshtml" />
+    <Content Include="Views\Roles\Edit.cshtml" />
+    <Content Include="Views\Roles\Index.cshtml" />
+    <Content Include="Views\ManageWorker\Create.cshtml" />
+    <Content Include="Views\ManageWorker\Delete.cshtml" />
+    <Content Include="Views\ManageWorker\Details.cshtml" />
+    <Content Include="Views\ManageWorker\Edit.cshtml" />
+    <Content Include="Views\ManageWorker\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
