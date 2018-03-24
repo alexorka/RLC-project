@@ -23,7 +23,7 @@ namespace LRC_NET_Framework
         public string Country { get; set; }
         public string HomeLatitude { get; set; }
         public string HomeLongitude { get; set; }
-        public Nullable<bool> IsPrimary { get; set; }
+        public bool IsPrimary { get; set; }
         public int CreatedBy { get; set; }
         public System.DateTime CreatedDateTime { get; set; }
         public Nullable<int> ModifiedBy { get; set; }

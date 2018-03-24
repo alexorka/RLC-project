@@ -7,6 +7,9 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using LRC_NET_Framework;
+using LRC_NET_Framework.Models;
+using PagedList;
+using PagedList.Mvc;
 
 namespace LRC_NET_Framework.Controllers
 {
@@ -29,7 +32,18 @@ namespace LRC_NET_Framework.Controllers
             }
             tb_MemberAddress ma = Worker.tb_MemberAddress.Where(t => t.MemberID == id).Where(t => t.IsPrimary == true).FirstOrDefault();
             ViewBag.MemberAddress = ma.HomeStreet1 + " " + ma.HomeStreet2 + ", " + ma.tb_CityState.CityName + ", " + ma.tb_CityState.CityAlias + ", " + ma.ZipCode;
-            return View(Worker);
+
+            //tb_AssessmentName assessmentName = new tb_AssessmentName();
+            //assessmentName = db.tb_AssessmentName;
+            List<tb_AssessmentName> AssessmentNames = new List<tb_AssessmentName>();
+            AssessmentNames = db.tb_AssessmentName.ToList();
+
+            var model = new ManageWorkerModels()
+            {
+                _Worker = Worker,
+                _AssessmentName = AssessmentNames
+            };
+            return View(model);
         }
 
         // GET: ManageWorker/Details/5
