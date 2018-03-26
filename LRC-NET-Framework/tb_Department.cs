@@ -22,7 +22,7 @@ namespace LRC_NET_Framework
     
         public int DepartmentID { get; set; }
         public string DepartmentName { get; set; }
-        public Nullable<byte> CollegeID { get; set; }
+        public int CollegeID { get; set; }
     
         public virtual tb_College tb_College { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

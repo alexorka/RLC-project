@@ -201,8 +201,7 @@
     <Compile Include="Controllers\ActivitiesController.cs" />
     <Compile Include="Controllers\AssessmentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ManageWorkerController.cs" />
-    <Compile Include="Controllers\MemberMasterController.cs" />
+    <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\NotesController.cs" />
     <Compile Include="Controllers\RolesController.cs" />
     <Compile Include="Controllers\SchoolListController.cs" />
@@ -287,6 +286,9 @@
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
     <Compile Include="tb_Gender.cs">
+      <DependentUpon>DBModelContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tb_JobStatus.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
     <Compile Include="tb_LatestUnionAssessment.cs">
@@ -415,6 +417,8 @@
     <Content Include="DBModelContext.edmx.diagram">
       <DependentUpon>DBModelContext.edmx</DependentUpon>
     </Content>
+    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.12.4.intellisense.js" />
     <Content Include="Scripts\jquery-1.12.4.js" />
     <Content Include="Scripts\jquery-1.12.4.min.js" />
@@ -429,7 +433,6 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
-    <Content Include="Views\MemberMaster\Edit.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -485,11 +488,8 @@
     <Content Include="Views\Roles\Details.cshtml" />
     <Content Include="Views\Roles\Edit.cshtml" />
     <Content Include="Views\Roles\Index.cshtml" />
-    <Content Include="Views\ManageWorker\Create.cshtml" />
-    <Content Include="Views\ManageWorker\Delete.cshtml" />
-    <Content Include="Views\ManageWorker\Details.cshtml" />
-    <Content Include="Views\ManageWorker\Edit.cshtml" />
-    <Content Include="Views\ManageWorker\Index.cshtml" />
+    <Content Include="Views\Home\Edit.cshtml" />
+    <Content Include="Views\Home\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

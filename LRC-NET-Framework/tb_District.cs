@@ -20,7 +20,7 @@ namespace LRC_NET_Framework
             this.tb_College = new HashSet<tb_College>();
         }
     
-        public byte DistrictID { get; set; }
+        public int DistrictID { get; set; }
         public string DistrictName { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

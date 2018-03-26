@@ -137,7 +137,7 @@
         {
             <tr>
                 <td>
-                    @Html.ActionLink(item.LastName + ", " + item.FirstName, "Index", "ManageWorker", new {id = item.MemberID }, new { @class = "text -info" })
+                    @Html.ActionLink(item.LastName + ", " + item.FirstName, "Details", "Home", new {id = item.MemberID }, new { @class = "text -info" })
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.tb_Department.tb_College.CollegeName)

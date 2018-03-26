@@ -17,19 +17,19 @@ namespace LRC_NET_Framework
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public tb_College()
         {
-            this.tb_Department = new HashSet<tb_Department>();
             this.tb_Campus = new HashSet<tb_Campus>();
+            this.tb_Department = new HashSet<tb_Department>();
         }
     
-        public byte CollegeID { get; set; }
-        public Nullable<byte> DistrictID { get; set; }
+        public int CollegeID { get; set; }
+        public int DistrictID { get; set; }
         public string CollegeName { get; set; }
         public string CollegeDesc { get; set; }
     
         public virtual tb_District tb_District { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tb_Department> tb_Department { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_Campus> tb_Campus { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tb_Department> tb_Department { get; set; }
     }
 }

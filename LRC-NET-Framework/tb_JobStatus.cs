@@ -12,16 +12,16 @@ namespace LRC_NET_Framework
     using System;
     using System.Collections.Generic;
     
-    public partial class tb_Division
+    public partial class tb_JobStatus
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public tb_Division()
+        public tb_JobStatus()
         {
             this.tb_MemberMaster = new HashSet<tb_MemberMaster>();
         }
     
-        public int DivisionID { get; set; }
-        public string DivisionName { get; set; }
+        public int JobStatusID { get; set; }
+        public string JobStatusName { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_MemberMaster> tb_MemberMaster { get; set; }

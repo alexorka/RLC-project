@@ -81,6 +81,130 @@ namespace LRC_NET_Framework.Controllers
             return View(tb_MemberMasters.ToPagedList(pageNumber, pageSize));
         }
 
+        // GET: ManageWorker
+        public ActionResult Details(int? id)
+        {
+            //id = 1; // test REMOVE IT
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            tb_MemberMaster Worker = db.tb_MemberMaster.Find(id); //.Include(t => t.tb_Area).Include(t => t.tb_Department).Include(t => t.tb_Division).Include(t => t.tb_Dues).Include(t => t.tb_Gender).Include(t => t.tb_LatestUnionAssessment)
+            if (Worker == null)
+            {
+                return HttpNotFound();
+            }
+            tb_MemberAddress ma = Worker.tb_MemberAddress.Where(t => t.MemberID == id).Where(t => t.IsPrimary == true).FirstOrDefault();
+            ViewBag.MemberAddress = ma.HomeStreet1 + " " + ma.HomeStreet2 + ", " + ma.tb_CityState.CityName + ", " + ma.tb_CityState.CityAlias + ", " + ma.ZipCode;
+
+            //tb_AssessmentName assessmentName = new tb_AssessmentName();
+            //assessmentName = db.tb_AssessmentName;
+            List<tb_AssessmentName> AssessmentNames = new List<tb_AssessmentName>();
+            AssessmentNames = db.tb_AssessmentName.ToList();
+
+            var model = new ManageWorkerModels()
+            {
+                _Worker = Worker,
+                _AssessmentName = AssessmentNames
+            };
+            return View(model);
+        }
+
+        // GET: tb_MemberMaster/Edit/5
+        public ActionResult Edit(int? id)
+        {
+            id = 1; // test REMOVE IT
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            tb_MemberMaster tb_MemberMaster = db.tb_MemberMaster.Find(id);
+            if (tb_MemberMaster == null)
+            {
+                return HttpNotFound();
+            }
+            //ViewBag.CollegeID = new SelectList(db.tb_College, "CollegeID", "CollegeDesc", tb_MemberMaster.tb_Department.CollegeID);
+            //ViewBag.DepartmentID = new SelectList(db.tb_Department, "DepartmentID", "DepartmentName", tb_MemberMaster.DepartmentID);
+            //ViewBag.JobStatusID = new SelectList(db.tb_JobStatus, "JobStatusID", "JobStatusName", tb_MemberMaster.tb_JobStatus.JobStatusID);
+            //ViewBag.DivisionID = new SelectList(db.tb_Division, "DivisionID", "DivisionName", tb_MemberMaster.DivisionID);
+            //ViewBag.CategoryID = new SelectList(db.tb_Categories, "CategoryID", "CategoryName", tb_MemberMaster.CategoryID); //Class Category: It represents what the person was over a period of time. Valid values in drop down are Member, Non-Member, Retired
+
+            EditWorkerModels model = new EditWorkerModels()
+            {
+                _MemberID = tb_MemberMaster.MemberID,
+                _WorkerFullName = tb_MemberMaster.LastName + ", " + tb_MemberMaster.FirstName,
+                _CollegeID = tb_MemberMaster.tb_Department.CollegeID,
+                _Colleges = new SelectList(db.tb_College, "CollegeID", "CollegeDesc", tb_MemberMaster.tb_Department.CollegeID),
+                _JobStatusID = tb_MemberMaster.JobStatusID,
+                _JobStatuses = new SelectList(db.tb_JobStatus, "JobStatusID", "JobStatusName", tb_MemberMaster.JobStatusID),
+                _DivisionID = tb_MemberMaster.DivisionID,
+                _Divisions = new SelectList(db.tb_Division, "DivisionID", "DivisionName", tb_MemberMaster.DivisionID),
+                _DepartmentID = tb_MemberMaster.DepartmentID,
+                _Departments = new SelectList(db.tb_Department, "DepartmentID", "DepartmentName", tb_MemberMaster.DepartmentID),
+                _CategoryID = tb_MemberMaster.CategoryID,
+                _Categories = new SelectList(db.tb_Categories, "CategoryID", "CategoryName", tb_MemberMaster.CategoryID),
+                _HireDate = tb_MemberMaster.HireDate?? DateTime.Now,
+                _TwitterHandle = tb_MemberMaster.tb_MemberActivity.Where(t => t.MemberID == id).LastOrDefault().TwitterHandle,
+                _FaceBookID = tb_MemberMaster.tb_MemberActivity.Where(t => t.MemberID == id).LastOrDefault().FacebookID
+            };
+            return View(model);
+        }
+
+        // POST: tb_MemberMaster/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(EditWorkerModels model)
+         {
+            if (ModelState.IsValid)
+            {
+                tb_MemberMaster worker = db.tb_MemberMaster.Where(t => t.MemberID == model._MemberID).FirstOrDefault();
+                worker.tb_Department.CollegeID = model._CollegeID;
+                worker.JobStatusID = model._JobStatusID;
+                worker.DivisionID = model._DivisionID;
+                worker.DepartmentID = model._DepartmentID;
+                worker.CategoryID = model._CategoryID;
+                worker.HireDate = model._HireDate;
+                worker.tb_MemberActivity.Where(t => t.MemberID == model._MemberID).LastOrDefault().TwitterHandle = model._TwitterHandle;
+                worker.tb_MemberActivity.Where(t => t.MemberID == model._MemberID).LastOrDefault().FacebookID = model._FaceBookID;
+
+                db.tb_MemberMaster.Attach(worker);
+                var entry = db.Entry(worker);
+
+                //entry.Property(e => e.DivisionID).IsModified = true;
+                //entry.Property(e => e.CategoryID).IsModified = true;
+                //entry.Property(e => e.DepartmentID).IsModified = true;
+                //entry.Property(e => e.JobStatusID).IsModified = true;
+                //entry.Property(e => e.HireDate).IsModified = true;
+
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch (DbEntityValidationException ex)
+                {
+                    foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
+                    {
+                        Response.Write("Object: " + validationError.Entry.Entity.ToString());
+                        Response.Write("");
+                        foreach (DbValidationError err in validationError.ValidationErrors)
+                        {
+                            Response.Write(err.ErrorMessage + "");
+                        }
+                    }
+                }
+
+                return RedirectToAction("Details", "Home", new { @id = model._MemberID });
+            }
+            //ViewBag.DepartmentID = new SelectList(db.tb_Department, "DepartmentID", "DepartmentName", model.DepartmentID);
+            //ViewBag.DuesID = new SelectList(db.tb_Dues, "DuesID", "DuesName", editWorker._Worker.DuesID);
+            //ViewBag.LatestUnionAssessmentID = new SelectList(db.tb_LatestUnionAssessment, "LatestUnionAssessmentID", "LatestUnionAssessmentDesc", tb_MemberMaster.LatestUnionAssessmentID);
+            //ViewBag.PhoneRecID = new SelectList(db.tb_MemberPhoneNumbers, "PhoneRecID", "PhoneType", editWorker._Worker.PhoneRecID);
+            //ViewBag.GenderID = new SelectList(db.tb_Gender, "GenderID", "GenderName", editWorker._Worker.GenderID);
+            return View(model);
+        }
+
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";

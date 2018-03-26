@@ -20,6 +20,8 @@ namespace LRC_NET_Framework
         public bool Membership { get; set; }
         public int MembershipCommitment { get; set; }
         public int MemberID { get; set; }
+        public string TwitterHandle { get; set; }
+        public string FacebookID { get; set; }
     
         public virtual tb_Activity tb_Activity { get; set; }
         public virtual tb_ActivityStatus tb_ActivityStatus { get; set; }

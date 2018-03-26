@@ -1,0 +1,178 @@
+﻿@model LRC_NET_Framework.Models.EditWorkerModels
+
+@{
+    ViewBag.Title = "Edit Worker Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="font-weight-bold" style="background-color: #357ebd; color:gainsboro; padding-top:10px; padding-bottom:5px; padding-left: 30px;"><h4>Edit Worker Details</h4></div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h3 style="padding-left: 70px;">
+            @Html.DisplayFor(model => model._WorkerFullName)
+        </h3>
+        @Html.ValidationMessageFor(model => model._WorkerFullName, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model._MemberID)
+
+        @*Home School DDL*@
+        <div class="form-group">
+            <div class="col-md-3">
+                <p class="control-label">Home School</p>
+            </div>
+            <div class="col-md-9">
+                @Html.DropDownListFor(x => x._CollegeID, Model._Colleges, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model._CollegeID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @*Job Status DDL*@
+        <div class="form-group">
+            <div class="col-md-3">
+                <p class="control-label">Job Status</p>
+            </div>
+            <div class="col-md-9">
+                @Html.DropDownListFor(x => x._JobStatusID, Model._JobStatuses, new { @class = "form-control", style = "width: 200px;" })
+                @Html.ValidationMessageFor(model => model._JobStatusID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @*Job Class - disabled*@
+        <div class="form-group">
+            <div class="col-md-3">
+                <p class="control-label">Job Class</p>
+            </div>
+            <div class="col-md-9">
+                <input type="text" class="form-control" placeholder=" - LZ: Keep it freedom - " disabled>
+            </div>
+        </div>
+
+        @*Division DDL*@
+        <div class="form-group">
+            <div class="col-md-3">
+                <p class="control-label">Division</p>
+            </div>
+            <div class="col-md-9" style="overflow:hidden;">
+                <div style="width: 100%;">
+                    <div style="float: left;">
+                        @Html.DropDownListFor(x => x._DivisionID, Model._Divisions, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model._DivisionID, "", new { @class = "text-danger" })
+                    </div>
+                    <div style="float: left; margin-left:10px">
+                        <button type="button" class="btn btn-secondary">
+                            <span class="glyphicon glyphicon-plus"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @*Department DDL*@
+        <div class="form-group">
+            <div class="col-md-3">
+                <p class="control-label">Department</p>
+            </div>
+            <div class="col-md-9" style="overflow:hidden;">
+                <div style="width: 100%;">
+                    <div style="float: left;">
+                        @Html.DropDownListFor(x => x._DepartmentID, Model._Departments, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model._DepartmentID, "", new { @class = "text-danger" })
+                    </div>
+                    <div style="float: left; margin-left:10px">
+                        <button type="button" class="btn btn-secondary">
+                            <span class="glyphicon glyphicon-plus"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @*Class Category DDL*@
+        <div class="form-group">
+            <div class="col-md-3">
+                <p class="control-label">Class Category</p>
+            </div>
+            <div class="col-md-9">
+                @Html.DropDownListFor(x => x._CategoryID, Model._Categories, new { @class = "form-control", style = "width: 200px;" })
+                @Html.ValidationMessageFor(model => model._CategoryID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @*Hire Date*@
+        <div class="form-group">
+            <div class="col-md-3">
+                <p class="control-label">Hire Date (Aprox)</p>
+            </div>
+            <div class="col-md-9">
+                <fieldset>
+                    <div class="editor-field">
+                        @Html.TextBoxFor(m => m._HireDate, "{0:yyyy-MM-dd}", new { @class = "form-control datecontrol", type = "date", style = "width: 150px;" })
+                        @Html.ValidationMessageFor(model => model._HireDate)
+
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                <p class="control-label text-danger">Salary</p>
+            </div>
+            <div class="col-md-9">
+                <input type="text" class="form-control" placeholder=" ??? ">
+            </div>
+        </div>
+        @*Twitter Handle*@
+        <div class="form-group">
+            <div class="col-md-3">
+                <p class="control-label">Twitter</p>
+            </div>
+            <div class="col-md-9">
+                @Html.EditorFor(model => model._TwitterHandle, new { htmlAttributes = new { @class = "form-control", placeholder = " Twitter Handle " } })
+                @Html.ValidationMessageFor(model => model._TwitterHandle)
+            </div>
+        </div>
+
+        @*Twitter Handle*@
+        <div class="form-group">
+            <div class="col-md-3">
+                <p class="control-label">FaceBook</p>
+            </div>
+            <div class="col-md-9">
+                @Html.EditorFor(model => model._FaceBookID, new { htmlAttributes = new { @class = "form-control", placeholder = " FaceBook ID " } })
+                @Html.ValidationMessageFor(model => model._FaceBookID)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                <p class="control-label text-danger">Active Status</p>
+            </div>
+            <div class="col-md-9">
+                <select class="form-control" id="sel1">
+                    <option> - ??? - </option>
+                    <option>Y</option>
+                    <option>N</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-9">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index", "Home", null, new { @class = "btn btn-info" })
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+

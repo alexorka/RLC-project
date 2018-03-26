@@ -21,7 +21,7 @@ namespace LRC_NET_Framework
         }
     
         public int CampusID { get; set; }
-        public byte CollegeID { get; set; }
+        public int CollegeID { get; set; }
         public string CampusCode { get; set; }
         public string CampusName { get; set; }
     
