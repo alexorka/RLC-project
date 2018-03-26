@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <setParameter name="IIS Web Application Name" value="Site/2279" />
+  <setParameter name="DefaultConnection-Web.config Connection String" value="Data Source=(LocalDb)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\aspnet-LRC-NET-Framework-20180316070307.mdf;Initial Catalog=aspnet-LRC-NET-Framework-20180316070307;Integrated Security=True" />
+  <setParameter name="LRCEntities-Web.config Connection String" value="metadata=res://*/DBModelContext.csdl|res://*/DBModelContext.ssdl|res://*/DBModelContext.msl;provider=System.Data.SqlClient;provider connection string=&quot;data source=THINKSERVER-PC\SQLEXPRESS;initial catalog=LRC;persist security info=True;user id=sa;password=zasada21;MultipleActiveResultSets=True;App=EntityFramework&quot;" />
+</parameters>
