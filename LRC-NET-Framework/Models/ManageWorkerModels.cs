@@ -33,4 +33,41 @@ namespace LRC_NET_Framework.Models
         public string _TwitterHandle { get; set; }
         public string _FaceBookID { get; set; }
    }
+
+    public class AddRole
+    {
+        public int _MemberID { get; set; }
+        public IEnumerable<SelectListItem> _Members { get; set; }
+        public int _RoleID { get; set; }
+        public IEnumerable<SelectListItem> _Roles { get; set; }
+        public int _BodyID { get; set; }
+        public IEnumerable<SelectListItem> _Bodies { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime _StartDate { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime _EndDate { get; set; }
+    }
+}
+
+public class SemesterTaughtModels
+{
+    public int _MemberID { get; set; }
+    public int _CollegeID { get; set; }
+    public IEnumerable<SelectListItem> _Colleges { get; set; }
+    public int _SemesterRecID { get; set; }
+    public IEnumerable<SelectListItem> _Semesters { get; set; }
+    public int _RoomID { get; set; }
+    public IEnumerable<SelectListItem> _Rooms { get; set; }
+    public int _ClassID { get; set; }
+    public IEnumerable<SelectListItem> _Classes { get; set; }
+    [Required]
+    [DataType(DataType.Time)]
+    [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:H:mm}")]
+    public DateTime _StartDate { get; set; }
+    [Required]
+    [DataType(DataType.Time)]
+    [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:H:mm}")]
+    public DateTime _EndDate { get; set; }
 }

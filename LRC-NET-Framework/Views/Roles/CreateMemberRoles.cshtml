@@ -1,0 +1,118 @@
+﻿@model LRC_NET_Framework.Models.AddRole
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="font-weight-bold" style="background-color: #357ebd; color:gainsboro; padding-top:10px; padding-bottom:5px; padding-left: 30px;"><h4>Add Worker Role</h4></div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    @*Workers DDL*@
+    <div class="form-group">
+        <div class="col-md-3">
+            <p class="control-label"><span class="text-danger">*</span>  Worker</p>
+        </div>
+        <div class="col-md-9">
+            @Html.DropDownListFor(model => model._MemberID, Model._Members, new { @class = "form-control", style = "width: 250px;" })
+            @Html.ValidationMessageFor(model => model._MemberID, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    @*Roles DDL*@
+    <div class="form-group">
+        <div class="col-md-3">
+            <p class="control-label"><span class="text-danger">*</span>  Role</p>
+        </div>
+        <div class="col-md-9" style="overflow:hidden;">
+            <div style="width: 100%;">
+                <div style="float: left;">
+                    @Html.DropDownListFor(model => model._RoleID, Model._Roles, new { @class = "form-control", style = "width: 250px;" })
+                    @Html.ValidationMessageFor(model => model._RoleID, "", new { @class = "text-danger" })
+                </div>
+                <div style="float: left; margin-left:10px">
+                        <a href="@Url.Action("CreateRole", "Roles")" class="btn btn-default"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Bodies DDL*@
+    <div class="form-group">
+        <div class="col-md-3">
+            <p class="control-label"><span class="text-danger">*</span>  Body</p>
+        </div>
+        <div class="col-md-9" style="overflow:hidden;">
+            <div style="width: 100%;">
+                <div style="float: left;">
+                    @Html.DropDownListFor(model => model._BodyID, Model._Bodies, new { @class = "form-control", style = "width: 250px;" })
+                    @Html.ValidationMessageFor(model => model._BodyID, "", new { @class = "text-danger" })
+                </div>
+                <div style="float: left; margin-left:10px">
+                    <a href="@Url.Action("CreateBody", "Roles")" class="btn btn-default"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     @*Start Date*@
+    <div class="form-group">
+        <div class="col-md-3">
+            <p class="control-label">Start Date</p>
+        </div>
+        <div class="col-md-9">
+            <fieldset>
+                <div class="editor-field">
+                    @Html.TextBoxFor(m => m._StartDate, "{0:yyyy-MM-dd}", new { @class = "form-control datecontrol", type = "date", style = "width: 150px;" })
+                    @Html.ValidationMessageFor(model => model._StartDate)
+
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+    @*End Date*@
+    <div class="form-group">
+        <div class="col-md-3">
+            <p class="control-label">End Date</p>
+        </div>
+        <div class="col-md-9">
+            <fieldset>
+                <div class="editor-field">
+                    @Html.TextBoxFor(m => m._EndDate, "{0:yyyy-MM-dd}", new { @class = "form-control datecontrol", type = "date", style = "width: 150px;" })
+                    @Html.ValidationMessageFor(model => model._EndDate)
+
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+    @*<div class="form-group">
+            @Html.LabelFor(model => model.RoleName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.RoleName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.RoleName, "", new { @class = "text-danger" })
+            </div>
+        </div>*@
+
+    <div class="form-group">
+        <div class="col-md-offset-3 col-md-9">
+            <input type="submit" value="Create" class="btn btn-default" />
+        </div>
+    </div>
+</div>
+}
+
+<div class="col-md-offset-2 col-md-10">
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

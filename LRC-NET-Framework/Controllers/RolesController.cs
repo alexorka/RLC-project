@@ -9,6 +9,8 @@ using System.Web.Mvc;
 using LRC_NET_Framework;
 using PagedList;
 using PagedList.Mvc;
+using LRC_NET_Framework.Models;
+using System.Data.Entity.Validation;
 
 namespace LRC_NET_Framework.Controllers
 {
@@ -19,7 +21,7 @@ namespace LRC_NET_Framework.Controllers
         // GET: Roles
         public ActionResult Index(string sortOrder, string searchString, int? page)
         {
-            var Roles = db.tb_Roles.Include(t => t.tb_MemberRoles);
+            var Roles = db.tb_Roles.Include(t => t.tb_MemberRoles).Where(t => t.tb_MemberRoles.Count != 0);
 
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Name desc" : "";
             //Searching @ Filtering
@@ -45,7 +47,7 @@ namespace LRC_NET_Framework.Controllers
             }
 
             //Paging
-            int pageSize = 3;
+            int pageSize = 5;
             int pageNumber = (page ?? 1);
 
             ViewData["MemberQty"] = Roles.Count();
@@ -70,27 +72,101 @@ namespace LRC_NET_Framework.Controllers
             return View(tb_Roles);
         }
 
-        // GET: Roles/Create
-        public ActionResult Create()
+        // GET: Roles/CreateMemberRoles
+        public ActionResult CreateMemberRoles()
         {
-            return View();
+            var members = db.tb_MemberMaster;
+            List<object> memberList = new List<object>();
+            foreach (var member in members)
+                memberList.Add(new
+                {
+                    Id = member.MemberID,
+                    Name = member.LastName + ", " + member.FirstName
+                });
+
+            AddRole model = new AddRole()
+            {
+                _MemberID = 0,
+                _Members = new SelectList(memberList, "Id", "Name"),
+                _RoleID = 0,
+                _Roles = new SelectList(db.tb_Roles, "RoleID", "RoleName"),
+                _BodyID = 0,
+                _Bodies = new SelectList(db.tb_Body, "BodyID", "BodyName"),
+                _StartDate = DateTime.Now,
+                _EndDate = DateTime.Now
+            };
+
+            return View(model);
         }
 
-        // POST: Roles/Create
+        // POST: Roles/CreateMemberRoles
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "RoleID,RoleName")] tb_Roles tb_Roles)
+        public ActionResult CreateMemberRoles(AddRole model)
         {
             if (ModelState.IsValid)
             {
-                db.tb_Roles.Add(tb_Roles);
+                tb_MemberRoles role = new tb_MemberRoles();
+                role.MemberID = model._MemberID;
+                role.RoleID = model._RoleID;
+                role.BodyID = model._BodyID;
+                role.StartDate = model._StartDate;
+                role.EndDate = model._EndDate;
+
+                db.tb_MemberRoles.Add(role);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            return View(tb_Roles);
+            return View(model);
+        }
+
+        // GET: Roles/CreateRole
+        public ActionResult CreateRole()
+        {
+            return View();
+        }
+
+        // POST: Roles/CreateRole
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateRole([Bind(Include = "RoleID,RoleName")] tb_Roles Roles)
+        {
+            if (ModelState.IsValid)
+            {
+                db.tb_Roles.Add(Roles);
+                db.SaveChanges();
+                return RedirectToAction("CreateMemberRoles");
+            }
+
+            return View(Roles);
+        }
+
+        // GET: Roles/CreateRole
+        public ActionResult CreateBody()
+        {
+            return View();
+        }
+
+        // POST: Roles/CreateRole
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateBody([Bind(Include = "BodyID,BodyName")] tb_Body body)
+        {
+            if (ModelState.IsValid)
+            {
+                db.tb_Body.Add(body);
+                db.SaveChanges();
+                return RedirectToAction("CreateMemberRoles");
+            }
+
+            return View(body);
         }
 
         // GET: Roles/Edit/5

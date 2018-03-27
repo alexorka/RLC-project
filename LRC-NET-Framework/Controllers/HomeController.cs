@@ -113,7 +113,7 @@ namespace LRC_NET_Framework.Controllers
         // GET: tb_MemberMaster/Edit/5
         public ActionResult Edit(int? id)
         {
-            id = 1; // test REMOVE IT
+            //id = 1; // test REMOVE IT
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);

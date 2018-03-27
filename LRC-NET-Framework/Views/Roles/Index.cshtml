@@ -5,7 +5,10 @@
     ViewBag.Title = "Worker Roles";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+<hr />
+<ul class="list-inline">
+    <li role="button"><a href="@Url.Action("CreateMemberRoles", "Roles")" class="btn btn-default">&nbsp;&nbsp;Role<span class="glyphicon glyphicon-plus pull-left" aria-hidden="true"></span></a></li>
+</ul>
 <h2>Worker Roles</h2>
 @using (Html.BeginForm("Index", "Activities", FormMethod.Post, new { @class = "margin-right: 0" }))
 {
@@ -43,51 +46,54 @@
 
     @foreach (var role in Model)
     {
-        <tr style="font-weight:bold">
-            <td colspan="10" style="background-color:lightgray">
-                @Html.DisplayFor(modelItem => role.RoleName)
-            </td>
-        </tr>
-        foreach (var item in role.tb_MemberRoles)
+        if (role.tb_MemberRoles.Count > 0)
         {
-        <tr>
-            <td>
-                @Html.ActionLink(item.tb_MemberMaster.LastName + ", " + item.tb_MemberMaster.FirstName, "Index", "ManageWorker", new { id = item.tb_MemberMaster.MemberID }, new { @class = "text -info" })
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.tb_Body.BodyName)
-            </td>
-            <td class="danger">
-                ???
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.tb_MemberMaster.tb_MemberPhoneNumbers.Where(t => t.tb_MemberMaster.MemberID == item.tb_MemberMaster.MemberID).FirstOrDefault().PhoneNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.tb_MemberMaster.tb_MemberEmail.Where(t => t.tb_MemberMaster.MemberID == item.tb_MemberMaster.MemberID).FirstOrDefault().EmailAddress)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.tb_MemberMaster.tb_MemberActivity.Where(t => t.tb_MemberMaster.MemberID == item.tb_MemberMaster.MemberID).LastOrDefault().MembershipCommitment)
-            </td>
-            <td>
-                @if (item.StartDate != null)
-                {
-                    @Convert.ToDateTime(item.StartDate).ToString("MM/dd/yyyy")
-                }
-            </td>
-            <td>
-                @if (item.StartDate != null)
-                {
-                    @Convert.ToDateTime(item.EndDate).ToString("MM/dd/yyyy")
-                }
-            </td>
-            <td class="danger">
-                @Html.DisplayFor(modelItem => item.Expired) ???
-            </td>
-            <td class="danger">
-                ???
-            </td>
-        </tr>
+            <tr style="font-weight:bold">
+                <td colspan="10" style="background-color:lightgray">
+                    @Html.DisplayFor(modelItem => role.RoleName)
+                </td>
+            </tr>
+            foreach (var item in role.tb_MemberRoles)
+            {
+            <tr>
+                <td>
+                    @Html.ActionLink(item.tb_MemberMaster.LastName + ", " + item.tb_MemberMaster.FirstName, "Index", "ManageWorker", new { id = item.tb_MemberMaster.MemberID }, new { @class = "text -info" })
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_Body.BodyName)
+                </td>
+                <td class="danger">
+                    ???
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_MemberMaster.tb_MemberPhoneNumbers.Where(t => t.tb_MemberMaster.MemberID == item.tb_MemberMaster.MemberID).FirstOrDefault().PhoneNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_MemberMaster.tb_MemberEmail.Where(t => t.tb_MemberMaster.MemberID == item.tb_MemberMaster.MemberID).FirstOrDefault().EmailAddress)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_MemberMaster.tb_MemberActivity.Where(t => t.tb_MemberMaster.MemberID == item.tb_MemberMaster.MemberID).LastOrDefault().MembershipCommitment)
+                </td>
+                <td>
+                    @if (item.StartDate != null)
+                    {
+                        @Convert.ToDateTime(item.StartDate).ToString("MM/dd/yyyy")
+                    }
+                </td>
+                <td>
+                    @if (item.StartDate != null)
+                    {
+                        @Convert.ToDateTime(item.EndDate).ToString("MM/dd/yyyy")
+                    }
+                </td>
+                <td class="text-center">
+                    @Html.DisplayFor(modelItem => item.Expired)
+                </td>
+                <td class="danger">
+                    ???
+                </td>
+            </tr>
+            }
         }
     }
         @*@Html.ActionLink("Edit", "Edit", new { id = item.RoleID }) |
