@@ -68,24 +68,24 @@
         {
         <tr>
             <td>
-                @Html.ActionLink(item.tb_MemberMaster.LastName + ", " + item.tb_MemberMaster.FirstName, "Index", "ManageWorker", new { id = item.MemberID }, new { @class = "text -info" })
+                @Html.ActionLink(item.tb_MemberMaster.LastName + ", " + item.tb_MemberMaster.FirstName, "Details", "Home", new { id = item.MemberID }, new { @class = "text -info" })
             </td>
             <td></td>
             <td>
                 @Html.DisplayFor(modelItem => item.tb_MemberMaster.tb_Department.DepartmentName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.tb_Room.tb_Building.tb_Campus.CampusName)
+                @Html.DisplayFor(modelItem => item.tb_Building.tb_Campus.CampusName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.tb_Room.tb_Building.BuildingName)
+                @Html.DisplayFor(modelItem => item.tb_Building.BuildingName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.tb_Room.RoomName)
+                @Html.DisplayFor(modelItem => item.Room)
             </td>
             <td>???</td>
             <td>
-                @Html.DisplayFor(modelItem => item.tb_Class.ClassName)
+                @Html.DisplayFor(modelItem => item.Class)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ClassStart)

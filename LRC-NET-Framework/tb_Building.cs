@@ -17,15 +17,15 @@ namespace LRC_NET_Framework
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public tb_Building()
         {
-            this.tb_Room = new HashSet<tb_Room>();
+            this.tb_SemesterTaught = new HashSet<tb_SemesterTaught>();
         }
     
         public int BuildingID { get; set; }
         public string BuildingName { get; set; }
-        public Nullable<int> CampusID { get; set; }
+        public int CampusID { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tb_Room> tb_Room { get; set; }
         public virtual tb_Campus tb_Campus { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tb_SemesterTaught> tb_SemesterTaught { get; set; }
     }
 }

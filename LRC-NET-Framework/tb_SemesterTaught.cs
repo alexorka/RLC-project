@@ -15,18 +15,19 @@ namespace LRC_NET_Framework
     public partial class tb_SemesterTaught
     {
         public int SemesterTaughtID { get; set; }
-        public Nullable<int> SemesterRecID { get; set; }
-        public Nullable<int> MemberID { get; set; }
-        public Nullable<int> RoomID { get; set; }
-        public Nullable<int> ClassID { get; set; }
+        public int SemesterRecID { get; set; }
+        public int MemberID { get; set; }
+        public string Room { get; set; }
+        public string Class { get; set; }
         public System.TimeSpan ClassStart { get; set; }
-        public Nullable<System.TimeSpan> ClassEnd { get; set; }
-        public Nullable<int> ClassWeekDayID { get; set; }
+        public System.TimeSpan ClassEnd { get; set; }
+        public int ClassWeekDayID { get; set; }
+        public int BuildingID { get; set; }
+        public bool ScheduleStatus { get; set; }
     
-        public virtual tb_Semesters tb_Semesters { get; set; }
-        public virtual tb_Class tb_Class { get; set; }
-        public virtual tb_Room tb_Room { get; set; }
-        public virtual tb_WeekDay tb_WeekDay { get; set; }
+        public virtual tb_Building tb_Building { get; set; }
         public virtual tb_MemberMaster tb_MemberMaster { get; set; }
+        public virtual tb_Semesters tb_Semesters { get; set; }
+        public virtual tb_WeekDay tb_WeekDay { get; set; }
     }
 }

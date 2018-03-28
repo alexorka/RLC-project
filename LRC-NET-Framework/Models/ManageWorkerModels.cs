@@ -49,25 +49,35 @@ namespace LRC_NET_Framework.Models
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime _EndDate { get; set; }
     }
+
+    public class SemesterTaughtModels
+    {
+        public int _MemberID { get; set; }
+        public int _CollegeID { get; set; }
+        public IEnumerable<SelectListItem> _Colleges { get; set; }
+        public int _CampusID { get; set; }
+        public IEnumerable<SelectListItem> _Campuses { get; set; }
+        public int _BuildingID { get; set; }
+        public IEnumerable<SelectListItem> _Buildings { get; set; }
+        //public int _SemesterRecID { get; set; }
+        //public IEnumerable<SelectListItem> _Semesters { get; set; }
+        public string _Room { get; set; }
+        public string _Class { get; set; }
+        //public IEnumerable<SelectListItem> _Classes { get; set; }
+        [Required]
+        [DataType(DataType.Time)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:H:mm}")]
+        public DateTime _StartTime { get; set; }
+        [Required]
+        [DataType(DataType.Time)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:H:mm}")]
+        public DateTime _EndTime { get; set; }
+        public int _ClassWeekDayID { get; set; }
+        public IEnumerable<tb_WeekDay> _WeekDays { get; set; }
+        public int _ScheduleStatusID { get; set; }
+        public IEnumerable<SelectListItem> _ScheduleStatuses { get; set; }
+
+    }
 }
 
-public class SemesterTaughtModels
-{
-    public int _MemberID { get; set; }
-    public int _CollegeID { get; set; }
-    public IEnumerable<SelectListItem> _Colleges { get; set; }
-    public int _SemesterRecID { get; set; }
-    public IEnumerable<SelectListItem> _Semesters { get; set; }
-    public int _RoomID { get; set; }
-    public IEnumerable<SelectListItem> _Rooms { get; set; }
-    public int _ClassID { get; set; }
-    public IEnumerable<SelectListItem> _Classes { get; set; }
-    [Required]
-    [DataType(DataType.Time)]
-    [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:H:mm}")]
-    public DateTime _StartDate { get; set; }
-    [Required]
-    [DataType(DataType.Time)]
-    [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:H:mm}")]
-    public DateTime _EndDate { get; set; }
-}
+

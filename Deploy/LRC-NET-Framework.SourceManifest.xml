@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <sitemanifest>
-  <IisApp path="C:\Users\ThinkServer\Documents\Los Rios College\LRC-NET-Framework\obj\Release\Package\PackageTmp" />
-  <setAcl path="C:\Users\ThinkServer\Documents\Los Rios College\LRC-NET-Framework\obj\Release\Package\PackageTmp" setAclResourceType="Directory" />
-  <setAcl path="C:\Users\ThinkServer\Documents\Los Rios College\LRC-NET-Framework\obj\Release\Package\PackageTmp" setAclUser="anonymousAuthenticationUser" setAclResourceType="Directory" />
+  <IisApp path="C:\Users\ThinkServer\Documents\Los Rios College\LRC-NET-Framework\obj\Debug\Package\PackageTmp" />
+  <setAcl path="C:\Users\ThinkServer\Documents\Los Rios College\LRC-NET-Framework\obj\Debug\Package\PackageTmp" setAclResourceType="Directory" />
+  <setAcl path="C:\Users\ThinkServer\Documents\Los Rios College\LRC-NET-Framework\obj\Debug\Package\PackageTmp" setAclUser="anonymousAuthenticationUser" setAclResourceType="Directory" />
 </sitemanifest>

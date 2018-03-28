@@ -24,9 +24,9 @@ namespace LRC_NET_Framework
             this.tb_MemberEmail = new HashSet<tb_MemberEmail>();
             this.tb_MemberNotes = new HashSet<tb_MemberNotes>();
             this.tb_MemberPhoneNumbers = new HashSet<tb_MemberPhoneNumbers>();
+            this.tb_Users = new HashSet<tb_Users>();
             this.tb_MemberRoles = new HashSet<tb_MemberRoles>();
             this.tb_SemesterTaught = new HashSet<tb_SemesterTaught>();
-            this.tb_Users = new HashSet<tb_Users>();
         }
     
         public int MemberID { get; set; }
@@ -88,10 +88,10 @@ namespace LRC_NET_Framework
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_MemberPhoneNumbers> tb_MemberPhoneNumbers { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tb_Users> tb_Users { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_MemberRoles> tb_MemberRoles { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_SemesterTaught> tb_SemesterTaught { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tb_Users> tb_Users { get; set; }
     }
 }

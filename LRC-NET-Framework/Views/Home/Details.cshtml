@@ -10,7 +10,7 @@
 
 <hr />
 <ul class="list-inline">
-    <li role="button"><a href="#Schedules" class="btn btn-default">Schedules&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="@Url.Action("Create", "SemesterTaught", new { @id = Model._Worker.MemberID })" class="btn btn-default">Schedules&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
     <li role="button"><a href="#" class="btn btn-default">Assessments&nbsp;&nbsp;<span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></li>
     <li role="button"><a href="#Activities" class="btn btn-default">Activities&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
     <li role="button"><a href="#ContactInfo" class="btn btn-default">Contact Info&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
@@ -168,25 +168,25 @@
     {
         <tr class="text-muted">
             <td>
-                @Html.DisplayFor(modelItem => item.tb_Room.tb_Building.tb_Campus.tb_College.CollegeDesc)
+                @Html.DisplayFor(modelItem => item.tb_Building.tb_Campus.tb_College.CollegeDesc)
             </td>
             <td>
                 <a href="#" class="btn btn-xs"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.tb_Room.tb_Building.tb_Campus.CampusName)
+                @Html.DisplayFor(modelItem => item.tb_Building.tb_Campus.CampusName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.tb_Room.tb_Building.BuildingName)
+                @Html.DisplayFor(modelItem => item.tb_Building.BuildingName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.tb_Room.RoomName)
+                @Html.DisplayFor(modelItem => item.Room)
             </td>
             <td class="danger">
                 ???
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.tb_Class.ClassName)
+                @Html.DisplayFor(modelItem => item.Class)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.tb_WeekDay.WeekDayName)

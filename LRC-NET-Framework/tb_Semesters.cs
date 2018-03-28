@@ -24,7 +24,7 @@ namespace LRC_NET_Framework
         public Nullable<System.DateTime> DateFrom { get; set; }
         public Nullable<System.DateTime> DateTo { get; set; }
         public string FiscalYear { get; set; }
-        public Nullable<int> SemesterID { get; set; }
+        public int SemesterID { get; set; }
     
         public virtual tb_SemesterName tb_SemesterName { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

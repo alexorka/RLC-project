@@ -23,7 +23,7 @@ namespace LRC_NET_Framework.Controllers
             if (CollegeID == null)
                 CollegeID = 1;
             var tb_SemesterTaught = db.tb_SemesterTaught.Include(t => t.tb_MemberMaster).
-                Include(t => t.tb_Semesters).Include(t => t.tb_Class).Include(t => t.tb_Room);
+                Include(t => t.tb_Semesters);
             tb_SemesterTaught.Select(t => t.tb_MemberMaster.tb_Department.tb_College);
             tb_SemesterTaught = tb_SemesterTaught.Where(t => t.tb_MemberMaster.tb_Department.tb_College.CollegeID == CollegeID);
             ViewData["MemberQty"] = tb_SemesterTaught.Count();

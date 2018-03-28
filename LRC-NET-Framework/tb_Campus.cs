@@ -25,8 +25,8 @@ namespace LRC_NET_Framework
         public string CampusCode { get; set; }
         public string CampusName { get; set; }
     
+        public virtual tb_College tb_College { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_Building> tb_Building { get; set; }
-        public virtual tb_College tb_College { get; set; }
     }
 }

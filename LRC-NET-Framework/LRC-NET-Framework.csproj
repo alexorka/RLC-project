@@ -205,6 +205,7 @@
     <Compile Include="Controllers\NotesController.cs" />
     <Compile Include="Controllers\RolesController.cs" />
     <Compile Include="Controllers\SchoolListController.cs" />
+    <Compile Include="Controllers\SemesterTaughtController.cs" />
     <Compile Include="DBModelContext.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -267,9 +268,6 @@
     <Compile Include="tb_CityState.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
-    <Compile Include="tb_Class.cs">
-      <DependentUpon>DBModelContext.tt</DependentUpon>
-    </Compile>
     <Compile Include="tb_College.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
@@ -319,9 +317,6 @@
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
     <Compile Include="tb_Roles.cs">
-      <DependentUpon>DBModelContext.tt</DependentUpon>
-    </Compile>
-    <Compile Include="tb_Room.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
     <Compile Include="tb_SemesterName.cs">
@@ -493,6 +488,11 @@
     <Content Include="Views\Home\Details.cshtml" />
     <Content Include="Views\Roles\CreateRole.cshtml" />
     <Content Include="Views\Roles\CreateBody.cshtml" />
+    <Content Include="Views\SemesterTaught\Create.cshtml" />
+    <Content Include="Views\SemesterTaught\Delete.cshtml" />
+    <Content Include="Views\SemesterTaught\Details.cshtml" />
+    <Content Include="Views\SemesterTaught\Edit.cshtml" />
+    <Content Include="Views\SemesterTaught\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

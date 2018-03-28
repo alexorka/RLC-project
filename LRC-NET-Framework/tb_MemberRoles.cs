@@ -23,7 +23,7 @@ namespace LRC_NET_Framework
         public bool Expired { get; set; }
     
         public virtual tb_Body tb_Body { get; set; }
-        public virtual tb_Roles tb_Roles { get; set; }
         public virtual tb_MemberMaster tb_MemberMaster { get; set; }
+        public virtual tb_Roles tb_Roles { get; set; }
     }
 }

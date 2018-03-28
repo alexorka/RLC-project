@@ -1,0 +1,170 @@
+﻿@*@model LRC_NET_Framework.tb_SemesterTaught*@
+@model LRC_NET_Framework.Models.SemesterTaughtModels
+
+@{
+    ViewBag.Title = "Add Schedule";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="font-weight-bold" style="background-color: #357ebd; color:gainsboro; padding-top:10px; padding-bottom:5px; padding-left: 30px;"><h4>Manage Schedule</h4></div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <h4>Add Schedule</h4>
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model._MemberID, new { id = "memberID", Value = @Model._MemberID })
+
+    @*School DDL*@
+    <div class="form-group">
+        <div class="col-md-2">
+            <p class="control-label"><span class="text-danger">*</span>  School</p>
+        </div>
+        <div class="col-md-10">
+            @*@Html.DropDownList("CollegeID", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model._CollegeID, "", new { @class = "text-danger" })*@
+            @Html.DropDownListFor(model => model._CollegeID, Model._Colleges, new { @class = "form-control", style = "width: 250px;" })
+            @Html.ValidationMessageFor(model => model._CollegeID, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    @*Campus DDL*@
+    <div class="form-group">
+        <div class="col-md-2">
+            <p class="control-label"><span class="text-danger">*</span>  Campus</p>
+        </div>
+        <div class="col-md-10">
+            @*@Html.DropDownList("CampusID", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.tb_Building.CampusID, "", new { @class = "text-danger" })*@
+            @Html.DropDownListFor(model => model._CampusID, Model._Campuses, new { @class = "form-control", style = "width: 250px;" })
+            @Html.ValidationMessageFor(model => model._CampusID, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    @*Building DDL*@
+    <div class="form-group">
+        <div class="col-md-2">
+            <p class="control-label"><span class="text-danger">*</span>  Building</p>
+        </div>
+        <div class="col-md-10">
+            @Html.DropDownListFor(model => model._BuildingID, Model._Buildings, new { @class = "form-control", style = "width: 250px;" })
+            @Html.ValidationMessageFor(model => model._BuildingID, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    @*Room*@
+    <div class="form-group">
+        <div class="col-md-2">
+            <p class="control-label">Room</p>
+        </div>
+        <div class="col-md-10">
+            @Html.EditorFor(model => model._Room, new { htmlAttributes = new { @class = "form-control", style = "width: 150px;" } })
+            @Html.ValidationMessageFor(model => model._Room, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    @*Class*@
+    <div class="form-group">
+        <div class="col-md-2">
+            <p class="control-label">Class</p>
+        </div>
+        <div class="col-md-10">
+            @Html.EditorFor(model => model._Class, new { htmlAttributes = new { @class = "form-control", style = "width: 150px;" } })
+            @Html.ValidationMessageFor(model => model._Class, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    @*Start Time*@
+    <div class="form-group">
+        <div class="col-md-2">
+            <p class="control-label">Start Time</p>
+        </div>
+        <div class="col-md-10">
+            <fieldset>
+                <div class="editor-field">
+                    @Html.TextBoxFor(m => m._StartTime, "{0:hh\\:mm}", new { @class = "form-control", type = "time", style = "width: 100px;" })
+                    @Html.ValidationMessageFor(model => model._StartTime)
+
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+    @*End Time*@
+    <div class="form-group">
+        <div class="col-md-2">
+            <p class="control-label">End Time</p>
+        </div>
+        <div class="col-md-10">
+            <fieldset>
+                <div class="editor-field">
+                    @Html.TextBoxFor(m => m._EndTime, "{0:hh\\:mm}", new { @class = "form-control", type = "time", style = "width: 100px;" })
+                    @Html.ValidationMessageFor(model => model._EndTime)
+
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+    @*Days of Week*@
+    <div class="form-group">
+        <div class="col-md-2">
+            <p class="control-label">Days of Week</p>
+        </div>
+        <div class="col-md-10">
+            @foreach (var item in Model._WeekDays)
+            {
+                <div class="checkbox">
+                    @if (item.ClassWeekDayID == 1)
+                    {
+                        @Html.RadioButton("classWeekDayID", item.ClassWeekDayID, true, new { id = item.WeekDayName })
+                    }
+                    else
+                    {
+                        @Html.RadioButton("classWeekDayID", item.ClassWeekDayID, false, new { id = item.WeekDayName })
+                    }
+                    @Html.Label(item.WeekDayName, item.WeekDayName)
+                </div>
+            }
+            @Html.ValidationMessageFor(model => model._ClassWeekDayID, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    @*ScheduleStatus DDL*@
+    <div class="form-group">
+        <div class="col-md-2">
+            <p class="control-label"><span class="text-danger">*</span>  Schedule Status</p>
+        </div>
+        <div class="col-md-10">
+            @Html.DropDownListFor(model => model._ScheduleStatusID, Model._ScheduleStatuses, new { @class = "form-control", style = "width: 200px;" })
+            @Html.ValidationMessageFor(model => model._ScheduleStatusID, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    @*Location Note*@
+    <div class="form-group">
+        <div class="col-md-2">
+            <p class="control-label">Location Note   <span class="text-danger">???</span></p>
+        </div>
+        <div class="col-md-10">
+            <input type="text" name="name" value="" placeholder="  ---  " class="form-control" />
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+    </div>
+</div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

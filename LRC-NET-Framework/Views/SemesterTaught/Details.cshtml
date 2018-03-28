@@ -1,0 +1,75 @@
+﻿@model LRC_NET_Framework.tb_SemesterTaught
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>tb_SemesterTaught</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ClassStart)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ClassStart)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ClassEnd)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ClassEnd)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Class)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Class)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.tb_Semesters.FiscalYear)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.tb_Semesters.FiscalYear)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Room)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Room)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.tb_WeekDay.WeekDayName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.tb_WeekDay.WeekDayName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.tb_MemberMaster.MemberIDNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.tb_MemberMaster.MemberIDNumber)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.SemesterTaughtID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

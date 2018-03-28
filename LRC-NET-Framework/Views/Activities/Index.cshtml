@@ -75,7 +75,7 @@
         {
             <tr>
                 <td>
-                    @Html.ActionLink(item.tb_MemberMaster.LastName + ", " + item.tb_MemberMaster.FirstName, "Index", "ManageWorker", new { id = item.tb_MemberMaster.MemberID }, new { @class = "text -info" })
+                    @Html.ActionLink(item.tb_MemberMaster.LastName + ", " + item.tb_MemberMaster.FirstName, "Details", "Home", new { id = item.tb_MemberMaster.MemberID }, new { @class = "text -info" })
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.tb_MemberMaster.tb_MemberPhoneNumbers.Where(t => t.tb_MemberMaster.MemberID == item.tb_MemberMaster.MemberID).FirstOrDefault().PhoneNumber)
