@@ -11,8 +11,8 @@
 <hr />
 <ul class="list-inline">
     <li role="button"><a href="@Url.Action("Create", "SemesterTaught", new { @id = Model._Worker.MemberID })" class="btn btn-default">Schedules&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
-    <li role="button"><a href="#" class="btn btn-default">Assessments&nbsp;&nbsp;<span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></li>
-    <li role="button"><a href="#Activities" class="btn btn-default">Activities&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="@Url.Action("AddAssessment", "Assessment", new { @id = Model._Worker.MemberID })" class="btn btn-default">Assessments&nbsp;&nbsp;<span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="@Url.Action("AddActivity", "Activities", new { @id = Model._Worker.MemberID })" class="btn btn-default">Activities&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
     <li role="button"><a href="#ContactInfo" class="btn btn-default">Contact Info&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
     <li role="button"><a href="#" class="btn btn-default">Member Forms&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
     <li role="button"><a href="#" class="btn btn-default">COPE Forms&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>

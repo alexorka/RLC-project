@@ -73,9 +73,6 @@ namespace LRC_NET_Framework.Controllers
         // GET: Assessment/Create
         public ActionResult Create(int? id)
         {
-            //var Assessments = new tb_Assessment();
-            //var Activities = new tb_Activity();
-            //var modelCollection = new AssessActivityModels();
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -190,7 +187,7 @@ namespace LRC_NET_Framework.Controllers
         }
 
         // GET: Assessment/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult AddAssessment(int? id)
         {
             if (id == null)
             {
@@ -202,7 +199,8 @@ namespace LRC_NET_Framework.Controllers
                 return HttpNotFound();
             }
             ViewBag.AssessmentNameID = new SelectList(db.tb_AssessmentName, "AssessmentNameID", "AssessmentName", tb_Assessment.AssessmentNameID);
-            ViewBag.MemberID = new SelectList(db.tb_MemberMaster, "MemberID", "LastName", tb_Assessment.MemberID);
+            ViewBag.ValueID = new SelectList(db.tb_AssessmentValue, "ValueID", "ValueName", tb_Assessment.ValueID /* selected value */);
+            //ViewBag.MemberID = new SelectList(db.tb_MemberMaster, "MemberID", "LastName", tb_Assessment.MemberID);
             return View(tb_Assessment);
         }
 
@@ -211,15 +209,17 @@ namespace LRC_NET_Framework.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "AssessmentID,MemberID,AssessmentNameID,AssessmentDesc,Value,AssessmentDate,AssesedBy,AddedBy,AddedDateTime,ModifiedBy,ModifiedDateTime")] tb_Assessment tb_Assessment)
+        public ActionResult AddAssessment([Bind(Include = "AssessmentID,MemberID,AssessmentNameID,AssessmentDesc,ValueID,AssessmentDate,BackgroundStory,Fears,AttitudeTowardUnion,IDdLeaders,FollowUp")] tb_Assessment tb_Assessment)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(tb_Assessment).State = EntityState.Modified;
+                db.tb_Assessment.Add(tb_Assessment);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Details", "Home", new { @id = tb_Assessment.MemberID });
+                //return RedirectToAction("Index");
             }
             ViewBag.AssessmentNameID = new SelectList(db.tb_AssessmentName, "AssessmentNameID", "AssessmentName", tb_Assessment.AssessmentNameID);
+            ViewBag.ValueID = new SelectList(db.tb_AssessmentValue, "ValueID", "ValueName", tb_Assessment.ValueID /* selected value */);
             ViewBag.MemberID = new SelectList(db.tb_MemberMaster, "MemberID", "LastName", tb_Assessment.MemberID);
             return View(tb_Assessment);
         }

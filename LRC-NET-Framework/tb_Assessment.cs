@@ -25,6 +25,11 @@ namespace LRC_NET_Framework
         public Nullable<System.DateTime> AddedDateTime { get; set; }
         public Nullable<int> ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedDateTime { get; set; }
+        public string BackgroundStory { get; set; }
+        public string Fears { get; set; }
+        public string AttitudeTowardUnion { get; set; }
+        public string IDdLeaders { get; set; }
+        public string FollowUp { get; set; }
     
         public virtual tb_AssessmentName tb_AssessmentName { get; set; }
         public virtual tb_AssessmentValue tb_AssessmentValue { get; set; }

@@ -38,7 +38,6 @@ namespace LRC_NET_Framework
         public virtual DbSet<tb_ActivityStatus> tb_ActivityStatus { get; set; }
         public virtual DbSet<tb_Activity> tb_Activity { get; set; }
         public virtual DbSet<tb_AssessmentName> tb_AssessmentName { get; set; }
-        public virtual DbSet<tb_Assessment> tb_Assessment { get; set; }
         public virtual DbSet<tb_AssessmentValue> tb_AssessmentValue { get; set; }
         public virtual DbSet<tb_MemberNotes> tb_MemberNotes { get; set; }
         public virtual DbSet<tb_NoteType> tb_NoteType { get; set; }
@@ -61,5 +60,6 @@ namespace LRC_NET_Framework
         public virtual DbSet<tb_Building> tb_Building { get; set; }
         public virtual DbSet<tb_WeekDay> tb_WeekDay { get; set; }
         public virtual DbSet<tb_SemesterTaught> tb_SemesterTaught { get; set; }
+        public virtual DbSet<tb_Assessment> tb_Assessment { get; set; }
     }
 }

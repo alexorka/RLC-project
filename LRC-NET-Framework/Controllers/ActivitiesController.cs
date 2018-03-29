@@ -70,9 +70,22 @@ namespace LRC_NET_Framework.Controllers
         }
 
         // GET: Activities/Create
-        public ActionResult Create()
+        public ActionResult AddActivity(int? id)
         {
-            return View();
+            id = 1;
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            tb_MemberActivity tb_MemberActivity = db.tb_MemberActivity.Find(id);
+            if (tb_MemberActivity == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.ActivityID = new SelectList(db.tb_Activity, "ActivityID", "ActivityName", tb_MemberActivity.ActivityID);
+            ViewBag.Activities = db.tb_MemberActivity.ToList();
+            ViewBag.ActivityStatusID = db.tb_ActivityStatus.ToList();
+            return View(tb_MemberActivity);
         }
 
         // POST: Activities/Create
@@ -80,16 +93,26 @@ namespace LRC_NET_Framework.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ActivityID,ActivityStatusID,ActivityDate,ActivityName,ActivityNote,AddedBy,AddedDateTime,ModifiedBy,ModifiedDateTime")] tb_Activity tb_Activity)
+        public ActionResult AddActivity([Bind(Include = "MemberID,ActivityID,ActivityStatusID,ActivityDate,ActivityName,ActivityNote")] tb_MemberActivity tb_MemberActivity,
+            string ActivityNote, DateTime? ActivityDate, FormCollection formCollection)
         {
+            tb_Activity activity = db.tb_Activity.Find(tb_MemberActivity.ActivityID);
+            //DateTime myDate = DateTime.Parse(formCollection["tb_Activity.ActivityDate"]);
+            activity.ActivityDate = DateTime.Parse(formCollection["tb_Activity.ActivityDate"]);
+            activity.ActivityNote = formCollection["tb_Activity.ActivityNote"];
+
             if (ModelState.IsValid)
             {
-                db.tb_Activity.Add(tb_Activity);
+                db.tb_MemberActivity.Add(tb_MemberActivity);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+
+                db.tb_Activity.Attach(activity);
+                db.SaveChanges();
+
+                return RedirectToAction("AddActivity");
             }
 
-            return View(tb_Activity);
+            return View(tb_MemberActivity);
         }
 
         // GET: Activities/Edit/5

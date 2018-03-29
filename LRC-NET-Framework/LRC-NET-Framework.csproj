@@ -467,9 +467,7 @@
     <Content Include="Views\Assessment\Create.cshtml" />
     <Content Include="Views\Assessment\Delete.cshtml" />
     <Content Include="Views\Assessment\Details.cshtml" />
-    <Content Include="Views\Assessment\Edit.cshtml" />
     <Content Include="Views\Assessment\Index.cshtml" />
-    <Content Include="Views\Activities\Create.cshtml" />
     <Content Include="Views\Activities\Delete.cshtml" />
     <Content Include="Views\Activities\Details.cshtml" />
     <Content Include="Views\Activities\Edit.cshtml" />
@@ -493,6 +491,8 @@
     <Content Include="Views\SemesterTaught\Details.cshtml" />
     <Content Include="Views\SemesterTaught\Edit.cshtml" />
     <Content Include="Views\SemesterTaught\Index.cshtml" />
+    <Content Include="Views\Assessment\AddAssessment.cshtml" />
+    <Content Include="Views\Activities\AddActivity.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

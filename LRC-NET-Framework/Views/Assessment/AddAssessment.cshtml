@@ -1,0 +1,104 @@
+﻿@model LRC_NET_Framework.tb_Assessment
+
+@{
+    ViewBag.Title = "AddAssessment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="font-weight-bold" style="background-color: #357ebd; color:gainsboro; padding-top:10px; padding-bottom:5px; padding-left: 30px;"><h4>Add Assessement</h4></div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <hr />
+    <div class="form-horizontal">
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.MemberID)
+
+        <div class="form-group">
+            <div class="col-md-11 col-md-offset-1" id="BackgroundStory">
+                @Html.Label("BackgroundStory", "Background/Story", htmlAttributes: new { @class = "control-label" })
+                @Html.TextAreaFor(model => model.BackgroundStory, new { @class = "form-control", @cols = "100", @rows = "5", @style = "width:100%;" })
+                @Html.ValidationMessageFor(model => model.BackgroundStory, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-11 col-md-offset-1" id="Fears">
+                @Html.Label("Fears", "Fears", htmlAttributes: new { @class = "control-label" })
+                @Html.TextAreaFor(model => model.Fears, new { @class = "form-control", @cols = "100", @rows = "5", @style = "width:100%;" })
+                @Html.ValidationMessageFor(model => model.Fears, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-11 col-md-offset-1" id="AttitudeTowardUnion">
+                @Html.Label("AttitudeTowardUnion", "Attitude Toward Union", htmlAttributes: new { @class = "control-label" })
+                @Html.TextAreaFor(model => model.AttitudeTowardUnion, new { @class = "form-control", @cols = "100", @rows = "5", @style = "width:100%;" })
+                @Html.ValidationMessageFor(model => model.AttitudeTowardUnion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-11 col-md-offset-1" id="IDdLeaders">
+                @Html.Label("IDdLeaders", "IDd Leaders", htmlAttributes: new { @class = "control-label" })
+                @Html.TextAreaFor(model => model.IDdLeaders, new { @class = "form-control", @cols = "100", @rows = "5", @style = "width:100%;" })
+                @Html.ValidationMessageFor(model => model.IDdLeaders, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-11 col-md-offset-1" id="FollowUp">
+                @Html.Label("FollowUp", "Follow Up", htmlAttributes: new { @class = "control-label" })
+                @Html.TextAreaFor(model => model.FollowUp, new { @class = "form-control", @cols = "100", @rows = "5", @style = "width:100%;" })
+                @Html.ValidationMessageFor(model => model.FollowUp, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-11 col-md-offset-1" id="AssessmentNameID">
+                @Html.Label("AssessmentNameID", "Assessment", htmlAttributes: new { @class = "control-label" })
+                @Html.DropDownList("AssessmentNameID", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.AssessmentNameID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-11 col-md-offset-1" id="ValueID">
+                @Html.Label("ValueID", "Assessment Value", htmlAttributes: new { @class = "control-label" })
+                @Html.DropDownList("ValueID", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.ValueID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-11 col-md-offset-1" id="AssessmentDate">
+                @Html.Label("AssessmentDate", "Assessment Date", htmlAttributes: new { @class = "control-label" })
+                @Html.TextBoxFor(model => model.AssessmentDate, "{0:yyyy-MM-dd}", new { @class = "form-control datecontrol", type = "date", style = "width: 150px;" })
+                @Html.ValidationMessageFor(model => model.AssessmentDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-11 col-md-offset-1" id="AssesedBy">
+                @Html.Label("AssesedBy", "Assessment By", htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.AssesedBy, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.AssesedBy, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
