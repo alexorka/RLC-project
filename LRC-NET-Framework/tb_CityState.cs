@@ -21,9 +21,8 @@ namespace LRC_NET_Framework
         }
     
         public int CityID { get; set; }
-        public string StateCode { get; set; }
+        public int StateCodeID { get; set; }
         public string CityName { get; set; }
-        public string Country { get; set; }
         public string CityAlias { get; set; }
     
         public virtual tb_States tb_States { get; set; }

@@ -238,6 +238,9 @@
     <Compile Include="tb_ActivityStatus.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
+    <Compile Include="tb_AddressSource.cs">
+      <DependentUpon>DBModelContext.tt</DependentUpon>
+    </Compile>
     <Compile Include="tb_Area.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
@@ -314,6 +317,9 @@
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
     <Compile Include="tb_NoteType.cs">
+      <DependentUpon>DBModelContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tb_PhoneType.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
     <Compile Include="tb_Roles.cs">
@@ -493,6 +499,7 @@
     <Content Include="Views\SemesterTaught\Index.cshtml" />
     <Content Include="Views\Assessment\AddAssessment.cshtml" />
     <Content Include="Views\Activities\AddActivity.cshtml" />
+    <Content Include="Views\Home\ManageContactInfo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

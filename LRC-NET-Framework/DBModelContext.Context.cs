@@ -27,12 +27,9 @@ namespace LRC_NET_Framework
     
         public virtual DbSet<tb_Area> tb_Area { get; set; }
         public virtual DbSet<tb_Attribute> tb_Attribute { get; set; }
-        public virtual DbSet<tb_CityState> tb_CityState { get; set; }
         public virtual DbSet<tb_Dues> tb_Dues { get; set; }
         public virtual DbSet<tb_Gender> tb_Gender { get; set; }
         public virtual DbSet<tb_MemberEmail> tb_MemberEmail { get; set; }
-        public virtual DbSet<tb_MemberPhoneNumbers> tb_MemberPhoneNumbers { get; set; }
-        public virtual DbSet<tb_States> tb_States { get; set; }
         public virtual DbSet<tb_Users> tb_Users { get; set; }
         public virtual DbSet<tb_UsersCredential> tb_UsersCredential { get; set; }
         public virtual DbSet<tb_ActivityStatus> tb_ActivityStatus { get; set; }
@@ -42,7 +39,6 @@ namespace LRC_NET_Framework
         public virtual DbSet<tb_MemberNotes> tb_MemberNotes { get; set; }
         public virtual DbSet<tb_NoteType> tb_NoteType { get; set; }
         public virtual DbSet<tb_LatestUnionAssessment> tb_LatestUnionAssessment { get; set; }
-        public virtual DbSet<tb_MemberAddress> tb_MemberAddress { get; set; }
         public virtual DbSet<tb_JobStatus> tb_JobStatus { get; set; }
         public virtual DbSet<tb_District> tb_District { get; set; }
         public virtual DbSet<tb_MemberActivity> tb_MemberActivity { get; set; }
@@ -61,5 +57,11 @@ namespace LRC_NET_Framework
         public virtual DbSet<tb_WeekDay> tb_WeekDay { get; set; }
         public virtual DbSet<tb_SemesterTaught> tb_SemesterTaught { get; set; }
         public virtual DbSet<tb_Assessment> tb_Assessment { get; set; }
+        public virtual DbSet<tb_MemberPhoneNumbers> tb_MemberPhoneNumbers { get; set; }
+        public virtual DbSet<tb_PhoneType> tb_PhoneType { get; set; }
+        public virtual DbSet<tb_AddressSource> tb_AddressSource { get; set; }
+        public virtual DbSet<tb_States> tb_States { get; set; }
+        public virtual DbSet<tb_CityState> tb_CityState { get; set; }
+        public virtual DbSet<tb_MemberAddress> tb_MemberAddress { get; set; }
     }
 }

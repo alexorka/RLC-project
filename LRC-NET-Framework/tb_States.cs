@@ -20,8 +20,9 @@ namespace LRC_NET_Framework
             this.tb_CityState = new HashSet<tb_CityState>();
         }
     
-        public string StateCode { get; set; }
+        public int StateCodeID { get; set; }
         public string StateName { get; set; }
+        public string StateCode { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_CityState> tb_CityState { get; set; }

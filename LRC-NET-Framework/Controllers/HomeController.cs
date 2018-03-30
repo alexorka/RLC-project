@@ -205,6 +205,100 @@ namespace LRC_NET_Framework.Controllers
             return View(model);
         }
 
+        // GET: Home/ManageContactInfo
+        public ActionResult ManageContactInfo(int? id)
+        {
+            id = 1; // test REMOVE IT
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            //tb_MemberMaster worker = db.tb_MemberMaster.Where(t => t.MemberID == id).FirstOrDefault();
+
+            //int CityID = db.tb_MemberAddress.Where(t => t.MemberID == id).FirstOrDefault().CityID;
+            //int StateCodeID = db.tb_CityState.Where(r => r.CityID == CityID).FirstOrDefault().StateCodeID;
+            var _StateCode = db.tb_States.Where(p => p.StateCodeID == db.tb_CityState.Where(r => r.CityID == db.tb_MemberAddress.Where(t => t.MemberID == id).FirstOrDefault().CityID).FirstOrDefault().StateCodeID).FirstOrDefault().StateCode;
+            
+
+            ManageContactInfoModels model = new ManageContactInfoModels()
+            {
+                //PHONE
+                _MemberID = id ?? 0,
+                _PhoneNumber = String.Empty,
+                _IsPhonePrimary = false,
+                _PhoneTypeID = 1,
+                _PhoneTypes = new SelectList(db.tb_PhoneType, "PhoneTypeID", "PhoneTypeName"),
+                _MemberPhoneNumbers = db.tb_MemberPhoneNumbers.Where(t => t.MemberID == id).ToList(),
+                // ADDRESS
+                _StateCode = db.tb_States.Where(p => p.StateCodeID == db.tb_CityState.Where(r => r.CityID == db.tb_MemberAddress.Where(t => t.MemberID == id).FirstOrDefault().CityID).FirstOrDefault().StateCodeID).FirstOrDefault().StateCode,
+                _CreatedAdressBy = 2,
+                _CreatedAdressDateTime = DateTime.Now,
+                _IsAdressPrimary = false,
+                _SourceID = 1,
+                _AddressSources = new SelectList(db.tb_AddressSource, "SourceID", "SourceName"),
+                _CityID = 1,
+                _CityStates = new SelectList(db.tb_CityState.ToList(), "CityID", "CityName"),
+                _MemberAddress = db.tb_MemberAddress.Where(t => t.MemberID == id).ToList()
+            };
+
+            return View(model);
+        }
+
+        // POST: Home/AddPhone (Partitial)
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ManageContactInfo(string submit, ManageContactInfoModels model)
+        {
+            if (ModelState.IsValid)
+            {
+                switch (submit)
+                {
+                case "Submit New Phone":
+                    tb_MemberPhoneNumbers tb_MemberPhoneNumbers = new tb_MemberPhoneNumbers()
+                    {
+                        MemberID = model._MemberID,
+                        PhoneNumber = model._PhoneNumber,
+                        IsPrimary = model._IsPhonePrimary,
+                        PhoneTypeID = model._PhoneTypeID,
+                        CreatedDateTime = DateTime.Now
+                    };
+                    db.tb_MemberPhoneNumbers.Add(tb_MemberPhoneNumbers);
+                    db.SaveChanges();
+                    break;
+                case "Submit New Address":
+                        tb_MemberAddress tb_MemberAddresses = new tb_MemberAddress()
+                        {
+                            MemberID = model._MemberID,
+                            HomeStreet1 = model._HomeStreet1,
+                            HomeStreet2 = model._HomeStreet2,
+                            CityID = model._CityID,
+                            ZipCode = model._ZipCode,
+                            Country = "USA",
+                            CreatedDateTime = model._CreatedAdressDateTime,
+                            IsPrimary = model._IsAdressPrimary,
+                            SourceID = model._SourceID
+                        };
+                        db.tb_MemberAddress.Add(tb_MemberAddresses);
+                        db.SaveChanges();
+                        break;
+                //default:
+                //    break;
+                }
+            }
+
+            model._PhoneTypes = new SelectList(db.tb_PhoneType, "PhoneTypeID", "PhoneTypeName");
+            model._MemberPhoneNumbers = db.tb_MemberPhoneNumbers.Where(t => t.MemberID == model._MemberID).ToList();
+            model._StateCode = db.tb_States.Where(p => p.StateCodeID == db.tb_CityState.Where(r => r.CityID == db.tb_MemberAddress.Where(t => t.MemberID == model._MemberID).FirstOrDefault().CityID).FirstOrDefault().StateCodeID).FirstOrDefault().StateCode;
+            model._AddressSources = new SelectList(db.tb_AddressSource, "SourceID", "SourceName");
+            model._CityStates = new SelectList(db.tb_CityState.ToList(), "CityID", "CityName");
+            model._MemberAddress = db.tb_MemberAddress.Where(t => t.MemberID == model._MemberID).ToList();
+
+            return View(model);
+        }
+
+
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";

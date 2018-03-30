@@ -16,7 +16,7 @@ namespace LRC_NET_Framework
     {
         public int PhoneRecID { get; set; }
         public int MemberID { get; set; }
-        public string PhoneType { get; set; }
+        public int PhoneTypeID { get; set; }
         public string PhoneNumber { get; set; }
         public bool IsPrimary { get; set; }
         public Nullable<int> CreatedBy { get; set; }
@@ -25,5 +25,6 @@ namespace LRC_NET_Framework
         public Nullable<System.DateTime> ModifiedDateTime { get; set; }
     
         public virtual tb_MemberMaster tb_MemberMaster { get; set; }
+        public virtual tb_PhoneType tb_PhoneType { get; set; }
     }
 }
