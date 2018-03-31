@@ -84,30 +84,21 @@ namespace LRC_NET_Framework.Models
         public int _MemberID { get; set; }
 
         //PHONE
-        //[Required(ErrorMessage = "Phone no. is required")]
-        //[RegularExpression("^(?!0+$)(\\+\\d{1,3}[- ]?)?(?!0+$)\\d{10,15}$", ErrorMessage = "Please enter valid phone no.")]
-        //[DataType(DataType.PhoneNumber)]
         [Phone]
         [Display(Name = "Phone Number")]
         public string _PhoneNumber { get; set; }
         public bool _IsPhonePrimary { get; set; }
-        public Nullable<int> _PhoneCreatedBy { get; set; }
-        public Nullable<System.DateTime> _CreatedPhoneDateTime { get; set; }
-        public Nullable<int> _PhoneModifiedBy { get; set; }
-        public Nullable<System.DateTime> _PhoneModifiedDateTime { get; set; }
 
         public int _PhoneTypeID { get; set; }
         public IEnumerable<SelectListItem> _PhoneTypes { get; set; }
-        public int _PhoneRecID { get; set; }
         public IEnumerable<tb_MemberPhoneNumbers> _MemberPhoneNumbers { get; set; }
 
         // ADDRESS
-        [Required(ErrorMessage = "Home Street is required")]
+        //[Required(ErrorMessage = "Home Street is required")]
         public string _HomeStreet1 { get; set; }
         public string _HomeStreet2 { get; set; }
-        public string _CityName { get; set; }
         public string _StateCode { get; set; }
-        [Required(ErrorMessage = "ZIP is required")]
+        //[Required(ErrorMessage = "ZIP is required")]
         public string _ZipCode { get; set; }
         public int _CreatedAdressBy { get; set; }
         [Required(ErrorMessage = "Add Date is required")]
@@ -116,14 +107,37 @@ namespace LRC_NET_Framework.Models
         public DateTime _CreatedAdressDateTime { get; set; }
         [Required(ErrorMessage = "Status is required")]
         public bool _IsAdressPrimary { get; set; }
-        //[Required(ErrorMessage = "Source is required")]
         public int _SourceID { get; set; }
         public IEnumerable<SelectListItem> _AddressSources { get; set; }
-        //[Required(ErrorMessage = "City is required")]
         public int _CityID { get; set; }
         public IEnumerable<SelectListItem> _CityStates { get; set; }
         public int _MemberAddressID { get; set; }
-        public IEnumerable<tb_MemberAddress> _MemberAddress { get; set; }
+        public IEnumerable<tb_MemberAddress> _MemberAddresses { get; set; }
+
+        //EMAIL
+        [Display(Name = "Email")]
+        [EmailAddress]
+        public string _EmailAddress { get; set; }
+        public bool _IsEmailPrimary { get; set; }
+        public int _EmailTypeID { get; set; }
+        public IEnumerable<SelectListItem> _EmailTypes { get; set; }
+        public int _MemberEmailID { get; set; }
+        public IEnumerable<tb_MemberEmail> _MemberEmails { get; set; }
+    }
+
+    public partial class AddNote
+    {
+        public int _MemberID { get; set; }
+
+        public string _Note { get; set; }
+        [Required(ErrorMessage = "Add Date is required")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime _NoteDate { get; set; }
+        public int _NoteTypeID { get; set; }
+        public IEnumerable<SelectListItem> _NoteTypes { get; set; }
+        public int _TakenBy { get; set; }
+        public IEnumerable<tb_MemberNotes> _MemberNotes { get; set; }
     }
 }
 

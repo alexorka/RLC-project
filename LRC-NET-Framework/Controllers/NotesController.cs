@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using LRC_NET_Framework;
 using PagedList;
 using PagedList.Mvc;
+using LRC_NET_Framework.Models;
 
 namespace LRC_NET_Framework.Controllers
 {
@@ -71,11 +72,23 @@ namespace LRC_NET_Framework.Controllers
         }
 
         // GET: Notes/Create
-        public ActionResult Create()
+        public ActionResult AddNote(int? id)
         {
-            ViewBag.NoteTypeID = new SelectList(db.tb_NoteType, "NoteTypeID", "NoteType");
-            ViewBag.MemberID = new SelectList(db.tb_MemberMaster, "MemberID", "LastName");
-            return View();
+            id = 1; // test REMOVE IT
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            AddNote model = new AddNote()
+            {
+                _MemberID = id?? 0,
+                _NoteDate = DateTime.Now,
+                _NoteTypeID = 1,
+                _NoteTypes = new SelectList(db.tb_NoteType, "NoteTypeID", "NoteType"),
+                _MemberNotes = db.tb_MemberNotes.Where(t => t.MemberID == id).ToList()
+            };
+            return View(model);
+
         }
 
         // POST: Notes/Create
@@ -83,18 +96,35 @@ namespace LRC_NET_Framework.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "MemberNotesID,MemberID,Notes,NoteTypeID,NoteDate,TakenBy,AddedBy,AddedDateTime,ModifiedBy,ModifiedDateTime")] tb_MemberNotes tb_MemberNotes)
+        public ActionResult AddNote(AddNote model)
         {
-            if (ModelState.IsValid)
+            var memberNotes = db.tb_MemberNotes.Where(s => s.Notes.ToUpper().Contains(model._Note.ToUpper()));
+            //Check dublicates
+            if (memberNotes.ToList().Count == 0)
             {
-                db.tb_MemberNotes.Add(tb_MemberNotes);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                tb_MemberNotes memberNote = new tb_MemberNotes()
+                {
+                    MemberID = model._MemberID,
+                    Notes = model._Note,
+                    NoteDate = model._NoteDate,
+                    NoteTypeID = model._NoteTypeID,
+                    TakenBy = model._TakenBy
+                };
+                db.tb_MemberNotes.Add(memberNote);
             }
-
-            ViewBag.NoteTypeID = new SelectList(db.tb_NoteType, "NoteTypeID", "NoteType", tb_MemberNotes.NoteTypeID);
-            ViewBag.MemberID = new SelectList(db.tb_MemberMaster, "MemberID", "LastName", tb_MemberNotes.MemberID);
-            return View(tb_MemberNotes);
+            else
+            {
+                tb_MemberNotes memberNote = memberNotes.FirstOrDefault();
+                memberNote.Notes = model._Note;
+                memberNote.NoteDate = model._NoteDate;
+                memberNote.NoteTypeID = model._NoteTypeID;
+                memberNote.TakenBy = 2;
+                db.tb_MemberNotes.Attach(memberNote);
+            }
+            db.SaveChanges();
+            model._NoteTypes = new SelectList(db.tb_NoteType, "NoteTypeID", "NoteType");
+            model._MemberNotes = db.tb_MemberNotes.Where(t => t.MemberID == model._MemberID).ToList();
+            return View(model);
         }
 
         // GET: Notes/Edit/5

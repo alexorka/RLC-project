@@ -171,13 +171,6 @@ namespace LRC_NET_Framework.Controllers
 
                 db.tb_MemberMaster.Attach(worker);
                 var entry = db.Entry(worker);
-
-                //entry.Property(e => e.DivisionID).IsModified = true;
-                //entry.Property(e => e.CategoryID).IsModified = true;
-                //entry.Property(e => e.DepartmentID).IsModified = true;
-                //entry.Property(e => e.JobStatusID).IsModified = true;
-                //entry.Property(e => e.HireDate).IsModified = true;
-
                 try
                 {
                     db.SaveChanges();
@@ -197,35 +190,26 @@ namespace LRC_NET_Framework.Controllers
 
                 return RedirectToAction("Details", "Home", new { @id = model._MemberID });
             }
-            //ViewBag.DepartmentID = new SelectList(db.tb_Department, "DepartmentID", "DepartmentName", model.DepartmentID);
-            //ViewBag.DuesID = new SelectList(db.tb_Dues, "DuesID", "DuesName", editWorker._Worker.DuesID);
-            //ViewBag.LatestUnionAssessmentID = new SelectList(db.tb_LatestUnionAssessment, "LatestUnionAssessmentID", "LatestUnionAssessmentDesc", tb_MemberMaster.LatestUnionAssessmentID);
-            //ViewBag.PhoneRecID = new SelectList(db.tb_MemberPhoneNumbers, "PhoneRecID", "PhoneType", editWorker._Worker.PhoneRecID);
-            //ViewBag.GenderID = new SelectList(db.tb_Gender, "GenderID", "GenderName", editWorker._Worker.GenderID);
             return View(model);
         }
 
         // GET: Home/ManageContactInfo
         public ActionResult ManageContactInfo(int? id)
         {
-            id = 1; // test REMOVE IT
+            //id = 1; // test REMOVE IT
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            //tb_MemberMaster worker = db.tb_MemberMaster.Where(t => t.MemberID == id).FirstOrDefault();
-
-            //int CityID = db.tb_MemberAddress.Where(t => t.MemberID == id).FirstOrDefault().CityID;
-            //int StateCodeID = db.tb_CityState.Where(r => r.CityID == CityID).FirstOrDefault().StateCodeID;
-            var _StateCode = db.tb_States.Where(p => p.StateCodeID == db.tb_CityState.Where(r => r.CityID == db.tb_MemberAddress.Where(t => t.MemberID == id).FirstOrDefault().CityID).FirstOrDefault().StateCodeID).FirstOrDefault().StateCode;
+            //var _StateCode = db.tb_States.Where(p => p.StateCodeID == db.tb_CityState.Where(r => r.CityID == db.tb_MemberAddress.Where(t => t.MemberID == id).FirstOrDefault().CityID).FirstOrDefault().StateCodeID).FirstOrDefault().StateCode;
             
 
             ManageContactInfoModels model = new ManageContactInfoModels()
             {
                 //PHONE
                 _MemberID = id ?? 0,
-                _PhoneNumber = String.Empty,
-                _IsPhonePrimary = false,
+                //_PhoneNumber = String.Empty,
+                _IsPhonePrimary = true,
                 _PhoneTypeID = 1,
                 _PhoneTypes = new SelectList(db.tb_PhoneType, "PhoneTypeID", "PhoneTypeName"),
                 _MemberPhoneNumbers = db.tb_MemberPhoneNumbers.Where(t => t.MemberID == id).ToList(),
@@ -233,14 +217,18 @@ namespace LRC_NET_Framework.Controllers
                 _StateCode = db.tb_States.Where(p => p.StateCodeID == db.tb_CityState.Where(r => r.CityID == db.tb_MemberAddress.Where(t => t.MemberID == id).FirstOrDefault().CityID).FirstOrDefault().StateCodeID).FirstOrDefault().StateCode,
                 _CreatedAdressBy = 2,
                 _CreatedAdressDateTime = DateTime.Now,
-                _IsAdressPrimary = false,
+                _IsAdressPrimary = true,
                 _SourceID = 1,
                 _AddressSources = new SelectList(db.tb_AddressSource, "SourceID", "SourceName"),
                 _CityID = 1,
                 _CityStates = new SelectList(db.tb_CityState.ToList(), "CityID", "CityName"),
-                _MemberAddress = db.tb_MemberAddress.Where(t => t.MemberID == id).ToList()
+                _MemberAddresses = db.tb_MemberAddress.Where(t => t.MemberID == id).ToList(),
+                //EMAIL
+                _EmailTypeID = 1,
+                _IsEmailPrimary = true,
+                _EmailTypes = new SelectList(db.tb_EmailType.ToList(), "EmailTypeID", "EmailTypeName"),
+                _MemberEmails = db.tb_MemberEmail.Where(t => t.MemberID == id).ToList()
             };
-
             return View(model);
         }
 
@@ -256,19 +244,41 @@ namespace LRC_NET_Framework.Controllers
                 switch (submit)
                 {
                 case "Submit New Phone":
-                    tb_MemberPhoneNumbers tb_MemberPhoneNumbers = new tb_MemberPhoneNumbers()
+                    var memberPhones = db.tb_MemberPhoneNumbers.Where(s => s.PhoneNumber.ToUpper().Contains(model._PhoneNumber.ToUpper()));
+                    //Check dublicates
+                    if (memberPhones.ToList().Count == 0)
                     {
-                        MemberID = model._MemberID,
-                        PhoneNumber = model._PhoneNumber,
-                        IsPrimary = model._IsPhonePrimary,
-                        PhoneTypeID = model._PhoneTypeID,
-                        CreatedDateTime = DateTime.Now
-                    };
-                    db.tb_MemberPhoneNumbers.Add(tb_MemberPhoneNumbers);
+                        tb_MemberPhoneNumbers phoneNumber = new tb_MemberPhoneNumbers()
+                        {
+                            MemberID = model._MemberID,
+                            PhoneNumber = model._PhoneNumber,
+                            IsPrimary = model._IsPhonePrimary,
+                            PhoneTypeID = model._PhoneTypeID,
+                            CreatedDateTime = DateTime.Now
+                        };
+                        db.tb_MemberPhoneNumbers.Add(phoneNumber);
+                    }
+                    else
+                    {
+                        tb_MemberPhoneNumbers phoneNumber = memberPhones.FirstOrDefault();
+                        phoneNumber.PhoneNumber = model._PhoneNumber;
+                        phoneNumber.IsPrimary = model._IsPhonePrimary;
+                        phoneNumber.PhoneTypeID = model._PhoneTypeID;
+                        phoneNumber.CreatedDateTime = DateTime.Now;
+                        phoneNumber.CreatedBy = 2;
+                        db.tb_MemberPhoneNumbers.Attach(phoneNumber);
+                    }
                     db.SaveChanges();
                     break;
                 case "Submit New Address":
-                        tb_MemberAddress tb_MemberAddresses = new tb_MemberAddress()
+                    var memberAddresses = db.tb_MemberAddress.Where(s => s.HomeStreet1.ToUpper().Contains(model._HomeStreet1.ToUpper())
+                    && s.HomeStreet2.ToUpper().Contains(model._HomeStreet2.ToUpper())
+                    && s.ZipCode.ToUpper().Contains(model._ZipCode.ToUpper())
+                    && s.CityID == model._CityID);
+                    //Check dublicates
+                    if (memberAddresses.ToList().Count == 0)
+                    {
+                        tb_MemberAddress memberAddress = new tb_MemberAddress()
                         {
                             MemberID = model._MemberID,
                             HomeStreet1 = model._HomeStreet1,
@@ -280,11 +290,54 @@ namespace LRC_NET_Framework.Controllers
                             IsPrimary = model._IsAdressPrimary,
                             SourceID = model._SourceID
                         };
-                        db.tb_MemberAddress.Add(tb_MemberAddresses);
-                        db.SaveChanges();
-                        break;
-                //default:
-                //    break;
+                        db.tb_MemberAddress.Add(memberAddress);
+                    }
+                    else
+                    {
+                        tb_MemberAddress memberAddress = memberAddresses.FirstOrDefault();
+                        memberAddress.MemberID = model._MemberID;
+                        memberAddress.HomeStreet1 = model._HomeStreet1;
+                        memberAddress.HomeStreet2 = model._HomeStreet2;
+                        memberAddress.CityID = model._CityID;
+                        memberAddress.ZipCode = model._ZipCode;
+                        memberAddress.Country = "USA";
+                        memberAddress.CreatedDateTime = model._CreatedAdressDateTime;
+                        memberAddress.IsPrimary = model._IsAdressPrimary;
+                        memberAddress.SourceID = model._SourceID;
+                        db.tb_MemberAddress.Attach(memberAddress);
+                    }
+                    db.SaveChanges();
+                    break;
+                 case "Submit New Email":
+                    var memberEmails = db.tb_MemberEmail.Where(s => s.EmailAddress.ToUpper().Contains(model._EmailAddress.ToUpper()));
+                    //Check dublicates
+                    if (memberEmails.ToList().Count == 0)
+                    {
+                        tb_MemberEmail memberEmail = new tb_MemberEmail()
+                        {
+                            MemberID = model._MemberID,
+                            EmailAddress = model._EmailAddress,
+                            EmailTypeID = model._EmailTypeID,
+                            IsPrimary = model._IsEmailPrimary,
+                            CreatedDateTime = DateTime.Now,
+                            CreatedBy = 2
+                        };
+                        db.tb_MemberEmail.Add(memberEmail);
+                    }
+                    else
+                    {
+                        tb_MemberEmail memberEmail = memberEmails.FirstOrDefault();
+                        memberEmail.EmailAddress = model._EmailAddress;
+                        memberEmail.EmailTypeID = model._EmailTypeID;
+                        memberEmail.IsPrimary = model._IsEmailPrimary;
+                        memberEmail.CreatedDateTime = DateTime.Now;
+                        memberEmail.CreatedBy = 2;
+                        db.tb_MemberEmail.Attach(memberEmail);
+                    }
+                    db.SaveChanges();
+                    break;
+                    //default:
+                    //    break;
                 }
             }
 
@@ -293,7 +346,9 @@ namespace LRC_NET_Framework.Controllers
             model._StateCode = db.tb_States.Where(p => p.StateCodeID == db.tb_CityState.Where(r => r.CityID == db.tb_MemberAddress.Where(t => t.MemberID == model._MemberID).FirstOrDefault().CityID).FirstOrDefault().StateCodeID).FirstOrDefault().StateCode;
             model._AddressSources = new SelectList(db.tb_AddressSource, "SourceID", "SourceName");
             model._CityStates = new SelectList(db.tb_CityState.ToList(), "CityID", "CityName");
-            model._MemberAddress = db.tb_MemberAddress.Where(t => t.MemberID == model._MemberID).ToList();
+            model._MemberAddresses = db.tb_MemberAddress.Where(t => t.MemberID == model._MemberID).ToList();
+            model._EmailTypes = new SelectList(db.tb_EmailType.ToList(), "EmailTypeID", "EmailTypeName");
+            model._MemberEmails = db.tb_MemberEmail.Where(t => t.MemberID == model._MemberID).ToList();
 
             return View(model);
         }

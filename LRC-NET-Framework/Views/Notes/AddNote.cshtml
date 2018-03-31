@@ -1,0 +1,120 @@
+﻿@model LRC_NET_Framework.Models.AddNote
+
+@{
+    ViewBag.Title = ">Manage Notes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="font-weight-bold" style="background-color: #357ebd; color:gainsboro; padding-top:10px; padding-bottom:5px; padding-left: 30px;"><h4>Manage Notes</h4></div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model._MemberID)
+    <div class="col-md-11 col-md-offset-1"><h4>Add Note</h4></div>
+    <hr />
+    <div class="form-horizontal">
+        <fieldset>
+
+            <div class="form-group">
+                <div class="col-md-11 col-md-offset-1" id="Note">
+                    @Html.Label("Note", "Note", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
+                    @Html.TextAreaFor(model => model._Note, new { @class = "form-control", @cols = "100", @rows = "5", @style = "width:100%;" })
+                    @Html.ValidationMessageFor(model => model._Note, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-11 col-md-offset-1" id="NoteDate">
+                    @Html.Label("NoteDate", "Note Date", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
+                    @Html.TextBoxFor(model => model._NoteDate, "{0:yyyy-MM-dd}", new { @class = "form-control datecontrol", type = "date", style = "width: 150px;" })
+                    <small><i style="color:gray;">Note types allow you to categorize the kind of note it is</i></small>
+                    @Html.ValidationMessageFor(model => model._NoteDate, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-11 col-md-offset-1" id="NoteTypeID" style="padding-bottom:15px;">
+                    @Html.Label("NoteTypeID", "Note Type", htmlAttributes: new { @class = "control-label" })
+                    @Html.DropDownListFor(model => model._NoteTypeID, Model._NoteTypes, new { @class = "form-control", style = "width: 250px;" })
+                    @Html.ValidationMessageFor(model => model._NoteTypeID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-11 col-md-offset-1" id="TakenBy" style="padding-bottom:15px;">
+                    @Html.Label("TakenBy", "Taken By", htmlAttributes: new { @class = "control-label" })
+                    @Html.TextBoxFor(model => model._TakenBy, "", new { @class = "form-control", disabled = "disabled", style = "width: 150px;" })
+                    <small><i style="color:gray;">The person who actually took the note. The system is keeping track of the person entering the note (you)</i></small>
+                    @Html.ValidationMessageFor(model => model._TakenBy, "", new { @class = "text-danger" })
+                </div>
+            </div>            <div class="form-group">
+                <div class="col-md-offset-1 col-md-11">
+                    <input type="submit" value="Submit" class="btn btn-primary" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-11 col-md-offset-1" id="Notes">
+                    @Html.Label("Notes", "Notes", htmlAttributes: new { @class = "control-label" })
+                    <table class="table">
+                        <tr class="text-info">
+                            <th width="50%">
+                                Note
+                            </th>
+                            <th>
+                                Note&nbsp;Type
+                            </th>
+                            <th>
+                                Date&nbsp;of&nbsp;Note
+                            </th>
+                            <th>
+                                Taken&nbsp;By
+                            </th>
+                            <th>
+                                Added
+                            </th>
+                            <th>
+                                Entered&nbsp;By
+                            </th>
+                        </tr>
+                        @foreach (var item in Model._MemberNotes as List<tb_MemberNotes>)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Notes)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.tb_NoteType.NoteType)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.NoteDate, "{0:yyyy-MM-dd}", new { @class = "form-control datecontrol", type = "date", style = "width: 150px;" })
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TakenBy)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AddedBy)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ModifiedBy)
+                        </td>
+                    </tr>
+        }
+                    </table>
+                </div>
+            </div>
+
+        </fieldset>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -168,27 +168,27 @@
                             Added
                         </th>
                     </tr>
-                    @foreach (var item in Model._MemberAddress as List<tb_MemberAddress>)
+                    @foreach (var item in Model._MemberAddresses as List<tb_MemberAddress>)
                     {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.HomeStreet1) @Html.DisplayFor(modelItem => item.tb_CityState.CityName), 
-                            @Html.DisplayFor(modelItem => item.tb_CityState.tb_States.StateCode)
-                            @Html.DisplayFor(modelItem => item.ZipCode)
-                        </td>
-                        <td>
-                            @if (item.IsPrimary)
-                            {
-                                <span>Primary</span>
-                            }
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.tb_AddressSource.SourceName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(model => model._MemberAddress.FirstOrDefault().CreatedDateTime, "{0:yyyy-MM-dd}", new { @class = "form-control datecontrol", type = "date", style = "width: 150px;" })
-                        </td>
-                    </tr>
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.HomeStreet1) @Html.DisplayFor(modelItem => item.tb_CityState.CityName),
+                                @Html.DisplayFor(modelItem => item.tb_CityState.tb_States.StateCode)
+                                @Html.DisplayFor(modelItem => item.ZipCode)
+                            </td>
+                            <td>
+                                @if (item.IsPrimary)
+                                {
+                                    <span>Primary</span>
+                                }
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.tb_AddressSource.SourceName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model._MemberAddresses.FirstOrDefault().CreatedDateTime, "{0:yyyy-MM-dd}", new { @class = "form-control datecontrol", type = "date", style = "width: 150px;" })
+                            </td>
+                        </tr>
                     }
                 </table>
             </div>
@@ -197,6 +197,80 @@
 
     </fieldset>
 
+    <div class="col-md-11 col-md-offset-1"><h4>Add Email</h4></div>
+    <hr />
+    <fieldset>
+
+        <div class="form-group">
+            <div class="col-md-11 col-md-offset-1" id="EmailAddress">
+                @Html.Label("EmailAddress", "Email Address", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
+                @Html.EditorFor(model => model._EmailAddress, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model._EmailAddress, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-11 col-md-offset-1" id="EmailTypeID">
+                @Html.Label("EmailTypeID", "Type", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
+                @Html.DropDownListFor(model => model._EmailTypeID, Model._EmailTypes, new { @class = "form-control", style = "width: 250px;" })
+                @Html.ValidationMessageFor(model => model._EmailTypeID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-11 col-md-offset-1" id="IsEmailPrimary">
+                @Html.Label("IsEmailPrimary", "Is Primary", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
+                <div class="checkbox">
+                    @Html.EditorFor(model => model._IsEmailPrimary, new { htmlAttributes = new { @class = "form-control", style = "width: 30px;" } })
+                    @Html.ValidationMessageFor(model => model._IsEmailPrimary, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-1 col-md-11">
+                <input name="submit" type="submit" value="Submit New Email" class="btn btn-primary" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-11 col-md-offset-1" id="Phones">
+                @Html.Label("Phones", "Phones", htmlAttributes: new { @class = "control-label" })
+                <table class="table">
+                    <tr class="text-info">
+                        <th>
+                            Email Address
+                        </th>
+                        <th>
+                            Type
+                        </th>
+                        <th>
+                            Status
+                        </th>
+
+                    </tr>
+                    @foreach (var item in Model._MemberEmails as List<tb_MemberEmail>)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.EmailAddress)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.tb_EmailType.EmailTypeName)
+                        </td>
+                        <td>
+                            @if (item.IsPrimary)
+                        {
+                            <span>Primary</span>
+                    }
+                        </td>
+                    </tr>
+            }
+                </table>
+            </div>
+        </div>
+
+    </fieldset>
 </div>
 }
 

@@ -13,10 +13,10 @@
     <li role="button"><a href="@Url.Action("Create", "SemesterTaught", new { @id = Model._Worker.MemberID })" class="btn btn-default">Schedules&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
     <li role="button"><a href="@Url.Action("AddAssessment", "Assessment", new { @id = Model._Worker.MemberID })" class="btn btn-default">Assessments&nbsp;&nbsp;<span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></li>
     <li role="button"><a href="@Url.Action("AddActivity", "Activities", new { @id = Model._Worker.MemberID })" class="btn btn-default">Activities&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
-    <li role="button"><a href="#ContactInfo" class="btn btn-default">Contact Info&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="@Url.Action("ManageContactInfo", "Home", new { @id = Model._Worker.MemberID })" class="btn btn-default">Contact Info&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
     <li role="button"><a href="#" class="btn btn-default">Member Forms&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
     <li role="button"><a href="#" class="btn btn-default">COPE Forms&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
-    <li role="button"><a href="#Notes" class="btn btn-default">Notes&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="@Url.Action("AddNote", "Notes", new { @id = Model._Worker.MemberID })" class="btn btn-default">Notes&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
     <li role="button"><a href="#Roles" class="btn btn-default">Roles&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
     <li role="button"><a href="#" class="btn btn-default">Also Works At&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
 </ul>
@@ -449,7 +449,7 @@
                     }
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.PhoneType)
+                    @Html.DisplayFor(modelItem => item.tb_PhoneType.PhoneTypeName)
                 </td>
                 <td>
                     @if (item.CreatedDateTime != null)

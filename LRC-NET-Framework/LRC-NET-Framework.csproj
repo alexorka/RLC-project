@@ -286,6 +286,9 @@
     <Compile Include="tb_Dues.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
+    <Compile Include="tb_EmailType.cs">
+      <DependentUpon>DBModelContext.tt</DependentUpon>
+    </Compile>
     <Compile Include="tb_Gender.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
@@ -478,7 +481,7 @@
     <Content Include="Views\Activities\Details.cshtml" />
     <Content Include="Views\Activities\Edit.cshtml" />
     <Content Include="Views\Activities\Index.cshtml" />
-    <Content Include="Views\Notes\Create.cshtml" />
+    <Content Include="Views\Notes\AddNote.cshtml" />
     <Content Include="Views\Notes\Delete.cshtml" />
     <Content Include="Views\Notes\Details.cshtml" />
     <Content Include="Views\Notes\Edit.cshtml" />

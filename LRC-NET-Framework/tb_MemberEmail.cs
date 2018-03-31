@@ -17,12 +17,14 @@ namespace LRC_NET_Framework
         public int EmailID { get; set; }
         public string EmailAddress { get; set; }
         public bool IsPrimary { get; set; }
+        public int EmailTypeID { get; set; }
         public int CreatedBy { get; set; }
         public System.DateTime CreatedDateTime { get; set; }
         public Nullable<int> ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedDateTime { get; set; }
-        public Nullable<int> MemberID { get; set; }
+        public int MemberID { get; set; }
     
+        public virtual tb_EmailType tb_EmailType { get; set; }
         public virtual tb_MemberMaster tb_MemberMaster { get; set; }
     }
 }

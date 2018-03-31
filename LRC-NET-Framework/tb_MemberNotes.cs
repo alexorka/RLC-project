@@ -17,7 +17,7 @@ namespace LRC_NET_Framework
         public int MemberNotesID { get; set; }
         public int MemberID { get; set; }
         public string Notes { get; set; }
-        public Nullable<int> NoteTypeID { get; set; }
+        public int NoteTypeID { get; set; }
         public System.DateTime NoteDate { get; set; }
         public Nullable<int> TakenBy { get; set; }
         public Nullable<int> AddedBy { get; set; }
@@ -25,7 +25,7 @@ namespace LRC_NET_Framework
         public Nullable<int> ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedDateTime { get; set; }
     
-        public virtual tb_NoteType tb_NoteType { get; set; }
         public virtual tb_MemberMaster tb_MemberMaster { get; set; }
+        public virtual tb_NoteType tb_NoteType { get; set; }
     }
 }
