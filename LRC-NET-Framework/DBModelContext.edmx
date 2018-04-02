@@ -137,6 +137,20 @@
           <Property Name="CollegeName" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="CollegeDesc" Type="nvarchar" MaxLength="255" />
         </EntityType>
+        <EntityType Name="tb_CopeForms">
+          <Key>
+            <PropertyRef Name="CopeFormID" />
+          </Key>
+          <Property Name="CopeFormID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MemberID" Type="int" Nullable="false" />
+          <Property Name="Signed" Type="date" Nullable="false" />
+          <Property Name="MonthlyContribution" Type="money" Nullable="false" />
+          <Property Name="CollectedBy" Type="int" />
+          <Property Name="FormImagePath" Type="nvarchar" MaxLength="255" />
+          <Property Name="Processed" Type="bit" Nullable="false" />
+          <Property Name="SentToEmployer" Type="bit" Nullable="false" />
+          <Property Name="AddedBy" Type="int" />
+        </EntityType>
         <EntityType Name="tb_Department">
           <Key>
             <PropertyRef Name="DepartmentID" />
@@ -323,6 +337,20 @@
           <Property Name="EndDate" Type="date" />
           <Property Name="Expired" Type="bit" Nullable="false" />
         </EntityType>
+        <EntityType Name="tb_MembershipForms">
+          <Key>
+            <PropertyRef Name="MembershipFormID" />
+          </Key>
+          <Property Name="MembershipFormID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MemberID" Type="int" Nullable="false" />
+          <Property Name="Signed" Type="date" Nullable="false" />
+          <Property Name="FormVersion" Type="nvarchar" MaxLength="50" />
+          <Property Name="FormImagePath" Type="nvarchar" MaxLength="255" />
+          <Property Name="Processed" Type="bit" Nullable="false" />
+          <Property Name="SentToEmployer" Type="bit" Nullable="false" />
+          <Property Name="CollectedBy" Type="int" />
+          <Property Name="AddedBy" Type="int" />
+        </EntityType>
         <EntityType Name="tb_NoteType">
           <Key>
             <PropertyRef Name="NoteTypeID" />
@@ -383,23 +411,6 @@
           <Property Name="StateCodeID" Type="int" Nullable="false" />
           <Property Name="StateName" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="StateCode" Type="char" MaxLength="2" Nullable="false" />
-        </EntityType>
-        <EntityType Name="tb_Users">
-          <Key>
-            <PropertyRef Name="UserID" />
-          </Key>
-          <Property Name="UserID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="UserName" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Password" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="CredentialsID" Type="tinyint" Nullable="false" />
-          <Property Name="MemberID" Type="int" />
-        </EntityType>
-        <EntityType Name="tb_UsersCredential">
-          <Key>
-            <PropertyRef Name="CredentialsID" />
-          </Key>
-          <Property Name="CredentialsID" Type="tinyint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="CredentialsName" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="tb_WeekDay">
           <Key>
@@ -501,6 +512,18 @@
             </Principal>
             <Dependent Role="tb_College">
               <PropertyRef Name="DistrictID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tb_CopeForms_tb_MemberMaster">
+          <End Role="tb_MemberMaster" Type="Self.tb_MemberMaster" Multiplicity="1" />
+          <End Role="tb_CopeForms" Type="Self.tb_CopeForms" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_MemberMaster">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="tb_CopeForms">
+              <PropertyRef Name="MemberID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -792,6 +815,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_tb_MembershipForms_tb_MemberMaster">
+          <End Role="tb_MemberMaster" Type="Self.tb_MemberMaster" Multiplicity="1" />
+          <End Role="tb_MembershipForms" Type="Self.tb_MembershipForms" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_MemberMaster">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="tb_MembershipForms">
+              <PropertyRef Name="MemberID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_tb_Semesters_tb_SemesterName">
           <End Role="tb_SemesterName" Type="Self.tb_SemesterName" Multiplicity="1" />
           <End Role="tb_Semesters" Type="Self.tb_Semesters" Multiplicity="*" />
@@ -852,30 +887,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_tb_Users_tb_MemberMaster">
-          <End Role="tb_MemberMaster" Type="Self.tb_MemberMaster" Multiplicity="0..1" />
-          <End Role="tb_Users" Type="Self.tb_Users" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tb_MemberMaster">
-              <PropertyRef Name="MemberID" />
-            </Principal>
-            <Dependent Role="tb_Users">
-              <PropertyRef Name="MemberID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_tb_Users_tb_UsersCredential">
-          <End Role="tb_UsersCredential" Type="Self.tb_UsersCredential" Multiplicity="1" />
-          <End Role="tb_Users" Type="Self.tb_Users" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tb_UsersCredential">
-              <PropertyRef Name="CredentialsID" />
-            </Principal>
-            <Dependent Role="tb_Users">
-              <PropertyRef Name="CredentialsID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="LRCModelStoreContainer">
           <EntitySet Name="tb_Activity" EntityType="Self.tb_Activity" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_ActivityStatus" EntityType="Self.tb_ActivityStatus" Schema="dbo" store:Type="Tables" />
@@ -891,6 +902,7 @@
           <EntitySet Name="tb_Categories" EntityType="Self.tb_Categories" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_CityState" EntityType="Self.tb_CityState" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_College" EntityType="Self.tb_College" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tb_CopeForms" EntityType="Self.tb_CopeForms" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_Department" EntityType="Self.tb_Department" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_District" EntityType="Self.tb_District" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_Division" EntityType="Self.tb_Division" Schema="dbo" store:Type="Tables" />
@@ -906,6 +918,7 @@
           <EntitySet Name="tb_MemberNotes" EntityType="Self.tb_MemberNotes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_MemberPhoneNumbers" EntityType="Self.tb_MemberPhoneNumbers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_MemberRoles" EntityType="Self.tb_MemberRoles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tb_MembershipForms" EntityType="Self.tb_MembershipForms" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_NoteType" EntityType="Self.tb_NoteType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_PhoneType" EntityType="Self.tb_PhoneType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_Roles" EntityType="Self.tb_Roles" Schema="dbo" store:Type="Tables" />
@@ -913,8 +926,6 @@
           <EntitySet Name="tb_Semesters" EntityType="Self.tb_Semesters" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_SemesterTaught" EntityType="Self.tb_SemesterTaught" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_States" EntityType="Self.tb_States" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="tb_Users" EntityType="Self.tb_Users" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="tb_UsersCredential" EntityType="Self.tb_UsersCredential" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_WeekDay" EntityType="Self.tb_WeekDay" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_tb_Assessment_tb_AssessmentName" Association="Self.FK_tb_Assessment_tb_AssessmentName">
             <End Role="tb_AssessmentName" EntitySet="tb_AssessmentName" />
@@ -947,6 +958,10 @@
           <AssociationSet Name="FK_tb_College_tb_District" Association="Self.FK_tb_College_tb_District">
             <End Role="tb_District" EntitySet="tb_District" />
             <End Role="tb_College" EntitySet="tb_College" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tb_CopeForms_tb_MemberMaster" Association="Self.FK_tb_CopeForms_tb_MemberMaster">
+            <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
+            <End Role="tb_CopeForms" EntitySet="tb_CopeForms" />
           </AssociationSet>
           <AssociationSet Name="FK_tb_Department_tb_College" Association="Self.FK_tb_Department_tb_College">
             <End Role="tb_College" EntitySet="tb_College" />
@@ -1044,6 +1059,10 @@
             <End Role="tb_Roles" EntitySet="tb_Roles" />
             <End Role="tb_MemberRoles" EntitySet="tb_MemberRoles" />
           </AssociationSet>
+          <AssociationSet Name="FK_tb_MembershipForms_tb_MemberMaster" Association="Self.FK_tb_MembershipForms_tb_MemberMaster">
+            <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
+            <End Role="tb_MembershipForms" EntitySet="tb_MembershipForms" />
+          </AssociationSet>
           <AssociationSet Name="FK_tb_Semesters_tb_SemesterName" Association="Self.FK_tb_Semesters_tb_SemesterName">
             <End Role="tb_SemesterName" EntitySet="tb_SemesterName" />
             <End Role="tb_Semesters" EntitySet="tb_Semesters" />
@@ -1063,14 +1082,6 @@
           <AssociationSet Name="FK_tb_SemesterTaught_tb_WeekDay" Association="Self.FK_tb_SemesterTaught_tb_WeekDay">
             <End Role="tb_WeekDay" EntitySet="tb_WeekDay" />
             <End Role="tb_SemesterTaught" EntitySet="tb_SemesterTaught" />
-          </AssociationSet>
-          <AssociationSet Name="FK_tb_Users_tb_MemberMaster" Association="Self.FK_tb_Users_tb_MemberMaster">
-            <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
-            <End Role="tb_Users" EntitySet="tb_Users" />
-          </AssociationSet>
-          <AssociationSet Name="FK_tb_Users_tb_UsersCredential" Association="Self.FK_tb_Users_tb_UsersCredential">
-            <End Role="tb_UsersCredential" EntitySet="tb_UsersCredential" />
-            <End Role="tb_Users" EntitySet="tb_Users" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -1116,49 +1127,11 @@
           <Property Name="GenderName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="tb_MemberMaster" Relationship="LRCModel.FK_tb_MemberMaster_tb_Gender" FromRole="tb_Gender" ToRole="tb_MemberMaster" />
         </EntityType>
-        <EntityType Name="tb_Users">
-          <Key>
-            <PropertyRef Name="UserID" />
-          </Key>
-          <Property Name="UserID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="CredentialsID" Type="Byte" Nullable="false" />
-          <Property Name="MemberID" Type="Int32" />
-          <NavigationProperty Name="tb_UsersCredential" Relationship="Self.FK_tb_Users_tb_UsersCredential" FromRole="tb_Users" ToRole="tb_UsersCredential" />
-          <NavigationProperty Name="tb_MemberMaster" Relationship="LRCModel.FK_tb_Users_tb_MemberMaster" FromRole="tb_Users" ToRole="tb_MemberMaster" />
-        </EntityType>
-        <EntityType Name="tb_UsersCredential">
-          <Key>
-            <PropertyRef Name="CredentialsID" />
-          </Key>
-          <Property Name="CredentialsID" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CredentialsName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="tb_Users" Relationship="Self.FK_tb_Users_tb_UsersCredential" FromRole="tb_UsersCredential" ToRole="tb_Users" />
-        </EntityType>
-        <Association Name="FK_tb_Users_tb_UsersCredential">
-          <End Role="tb_UsersCredential" Type="Self.tb_UsersCredential" Multiplicity="1" />
-          <End Role="tb_Users" Type="Self.tb_Users" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tb_UsersCredential">
-              <PropertyRef Name="CredentialsID" />
-            </Principal>
-            <Dependent Role="tb_Users">
-              <PropertyRef Name="CredentialsID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="LRCEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="tb_Area" EntityType="Self.tb_Area" />
           <EntitySet Name="tb_Attribute" EntityType="Self.tb_Attribute" />
           <EntitySet Name="tb_Dues" EntityType="Self.tb_Dues" />
           <EntitySet Name="tb_Gender" EntityType="Self.tb_Gender" />
-          <EntitySet Name="tb_Users" EntityType="Self.tb_Users" />
-          <EntitySet Name="tb_UsersCredential" EntityType="Self.tb_UsersCredential" />
-          <AssociationSet Name="FK_tb_Users_tb_UsersCredential" Association="Self.FK_tb_Users_tb_UsersCredential">
-            <End Role="tb_UsersCredential" EntitySet="tb_UsersCredential" />
-            <End Role="tb_Users" EntitySet="tb_Users" />
-          </AssociationSet>
           <EntitySet Name="tb_ActivityStatus" EntityType="LRCModel.tb_ActivityStatus" />
           <EntitySet Name="tb_Activity" EntityType="LRCModel.tb_Activity" />
           <EntitySet Name="tb_AssessmentName" EntityType="LRCModel.tb_AssessmentName" />
@@ -1238,10 +1211,6 @@
           <AssociationSet Name="FK_tb_MemberActivity_tb_MemberMaster" Association="LRCModel.FK_tb_MemberActivity_tb_MemberMaster">
             <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
             <End Role="tb_MemberActivity" EntitySet="tb_MemberActivity" />
-          </AssociationSet>
-          <AssociationSet Name="FK_tb_Users_tb_MemberMaster" Association="LRCModel.FK_tb_Users_tb_MemberMaster">
-            <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
-            <End Role="tb_Users" EntitySet="tb_Users" />
           </AssociationSet>
           <EntitySet Name="tb_Body" EntityType="LRCModel.tb_Body" />
           <EntitySet Name="tb_MemberRoles" EntityType="LRCModel.tb_MemberRoles" />
@@ -1343,6 +1312,16 @@
           <AssociationSet Name="FK_tb_MemberNotes_tb_NoteType" Association="LRCModel.FK_tb_MemberNotes_tb_NoteType">
             <End Role="tb_NoteType" EntitySet="tb_NoteType" />
             <End Role="tb_MemberNotes" EntitySet="tb_MemberNotes" />
+          </AssociationSet>
+          <EntitySet Name="tb_MembershipForms" EntityType="LRCModel.tb_MembershipForms" />
+          <AssociationSet Name="FK_tb_MembershipForms_tb_MemberMaster" Association="LRCModel.FK_tb_MembershipForms_tb_MemberMaster">
+            <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
+            <End Role="tb_MembershipForms" EntitySet="tb_MembershipForms" />
+          </AssociationSet>
+          <EntitySet Name="tb_CopeForms" EntityType="LRCModel.tb_CopeForms" />
+          <AssociationSet Name="FK_tb_CopeForms_tb_MemberMaster" Association="LRCModel.FK_tb_CopeForms_tb_MemberMaster">
+            <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
+            <End Role="tb_CopeForms" EntitySet="tb_CopeForms" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="tb_ActivityStatus">
@@ -1614,7 +1593,6 @@
           <NavigationProperty Name="tb_JobStatus" Relationship="LRCModel.FK_tb_MemberMaster_tb_JobStatus" FromRole="tb_MemberMaster" ToRole="tb_JobStatus" />
           <NavigationProperty Name="tb_LatestUnionAssessment" Relationship="LRCModel.FK_tb_MemberMaster_tb_LatestUnionAssessment" FromRole="tb_MemberMaster" ToRole="tb_LatestUnionAssessment" />
           <NavigationProperty Name="tb_MemberActivity" Relationship="LRCModel.FK_tb_MemberActivity_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_MemberActivity" />
-          <NavigationProperty Name="tb_Users" Relationship="LRCModel.FK_tb_Users_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_Users" />
           <NavigationProperty Name="tb_MemberRoles" Relationship="LRCModel.FK_tb_MemberRoles_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_MemberRoles" />
           <NavigationProperty Name="tb_SemesterTaught" Relationship="LRCModel.FK_tb_SemesterTaught_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_SemesterTaught" />
           <NavigationProperty Name="tb_Assessment" Relationship="LRCModel.FK_tb_Assessment_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_Assessment" />
@@ -1622,6 +1600,8 @@
           <NavigationProperty Name="tb_MemberAddress" Relationship="LRCModel.FK_tb_MemberAddress_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_MemberAddress" />
           <NavigationProperty Name="tb_MemberPhoneNumbers" Relationship="LRCModel.FK_tb_MemberPhoneNumbers_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_MemberPhoneNumbers" />
           <NavigationProperty Name="tb_MemberNotes" Relationship="LRCModel.FK_tb_MemberNotes_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_MemberNotes" />
+          <NavigationProperty Name="tb_MembershipForms" Relationship="LRCModel.FK_tb_MembershipForms_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_MembershipForms" />
+          <NavigationProperty Name="tb_CopeForms" Relationship="LRCModel.FK_tb_CopeForms_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_CopeForms" />
         </EntityType>
         <Association Name="FK_tb_MemberMaster_tb_Area">
           <End Type="LRCModel.tb_Area" Role="tb_Area" Multiplicity="0..1" />
@@ -1739,18 +1719,6 @@
               <PropertyRef Name="MemberID" />
             </Principal>
             <Dependent Role="tb_MemberActivity">
-              <PropertyRef Name="MemberID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_tb_Users_tb_MemberMaster">
-          <End Type="LRCModel.tb_MemberMaster" Role="tb_MemberMaster" Multiplicity="0..1" />
-          <End Type="LRCModel.tb_Users" Role="tb_Users" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tb_MemberMaster">
-              <PropertyRef Name="MemberID" />
-            </Principal>
-            <Dependent Role="tb_Users">
               <PropertyRef Name="MemberID" />
             </Dependent>
           </ReferentialConstraint>
@@ -2223,6 +2191,60 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="tb_MembershipForms">
+          <Key>
+            <PropertyRef Name="MembershipFormID" />
+          </Key>
+          <Property Name="MembershipFormID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MemberID" Type="Int32" Nullable="false" />
+          <Property Name="Signed" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="FormVersion" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FormImagePath" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Processed" Type="Boolean" Nullable="false" />
+          <Property Name="SentToEmployer" Type="Boolean" Nullable="false" />
+          <Property Name="CollectedBy" Type="Int32" />
+          <Property Name="AddedBy" Type="Int32" />
+          <NavigationProperty Name="tb_MemberMaster" Relationship="LRCModel.FK_tb_MembershipForms_tb_MemberMaster" FromRole="tb_MembershipForms" ToRole="tb_MemberMaster" />
+        </EntityType>
+        <Association Name="FK_tb_MembershipForms_tb_MemberMaster">
+          <End Type="LRCModel.tb_MemberMaster" Role="tb_MemberMaster" Multiplicity="1" />
+          <End Type="LRCModel.tb_MembershipForms" Role="tb_MembershipForms" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_MemberMaster">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="tb_MembershipForms">
+              <PropertyRef Name="MemberID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="tb_CopeForms">
+          <Key>
+            <PropertyRef Name="CopeFormID" />
+          </Key>
+          <Property Name="CopeFormID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MemberID" Type="Int32" Nullable="false" />
+          <Property Name="Signed" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="MonthlyContribution" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="CollectedBy" Type="Int32" />
+          <Property Name="FormImagePath" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Processed" Type="Boolean" Nullable="false" />
+          <Property Name="SentToEmployer" Type="Boolean" Nullable="false" />
+          <Property Name="AddedBy" Type="Int32" />
+          <NavigationProperty Name="tb_MemberMaster" Relationship="LRCModel.FK_tb_CopeForms_tb_MemberMaster" FromRole="tb_CopeForms" ToRole="tb_MemberMaster" />
+        </EntityType>
+        <Association Name="FK_tb_CopeForms_tb_MemberMaster">
+          <End Type="LRCModel.tb_MemberMaster" Role="tb_MemberMaster" Multiplicity="1" />
+          <End Type="LRCModel.tb_CopeForms" Role="tb_CopeForms" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_MemberMaster">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="tb_CopeForms">
+              <PropertyRef Name="MemberID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2265,25 +2287,6 @@
               <MappingFragment StoreEntitySet="tb_Gender">
                 <ScalarProperty Name="GenderID" ColumnName="GenderID" />
                 <ScalarProperty Name="GenderName" ColumnName="GenderName" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="tb_Users">
-            <EntityTypeMapping TypeName="LRCModel.tb_Users">
-              <MappingFragment StoreEntitySet="tb_Users">
-                <ScalarProperty Name="UserID" ColumnName="UserID" />
-                <ScalarProperty Name="UserName" ColumnName="UserName" />
-                <ScalarProperty Name="Password" ColumnName="Password" />
-                <ScalarProperty Name="CredentialsID" ColumnName="CredentialsID" />
-                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="tb_UsersCredential">
-            <EntityTypeMapping TypeName="LRCModel.tb_UsersCredential">
-              <MappingFragment StoreEntitySet="tb_UsersCredential">
-                <ScalarProperty Name="CredentialsID" ColumnName="CredentialsID" />
-                <ScalarProperty Name="CredentialsName" ColumnName="CredentialsName" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2668,6 +2671,36 @@
               <MappingFragment StoreEntitySet="tb_NoteType">
                 <ScalarProperty Name="NoteType" ColumnName="NoteType" />
                 <ScalarProperty Name="NoteTypeID" ColumnName="NoteTypeID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tb_MembershipForms">
+            <EntityTypeMapping TypeName="LRCModel.tb_MembershipForms">
+              <MappingFragment StoreEntitySet="tb_MembershipForms">
+                <ScalarProperty Name="AddedBy" ColumnName="AddedBy" />
+                <ScalarProperty Name="CollectedBy" ColumnName="CollectedBy" />
+                <ScalarProperty Name="SentToEmployer" ColumnName="SentToEmployer" />
+                <ScalarProperty Name="Processed" ColumnName="Processed" />
+                <ScalarProperty Name="FormImagePath" ColumnName="FormImagePath" />
+                <ScalarProperty Name="FormVersion" ColumnName="FormVersion" />
+                <ScalarProperty Name="Signed" ColumnName="Signed" />
+                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
+                <ScalarProperty Name="MembershipFormID" ColumnName="MembershipFormID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tb_CopeForms">
+            <EntityTypeMapping TypeName="LRCModel.tb_CopeForms">
+              <MappingFragment StoreEntitySet="tb_CopeForms">
+                <ScalarProperty Name="AddedBy" ColumnName="AddedBy" />
+                <ScalarProperty Name="SentToEmployer" ColumnName="SentToEmployer" />
+                <ScalarProperty Name="Processed" ColumnName="Processed" />
+                <ScalarProperty Name="FormImagePath" ColumnName="FormImagePath" />
+                <ScalarProperty Name="CollectedBy" ColumnName="CollectedBy" />
+                <ScalarProperty Name="MonthlyContribution" ColumnName="MonthlyContribution" />
+                <ScalarProperty Name="Signed" ColumnName="Signed" />
+                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
+                <ScalarProperty Name="CopeFormID" ColumnName="CopeFormID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -139,6 +139,34 @@ namespace LRC_NET_Framework.Models
         public int _TakenBy { get; set; }
         public IEnumerable<tb_MemberNotes> _MemberNotes { get; set; }
     }
+
+    public partial class AddMembershipForm
+    {
+        public int _MemberID { get; set; }
+
+        [Required(ErrorMessage = "Add Date is required")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime _Signed { get; set; }
+        public string _FormVersion { get; set; }
+        public string _FormImagePath { get; set; }
+        public int _CollectedBy { get; set; }
+        public IEnumerable<tb_MembershipForms> _MembershipForms { get; set; }
+    }
+
+    public partial class AddCopeForm
+    {
+        public int _MemberID { get; set; }
+
+        [Required(ErrorMessage = "Add Date is required")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime _Signed { get; set; }
+        public decimal _MonthlyContribution { get; set; }
+        public string _FormImagePath { get; set; }
+        public int _CollectedBy { get; set; }
+        public IEnumerable<tb_CopeForms> _CopeForms { get; set; }
+    }
 }
 
 

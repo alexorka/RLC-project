@@ -74,7 +74,7 @@ namespace LRC_NET_Framework.Controllers
         // GET: Notes/Create
         public ActionResult AddNote(int? id)
         {
-            id = 1; // test REMOVE IT
+            //id = 1; // test REMOVE IT
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);

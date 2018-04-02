@@ -11,6 +11,7 @@ using PagedList;
 using PagedList.Mvc;
 using LRC_NET_Framework.Models;
 using System.Data.Entity.Validation;
+using System.IO;
 
 namespace LRC_NET_Framework.Controllers
 {
@@ -232,6 +233,158 @@ namespace LRC_NET_Framework.Controllers
             return View(model);
         }
 
+        // GET: Notes/Create
+        public ActionResult AddMembershipForm(int? id)
+        {
+            id = 1; // test REMOVE IT
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            AddMembershipForm model = new AddMembershipForm()
+            {
+                _MemberID = id ?? 0,
+                _Signed = DateTime.Now,
+                _FormVersion = String.Empty,
+                _FormImagePath = "No file chosen",
+                _CollectedBy = 2,
+                _MembershipForms = db.tb_MembershipForms.Where(t => t.MemberID == id).ToList()
+            };
+            return View(model);
+
+        }
+
+        // POST: Notes/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddMembershipForm(AddMembershipForm model, HttpPostedFileBase file)
+        {
+            string imagesFolder = "~/Images/MembershipForms/";
+            if (file != null && file.ContentLength > 0)
+                try
+                {
+                    string path = Path.Combine(Server.MapPath(imagesFolder),
+                                               Path.GetFileName(file.FileName));
+                    file.SaveAs(path);
+                    ViewBag.Message = "File uploaded successfully";
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.Message = "ERROR:" + ex.Message.ToString();
+                }
+            else
+            {
+                ViewBag.Message = "You have not specified a file.";
+                model._MembershipForms = db.tb_MembershipForms.Where(t => t.MemberID == model._MemberID).ToList();
+                return View(model);
+            }
+
+            var memberForms = db.tb_MembershipForms.Where(s => s.FormImagePath.ToUpper().Contains(imagesFolder.ToUpper()));
+            //Check dublicates
+            if (memberForms.ToList().Count == 0)
+            {
+                tb_MembershipForms memberForm = new tb_MembershipForms()
+                {
+                    MemberID = model._MemberID,
+                    Signed = model._Signed,
+                    FormVersion = model._FormVersion,
+                    FormImagePath = imagesFolder + Path.GetFileName(file.FileName),
+                    CollectedBy = model._CollectedBy
+                };
+                db.tb_MembershipForms.Add(memberForm);
+            }
+            else
+            {
+                tb_MembershipForms memberForm = memberForms.FirstOrDefault();
+                memberForm.Signed = model._Signed;
+                memberForm.FormVersion = model._FormVersion;
+                memberForm.FormImagePath = imagesFolder + Path.GetFileName(file.FileName);
+                memberForm.CollectedBy = 2;
+                db.tb_MembershipForms.Attach(memberForm);
+            }
+            db.SaveChanges();
+            model._MembershipForms = db.tb_MembershipForms.Where(t => t.MemberID == model._MemberID).ToList();
+            return View(model);
+        }
+
+        // GET: Notes/Create
+        public ActionResult AddCopeForm(int? id)
+        {
+            id = 1; // test REMOVE IT
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            AddCopeForm model = new AddCopeForm()
+            {
+                _MemberID = id ?? 0,
+                _Signed = DateTime.Now,
+                _MonthlyContribution = 0m,
+                _FormImagePath = "No file chosen",
+                _CollectedBy = 2,
+                _CopeForms = db.tb_CopeForms.Where(t => t.MemberID == id).ToList()
+            };
+            return View(model);
+
+        }
+
+        // POST: Notes/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddCopeForm(AddCopeForm model, HttpPostedFileBase file)
+        {
+            string imagesFolder = "~/Images/CopeForms/";
+            if (file != null && file.ContentLength > 0)
+                try
+                {
+                    string path = Path.Combine(Server.MapPath(imagesFolder),
+                                               Path.GetFileName(file.FileName));
+                    file.SaveAs(path);
+                    ViewBag.Message = "File uploaded successfully";
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.Message = "ERROR:" + ex.Message.ToString();
+                }
+            else
+            {
+                ViewBag.Message = "You have not specified a file.";
+                model._CopeForms = db.tb_CopeForms.Where(t => t.MemberID == model._MemberID).ToList();
+                return View(model);
+            }
+
+            var copeForms = db.tb_CopeForms.Where(s => s.FormImagePath.ToUpper().Contains(imagesFolder.ToUpper()));
+            //Check dublicates
+            if (copeForms.ToList().Count == 0)
+            {
+                tb_CopeForms copeForm = new tb_CopeForms()
+                {
+                    MemberID = model._MemberID,
+                    Signed = model._Signed,
+                    MonthlyContribution = model._MonthlyContribution,
+                    FormImagePath = imagesFolder + Path.GetFileName(file.FileName),
+                    CollectedBy = model._CollectedBy
+                };
+                db.tb_CopeForms.Add(copeForm);
+            }
+            else
+            {
+                tb_CopeForms copeForm = copeForms.FirstOrDefault();
+                copeForm.Signed = model._Signed;
+                copeForm.MonthlyContribution = model._MonthlyContribution;
+                copeForm.FormImagePath = imagesFolder + Path.GetFileName(file.FileName);
+                copeForm.CollectedBy = 2;
+                db.tb_CopeForms.Attach(copeForm);
+            }
+            db.SaveChanges();
+            model._CopeForms = db.tb_CopeForms.Where(t => t.MemberID == model._MemberID).ToList();
+            return View(model);
+        }
+        
         // POST: Home/AddPhone (Partitial)
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.

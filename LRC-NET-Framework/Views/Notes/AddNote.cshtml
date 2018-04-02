@@ -30,7 +30,6 @@
                 <div class="col-md-11 col-md-offset-1" id="NoteDate">
                     @Html.Label("NoteDate", "Note Date", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
                     @Html.TextBoxFor(model => model._NoteDate, "{0:yyyy-MM-dd}", new { @class = "form-control datecontrol", type = "date", style = "width: 150px;" })
-                    <small><i style="color:gray;">Note types allow you to categorize the kind of note it is</i></small>
                     @Html.ValidationMessageFor(model => model._NoteDate, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -39,6 +38,7 @@
                 <div class="col-md-11 col-md-offset-1" id="NoteTypeID" style="padding-bottom:15px;">
                     @Html.Label("NoteTypeID", "Note Type", htmlAttributes: new { @class = "control-label" })
                     @Html.DropDownListFor(model => model._NoteTypeID, Model._NoteTypes, new { @class = "form-control", style = "width: 250px;" })
+                    <small><i style="color:gray;">Note types allow you to categorize the kind of note it is</i></small>
                     @Html.ValidationMessageFor(model => model._NoteTypeID, "", new { @class = "text-danger" })
                 </div>
             </div>

@@ -29,8 +29,6 @@ namespace LRC_NET_Framework
         public virtual DbSet<tb_Attribute> tb_Attribute { get; set; }
         public virtual DbSet<tb_Dues> tb_Dues { get; set; }
         public virtual DbSet<tb_Gender> tb_Gender { get; set; }
-        public virtual DbSet<tb_Users> tb_Users { get; set; }
-        public virtual DbSet<tb_UsersCredential> tb_UsersCredential { get; set; }
         public virtual DbSet<tb_ActivityStatus> tb_ActivityStatus { get; set; }
         public virtual DbSet<tb_Activity> tb_Activity { get; set; }
         public virtual DbSet<tb_AssessmentName> tb_AssessmentName { get; set; }
@@ -64,5 +62,7 @@ namespace LRC_NET_Framework
         public virtual DbSet<tb_MemberPhoneNumbers> tb_MemberPhoneNumbers { get; set; }
         public virtual DbSet<tb_MemberNotes> tb_MemberNotes { get; set; }
         public virtual DbSet<tb_NoteType> tb_NoteType { get; set; }
+        public virtual DbSet<tb_MembershipForms> tb_MembershipForms { get; set; }
+        public virtual DbSet<tb_CopeForms> tb_CopeForms { get; set; }
     }
 }

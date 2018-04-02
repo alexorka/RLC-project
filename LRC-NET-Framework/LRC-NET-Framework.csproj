@@ -274,6 +274,9 @@
     <Compile Include="tb_College.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
+    <Compile Include="tb_CopeForms.cs">
+      <DependentUpon>DBModelContext.tt</DependentUpon>
+    </Compile>
     <Compile Include="tb_Department.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
@@ -319,6 +322,9 @@
     <Compile Include="tb_MemberRoles.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
+    <Compile Include="tb_MembershipForms.cs">
+      <DependentUpon>DBModelContext.tt</DependentUpon>
+    </Compile>
     <Compile Include="tb_NoteType.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
@@ -338,12 +344,6 @@
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
     <Compile Include="tb_States.cs">
-      <DependentUpon>DBModelContext.tt</DependentUpon>
-    </Compile>
-    <Compile Include="tb_Users.cs">
-      <DependentUpon>DBModelContext.tt</DependentUpon>
-    </Compile>
-    <Compile Include="tb_UsersCredential.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
     <Compile Include="tb_WeekDay.cs">
@@ -503,6 +503,8 @@
     <Content Include="Views\Assessment\AddAssessment.cshtml" />
     <Content Include="Views\Activities\AddActivity.cshtml" />
     <Content Include="Views\Home\ManageContactInfo.cshtml" />
+    <Content Include="Views\Home\AddMembershipForm.cshtml" />
+    <Content Include="Views\Home\AddCopeForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
