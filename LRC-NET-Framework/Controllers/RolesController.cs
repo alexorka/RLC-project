@@ -170,6 +170,52 @@ namespace LRC_NET_Framework.Controllers
         }
 
         // GET: Roles/Edit/5
+
+        // GET: Notes/Create
+        public ActionResult AddRole(int? id)
+        {
+            //id = 1; // test REMOVE IT
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            AddRole model = new AddRole()
+            {
+                _MemberID = id ?? 0,
+                _RoleID = 1,
+                _Roles = new SelectList(db.tb_Roles, "RoleID", "RoleName"),
+                _BodyID = 1,
+                _Bodies = new SelectList(db.tb_Body, "BodyID", "BodyName"),
+                _StartDate = DateTime.Now,
+                _EndDate = DateTime.Now,
+                _MemberRoles = db.tb_MemberRoles.Where(t => t.MemberID == id).ToList()
+            };
+            return View(model);
+        }
+
+        // POST: Notes/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddRole(AddRole model)
+        {
+            tb_MemberRoles memberRoles = new tb_MemberRoles()
+            {
+                MemberID = model._MemberID,
+                RoleID = model._RoleID,
+                BodyID = model._BodyID,
+                StartDate = model._StartDate,
+                EndDate = model._EndDate
+            };
+            db.tb_MemberRoles.Add(memberRoles);
+            db.SaveChanges();
+            model._Roles = new SelectList(db.tb_Roles, "RoleID", "RoleName");
+            model._Bodies = new SelectList(db.tb_Body, "BodyID", "BodyName");
+            model._MemberRoles = db.tb_MemberRoles.Where(t => t.MemberID == model._MemberID).ToList();
+            return View(model);
+        }
+
         public ActionResult Edit(int? id)
         {
             if (id == null)

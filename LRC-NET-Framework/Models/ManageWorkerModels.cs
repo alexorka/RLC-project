@@ -48,6 +48,7 @@ namespace LRC_NET_Framework.Models
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime _EndDate { get; set; }
+        public IEnumerable<tb_MemberRoles> _MemberRoles { get; set; }
     }
 
     public class SemesterTaughtModels
@@ -166,6 +167,33 @@ namespace LRC_NET_Framework.Models
         public string _FormImagePath { get; set; }
         public int _CollectedBy { get; set; }
         public IEnumerable<tb_CopeForms> _CopeForms { get; set; }
+    }
+
+    public partial class AlsoWorksAt
+    {
+        public int _MemberID { get; set; }
+
+        public int _EmployerID { get; set; }
+        public IEnumerable<SelectListItem> _Employers { get; set; }
+        public string _Note { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime _AddedDateTime { get; set; }
+        public int _AddedBy { get; set; }
+        public IEnumerable<tb_AlsoWorksAt> _AlsoWorksAts { get; set; }
+    }
+
+    public partial class AddBuilding
+    {
+        public int _CollegeID { get; set; }
+        public IEnumerable<SelectListItem> _Colleges { get; set; }
+        public int _CampusID { get; set; }
+        public IEnumerable<SelectListItem> _Campuses { get; set; }
+        public string _BuildingName { get; set; }
+        public string _ImagePath { get; set; }
+        public int _BuildingID { get; set; }
+        public IEnumerable<tb_Building> _Buildings { get; set; }
+
     }
 }
 

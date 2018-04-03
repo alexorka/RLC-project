@@ -1,0 +1,7 @@
+﻿@model IEnumerable<LRC_NET_Framework.Models.Campuses>
+<select id="campus" name="Campus">
+    @foreach (var item in Model)
+    {
+        <option value="@item._CampusID">@item._CampusName</option>
+    }
+</select>

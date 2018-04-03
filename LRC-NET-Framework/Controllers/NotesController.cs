@@ -98,7 +98,7 @@ namespace LRC_NET_Framework.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult AddNote(AddNote model)
         {
-            var memberNotes = db.tb_MemberNotes.Where(s => s.Notes.ToUpper().Contains(model._Note.ToUpper()));
+            var memberNotes = db.tb_MemberNotes.Where(s => s.Notes.ToUpper() == model._Note.ToUpper());
             //Check dublicates
             if (memberNotes.ToList().Count == 0)
             {

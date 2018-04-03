@@ -225,6 +225,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\AddBldgsDepts.cs" />
     <Compile Include="Models\AssessActivityModels.cs" />
     <Compile Include="Models\CommonFunctions.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -239,6 +240,9 @@
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
     <Compile Include="tb_AddressSource.cs">
+      <DependentUpon>DBModelContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tb_AlsoWorksAt.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
     <Compile Include="tb_Area.cs">
@@ -290,6 +294,9 @@
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
     <Compile Include="tb_EmailType.cs">
+      <DependentUpon>DBModelContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tb_Employers.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
     <Compile Include="tb_Gender.cs">
@@ -505,6 +512,10 @@
     <Content Include="Views\Home\ManageContactInfo.cshtml" />
     <Content Include="Views\Home\AddMembershipForm.cshtml" />
     <Content Include="Views\Home\AddCopeForm.cshtml" />
+    <Content Include="Views\Roles\AddRole.cshtml" />
+    <Content Include="Views\Home\AlsoWorksAt.cshtml" />
+    <Content Include="Views\Home\AddBuilding.cshtml" />
+    <Content Include="Views\Home\GetCampuses.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

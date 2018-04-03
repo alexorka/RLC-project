@@ -17,8 +17,8 @@
     <li role="button"><a href="@Url.Action("AddMembershipForm", "Home", new { @id = Model._Worker.MemberID })" class="btn btn-default">Member Forms&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
     <li role="button"><a href="@Url.Action("AddCopeForm", "Home", new { @id = Model._Worker.MemberID })" class="btn btn-default">COPE Forms&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
     <li role="button"><a href="@Url.Action("AddNote", "Notes", new { @id = Model._Worker.MemberID })" class="btn btn-default">Notes&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
-    <li role="button"><a href="#Roles" class="btn btn-default">Roles&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
-    <li role="button"><a href="#" class="btn btn-default">Also Works At&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="@Url.Action("AddRole", "Roles", new { @id = Model._Worker.MemberID })" class="btn btn-default">Roles&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="@Url.Action("AlsoWorksAt", "Home", new { @id = Model._Worker.MemberID })" class="btn btn-default">Also Works At&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
 </ul>
 
 <h2 style="font-family:sans-serif">@Html.DisplayFor(n => n._Worker.LastName), @Html.DisplayFor(n => n._Worker.FirstName)</h2>
