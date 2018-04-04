@@ -567,30 +567,22 @@ namespace LRC_NET_Framework.Controllers
         // GET: Home/AddMembershipForm
         public ActionResult AddBuilding()
         {
-            int selectedIndex = 1;
-            SelectList colleges = new SelectList(db.tb_College, "CollegeID", "CollegeDesc", selectedIndex);
+            var colleges = new SelectList(db.tb_College, "CollegeID", "CollegeDesc");
             ViewBag.Colleges = colleges;
-            SelectList campuses = new SelectList(db.tb_Campus.Where(c => c.CollegeID == selectedIndex), "CampusID", "CampusName");
-            ViewBag.Campuses = campuses;
-            return View();
-
-            //AddBuilding model = new AddBuilding()
-            //{
-            //    _CollegeID = 1,
-            //    _Colleges = new SelectList(db.tb_College, "CollegeID", "CollegeDesc", selectedIndex),
-            //    _CampusID = 1,
-            //    _Campuses = new SelectList(db.tb_Campus.Where(s => s.CollegeID == selectedIndex), "CampusID", "CampusName"),
-            //    _BuildingName = String.Empty,
-            //    _ImagePath = "No file chosen",
-            //    _Buildings = db.tb_Building.ToList()
-            //};
-            //return View(model);
-
+            ViewBag.CollegeID = 0;
+            return View(db.tb_College.ToList());
         }
 
-        public ActionResult GetCampuses(int id)
+        [HttpPost]
+        public ActionResult GetCampuses(int College)
         {
-            var campuses = db.tb_Campus.Where(s => s.CollegeID == id).ToList();
+            var campuses = db.tb_Campus.Where(s => s.CollegeID == College).ToList();
+            if (campuses.Count <= 0)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.Campuses = new SelectList(campuses, "CampusID", "CampusName");
+            ViewBag.CollegeID = College;
             return PartialView(campuses);
         }
 
@@ -599,9 +591,10 @@ namespace LRC_NET_Framework.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AddBuilding(AddMembershipForm model, HttpPostedFileBase file)
+        public ActionResult AddBuilding(HttpPostedFileBase file, int Campus, int College, string BuildingName, FormCollection formCollection)
         {
-            string imagesFolder = "~/Images/MembershipForms/";
+            //FormCollection formCollection
+            string imagesFolder = "~/Images/Buildings/";
             if (file != null && file.ContentLength > 0)
                 try
                 {
@@ -617,36 +610,34 @@ namespace LRC_NET_Framework.Controllers
             else
             {
                 ViewBag.Message = "You have not specified a file.";
-                model._MembershipForms = db.tb_MembershipForms.Where(t => t.MemberID == model._MemberID).ToList();
-                return View(model);
+                ViewBag.Colleges = new SelectList(db.tb_College, "CollegeID", "CollegeDesc", College);
+                return View();
             }
 
-            var memberForms = db.tb_MembershipForms.Where(s => s.FormImagePath.ToUpper() == imagesFolder.ToUpper());
+            var buildings = db.tb_Building.Where(s => s.BuildingName.ToUpper() == BuildingName.ToUpper());
             //Check dublicates
-            if (memberForms.ToList().Count == 0)
+            if (buildings.ToList().Count == 0)
             {
-                tb_MembershipForms memberForm = new tb_MembershipForms()
+                tb_Building building = new tb_Building()
                 {
-                    MemberID = model._MemberID,
-                    Signed = model._Signed,
-                    FormVersion = model._FormVersion,
-                    FormImagePath = imagesFolder + Path.GetFileName(file.FileName),
-                    CollectedBy = model._CollectedBy
+                    CampusID = Campus,
+                    BuildingName = BuildingName,
+                    ImagePath = imagesFolder + Path.GetFileName(file.FileName)
                 };
-                db.tb_MembershipForms.Add(memberForm);
+                db.tb_Building.Add(building);
             }
             else
             {
-                tb_MembershipForms memberForm = memberForms.FirstOrDefault();
-                memberForm.Signed = model._Signed;
-                memberForm.FormVersion = model._FormVersion;
-                memberForm.FormImagePath = imagesFolder + Path.GetFileName(file.FileName);
-                memberForm.CollectedBy = 2;
-                db.tb_MembershipForms.Attach(memberForm);
+                tb_Building building = buildings.FirstOrDefault();
+                building.CampusID = Campus;
+                building.BuildingName = BuildingName;
+                building.ImagePath = imagesFolder + Path.GetFileName(file.FileName);
+                db.tb_Building.Attach(building);
             }
             db.SaveChanges();
-            model._MembershipForms = db.tb_MembershipForms.Where(t => t.MemberID == model._MemberID).ToList();
-            return View(model);
+            ViewBag.Colleges = new SelectList(db.tb_College, "CollegeID", "CollegeDesc");
+            ViewBag.CollegeID = 0;
+            return View(db.tb_College.ToList());
         }
 
         public ActionResult About()

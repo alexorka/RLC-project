@@ -20,12 +20,12 @@
         <AssociationConnector Association="LRCModel.FK_tb_MemberActivity_tb_Activity1" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberActivity_tb_ActivityStatus" />
         <EntityTypeShape EntityType="LRCModel.tb_Department" Width="1.5" PointX="3.25" PointY="16.125" />
-        <EntityTypeShape EntityType="LRCModel.tb_Division" Width="1.5" PointX="14" PointY="17.5" />
+        <EntityTypeShape EntityType="LRCModel.tb_Division" Width="1.5" PointX="5.75" PointY="12.875" />
         <EntityTypeShape EntityType="LRCModel.tb_Categories" Width="1.5" PointX="5.25" PointY="26.625" />
         <EntityTypeShape EntityType="LRCModel.tb_SemesterName" Width="1.5" PointX="7.375" PointY="10.625" />
         <EntityTypeShape EntityType="LRCModel.tb_Semesters" Width="1.5" PointX="7.375" PointY="12.625" />
         <AssociationConnector Association="LRCModel.FK_tb_Semesters_tb_SemesterName" />
-        <EntityTypeShape EntityType="LRCModel.tb_Campus" Width="1.5" PointX="9.75" PointY="9.75" />
+        <EntityTypeShape EntityType="LRCModel.tb_Campus" Width="1.5" PointX="9.75" PointY="8.625" />
         <EntityTypeShape EntityType="LRCModel.tb_College" Width="1.5" PointX="5.375" PointY="15" />
         <AssociationConnector Association="LRCModel.FK_tb_Campus_tb_College" />
         <AssociationConnector Association="LRCModel.FK_tb_College_tb_District" />
@@ -41,11 +41,8 @@
         <AssociationConnector Association="LRCModel.FK_tb_MemberMaster_tb_JobStatus" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberMaster_tb_LatestUnionAssessment" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberActivity_tb_MemberMaster" />
-        <EntityTypeShape EntityType="LRCModel.tb_Building" Width="1.5" PointX="9.75" PointY="12.5" />
-        <AssociationConnector Association="LRCModel.FK_tb_Building_tb_Campus" />
         <EntityTypeShape EntityType="LRCModel.tb_WeekDay" Width="1.5" PointX="11.75" PointY="11.25" />
         <EntityTypeShape EntityType="LRCModel.tb_SemesterTaught" Width="1.5" PointX="9.75" PointY="15.125" />
-        <AssociationConnector Association="LRCModel.FK_tb_SemesterTaught_tb_Building" />
         <AssociationConnector Association="LRCModel.FK_tb_SemesterTaught_tb_MemberMaster" />
         <AssociationConnector Association="LRCModel.FK_tb_SemesterTaught_tb_Semesters" />
         <AssociationConnector Association="LRCModel.FK_tb_SemesterTaught_tb_WeekDay" />
@@ -88,6 +85,9 @@
         <EntityTypeShape EntityType="LRCModel.tb_AlsoWorksAt" Width="1.5" PointX="11.75" PointY="16.5" />
         <AssociationConnector Association="LRCModel.FK_tb_AlsoWorksAt_tb_Employers" />
         <AssociationConnector Association="LRCModel.FK_tb_AlsoWorksAt_tb_MemberMaster" />
+        <EntityTypeShape EntityType="LRCModel.tb_Building" Width="1.5" PointX="9.75" PointY="11.125" />
+        <AssociationConnector Association="LRCModel.FK_tb_Building_tb_Campus" />
+        <AssociationConnector Association="LRCModel.FK_tb_SemesterTaught_tb_Building" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
