@@ -225,7 +225,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\AddBldgsDepts.cs" />
     <Compile Include="Models\AssessActivityModels.cs" />
     <Compile Include="Models\CommonFunctions.cs" />
     <Compile Include="Models\IdentityModels.cs" />
