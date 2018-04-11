@@ -206,6 +206,7 @@
           </Key>
           <Property Name="EmployerID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="EmployerName" Type="nvarchar" MaxLength="50" />
+          <Property Name="EmployerIDNumber" Type="nchar" MaxLength="7" Nullable="false" />
         </EntityType>
         <EntityType Name="tb_Gender">
           <Key>
@@ -280,10 +281,10 @@
             <PropertyRef Name="MemberID" />
           </Key>
           <Property Name="MemberID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="MemberIDNumber" Type="char" MaxLength="7" />
-          <Property Name="LastName" Type="nvarchar" MaxLength="50" />
-          <Property Name="FirstName" Type="nvarchar" MaxLength="50" />
-          <Property Name="MiddleName" Type="nvarchar" MaxLength="50" />
+          <Property Name="MemberIDNumber" Type="char" MaxLength="7" Nullable="false" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="MiddleName" Type="nvarchar" MaxLength="20" />
           <Property Name="DepartmentID" Type="int" Nullable="false" />
           <Property Name="CategoryID" Type="int" Nullable="false" />
           <Property Name="AreaID" Type="int" />
@@ -1353,7 +1354,6 @@
             <End Role="tb_CopeForms" EntitySet="tb_CopeForms" />
           </AssociationSet>
           <EntitySet Name="tb_Body" EntityType="LRCModel.tb_Body" />
-          <EntitySet Name="tb_Employers" EntityType="LRCModel.tb_Employers" />
           <EntitySet Name="tb_MemberRoles" EntityType="LRCModel.tb_MemberRoles" />
           <EntitySet Name="tb_Roles" EntityType="LRCModel.tb_Roles" />
           <AssociationSet Name="FK_tb_MemberRoles_tb_Body" Association="LRCModel.FK_tb_MemberRoles_tb_Body">
@@ -1369,10 +1369,6 @@
             <End Role="tb_MemberRoles" EntitySet="tb_MemberRoles" />
           </AssociationSet>
           <EntitySet Name="tb_AlsoWorksAt" EntityType="LRCModel.tb_AlsoWorksAt" />
-          <AssociationSet Name="FK_tb_AlsoWorksAt_tb_Employers" Association="LRCModel.FK_tb_AlsoWorksAt_tb_Employers">
-            <End Role="tb_Employers" EntitySet="tb_Employers" />
-            <End Role="tb_AlsoWorksAt" EntitySet="tb_AlsoWorksAt" />
-          </AssociationSet>
           <AssociationSet Name="FK_tb_AlsoWorksAt_tb_MemberMaster" Association="LRCModel.FK_tb_AlsoWorksAt_tb_MemberMaster">
             <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
             <End Role="tb_AlsoWorksAt" EntitySet="tb_AlsoWorksAt" />
@@ -1385,6 +1381,11 @@
           <AssociationSet Name="FK_tb_SemesterTaught_tb_Building" Association="LRCModel.FK_tb_SemesterTaught_tb_Building">
             <End Role="tb_Building" EntitySet="tb_Building" />
             <End Role="tb_SemesterTaught" EntitySet="tb_SemesterTaught" />
+          </AssociationSet>
+          <EntitySet Name="tb_Employers" EntityType="LRCModel.tb_Employers" />
+          <AssociationSet Name="FK_tb_AlsoWorksAt_tb_Employers" Association="LRCModel.FK_tb_AlsoWorksAt_tb_Employers">
+            <End Role="tb_Employers" EntitySet="tb_Employers" />
+            <End Role="tb_AlsoWorksAt" EntitySet="tb_AlsoWorksAt" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="tb_ActivityStatus">
@@ -1612,10 +1613,10 @@
             <PropertyRef Name="MemberID" />
           </Key>
           <Property Name="MemberID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MemberIDNumber" Type="String" MaxLength="7" FixedLength="true" Unicode="false" />
-          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="MiddleName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MemberIDNumber" Type="String" MaxLength="7" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="MiddleName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="DepartmentID" Type="Int32" Nullable="false" />
           <Property Name="CategoryID" Type="Int32" Nullable="false" />
           <Property Name="AreaID" Type="Int32" />
@@ -2216,14 +2217,6 @@
           <Property Name="BodyName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="tb_MemberRoles" Relationship="LRCModel.FK_tb_MemberRoles_tb_Body" FromRole="tb_Body" ToRole="tb_MemberRoles" />
         </EntityType>
-        <EntityType Name="tb_Employers">
-          <Key>
-            <PropertyRef Name="EmployerID" />
-          </Key>
-          <Property Name="EmployerID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="EmployerName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="tb_AlsoWorksAt" Relationship="LRCModel.FK_tb_AlsoWorksAt_tb_Employers" FromRole="tb_Employers" ToRole="tb_AlsoWorksAt" />
-        </EntityType>
         <EntityType Name="tb_MemberRoles">
           <Key>
             <PropertyRef Name="MemberRoleID" />
@@ -2293,21 +2286,9 @@
           <Property Name="MemberID" Type="Int32" Nullable="false" />
           <Property Name="AddedDateTime" Type="DateTime" Precision="0" />
           <Property Name="AddedBy" Type="Int32" />
-          <NavigationProperty Name="tb_Employers" Relationship="LRCModel.FK_tb_AlsoWorksAt_tb_Employers" FromRole="tb_AlsoWorksAt" ToRole="tb_Employers" />
           <NavigationProperty Name="tb_MemberMaster" Relationship="LRCModel.FK_tb_AlsoWorksAt_tb_MemberMaster" FromRole="tb_AlsoWorksAt" ToRole="tb_MemberMaster" />
+          <NavigationProperty Name="tb_Employers" Relationship="LRCModel.FK_tb_AlsoWorksAt_tb_Employers" FromRole="tb_AlsoWorksAt" ToRole="tb_Employers" />
         </EntityType>
-        <Association Name="FK_tb_AlsoWorksAt_tb_Employers">
-          <End Type="LRCModel.tb_Employers" Role="tb_Employers" Multiplicity="1" />
-          <End Type="LRCModel.tb_AlsoWorksAt" Role="tb_AlsoWorksAt" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tb_Employers">
-              <PropertyRef Name="EmployerID" />
-            </Principal>
-            <Dependent Role="tb_AlsoWorksAt">
-              <PropertyRef Name="EmployerID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_tb_AlsoWorksAt_tb_MemberMaster">
           <End Type="LRCModel.tb_MemberMaster" Role="tb_MemberMaster" Multiplicity="1" />
           <End Type="LRCModel.tb_AlsoWorksAt" Role="tb_AlsoWorksAt" Multiplicity="*" />
@@ -2352,6 +2333,27 @@
             </Principal>
             <Dependent Role="tb_SemesterTaught">
               <PropertyRef Name="BuildingID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="tb_Employers">
+          <Key>
+            <PropertyRef Name="EmployerID" />
+          </Key>
+          <Property Name="EmployerID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmployerName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EmployerIDNumber" Type="String" Nullable="false" MaxLength="7" FixedLength="true" Unicode="true" />
+          <NavigationProperty Name="tb_AlsoWorksAt" Relationship="LRCModel.FK_tb_AlsoWorksAt_tb_Employers" FromRole="tb_Employers" ToRole="tb_AlsoWorksAt" />
+        </EntityType>
+        <Association Name="FK_tb_AlsoWorksAt_tb_Employers">
+          <End Type="LRCModel.tb_Employers" Role="tb_Employers" Multiplicity="1" />
+          <End Type="LRCModel.tb_AlsoWorksAt" Role="tb_AlsoWorksAt" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_Employers">
+              <PropertyRef Name="EmployerID" />
+            </Principal>
+            <Dependent Role="tb_AlsoWorksAt">
+              <PropertyRef Name="EmployerID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2784,14 +2786,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="tb_Employers">
-            <EntityTypeMapping TypeName="LRCModel.tb_Employers">
-              <MappingFragment StoreEntitySet="tb_Employers">
-                <ScalarProperty Name="EmployerName" ColumnName="EmployerName" />
-                <ScalarProperty Name="EmployerID" ColumnName="EmployerID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="tb_MemberRoles">
             <EntityTypeMapping TypeName="LRCModel.tb_MemberRoles">
               <MappingFragment StoreEntitySet="tb_MemberRoles">
@@ -2832,6 +2826,15 @@
                 <ScalarProperty Name="CampusID" ColumnName="CampusID" />
                 <ScalarProperty Name="BuildingName" ColumnName="BuildingName" />
                 <ScalarProperty Name="BuildingID" ColumnName="BuildingID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tb_Employers">
+            <EntityTypeMapping TypeName="LRCModel.tb_Employers">
+              <MappingFragment StoreEntitySet="tb_Employers">
+                <ScalarProperty Name="EmployerIDNumber" ColumnName="EmployerIDNumber" />
+                <ScalarProperty Name="EmployerName" ColumnName="EmployerName" />
+                <ScalarProperty Name="EmployerID" ColumnName="EmployerID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

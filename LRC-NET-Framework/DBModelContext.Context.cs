@@ -61,10 +61,10 @@ namespace LRC_NET_Framework
         public virtual DbSet<tb_MembershipForms> tb_MembershipForms { get; set; }
         public virtual DbSet<tb_CopeForms> tb_CopeForms { get; set; }
         public virtual DbSet<tb_Body> tb_Body { get; set; }
-        public virtual DbSet<tb_Employers> tb_Employers { get; set; }
         public virtual DbSet<tb_MemberRoles> tb_MemberRoles { get; set; }
         public virtual DbSet<tb_Roles> tb_Roles { get; set; }
         public virtual DbSet<tb_AlsoWorksAt> tb_AlsoWorksAt { get; set; }
         public virtual DbSet<tb_Building> tb_Building { get; set; }
+        public virtual DbSet<tb_Employers> tb_Employers { get; set; }
     }
 }

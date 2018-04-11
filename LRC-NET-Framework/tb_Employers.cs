@@ -22,6 +22,7 @@ namespace LRC_NET_Framework
     
         public int EmployerID { get; set; }
         public string EmployerName { get; set; }
+        public string EmployerIDNumber { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_AlsoWorksAt> tb_AlsoWorksAt { get; set; }
