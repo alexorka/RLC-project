@@ -1,0 +1,70 @@
+﻿@model IEnumerable<LRC_NET_Framework.tb_SemesterTaught>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ClassStart)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ClassEnd)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Class)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.tb_Semesters.FiscalYear)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Room)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.tb_WeekDay.WeekDayName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.tb_MemberMaster.MemberIDNumber)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.ClassStart)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ClassEnd)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Class)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.tb_Semesters.FiscalYear)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Room)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.tb_WeekDay.WeekDayName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.tb_MemberMaster.MemberIDNumber)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.SemesterTaughtID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.SemesterTaughtID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.SemesterTaughtID })
+        </td>
+    </tr>
+}
+
+</table>

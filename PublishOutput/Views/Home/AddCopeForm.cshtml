@@ -1,0 +1,135 @@
+﻿@model LRC_NET_Framework.Models.AddCopeForm
+
+@{
+    ViewBag.Title = "Manage Notes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="font-weight-bold" style="background-color: #357ebd; color:gainsboro; padding-top:10px; padding-bottom:5px; padding-left: 30px;"><h4>Manage COPE Forms</h4></div>
+
+@using (Html.BeginForm("AddCopeForm", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model._MemberID)
+    <div class="col-md-11 col-md-offset-1"><h4>Add COPE Form</h4></div>
+    <hr />
+    <div class="form-horizontal">
+        <fieldset>
+
+            <div class="form-group">
+                <div class="col-md-11 col-md-offset-1" id="Signed">
+                    @Html.Label("Signed", "Signed", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
+                    @Html.TextBoxFor(model => model._Signed, "{0:yyyy-MM-dd}", new { @class = "form-control datecontrol", type = "date", style = "width: 150px;" })
+                    @Html.ValidationMessageFor(model => model._Signed, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-11 col-md-offset-1" id="MonthlyContribution">
+                    @Html.Label("MonthlyContribution", "Monthly Contribution", htmlAttributes: new { @class = "control-label" })
+                    @Html.TextBoxFor(model => model._MonthlyContribution, new { @class = "form-control", @cols = "100", @rows = "5", @style = "width:100%;" })
+                    @Html.ValidationMessageFor(model => model._MonthlyContribution, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-11 col-md-offset-1" id="CollectedBy" style="padding-bottom:15px;">
+                    @Html.Label("CollectedBy", "Collected By", htmlAttributes: new { @class = "control-label" })
+                    @Html.TextBoxFor(model => model._CollectedBy, "", new
+                    {
+                        @class = "form-control"@*, disabled = "disabled"*@, style = "width: 150px;"
+                    })
+                    <small><i style="color:gray;">The person who actually took the note. The system is keeping track of the person entering the note (you)</i></small>
+                    @Html.ValidationMessageFor(model => model._CollectedBy, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <div class="col-md-11 col-md-offset-1" id="FormImage" style="padding-bottom:15px;">
+                    @Html.Label("FormImage", "Form Image", htmlAttributes: new { @class = "control-label" })
+                    @*@Html.DropDownListFor(model => model._FormImagePath, Model._FormImagePath, new { @class = "form-control", style = "width: 250px;" })*@
+                    <label for="file">Upload Image:</label>
+                    <input class="btn btn-info" type="file" name="file" id="file" />
+                    @Html.ValidationMessageFor(model => model._FormImagePath, "", new { @class = "text-danger" })
+                    @ViewBag.Message
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-1 col-md-11">
+                    <input type="submit" value="Add Membership Form" class="btn btn-primary" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-11 col-md-offset-1" id="MembershipForms">
+                    @Html.Label("MembershipForms", "Membership Forms", htmlAttributes: new { @class = "control-label" })
+                    <table class="table">
+                        <tr class="text-info">
+                            <th class="text-center" width="20%">
+                                Signed
+                            </th>
+                            <th class="text-center">
+                                Monthly&nbsp;Contribution
+                            </th>
+                            <th class="text-center">
+                                Processed
+                            </th>
+
+                            <th class="text-center">
+                                Sent&nbsp;To&nbsp;Employer
+                            </th>
+                            <th class="text-center">
+                                Collected&nbsp;By
+                            </th>
+                            <th class="text-center">
+                                Form&nbsp;Image
+                            </th>
+                            <th class="text-center">
+                                Added&nbsp;By
+                            </th>
+                        </tr>
+                        @foreach (var item in Model._CopeForms as List<tb_CopeForms>)
+                        {
+                        <tr>
+                            <td class="text-right">
+                                @Html.DisplayFor(modelItem => item.Signed, "{0:yyyy-MM-dd}", new { @class = "form-control datecontrol", type = "date", style = "width: 150px;" })
+                            </td>
+                            <td class="text-right">
+                                @Html.DisplayFor(modelItem => item.MonthlyContribution)
+                            </td>
+                            <td class="text-center">
+                                @Html.DisplayFor(modelItem => item.Processed)
+                            </td>
+                            <td class="text-center">
+                                @Html.DisplayFor(modelItem => item.SentToEmployer)
+                            </td>
+                            <td class="text-center">
+                                @Html.DisplayFor(modelItem => item.CollectedBy)
+                            </td>
+                            <td class="text-right">
+                                @Html.DisplayFor(modelItem => item.FormImagePath)
+                            </td>
+                            <td class="text-center">
+                                @Html.DisplayFor(modelItem => item.AddedBy)
+                            </td>
+                        </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+
+        </fieldset>
+    </div>
+}
+
+    <div>
+        @Html.ActionLink("Back to List", "Details", "Home", new { id = Model._MemberID }, new { @class = "text -info" })
+    </div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

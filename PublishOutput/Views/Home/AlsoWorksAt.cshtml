@@ -1,0 +1,105 @@
+﻿@model LRC_NET_Framework.Models.AlsoWorksAt
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="font-weight-bold" style="background-color: #357ebd; color:gainsboro; padding-top:10px; padding-bottom:5px; padding-left: 30px;"><h4>Also Works At</h4></div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model._MemberID)
+    <div class="col-md-9 col-md-offset-1 text-danger">If you find out that a member also works for another district, this is where we collect that information. Adding a record here will not actually add a record of this person to another local's data. However if you add someone to another Building Power employer, we will attempy to match the records.</div>
+    <div class="col-md-11 col-md-offset-1"><h4>Also Works At</h4></div>
+    <hr />
+    @*Employers DDL*@
+    <div class="form-group">
+        <div class="col-md-11 col-md-offset-1">
+            @Html.Label("EmployerID", "Employer", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
+        </div>
+        <div class="col-md-11 col-md-offset-1" id="Role" style="overflow:hidden;">
+            <div style="width: 100%;">
+                <div style="float: left;">
+                    @Html.DropDownListFor(model => model._EmployerID, Model._Employers, new { @class = "form-control", style = "width: 250px;" })
+                    @Html.ValidationMessageFor(model => model._EmployerID, "", new { @class = "text-danger" })
+                </div>
+                <div style="float: left; margin-left:10px">
+                    <a href="@Url.Action("CreateEmployer", "Home")" class="btn btn-default"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Note*@
+    <div class="form-group">
+        <div class="col-md-11 col-md-offset-1" id="Note">
+            <fieldset>
+                <div class="editor-field">
+                    @Html.Label("Note", "Note", htmlAttributes: new { @class = "control-label" })
+                    @Html.TextAreaFor(model => model._Note, new { @class = "form-control", @cols = "100", @rows = "5", @style = "width:100%;" })
+                    @Html.ValidationMessageFor(model => model._Note)
+
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-1 col-md-11">
+            <input type="submit" value="Submit" class="btn btn-info" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-11 col-md-offset-1" id="AlsoWorksAts">
+            @Html.Label("AlsoWorksAts", "AlsoWorksAt", htmlAttributes: new { @class = "control-label" })
+            <table class="table">
+                <tr class="text-info">
+                    <th class="text-left" width="20%">
+                        Employer
+                    </th>
+                    <th class="text-left">
+                        Added
+                    </th>
+                    <th class="text-left">
+                        Note
+                    </th>
+                    <th class="text-left">
+                        Added&nbsp;By
+                    </th>
+                </tr>
+                @foreach (var item in Model._AlsoWorksAts as List<tb_AlsoWorksAt>)
+                {
+                <tr>
+                    <td class="text-left">
+                        @Html.DisplayFor(modelItem => item.tb_Employers.EmployerName)
+                    </td>
+                    <td class="text-left">
+                        @Html.DisplayFor(modelItem => item.AddedDateTime, "{0:yyyy-MM-dd}", new { @class = "form-control datecontrol", type = "date", style = "width: 150px;" })
+                    </td>
+                    <td class="text-left">
+                        @Html.DisplayFor(modelItem => item.Note)
+                    </td>
+                    <td class="text-left">
+                        @Html.DisplayFor(modelItem => item.AddedBy)
+                    </td>
+                </tr>
+                }
+            </table>
+        </div>
+    </div>
+
+</div>
+}
+
+<div class="col-md-offset-1 col-md-11">
+    @Html.ActionLink("Back to List", "Details", "Home", new { id = Model._MemberID }, new { @class = "text -info" })
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
