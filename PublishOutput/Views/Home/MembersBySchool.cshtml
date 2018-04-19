@@ -1,0 +1,164 @@
+﻿@model PagedList.IPagedList<LRC_NET_Framework.tb_MemberMaster>
+@using PagedList.Mvc
+@{
+    ViewBag.Title = "School List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewBag.CollegeName</h2>
+<div style="font-size:smaller">
+    @using (Html.BeginForm("MembersBySchool", "Home", FormMethod.Post, new { @class = "margin-right: 0" }))
+    {
+        @Html.Hidden("CollegeID", (int)ViewBag.CollegeID)
+        <div class="form-group row list-inline">
+            <div class="col-md-2">
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit">
+                            <i class="glyphicon glyphicon-search"></i>
+                        </button>
+                    </span>
+                    @Html.TextBox("SearchString", null, new { @class = "form-control", placeholder = "Search" })
+                </div>
+            </div>
+        </div>
+        <div class="row ex1">
+            <div class="col-md-2 align-text-top">Showing @Model.FirstItemOnPage - @Model.Count()&nbsp;&nbsp;of&nbsp;&nbsp;@ViewData["MemberQty"]</div>
+            <div class="col-md-3 align-text-top"></div>
+            <div class="col-md-7"></div>
+        </div>
+        <div class="ex1">
+            <table class="table table-bordered table-sm">
+                <tr>
+                    <th style="background-color:gainsboro;">
+                        <i>@Html.ActionLink("Faculty Member", "MembersBySchool", new { sortOrder = ViewBag.NameSortParm, CollegeID = ViewBag.CollegeID, searchString = ViewBag.Search })</i>
+                    </th>
+                    <th style="background-color:gainsboro;">
+                        <i>Category</i>
+                    </th>
+                    <th style="background-color:gainsboro;">
+                        <i>Department</i>
+                    </th>
+                    <th style="background-color:gainsboro;">
+                        <i>Membership</i>
+                    </th>
+                    <th style="background-color:gainsboro;">
+                        <i>Phone</i>
+                    </th>
+                    <th style="background-color:gainsboro;">
+                        <i>Membership Commitment</i>
+                    </th>
+                    <th style="background-color:gainsboro;">
+                        <i>Assess/Activity</i>
+                    </th>
+                </tr>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td style="background-color:lightgray; vertical-align:middle; font-size:larger; font-weight:bold;">
+                            @Html.ActionLink(item.LastName + ", " + item.FirstName, "Edit", "Home", new { id = item.MemberID, CollegeID = ViewBag.CollegeID }, new { @class = "text -info" })
+                            @*@Html.ActionLink(item.tb_MemberPhoneNumbers.FirstOrDefault().PhoneNumber, "ManageContactInfo", "Home", new { id = item.MemberID, CollegeID = ViewBag.CollegeID }, new { @class = "text -info" })*@
+                        </td>
+                        <td style="background-color:lightgray; vertical-align:middle; font-size:larger;">
+                            @Html.DisplayFor(modelItem => item.tb_Categories.CategoryName)
+                        </td>
+                        <td style="background-color:lightgray; vertical-align:middle; font-size:larger;">
+                            @Html.DisplayFor(modelItem => item.tb_Department.DepartmentName)
+                        </td>
+                        <td style="background-color:lightgray; vertical-align:middle; font-size:larger;">
+                            @if (item.tb_MemberActivity.Count > 0)
+                            {
+                                @(item.tb_MemberActivity.FirstOrDefault().Membership ? "Yes" : "No")
+                            }
+                        </td>
+                        <td style="background-color:lightgray; vertical-align:middle; font-size:larger; font-weight:bold;">
+                            @if (item.tb_MemberPhoneNumbers.Count > 0)
+                            {
+                                @Html.ActionLink(item.tb_MemberPhoneNumbers.FirstOrDefault().PhoneNumber, "ManageContactInfo", "Home", new { id = item.MemberID, CollegeID = ViewBag.CollegeID }, new { @class = "text -info" })
+                            }
+                            else
+                            {
+                                @Html.ActionLink("Add Pnone", "ManageContactInfo", "Home", new { id = item.MemberID, CollegeID = ViewBag.CollegeID }, new { @class = "text -info" })
+                            }
+                            @*@Html.DisplayFor(modelItem => item.tb_MemberPhoneNumbers.FirstOrDefault().PhoneNumber)*@
+                        </td>
+                        <td style="background-color:lightgray; vertical-align:middle; font-size:larger;">
+                            @Html.DisplayFor(modelItem => item.tb_MemberActivity.FirstOrDefault().MembershipCommitment)
+                        </td>
+                        <td style="background-color:lightgray; vertical-align:middle; font-size:larger;">
+                            <button type="button" class="btn btn-default">
+                                <a href="@Url.Action("AddPersonAssessmentActivity", "Assessment", new { id = @item.MemberID, CollegeID = ViewBag.CollegeID })" class="glyphicon glyphicon-plus"></a>
+                            </button>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td colspan="7">
+                            <table class="table table-sm">
+                                <tr>
+                                    <th style="background-color:gainsboro;">
+                                        <i>Campus</i>
+                                    </th>
+                                    <th style="background-color:gainsboro;">
+                                        <i>Building</i>
+                                    </th>
+                                    <th style="background-color:gainsboro;">
+                                        <i>Room</i>
+                                    </th>
+                                    <th style="background-color:gainsboro;">
+                                        <i>Note</i>
+                                    </th>
+                                    <th style="background-color:gainsboro;">
+                                        <i>Class</i>
+                                    </th>
+                                    <th style="background-color:gainsboro;">
+                                        <i>Start</i>
+                                    </th>
+                                    <th style="background-color:gainsboro;">
+                                        <i>End</i>
+                                    </th>
+                                    <th style="background-color:gainsboro;">
+                                        <i>Days</i>
+                                    </th>
+                                </tr>
+                                @foreach (var record in item.tb_SemesterTaught)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => record.tb_Building.tb_Campus.CampusName)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => record.tb_Building.BuildingName)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => record.Room)
+                                        </td>
+                                        <td>???</td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => record.Class)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => record.ClassStart)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => record.ClassEnd)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => record.tb_WeekDay.WeekDayName)
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                        </td>
+                    </tr>
+                }
+            </table>
+            <br />
+            Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) from @Model.PageCount
+
+            @Html.PagedListPager(Model, page => Url.Action("MembersBySchool", new { page, CollegeID = ViewBag.CollegeID, searchString = ViewBag.Search }))
+        </div>
+    }
+</div>
+

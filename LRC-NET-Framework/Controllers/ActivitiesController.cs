@@ -54,20 +54,20 @@ namespace LRC_NET_Framework.Controllers
             return View(Activities.ToPagedList(pageNumber, pageSize));
         }
 
-        // GET: Activities/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            tb_Activity tb_Activity = db.tb_Activity.Find(id);
-            if (tb_Activity == null)
-            {
-                return HttpNotFound();
-            }
-            return View(tb_Activity);
-        }
+        //// GET: Activities/Details/5
+        //public ActionResult Details(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    tb_Activity tb_Activity = db.tb_Activity.Find(id);
+        //    if (tb_Activity == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(tb_Activity);
+        //}
 
         // GET: Activities/Create
         public ActionResult AddActivity(int? id)
@@ -88,7 +88,7 @@ namespace LRC_NET_Framework.Controllers
             return View(tb_MemberActivity);
         }
 
-        // POST: Activities/Create
+        // POST: Activities/AddActivity
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -115,62 +115,69 @@ namespace LRC_NET_Framework.Controllers
             return View(tb_MemberActivity);
         }
 
-        // GET: Activities/Edit/5
-        public ActionResult Edit(int? id)
+
+        // GET: Assessment/NotSure
+        public ActionResult NotSure()
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            tb_Activity tb_Activity = db.tb_Activity.Find(id);
-            if (tb_Activity == null)
-            {
-                return HttpNotFound();
-            }
-            return View(tb_Activity);
+            return PartialView("NotSure");
         }
 
-        // POST: Activities/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ActivityID,ActivityStatusID,ActivityDate,ActivityName,ActivityNote,AddedBy,AddedDateTime,ModifiedBy,ModifiedDateTime")] tb_Activity tb_Activity)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(tb_Activity).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return View(tb_Activity);
-        }
+        //// GET: Activities/Edit/5
+        //public ActionResult Edit(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    tb_Activity tb_Activity = db.tb_Activity.Find(id);
+        //    if (tb_Activity == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(tb_Activity);
+        //}
 
-        // GET: Activities/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            tb_Activity tb_Activity = db.tb_Activity.Find(id);
-            if (tb_Activity == null)
-            {
-                return HttpNotFound();
-            }
-            return View(tb_Activity);
-        }
+        //// POST: Activities/Edit/5
+        //// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        //// more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Edit([Bind(Include = "ActivityID,ActivityStatusID,ActivityDate,ActivityName,ActivityNote,AddedBy,AddedDateTime,ModifiedBy,ModifiedDateTime")] tb_Activity tb_Activity)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        db.Entry(tb_Activity).State = EntityState.Modified;
+        //        db.SaveChanges();
+        //        return RedirectToAction("Index");
+        //    }
+        //    return View(tb_Activity);
+        //}
 
-        // POST: Activities/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            tb_Activity tb_Activity = db.tb_Activity.Find(id);
-            db.tb_Activity.Remove(tb_Activity);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
+        //// GET: Activities/Delete/5
+        //public ActionResult Delete(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    tb_Activity tb_Activity = db.tb_Activity.Find(id);
+        //    if (tb_Activity == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(tb_Activity);
+        //}
+
+        //// POST: Activities/Delete/5
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult DeleteConfirmed(int id)
+        //{
+        //    tb_Activity tb_Activity = db.tb_Activity.Find(id);
+        //    db.tb_Activity.Remove(tb_Activity);
+        //    db.SaveChanges();
+        //    return RedirectToAction("Index");
+        //}
 
         protected override void Dispose(bool disposing)
         {

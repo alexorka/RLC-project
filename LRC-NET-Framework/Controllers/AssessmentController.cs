@@ -55,24 +55,25 @@ namespace LRC_NET_Framework.Controllers
             //return View(Assessments.ToList());
         }
 
-        // GET: Assessment/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            tb_Assessment tb_Assessment = db.tb_Assessment.Find(id);
-            if (tb_Assessment == null)
-            {
-                return HttpNotFound();
-            }
-            return View(tb_Assessment);
-        }
+        //// GET: Assessment/Details/5
+        //public ActionResult Details(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    tb_Assessment tb_Assessment = db.tb_Assessment.Find(id);
+        //    if (tb_Assessment == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(tb_Assessment);
+        //}
 
-        // GET: Assessment/Create
-        public ActionResult Create(int? id)
+        // GET: Assessment/AddPersonAssessmentActivity
+        public ActionResult AddPersonAssessmentActivity(int? id, int? CollegeID)
         {
+            ViewBag.CollegeID = CollegeID;
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -124,13 +125,14 @@ namespace LRC_NET_Framework.Controllers
             //return View(Assessment);
         }
 
-        // POST: Assessment/Create
+        // POST: Assessment/AddPersonAssessmentActivity
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(string submit, int AssessmentNameID, int ActivityID, int ActivityStatusID, int ValueID, AssessActivityModels AssessActivity)
+        public ActionResult AddPersonAssessmentActivity(string submit, int AssessmentNameID, int ActivityID, int ActivityStatusID, int ValueID, AssessActivityModels AssessActivity, int? CollegeID)
         {
+            ViewBag.CollegeID = CollegeID;
             if (ModelState.IsValid)
             {
                 if (submit == "Submit") //Adding Assessment
@@ -183,7 +185,7 @@ namespace LRC_NET_Framework.Controllers
                     }
                 }
             }
-            return RedirectToAction("Create");
+            return RedirectToAction("AddPersonAssessmentActivity");
         }
 
         // GET: Assessment/Edit/5
@@ -224,31 +226,38 @@ namespace LRC_NET_Framework.Controllers
             return View(tb_Assessment);
         }
 
-        // GET: Assessment/Delete/5
-        public ActionResult Delete(int? id)
+        // GET: Assessment/NotSure
+        public ActionResult NotSure()
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            tb_Assessment tb_Assessment = db.tb_Assessment.Find(id);
-            if (tb_Assessment == null)
-            {
-                return HttpNotFound();
-            }
-            return View(tb_Assessment);
+            return PartialView("NotSure");
         }
 
-        // POST: Assessment/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            tb_Assessment tb_Assessment = db.tb_Assessment.Find(id);
-            db.tb_Assessment.Remove(tb_Assessment);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
+
+        //// GET: Assessment/Delete/5
+        //public ActionResult Delete(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    tb_Assessment tb_Assessment = db.tb_Assessment.Find(id);
+        //    if (tb_Assessment == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(tb_Assessment);
+        //}
+
+        //// POST: Assessment/Delete/5
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult DeleteConfirmed(int id)
+        //{
+        //    tb_Assessment tb_Assessment = db.tb_Assessment.Find(id);
+        //    db.tb_Assessment.Remove(tb_Assessment);
+        //    db.SaveChanges();
+        //    return RedirectToAction("Index");
+        //}
 
         protected override void Dispose(bool disposing)
         {

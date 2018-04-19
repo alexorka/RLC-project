@@ -89,7 +89,7 @@ namespace LRC_NET_Framework.Models
         [Display(Name = "Phone Number")]
         public string _PhoneNumber { get; set; }
         public bool _IsPhonePrimary { get; set; }
-
+        //public int _CollegeID { get; set; } //Back to Member List by School
         public int _PhoneTypeID { get; set; }
         public IEnumerable<SelectListItem> _PhoneTypes { get; set; }
         public IEnumerable<tb_MemberPhoneNumbers> _MemberPhoneNumbers { get; set; }

@@ -168,8 +168,18 @@
     </div>
 }
 
-<div>
+@*<div>
     @Html.ActionLink("Back to List", "Index", "Home", null, new { @class = "btn btn-info" })
+</div>*@
+<div class="col-md-11 col-md-offset-1">
+    @if (ViewBag.CollegeID != null && (int)ViewBag.CollegeID > 0)
+    {
+        <a href="@Url.Action("MembersBySchool", "Home", new { CollegeID = ViewBag.CollegeID })" class="btn btn-info">&nbsp;&nbsp;Back&nbsp;to&nbsp;List<span class="glyphicon glyphicon-arrow-left pull-left" aria-hidden="true"></span></a>
+    }
+    else
+    {
+        <a href="@Url.Action("Details", "Home", new { id = Model._MemberID })" class="btn btn-info">&nbsp;&nbsp;Back&nbsp;to&nbsp;Worker&nbsp;Details<span class="glyphicon glyphicon-arrow-left pull-left" aria-hidden="true"></span></a>
+    }
 </div>
 
 @section Scripts {

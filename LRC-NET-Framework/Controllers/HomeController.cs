@@ -27,8 +27,6 @@ namespace LRC_NET_Framework.Controllers
             tb_MemberMasters.Select(t => t.tb_Department.tb_College);
             ViewData["MemberQty"] = tb_MemberMasters.Count();
 
-            //SelectList colleges = new SelectList(db.tb_College, "CollegeID", "CollegeDesc");
-
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Name desc" : "";
 
             //Searching @ Filtering
@@ -111,10 +109,67 @@ namespace LRC_NET_Framework.Controllers
             return View(model);
         }
 
-        // GET: tb_MemberMaster/Edit/5
-        public ActionResult Edit(int? id)
+        // GET: ManageWorker
+        public ActionResult MembersBySchool(string sortOrder, string searchString, int? page, int? CollegeID, FormCollection formCollection)
         {
-            //id = 1; // test REMOVE IT
+            CollegeID = CollegeID ?? int.Parse(formCollection["CollegeID"]);
+            if (CollegeID == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ViewBag.CollegeID = CollegeID;
+            ViewBag.Search = searchString;
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Name desc" : "";
+
+            List<tb_Department> deps = new List<tb_Department>();
+            deps = db.tb_Department.Where(c => c.CollegeID == CollegeID).ToList();
+            List<tb_MemberMaster> members = new List<tb_MemberMaster>();
+
+
+            foreach (var dep in deps)
+            {
+                List<tb_MemberMaster> membersInDep = db.tb_MemberMaster.Where(t => t.DepartmentID == dep.DepartmentID).ToList();
+                if (membersInDep.Count > 0)
+                {
+                    foreach (var item in membersInDep)
+                    {
+                        if (String.IsNullOrEmpty(searchString))
+                        {
+                            members.Add(item);
+                        }
+                        //Searching @ Filtering
+                        else if (item.LastName.ToUpper().Contains(searchString.ToUpper())
+                            || item.FirstName.ToUpper().Contains(searchString.ToUpper()))
+                        {
+                            members.Add(item);
+                        }
+                    }
+                }
+            }
+
+            if (members == null)
+            {
+                return HttpNotFound();
+            }
+
+            //Sorting
+            var membersOrdered = members.OrderBy(s => s.LastName);
+            switch (sortOrder)
+            {
+                case "Name desc":
+                    membersOrdered = members.OrderByDescending(s => s.LastName);
+                    break;
+            }           
+            //Paging
+            int pageSize = 2;
+            int pageNumber = (page ?? 1);
+            return View(membersOrdered.ToPagedList(pageNumber, pageSize));
+        }
+
+        // GET: tb_MemberMaster/Edit/5
+        public ActionResult Edit(int? id, int? CollegeID)
+        {
+            ViewBag.CollegeID = CollegeID;
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -156,8 +211,9 @@ namespace LRC_NET_Framework.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(EditWorkerModels model)
+        public ActionResult Edit(EditWorkerModels model, int? CollegeID)
          {
+            ViewBag.CollegeID = CollegeID;
             if (ModelState.IsValid)
             {
                 tb_MemberMaster worker = db.tb_MemberMaster.Where(t => t.MemberID == model._MemberID).FirstOrDefault();
@@ -195,15 +251,15 @@ namespace LRC_NET_Framework.Controllers
         }
 
         // GET: Home/ManageContactInfo
-        public ActionResult ManageContactInfo(int? id)
+        public ActionResult ManageContactInfo(int? id, int? CollegeID)
         {
             //id = 1; // test REMOVE IT
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            //var _StateCode = db.tb_States.Where(p => p.StateCodeID == db.tb_CityState.Where(r => r.CityID == db.tb_MemberAddress.Where(t => t.MemberID == id).FirstOrDefault().CityID).FirstOrDefault().StateCodeID).FirstOrDefault().StateCode;
-            
+
+            ViewBag.CollegeID = CollegeID;
 
             ManageContactInfoModels model = new ManageContactInfoModels()
             {
@@ -238,8 +294,9 @@ namespace LRC_NET_Framework.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult ManageContactInfo(string submit, ManageContactInfoModels model)
+        public ActionResult ManageContactInfo(string submit, ManageContactInfoModels model, int? CollegeID)
         {
+            ViewBag.CollegeID = CollegeID;
             if (ModelState.IsValid)
             {
                 switch (submit)
@@ -562,6 +619,12 @@ namespace LRC_NET_Framework.Controllers
             model._Employers = new SelectList(db.tb_Employers, "EmployerID", "EmployerName");
             model._AlsoWorksAts = db.tb_AlsoWorksAt.Where(t => t.MemberID == model._MemberID).ToList();
             return View(model);
+        }
+
+        // GET: Assessment/NotSure
+        public ActionResult NotSure()
+        {
+            return PartialView("NotSure");
         }
 
         // GET: Home/AddMembershipForm

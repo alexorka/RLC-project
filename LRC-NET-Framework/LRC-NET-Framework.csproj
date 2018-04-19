@@ -496,13 +496,10 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\SchoolList\Index.cshtml" />
-    <Content Include="Views\Assessment\Create.cshtml" />
+    <Content Include="Views\Assessment\AddPersonAssessmentActivity.cshtml" />
     <Content Include="Views\Assessment\Delete.cshtml" />
     <Content Include="Views\Assessment\Details.cshtml" />
     <Content Include="Views\Assessment\Index.cshtml" />
-    <Content Include="Views\Activities\Delete.cshtml" />
-    <Content Include="Views\Activities\Details.cshtml" />
-    <Content Include="Views\Activities\Edit.cshtml" />
     <Content Include="Views\Activities\Index.cshtml" />
     <Content Include="Views\Notes\AddNote.cshtml" />
     <Content Include="Views\Notes\Delete.cshtml" />
@@ -533,6 +530,10 @@
     <Content Include="Views\Home\AddBuilding.cshtml" />
     <Content Include="Views\Home\GetCampuses.cshtml" />
     <Content Include="Views\ImportExcel\UploadExcel.cshtml" />
+    <Content Include="Views\Activities\NotSure.cshtml" />
+    <Content Include="Views\Assessment\NotSure.cshtml" />
+    <Content Include="Views\Home\NotSure.cshtml" />
+    <Content Include="Views\Home\MembersBySchool.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

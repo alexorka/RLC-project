@@ -21,7 +21,7 @@
             <ul class="dropdown-menu" role="menu">
                 @foreach (var c in ViewBag.Colleges)
                 {
-                    <li role="button"><a href="@Url.Action("Index", "SchoolList", new { CollegeID = @c.Value })" class="btn btn-link">@c.Text</a></li>
+                    <li role="button"><a href="@Url.Action("MembersBySchool", "Home", new { CollegeID = @c.Value })" class="btn btn-link">@c.Text</a></li>
                 }
             </ul>
         </div>

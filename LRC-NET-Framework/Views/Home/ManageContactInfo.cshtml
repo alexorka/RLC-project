@@ -250,22 +250,22 @@
 
                     </tr>
                     @foreach (var item in Model._MemberEmails as List<tb_MemberEmail>)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.EmailAddress)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.tb_EmailType.EmailTypeName)
-                        </td>
-                        <td>
-                            @if (item.IsPrimary)
-                        {
-                            <span>Primary</span>
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.EmailAddress)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.tb_EmailType.EmailTypeName)
+                            </td>
+                            <td>
+                                @if (item.IsPrimary)
+                                {
+                                    <span>Primary</span>
+                                }
+                            </td>
+                        </tr>
                     }
-                        </td>
-                    </tr>
-            }
                 </table>
             </div>
         </div>
@@ -274,8 +274,15 @@
 </div>
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Details", "Home", new { id = Model._MemberID }, new { @class = "text -info" })
+<div class="col-md-11 col-md-offset-1">
+    @if (ViewBag.CollegeID != null && (int)ViewBag.CollegeID > 0)
+    {
+        <a href="@Url.Action("MembersBySchool", "Home", new { CollegeID = ViewBag.CollegeID })" class="btn btn-info">&nbsp;&nbsp;Back&nbsp;to&nbsp;List<span class="glyphicon glyphicon-arrow-left pull-left" aria-hidden="true"></span></a>
+    }
+    else
+    {
+        <a href="@Url.Action("Details", "Home", new { id = Model._MemberID })" class="btn btn-info">&nbsp;&nbsp;Back&nbsp;to&nbsp;List<span class="glyphicon glyphicon-arrow-left pull-left" aria-hidden="true"></span></a>
+    }
 </div>
 
 @section Scripts {

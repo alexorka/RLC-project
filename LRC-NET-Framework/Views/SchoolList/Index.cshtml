@@ -106,7 +106,7 @@
                 @Html.DisplayFor(modelItem => item.tb_MemberMaster.tb_MemberActivity.FirstOrDefault().MembershipCommitment)
             <td align="center">
                 <button type="button" class="btn btn-secondary">
-                    <a href="@Url.Action("Create", "Assessment", new { id = @item.MemberID })" class="glyphicon glyphicon-plus"></a>
+                    <a href="@Url.Action("AddPersonAssessmentActivity", "Assessment", new { id = @item.MemberID })" class="glyphicon glyphicon-plus"></a>
                     @*<span class="glyphicon glyphicon-plus"></span>*@
                 </button>
                 @*<div class="btn-group" role="group" aria-label="...">
