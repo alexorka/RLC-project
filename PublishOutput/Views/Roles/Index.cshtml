@@ -2,14 +2,14 @@
 @model PagedList.IPagedList<LRC_NET_Framework.tb_Roles>
 @using PagedList.Mvc
 @{
-    ViewBag.Title = "Worker Roles";
+    ViewBag.Title = "Faculty Member Roles";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <hr />
 <ul class="list-inline">
     <li role="button"><a href="@Url.Action("CreateMemberRoles", "Roles")" class="btn btn-default">&nbsp;&nbsp;Role<span class="glyphicon glyphicon-plus pull-left" aria-hidden="true"></span></a></li>
 </ul>
-<h2>Worker Roles</h2>
+<h2>Faculty Member Roles</h2>
 @using (Html.BeginForm("Index", "Activities", FormMethod.Post, new { @class = "margin-right: 0" }))
 {
     <div class="form-group row list-inline">
@@ -32,7 +32,7 @@
 </div>
 <table class="table">
     <tr>
-        <th>Worker</th>
+        <th>Faculty Member</th>
         <th>Body</th>
         <th>COPE</th>
         <th>Phone</th>

@@ -2,15 +2,9 @@
 @using PagedList.Mvc
 
 @{
-    ViewBag.Title = "Member List";
+    ViewBag.Title = "Local List";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-@*<h2 style = "font-family:sans-serif">Member List</h2>*@
-
-@*<div aria-hidden="true" class="col-md-4">
-        @Html.ActionLink("  Create New", "Create", null, new { @class = "btn btn-warning" })
-    </div>*@
 <hr />
 <ul class="list-inline">
     <li role="button">
@@ -21,7 +15,7 @@
             <ul class="dropdown-menu" role="menu">
                 @foreach (var c in ViewBag.Colleges)
                 {
-                    <li role="button"><a href="@Url.Action("MembersBySchool", "Home", new { CollegeID = @c.Value })" class="btn btn-link">@c.Text</a></li>
+                    <li role="button"><a style="text-align:left" href="@Url.Action("MembersBySchool", "Home", new { CollegeID = @c.Value })" class="btn btn-link">@c.Text</a></li>
                 }
             </ul>
         </div>
@@ -37,14 +31,7 @@
     <li role="button"><a href="#" class="btn btn-info">Local&nbsp;<span class="glyphicon glyphicon-stats" aria-hidden="true"></span></a></li>
 </ul>
 
-@*<div class="row">
-            <div class="col-md-12">
-                <div class="input-group">
-                    <span class="input-group-btn">
-                    </span>
-                </div>
-            </div>
-    </div>*@
+<h3><b>Local List</b></h3>
 
 @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @class = "margin-right: 0" }))
 {
@@ -87,10 +74,10 @@
 </div>
 
 <div class="ex1">
-    <table class="table table-striped table-sm">
+    <table class="table table-striped table-sm" style="font-size:smaller">
         <tr>
             <th>
-                @Html.ActionLink("Worker", "Index", new { sortOrder = ViewBag.NameSortParm })
+                @Html.ActionLink("Faculty Member", "Index", new { sortOrder = ViewBag.NameSortParm })
             </th>
             <th>
                 Home&nbsp;School
@@ -137,7 +124,7 @@
         {
             <tr>
                 <td>
-                    @Html.ActionLink(item.LastName + ", " + item.FirstName, "Details", "Home", new {id = item.MemberID }, new { @class = "text -info" })
+                    @Html.ActionLink(item.LastName + ", " + item.FirstName, "Details", "Home", new { id = item.MemberID }, new { @class = "text -info" })
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.tb_Department.tb_College.CollegeName)
@@ -148,16 +135,38 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.tb_Department.DepartmentName)
                 </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_MemberRoles.Where(t => t.MemberID == item.MemberID).LastOrDefault().tb_Roles.RoleName)
+                </td>
                 <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_Dues.DuesName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_MemberActivity.Where(t => t.MemberID == item.MemberID).LastOrDefault().tb_ActivityStatus.ActivityStatusName)
+                </td>
+                <td align="center">
+                    <a href="#" class="btn btn-xs"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_Assessment.Where(t => t.MemberID == item.MemberID).LastOrDefault().tb_AssessmentName.AssessmentName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_MemberActivity.Where(t => t.MemberID == item.MemberID).LastOrDefault().MembershipCommitment)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_MemberPhoneNumbers.Where(t => t.MemberID == item.MemberID).Where(p => p.IsPrimary == true).FirstOrDefault().PhoneNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_MemberAddress.Where(t => t.MemberID == item.MemberID).FirstOrDefault().HomeStreet1)
+                    @Html.DisplayFor(modelItem => item.tb_MemberAddress.Where(t => t.MemberID == item.MemberID).FirstOrDefault().HomeStreet2)
+                    @Html.DisplayFor(modelItem => item.tb_MemberAddress.Where(t => t.MemberID == item.MemberID).FirstOrDefault().tb_CityState.CityName)
+                    @Html.DisplayFor(modelItem => item.tb_MemberAddress.Where(t => t.MemberID == item.MemberID).FirstOrDefault().tb_CityState.CityAlias)
+                    @Html.DisplayFor(modelItem => item.tb_MemberAddress.Where(t => t.MemberID == item.MemberID).FirstOrDefault().ZipCode)
+                </td>
+                <td>
+                    @*@if(item.tb_MemberActivity)*@
+                </td>
                 @*<td>
                         <div class="btn-group" role="group" aria-label="...">
                             @Html.ActionLink("Edit", "Edit", new { id = item.MemberID }, new { @class = "btn btn-primary" })

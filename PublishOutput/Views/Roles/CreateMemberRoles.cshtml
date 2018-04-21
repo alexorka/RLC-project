@@ -4,7 +4,7 @@
     ViewBag.Title = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div class="font-weight-bold" style="background-color: #357ebd; color:gainsboro; padding-top:10px; padding-bottom:5px; padding-left: 30px;"><h4>Add Worker Role</h4></div>
+<div class="font-weight-bold" style="background-color: #357ebd; color:gainsboro; padding-top:10px; padding-bottom:5px; padding-left: 30px;"><h4>Add Faculty Member Role</h4></div>
 
 @using (Html.BeginForm())
 {
@@ -14,10 +14,10 @@
     <hr />
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-    @*Workers DDL*@
+    @*Faculty Members DDL*@
     <div class="form-group">
         <div class="col-md-3">
-            <p class="control-label"><span class="text-danger">*</span>  Worker</p>
+            <p class="control-label"><span class="text-danger">*</span>  Faculty Member</p>
         </div>
         <div class="col-md-9">
             @Html.DropDownListFor(model => model._MemberID, Model._Members, new { @class = "form-control", style = "width: 250px;" })
@@ -37,7 +37,7 @@
                     @Html.ValidationMessageFor(model => model._RoleID, "", new { @class = "text-danger" })
                 </div>
                 <div style="float: left; margin-left:10px">
-                        <a href="@Url.Action("CreateRole", "Roles")" class="btn btn-default"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+                    <a href="@Url.Action("CreateRole", "Roles")" class="btn btn-default"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
                 </div>
             </div>
         </div>
@@ -61,7 +61,7 @@
         </div>
     </div>
 
-     @*Start Date*@
+    @*Start Date*@
     <div class="form-group">
         <div class="col-md-3">
             <p class="control-label">Start Date</p>

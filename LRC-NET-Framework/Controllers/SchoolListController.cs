@@ -28,7 +28,7 @@ namespace LRC_NET_Framework.Controllers
             tb_SemesterTaught = tb_SemesterTaught.Where(t => t.tb_MemberMaster.tb_Department.tb_College.CollegeID == CollegeID);
             ViewData["MemberQty"] = tb_SemesterTaught.Count();
             var tb_College = db.tb_College.Where(f => f.CollegeID == CollegeID).FirstOrDefault(); ;
-            ViewBag.CollegeName = tb_College.CollegeDesc;
+            ViewBag.CollegeName = tb_College.CollegeName;
             //List<tb_MemberPhoneNumbers> phones = db.tb_MemberPhoneNumbers.Where(p => p.MemberID == 1).ToList();
 
             //Sorting

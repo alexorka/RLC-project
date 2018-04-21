@@ -94,7 +94,8 @@ namespace LRC_NET_Framework.Controllers
                 return HttpNotFound();
             }
             tb_MemberAddress ma = Worker.tb_MemberAddress.Where(t => t.MemberID == id).Where(t => t.IsPrimary == true).FirstOrDefault();
-            ViewBag.MemberAddress = ma.HomeStreet1 + " " + ma.HomeStreet2 + ", " + ma.tb_CityState.CityName + ", " + ma.tb_CityState.CityAlias + ", " + ma.ZipCode;
+            ViewBag.MemberAddress = ma.HomeStreet1 + " " + ma.HomeStreet2 + ", " + ma.tb_CityState.CityName + ", " + 
+                ma.tb_CityState.CityAlias + ", " + ma.ZipCode;
 
             //tb_AssessmentName assessmentName = new tb_AssessmentName();
             //assessmentName = db.tb_AssessmentName;
@@ -108,7 +109,6 @@ namespace LRC_NET_Framework.Controllers
             };
             return View(model);
         }
-
         // GET: ManageWorker
         public ActionResult MembersBySchool(string sortOrder, string searchString, int? page, int? CollegeID, FormCollection formCollection)
         {
@@ -179,7 +179,7 @@ namespace LRC_NET_Framework.Controllers
             {
                 return HttpNotFound();
             }
-            //ViewBag.CollegeID = new SelectList(db.tb_College, "CollegeID", "CollegeDesc", tb_MemberMaster.tb_Department.CollegeID);
+            //ViewBag.CollegeID = new SelectList(db.tb_College, "CollegeID", "CollegeName", tb_MemberMaster.tb_Department.CollegeID);
             //ViewBag.DepartmentID = new SelectList(db.tb_Department, "DepartmentID", "DepartmentName", tb_MemberMaster.DepartmentID);
             //ViewBag.JobStatusID = new SelectList(db.tb_JobStatus, "JobStatusID", "JobStatusName", tb_MemberMaster.tb_JobStatus.JobStatusID);
             //ViewBag.DivisionID = new SelectList(db.tb_Division, "DivisionID", "DivisionName", tb_MemberMaster.DivisionID);
@@ -190,7 +190,7 @@ namespace LRC_NET_Framework.Controllers
                 _MemberID = tb_MemberMaster.MemberID,
                 _WorkerFullName = tb_MemberMaster.LastName + ", " + tb_MemberMaster.FirstName,
                 _CollegeID = tb_MemberMaster.tb_Department.CollegeID,
-                _Colleges = new SelectList(db.tb_College, "CollegeID", "CollegeDesc", tb_MemberMaster.tb_Department.CollegeID),
+                _Colleges = new SelectList(db.tb_College, "CollegeID", "CollegeName", tb_MemberMaster.tb_Department.CollegeID),
                 _JobStatusID = tb_MemberMaster.JobStatusID,
                 _JobStatuses = new SelectList(db.tb_JobStatus, "JobStatusID", "JobStatusName", tb_MemberMaster.JobStatusID),
                 _DivisionID = tb_MemberMaster.DivisionID,
@@ -630,7 +630,7 @@ namespace LRC_NET_Framework.Controllers
         // GET: Home/AddMembershipForm
         public ActionResult AddBuilding()
         {
-            var colleges = new SelectList(db.tb_College, "CollegeID", "CollegeDesc");
+            var colleges = new SelectList(db.tb_College, "CollegeID", "CollegeName");
             ViewBag.Colleges = colleges;
             ViewBag.CollegeID = 0;
             return View(db.tb_College.ToList());
@@ -673,7 +673,7 @@ namespace LRC_NET_Framework.Controllers
             else
             {
                 ViewBag.Message = "You have not specified a file.";
-                ViewBag.Colleges = new SelectList(db.tb_College, "CollegeID", "CollegeDesc", College);
+                ViewBag.Colleges = new SelectList(db.tb_College, "CollegeID", "CollegeName", College);
                 return View();
             }
 
@@ -698,7 +698,7 @@ namespace LRC_NET_Framework.Controllers
                 db.tb_Building.Attach(building);
             }
             db.SaveChanges();
-            ViewBag.Colleges = new SelectList(db.tb_College, "CollegeID", "CollegeDesc");
+            ViewBag.Colleges = new SelectList(db.tb_College, "CollegeID", "CollegeName");
             ViewBag.CollegeID = 0;
             return View(db.tb_College.ToList());
         }

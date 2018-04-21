@@ -4,7 +4,7 @@
 
 
 @{
-    ViewBag.Title = "Manage Worker";
+    ViewBag.Title = "Manage Faculty Member";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -29,7 +29,7 @@
                 Home School
             </div>
             <div class="col-md-7 text-muted">
-                @Html.DisplayFor(n => n._Worker.tb_Department.tb_College.CollegeDesc)
+                @Html.DisplayFor(n => n._Worker.tb_Department.tb_College.CollegeName)
             </div>
         </div>
         <div class="row" style="padding-bottom:5px">
@@ -168,7 +168,7 @@
     {
         <tr class="text-muted">
             <td>
-                @Html.DisplayFor(modelItem => item.tb_Building.tb_Campus.tb_College.CollegeDesc)
+                @Html.DisplayFor(modelItem => item.tb_Building.tb_Campus.tb_College.CollegeName)
             </td>
             <td>
                 <a href="#" class="btn btn-xs"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>

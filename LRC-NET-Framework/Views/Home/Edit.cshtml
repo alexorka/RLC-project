@@ -1,25 +1,25 @@
 ﻿@model LRC_NET_Framework.Models.EditWorkerModels
 
 @{
-    ViewBag.Title = "Edit Worker Details";
+    ViewBag.Title = "Edit Faculty Member Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="font-weight-bold" style="background-color: #357ebd; color:gainsboro; padding-top:10px; padding-bottom:5px; padding-left: 30px;"><h4>Edit Worker Details</h4></div>
+<div class="font-weight-bold" style="background-color: #357ebd; color:gainsboro; padding-top:10px; padding-bottom:5px; padding-left: 30px;"><h4>Edit Faculty Member Details</h4></div>
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-
+<div>
     <div class="form-horizontal">
-        <h3 style="padding-left: 70px;">
-            @Html.DisplayFor(model => model._WorkerFullName)
-        </h3>
+        <div class="col-md-10 col-md-offset-2">
+            <h4><b>@Html.DisplayFor(model => model._WorkerFullName)</b></h4>
+        </div>
         @Html.ValidationMessageFor(model => model._WorkerFullName, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model._MemberID)
 
         @*Home School DDL*@
-        <div class="form-group">
+        <div class="row" style="padding-bottom:3px; padding-top:3px;">
             <div class="col-md-3">
                 <p class="control-label">Home School</p>
             </div>
@@ -30,7 +30,7 @@
         </div>
 
         @*Job Status DDL*@
-        <div class="form-group">
+        <div class="row" style="padding-bottom:3px; padding-top:3px;">
             <div class="col-md-3">
                 <p class="control-label">Job Status</p>
             </div>
@@ -41,17 +41,17 @@
         </div>
 
         @*Job Class - disabled*@
-        <div class="form-group">
+        <div class="row" style="padding-bottom:3px; padding-top:3px;">
             <div class="col-md-3">
                 <p class="control-label">Job Class</p>
             </div>
             <div class="col-md-9">
-                <input type="text" class="form-control" placeholder=" - LZ: Keep it freedom - " disabled>
+                <input type="text" class="form-control" placeholder=" - LZ: Keep it freedom - " disabled="disabled">
             </div>
         </div>
 
         @*Division DDL*@
-        <div class="form-group">
+        <div class="row" style="padding-bottom:3px; padding-top:3px;">
             <div class="col-md-3">
                 <p class="control-label">Division</p>
             </div>
@@ -71,7 +71,7 @@
         </div>
 
         @*Department DDL*@
-        <div class="form-group">
+        <div class="row" style="padding-bottom:3px; padding-top:3px;">
             <div class="col-md-3">
                 <p class="control-label">Department</p>
             </div>
@@ -91,7 +91,7 @@
         </div>
 
         @*Class Category DDL*@
-        <div class="form-group">
+        <div class="row" style="padding-bottom:3px; padding-top:3px;">
             <div class="col-md-3">
                 <p class="control-label">Class Category</p>
             </div>
@@ -102,7 +102,7 @@
         </div>
 
         @*Hire Date*@
-        <div class="form-group">
+        <div class="row" style="padding-bottom:3px; padding-top:3px;">
             <div class="col-md-3">
                 <p class="control-label">Hire Date (Aprox)</p>
             </div>
@@ -117,7 +117,7 @@
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="row" style="padding-bottom:3px; padding-top:3px;">
             <div class="col-md-3">
                 <p class="control-label text-danger">Salary</p>
             </div>
@@ -126,7 +126,7 @@
             </div>
         </div>
         @*Twitter Handle*@
-        <div class="form-group">
+        <div class="row" style="padding-bottom:3px; padding-top:3px;">
             <div class="col-md-3">
                 <p class="control-label">Twitter</p>
             </div>
@@ -137,7 +137,7 @@
         </div>
 
         @*Twitter Handle*@
-        <div class="form-group">
+        <div class="row" style="padding-bottom:3px; padding-top:3px;">
             <div class="col-md-3">
                 <p class="control-label">FaceBook</p>
             </div>
@@ -147,7 +147,7 @@
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="row" style="padding-bottom:3px; padding-top:3px;">
             <div class="col-md-3">
                 <p class="control-label text-danger">Active Status</p>
             </div>
@@ -160,27 +160,27 @@
             </div>
         </div>
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-9">
+        <div class="form-group" style="padding-bottom:3px; padding-top:3px;">
+            <div class="col-md-offset-1 col-md-2">
+                @if (ViewBag.CollegeID != null && (int)ViewBag.CollegeID > 0)
+                {
+                    <a href="@Url.Action("MembersBySchool", "Home", new { CollegeID = ViewBag.CollegeID })" class="btn btn-info">&nbsp;&nbsp;Back&nbsp;to&nbsp;List<span class="glyphicon glyphicon-arrow-left pull-left" aria-hidden="true"></span></a>
+                }
+                else
+                {
+                    <a href="@Url.Action("Details", "Home", new { id = Model._MemberID })" class="btn btn-info">&nbsp;&nbsp;Back&nbsp;to&nbsp;Faculty&nbsp;Member&nbsp;Details<span class="glyphicon glyphicon-arrow-left pull-left" aria-hidden="true"></span></a>
+                }
+            </div>
+            <div class="col-md-6">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </div>
     </div>
+</div>
 }
 
-@*<div>
-    @Html.ActionLink("Back to List", "Index", "Home", null, new { @class = "btn btn-info" })
-</div>*@
-<div class="col-md-11 col-md-offset-1">
-    @if (ViewBag.CollegeID != null && (int)ViewBag.CollegeID > 0)
-    {
-        <a href="@Url.Action("MembersBySchool", "Home", new { CollegeID = ViewBag.CollegeID })" class="btn btn-info">&nbsp;&nbsp;Back&nbsp;to&nbsp;List<span class="glyphicon glyphicon-arrow-left pull-left" aria-hidden="true"></span></a>
-    }
-    else
-    {
-        <a href="@Url.Action("Details", "Home", new { id = Model._MemberID })" class="btn btn-info">&nbsp;&nbsp;Back&nbsp;to&nbsp;Worker&nbsp;Details<span class="glyphicon glyphicon-arrow-left pull-left" aria-hidden="true"></span></a>
-    }
-</div>
+<hr />
+
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
