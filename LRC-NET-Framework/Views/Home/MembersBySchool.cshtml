@@ -34,17 +34,25 @@
                 <tr style="background-color:gainsboro;">
                     <td>
                         <div class="row h6">
-                            <div class="col-md-3">
+                            <div class="col-md-5">
                                 <div class="row">
-                                    <div class="col-md-5" style="font-weight:bold; padding-bottom:5px; padding-top:5px; text-align:right; background:lavender;">
+                                    <div class="col-md-5" style="border-bottom-left-radius:10px; border-top-left-radius:10px; font-weight:bold; height:25px; padding-bottom:3px; padding-top:7px; text-align:right; background:lavender;">
                                         Faculty&nbsp;Member
                                     </div>
-                                    <div class="col-md-7 text-muted" style="font-weight:bold; padding-bottom:5px; padding-top:5px; background:lavender">
-                                        @Html.ActionLink(item.LastName + ", " + item.FirstName, "Edit", "Home", new { id = item.MemberID, CollegeID = ViewBag.CollegeID }, new { @class = "text -info" })
+                                    <div class="col-md-7 text-muted" style="overflow:hidden; height:25px; font-weight:bold; background:lavender">
+                                        <div style="width: 100%;">
+                                            <div style="float: left; padding-bottom:3px; padding-top:7px; ">
+                                                @Html.ActionLink(item.LastName + ", " + item.FirstName, "Edit", "Home", new { id = item.MemberID, CollegeID = ViewBag.CollegeID }, new { @class = "text -info" })
+                                            </div>
+                                            <div style="float: left; margin-left:10px; padding-bottom:6px; padding-top:4px; ">
+                                                <a href="@Url.Action("AddPersonAssessmentActivity", "Assessment", new { @id = item.MemberID })" class="btn-sm btn-link"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+                                            </div>
+                                        </div>                                        
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                         <div class="row ex1 h6">
                             <div class="col-md-3">
                                 <div class="row" style="padding-bottom:5px">
@@ -155,13 +163,13 @@ else
                                     </div>
                                     <div class="col-md-7 text-muted" style="font-weight:bold;">
                                         @if (item.tb_MemberPhoneNumbers.Count > 0)
-                                        {
-                                            @Html.ActionLink(item.tb_MemberPhoneNumbers.FirstOrDefault().PhoneNumber, "ManageContactInfo", "Home", new { id = item.MemberID, CollegeID = ViewBag.CollegeID }, new { @class = "text -info" })
-                                        }
-                                        else
-                                        {
-                                            @Html.ActionLink("Add Pnone", "ManageContactInfo", "Home", new { id = item.MemberID, CollegeID = ViewBag.CollegeID }, new { @class = "text -info" })
-                                        }
+                    {
+                        @Html.ActionLink(item.tb_MemberPhoneNumbers.FirstOrDefault().PhoneNumber, "ManageContactInfo", "Home", new { id = item.MemberID, CollegeID = ViewBag.CollegeID }, new { @class = "text -info" })
+}
+else
+{
+                    @Html.ActionLink("Add Pnone", "ManageContactInfo", "Home", new { id = item.MemberID, CollegeID = ViewBag.CollegeID }, new { @class = "text -info" })
+}
                                     </div>
                                 </div>
                                 <div class="row" style="padding-bottom:5px">
