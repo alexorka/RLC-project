@@ -80,7 +80,7 @@ namespace LRC_NET_Framework.Controllers
             return View(tb_MemberMasters.ToPagedList(pageNumber, pageSize));
         }
 
-        // GET: ManageWorker
+        // GET: ManageWorkerModels
         public ActionResult Details(int? id)
         {
             //id = 1; // test REMOVE IT
@@ -109,7 +109,8 @@ namespace LRC_NET_Framework.Controllers
             };
             return View(model);
         }
-        // GET: ManageWorker
+
+        // GET: MembersBySchool
         public ActionResult MembersBySchool(string sortOrder, string searchString, int? page, int? CollegeID, FormCollection formCollection)
         {
             CollegeID = CollegeID ?? int.Parse(formCollection["CollegeID"]);
@@ -179,24 +180,19 @@ namespace LRC_NET_Framework.Controllers
             {
                 return HttpNotFound();
             }
-            //ViewBag.CollegeID = new SelectList(db.tb_College, "CollegeID", "CollegeName", tb_MemberMaster.tb_Department.CollegeID);
-            //ViewBag.DepartmentID = new SelectList(db.tb_Department, "DepartmentID", "DepartmentName", tb_MemberMaster.DepartmentID);
-            //ViewBag.JobStatusID = new SelectList(db.tb_JobStatus, "JobStatusID", "JobStatusName", tb_MemberMaster.tb_JobStatus.JobStatusID);
-            //ViewBag.DivisionID = new SelectList(db.tb_Division, "DivisionID", "DivisionName", tb_MemberMaster.DivisionID);
-            //ViewBag.CategoryID = new SelectList(db.tb_Categories, "CategoryID", "CategoryName", tb_MemberMaster.CategoryID); //Class Category: It represents what the person was over a period of time. Valid values in drop down are Member, Non-Member, Retired
 
             EditWorkerModels model = new EditWorkerModels()
             {
                 _MemberID = tb_MemberMaster.MemberID,
                 _WorkerFullName = tb_MemberMaster.LastName + ", " + tb_MemberMaster.FirstName,
                 _CollegeID = tb_MemberMaster.tb_Department.CollegeID,
-                _Colleges = new SelectList(db.tb_College, "CollegeID", "CollegeName", tb_MemberMaster.tb_Department.CollegeID),
+                _Colleges = new SelectList(db.tb_College.OrderBy(s => s.CollegeName), "CollegeID", "CollegeName", tb_MemberMaster.tb_Department.CollegeID),
                 _JobStatusID = tb_MemberMaster.JobStatusID,
-                _JobStatuses = new SelectList(db.tb_JobStatus, "JobStatusID", "JobStatusName", tb_MemberMaster.JobStatusID),
+                _JobStatuses = new SelectList(db.tb_JobStatus.OrderBy(s => s.JobStatusName), "JobStatusID", "JobStatusName", tb_MemberMaster.JobStatusID),
                 _DivisionID = tb_MemberMaster.DivisionID,
-                _Divisions = new SelectList(db.tb_Division, "DivisionID", "DivisionName", tb_MemberMaster.DivisionID),
+                _Divisions = new SelectList(db.tb_Division.OrderBy(s => s.DivisionName), "DivisionID", "DivisionName", tb_MemberMaster.DivisionID),
                 _DepartmentID = tb_MemberMaster.DepartmentID,
-                _Departments = new SelectList(db.tb_Department, "DepartmentID", "DepartmentName", tb_MemberMaster.DepartmentID),
+                _Departments = new SelectList(db.tb_Department.OrderBy(s => s.DepartmentName), "DepartmentID", "DepartmentName", tb_MemberMaster.DepartmentID),
                 _CategoryID = tb_MemberMaster.CategoryID,
                 _Categories = new SelectList(db.tb_Categories, "CategoryID", "CategoryName", tb_MemberMaster.CategoryID),
                 _HireDate = tb_MemberMaster.HireDate?? DateTime.Now,
@@ -289,7 +285,7 @@ namespace LRC_NET_Framework.Controllers
             return View(model);
         }
 
-        // POST: Home/AlsoWorksAt
+        // POST: Home/ManageContactInfo
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -302,100 +298,143 @@ namespace LRC_NET_Framework.Controllers
                 switch (submit)
                 {
                 case "Submit New Phone":
-                    var memberPhones = db.tb_MemberPhoneNumbers.Where(s => s.PhoneNumber.ToUpper() == model._PhoneNumber.ToUpper());
-                    //Check dublicates
-                    if (memberPhones.ToList().Count == 0)
-                    {
-                        tb_MemberPhoneNumbers phoneNumber = new tb_MemberPhoneNumbers()
+                        using (LRCEntities context = new LRCEntities())
                         {
-                            MemberID = model._MemberID,
-                            PhoneNumber = model._PhoneNumber,
-                            IsPrimary = model._IsPhonePrimary,
-                            PhoneTypeID = model._PhoneTypeID,
-                            CreatedDateTime = DateTime.Now
-                        };
-                        db.tb_MemberPhoneNumbers.Add(phoneNumber);
-                    }
-                    else
-                    {
-                        tb_MemberPhoneNumbers phoneNumber = memberPhones.FirstOrDefault();
-                        phoneNumber.PhoneNumber = model._PhoneNumber;
-                        phoneNumber.IsPrimary = model._IsPhonePrimary;
-                        phoneNumber.PhoneTypeID = model._PhoneTypeID;
-                        phoneNumber.CreatedDateTime = DateTime.Now;
-                        phoneNumber.CreatedBy = 2;
-                        db.tb_MemberPhoneNumbers.Attach(phoneNumber);
-                    }
-                    db.SaveChanges();
-                    break;
+                            // Set _IsPhonePrimary = false for all member phones if this phone is primary
+                            var memberPhones = context.tb_MemberPhoneNumbers.Where(s => s.MemberID == model._MemberID);
+                            if (model._IsPhonePrimary)
+                            {
+
+                                foreach (var phoneNumber in context.tb_MemberPhoneNumbers)
+                                {
+                                    phoneNumber.IsPrimary = false;
+                                }
+                            }
+
+                            //Check dublicates
+                            memberPhones = context.tb_MemberPhoneNumbers.Where(s => s.PhoneNumber.ToUpper() == model._PhoneNumber.ToUpper());
+                            if (memberPhones.ToList().Count == 0)
+                            {
+                                tb_MemberPhoneNumbers phoneNumber = new tb_MemberPhoneNumbers()
+                                {
+                                    MemberID = model._MemberID,
+                                    PhoneNumber = model._PhoneNumber,
+                                    IsPrimary = model._IsPhonePrimary,
+                                    PhoneTypeID = model._PhoneTypeID,
+                                    CreatedBy = 2,
+                                    CreatedDateTime = DateTime.Now,
+                                    ModifiedDateTime = DateTime.Now
+                                };
+                                context.tb_MemberPhoneNumbers.Add(phoneNumber);
+                            }
+                            else
+                            {
+                                var phoneNumber = context.tb_MemberPhoneNumbers.Where(s => s.PhoneNumber.ToUpper() == model._PhoneNumber.ToUpper()).FirstOrDefault();
+                                phoneNumber.PhoneNumber = model._PhoneNumber;
+                                phoneNumber.IsPrimary = model._IsPhonePrimary;
+                                phoneNumber.PhoneTypeID = model._PhoneTypeID;
+                                //phoneNumber.CreatedBy = 2;
+                                //phoneNumber.CreatedDateTime = DateTime.Now;
+                                phoneNumber.ModifiedDateTime = DateTime.Now;
+                            }
+
+                            context.SaveChanges();
+                        }
+                        break;
+
                 case "Submit New Address":
-                    var memberAddresses = db.tb_MemberAddress.Where(s => s.HomeStreet1.ToUpper() == model._HomeStreet1.ToUpper()
-                    && s.HomeStreet2.ToUpper() == model._HomeStreet2.ToUpper()
-                    && s.ZipCode.ToUpper() == model._ZipCode.ToUpper()
-                    && s.CityID == model._CityID);
-                    //Check dublicates
-                    if (memberAddresses.ToList().Count == 0)
-                    {
-                        tb_MemberAddress memberAddress = new tb_MemberAddress()
+                        using (LRCEntities context = new LRCEntities())
                         {
-                            MemberID = model._MemberID,
-                            HomeStreet1 = model._HomeStreet1,
-                            HomeStreet2 = model._HomeStreet2,
-                            CityID = model._CityID,
-                            ZipCode = model._ZipCode,
-                            Country = "USA",
-                            CreatedDateTime = model._CreatedAdressDateTime,
-                            IsPrimary = model._IsAdressPrimary,
-                            SourceID = model._SourceID
-                        };
-                        db.tb_MemberAddress.Add(memberAddress);
-                    }
-                    else
-                    {
-                        tb_MemberAddress memberAddress = memberAddresses.FirstOrDefault();
-                        memberAddress.MemberID = model._MemberID;
-                        memberAddress.HomeStreet1 = model._HomeStreet1;
-                        memberAddress.HomeStreet2 = model._HomeStreet2;
-                        memberAddress.CityID = model._CityID;
-                        memberAddress.ZipCode = model._ZipCode;
-                        memberAddress.Country = "USA";
-                        memberAddress.CreatedDateTime = model._CreatedAdressDateTime;
-                        memberAddress.IsPrimary = model._IsAdressPrimary;
-                        memberAddress.SourceID = model._SourceID;
-                        db.tb_MemberAddress.Attach(memberAddress);
-                    }
-                    db.SaveChanges();
+                            // Set _IsAdressPrimary = false for all member addresses if this address is primary
+                            var memberAddresses = context.tb_MemberAddress.Where(s => s.MemberID == model._MemberID);
+                            if (model._IsAdressPrimary)
+                            {
+                                foreach (var memberAdress in context.tb_MemberAddress)
+                                {
+                                    memberAdress.IsPrimary = false;
+                                }
+                            }
+
+                            //Check dublicates
+                            memberAddresses = context.tb_MemberAddress.Where(s => s.HomeStreet1.ToUpper() == model._HomeStreet1.ToUpper()
+                                && s.HomeStreet2.ToUpper() == model._HomeStreet2.ToUpper()
+                                && s.ZipCode.ToUpper() == model._ZipCode.ToUpper()
+                                && s.CityID == model._CityID);
+                            if (memberAddresses.ToList().Count == 0)
+                            {
+                                tb_MemberAddress memberAddress = new tb_MemberAddress()
+                                {
+                                    MemberID = model._MemberID,
+                                    HomeStreet1 = model._HomeStreet1,
+                                    HomeStreet2 = model._HomeStreet2,
+                                    CityID = model._CityID,
+                                    ZipCode = model._ZipCode,
+                                    Country = "USA",
+                                    CreatedDateTime = model._CreatedAdressDateTime,
+                                    ModifiedDateTime = DateTime.Now,
+                                    IsPrimary = model._IsAdressPrimary,
+                                    SourceID = model._SourceID
+                                };
+                                context.tb_MemberAddress.Add(memberAddress);
+                            }
+                            else
+                            {
+                                tb_MemberAddress memberAddress = memberAddresses.FirstOrDefault();
+                                memberAddress.MemberID = model._MemberID;
+                                memberAddress.HomeStreet1 = model._HomeStreet1;
+                                memberAddress.HomeStreet2 = model._HomeStreet2;
+                                memberAddress.CityID = model._CityID;
+                                memberAddress.ZipCode = model._ZipCode;
+                                memberAddress.Country = "USA";
+                                memberAddress.CreatedDateTime = model._CreatedAdressDateTime;
+                                memberAddress.ModifiedDateTime = DateTime.Now;
+                                memberAddress.IsPrimary = model._IsAdressPrimary;
+                                memberAddress.SourceID = model._SourceID;
+                            }
+                            context.SaveChanges();
+                        }
                     break;
                  case "Submit New Email":
-                    var memberEmails = db.tb_MemberEmail.Where(s => s.EmailAddress.ToUpper() == model._EmailAddress.ToUpper());
-                    //Check dublicates
-                    if (memberEmails.ToList().Count == 0)
-                    {
-                        tb_MemberEmail memberEmail = new tb_MemberEmail()
+                        using (LRCEntities context = new LRCEntities())
                         {
-                            MemberID = model._MemberID,
-                            EmailAddress = model._EmailAddress,
-                            EmailTypeID = model._EmailTypeID,
-                            IsPrimary = model._IsEmailPrimary,
-                            CreatedDateTime = DateTime.Now,
-                            CreatedBy = 2
-                        };
-                        db.tb_MemberEmail.Add(memberEmail);
-                    }
-                    else
-                    {
-                        tb_MemberEmail memberEmail = memberEmails.FirstOrDefault();
-                        memberEmail.EmailAddress = model._EmailAddress;
-                        memberEmail.EmailTypeID = model._EmailTypeID;
-                        memberEmail.IsPrimary = model._IsEmailPrimary;
-                        memberEmail.CreatedDateTime = DateTime.Now;
-                        memberEmail.CreatedBy = 2;
-                        db.tb_MemberEmail.Attach(memberEmail);
-                    }
-                    db.SaveChanges();
-                    break;
-                    //default:
-                    //    break;
+                            // Set _IsEmailPrimary = false for all member phones if this phone is primary
+                            var memberEmails = context.tb_MemberEmail.Where(s => s.MemberID == model._MemberID);
+                            if (model._IsPhonePrimary)
+                            {
+
+                                foreach (var memberEmail in context.tb_MemberEmail)
+                                {
+                                    memberEmail.IsPrimary = false;
+                                }
+                            }
+
+                            //Check dublicates
+                            memberEmails = context.tb_MemberEmail.Where(s => s.EmailAddress.ToUpper() == model._EmailAddress.ToUpper());
+                            if (memberEmails.ToList().Count == 0)
+                            {
+                                tb_MemberEmail memberEmail = new tb_MemberEmail()
+                                {
+                                    MemberID = model._MemberID,
+                                    EmailAddress = model._EmailAddress,
+                                    EmailTypeID = model._EmailTypeID,
+                                    IsPrimary = model._IsEmailPrimary,
+                                    CreatedDateTime = DateTime.Now,
+                                    CreatedBy = 2
+                                };
+                                context.tb_MemberEmail.Add(memberEmail);
+                            }
+                            else
+                            {
+                                tb_MemberEmail memberEmail = memberEmails.FirstOrDefault();
+                                memberEmail.EmailAddress = model._EmailAddress;
+                                memberEmail.EmailTypeID = model._EmailTypeID;
+                                memberEmail.IsPrimary = model._IsEmailPrimary;
+                                memberEmail.CreatedDateTime = DateTime.Now;
+                                memberEmail.CreatedBy = 2;
+                            }
+                            context.SaveChanges();
+                            break;
+                        }
                 }
             }
 
@@ -636,6 +675,92 @@ namespace LRC_NET_Framework.Controllers
             return View(db.tb_College.ToList());
         }
 
+        // GET: Home/AddMembershipForm
+        public ActionResult AddDepartment(string sortOrder, string searchString, int? page, int? id)
+        {
+            ViewBag.MemberID = id ?? 1;
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            //Paging
+            int pageSize = 20;
+            int pageNumber = (page ?? 1);
+            var _Departments = db.tb_Department.Include(t => t.tb_College);
+            ViewData["MemberQty"] = _Departments.Count();
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Name desc" : "";
+            ViewBag.SearchString = searchString;
+
+            //Searching
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                _Departments = _Departments.Where(s => s.DepartmentName.ToUpper().Contains(searchString.ToUpper()));
+            }            
+            
+            //Sorting
+            switch (sortOrder)
+            {
+                case "Name desc":
+                    _Departments = _Departments.OrderByDescending(s => s.DepartmentName);
+                    break;
+                default:
+                    _Departments = _Departments.OrderBy(s => s.DepartmentName);
+                    break;
+            }
+
+            return View(_Departments.ToPagedList(pageNumber, pageSize));
+        }
+
+        // POST: Home/AddMembershipForm
+        [HttpPost]
+        public ActionResult AddDepartment(string sortOrder, string searchString, int? page, string DepartmentName, int? CollegeID, int? id)
+        {
+            ViewBag.MemberID = id ?? 1;
+            var _Departments = db.tb_Department.Where(s => s.DepartmentName.ToUpper() == DepartmentName.ToUpper());
+            if (!String.IsNullOrEmpty(DepartmentName))
+            {
+                //Check dublicates
+                if (_Departments.ToList().Count == 0)
+                {
+                    tb_Department newDepartment = new tb_Department() { DepartmentName = DepartmentName, CollegeID = CollegeID ?? 1 }; // I do not know yet which College will be appointed
+                    db.tb_Department.Add(newDepartment);
+                    db.SaveChanges();
+                    ViewBag.Duplicate = String.Empty;
+                }
+                else
+                {
+                    ViewBag.Duplicate = DepartmentName + " department is already in the list";
+                }
+            }
+
+            _Departments = db.tb_Department.Include(t => t.tb_College);
+            //Paging
+            int pageSize = 20;
+            int pageNumber = (page ?? 1);
+            ViewData["MemberQty"] = _Departments.Count();
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Name desc" : "";
+            ViewBag.SearchString = searchString;
+
+            //Searching
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                _Departments = _Departments.Where(s => s.DepartmentName.ToUpper().Contains(searchString.ToUpper()));
+            }
+
+            //Sorting
+            switch (sortOrder)
+            {
+                case "Name desc":
+                    _Departments = _Departments.OrderByDescending(s => s.DepartmentName);
+                    break;
+                default:
+                    _Departments = _Departments.OrderBy(s => s.DepartmentName);
+                    break;
+            }
+
+            return View(_Departments.ToPagedList(pageNumber, pageSize));
+        }
+
         [HttpPost]
         public ActionResult GetCampuses(int College)
         {
@@ -662,7 +787,7 @@ namespace LRC_NET_Framework.Controllers
                 try
                 {
                     string path = Path.Combine(Server.MapPath(imagesFolder),
-                                               Path.GetFileName(file.FileName));
+                    Path.GetFileName(file.FileName));
                     file.SaveAs(path);
                     ViewBag.Message = "File uploaded successfully";
                 }

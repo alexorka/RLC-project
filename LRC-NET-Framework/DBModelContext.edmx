@@ -1202,7 +1202,6 @@
             <End Role="tb_ActivityStatus" EntitySet="tb_ActivityStatus" />
             <End Role="tb_MemberActivity" EntitySet="tb_MemberActivity" />
           </AssociationSet>
-          <EntitySet Name="tb_Department" EntityType="LRCModel.tb_Department" />
           <EntitySet Name="tb_Division" EntityType="LRCModel.tb_Division" />
           <EntitySet Name="tb_Categories" EntityType="LRCModel.tb_Categories" />
           <EntitySet Name="tb_SemesterName" EntityType="LRCModel.tb_SemesterName" />
@@ -1221,10 +1220,6 @@
             <End Role="tb_District" EntitySet="tb_District" />
             <End Role="tb_College" EntitySet="tb_College" />
           </AssociationSet>
-          <AssociationSet Name="FK_tb_Department_tb_College" Association="LRCModel.FK_tb_Department_tb_College">
-            <End Role="tb_College" EntitySet="tb_College" />
-            <End Role="tb_Department" EntitySet="tb_Department" />
-          </AssociationSet>
           <EntitySet Name="tb_MemberMaster" EntityType="LRCModel.tb_MemberMaster" />
           <AssociationSet Name="FK_tb_MemberMaster_tb_Area" Association="LRCModel.FK_tb_MemberMaster_tb_Area">
             <End Role="tb_Area" EntitySet="tb_Area" />
@@ -1236,10 +1231,6 @@
           </AssociationSet>
           <AssociationSet Name="FK_tb_MemberMaster_tb_Categories" Association="LRCModel.FK_tb_MemberMaster_tb_Categories">
             <End Role="tb_Categories" EntitySet="tb_Categories" />
-            <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
-          </AssociationSet>
-          <AssociationSet Name="FK_tb_MemberMaster_tb_Department" Association="LRCModel.FK_tb_MemberMaster_tb_Department">
-            <End Role="tb_Department" EntitySet="tb_Department" />
             <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
           </AssociationSet>
           <AssociationSet Name="FK_tb_MemberMaster_tb_Division" Association="LRCModel.FK_tb_MemberMaster_tb_Division">
@@ -1387,6 +1378,15 @@
             <End Role="tb_Employers" EntitySet="tb_Employers" />
             <End Role="tb_AlsoWorksAt" EntitySet="tb_AlsoWorksAt" />
           </AssociationSet>
+          <EntitySet Name="tb_Department" EntityType="LRCModel.tb_Department" />
+          <AssociationSet Name="FK_tb_Department_tb_College" Association="LRCModel.FK_tb_Department_tb_College">
+            <End Role="tb_College" EntitySet="tb_College" />
+            <End Role="tb_Department" EntitySet="tb_Department" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tb_MemberMaster_tb_Department" Association="LRCModel.FK_tb_MemberMaster_tb_Department">
+            <End Role="tb_Department" EntitySet="tb_Department" />
+            <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="tb_ActivityStatus">
           <Key>
@@ -1491,16 +1491,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="tb_Department">
-          <Key>
-            <PropertyRef Name="DepartmentID" />
-          </Key>
-          <Property Name="DepartmentID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="DepartmentName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="CollegeID" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="tb_College" Relationship="LRCModel.FK_tb_Department_tb_College" FromRole="tb_Department" ToRole="tb_College" />
-          <NavigationProperty Name="tb_MemberMaster" Relationship="LRCModel.FK_tb_MemberMaster_tb_Department" FromRole="tb_Department" ToRole="tb_MemberMaster" />
-        </EntityType>
         <EntityType Name="tb_Division">
           <Key>
             <PropertyRef Name="DivisionID" />
@@ -1596,18 +1586,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_tb_Department_tb_College">
-          <End Type="LRCModel.tb_College" Role="tb_College" Multiplicity="1" />
-          <End Type="LRCModel.tb_Department" Role="tb_Department" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tb_College">
-              <PropertyRef Name="CollegeID" />
-            </Principal>
-            <Dependent Role="tb_Department">
-              <PropertyRef Name="CollegeID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="tb_MemberMaster">
           <Key>
             <PropertyRef Name="MemberID" />
@@ -1650,7 +1628,6 @@
           <NavigationProperty Name="tb_Area" Relationship="LRCModel.FK_tb_MemberMaster_tb_Area" FromRole="tb_MemberMaster" ToRole="tb_Area" />
           <NavigationProperty Name="tb_Attribute" Relationship="LRCModel.FK_tb_Attribute_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_Attribute" />
           <NavigationProperty Name="tb_Categories" Relationship="LRCModel.FK_tb_MemberMaster_tb_Categories" FromRole="tb_MemberMaster" ToRole="tb_Categories" />
-          <NavigationProperty Name="tb_Department" Relationship="LRCModel.FK_tb_MemberMaster_tb_Department" FromRole="tb_MemberMaster" ToRole="tb_Department" />
           <NavigationProperty Name="tb_Division" Relationship="LRCModel.FK_tb_MemberMaster_tb_Division" FromRole="tb_MemberMaster" ToRole="tb_Division" />
           <NavigationProperty Name="tb_Dues" Relationship="LRCModel.FK_tb_MemberMaster_tb_Dues" FromRole="tb_MemberMaster" ToRole="tb_Dues" />
           <NavigationProperty Name="tb_Gender" Relationship="LRCModel.FK_tb_MemberMaster_tb_Gender" FromRole="tb_MemberMaster" ToRole="tb_Gender" />
@@ -1667,6 +1644,7 @@
           <NavigationProperty Name="tb_CopeForms" Relationship="LRCModel.FK_tb_CopeForms_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_CopeForms" />
           <NavigationProperty Name="tb_MemberRoles" Relationship="LRCModel.FK_tb_MemberRoles_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_MemberRoles" />
           <NavigationProperty Name="tb_AlsoWorksAt" Relationship="LRCModel.FK_tb_AlsoWorksAt_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_AlsoWorksAt" />
+          <NavigationProperty Name="tb_Department" Relationship="LRCModel.FK_tb_MemberMaster_tb_Department" FromRole="tb_MemberMaster" ToRole="tb_Department" />
         </EntityType>
         <Association Name="FK_tb_MemberMaster_tb_Area">
           <End Type="LRCModel.tb_Area" Role="tb_Area" Multiplicity="0..1" />
@@ -1701,18 +1679,6 @@
             </Principal>
             <Dependent Role="tb_MemberMaster">
               <PropertyRef Name="CategoryID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_tb_MemberMaster_tb_Department">
-          <End Type="LRCModel.tb_Department" Role="tb_Department" Multiplicity="1" />
-          <End Type="LRCModel.tb_MemberMaster" Role="tb_MemberMaster" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tb_Department">
-              <PropertyRef Name="DepartmentID" />
-            </Principal>
-            <Dependent Role="tb_MemberMaster">
-              <PropertyRef Name="DepartmentID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2357,6 +2323,40 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="tb_Department">
+          <Key>
+            <PropertyRef Name="DepartmentID" />
+          </Key>
+          <Property Name="DepartmentID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DepartmentName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CollegeID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="tb_College" Relationship="LRCModel.FK_tb_Department_tb_College" FromRole="tb_Department" ToRole="tb_College" />
+          <NavigationProperty Name="tb_MemberMaster" Relationship="LRCModel.FK_tb_MemberMaster_tb_Department" FromRole="tb_Department" ToRole="tb_MemberMaster" />
+        </EntityType>
+        <Association Name="FK_tb_Department_tb_College">
+          <End Type="LRCModel.tb_College" Role="tb_College" Multiplicity="1" />
+          <End Type="LRCModel.tb_Department" Role="tb_Department" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_College">
+              <PropertyRef Name="CollegeID" />
+            </Principal>
+            <Dependent Role="tb_Department">
+              <PropertyRef Name="CollegeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tb_MemberMaster_tb_Department">
+          <End Type="LRCModel.tb_Department" Role="tb_Department" Multiplicity="1" />
+          <End Type="LRCModel.tb_MemberMaster" Role="tb_MemberMaster" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_Department">
+              <PropertyRef Name="DepartmentID" />
+            </Principal>
+            <Dependent Role="tb_MemberMaster">
+              <PropertyRef Name="DepartmentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2476,15 +2476,6 @@
                 <ScalarProperty Name="ActivityStatusID" ColumnName="ActivityStatusID" />
                 <ScalarProperty Name="ActivityID" ColumnName="ActivityID" />
                 <ScalarProperty Name="MemberActivityID" ColumnName="MemberActivityID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="tb_Department">
-            <EntityTypeMapping TypeName="LRCModel.tb_Department">
-              <MappingFragment StoreEntitySet="tb_Department">
-                <ScalarProperty Name="CollegeID" ColumnName="CollegeID" />
-                <ScalarProperty Name="DepartmentName" ColumnName="DepartmentName" />
-                <ScalarProperty Name="DepartmentID" ColumnName="DepartmentID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2835,6 +2826,15 @@
                 <ScalarProperty Name="EmployerIDNumber" ColumnName="EmployerIDNumber" />
                 <ScalarProperty Name="EmployerName" ColumnName="EmployerName" />
                 <ScalarProperty Name="EmployerID" ColumnName="EmployerID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tb_Department">
+            <EntityTypeMapping TypeName="LRCModel.tb_Department">
+              <MappingFragment StoreEntitySet="tb_Department">
+                <ScalarProperty Name="CollegeID" ColumnName="CollegeID" />
+                <ScalarProperty Name="DepartmentName" ColumnName="DepartmentName" />
+                <ScalarProperty Name="DepartmentID" ColumnName="DepartmentID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

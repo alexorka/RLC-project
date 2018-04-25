@@ -19,7 +19,6 @@
         <EntityTypeShape EntityType="LRCModel.tb_MemberActivity" Width="1.5" PointX="11.75" PointY="22.75" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberActivity_tb_Activity1" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberActivity_tb_ActivityStatus" />
-        <EntityTypeShape EntityType="LRCModel.tb_Department" Width="1.5" PointX="3.25" PointY="16.125" />
         <EntityTypeShape EntityType="LRCModel.tb_Division" Width="1.5" PointX="5.75" PointY="12.875" />
         <EntityTypeShape EntityType="LRCModel.tb_Categories" Width="1.5" PointX="5.25" PointY="26.625" />
         <EntityTypeShape EntityType="LRCModel.tb_SemesterName" Width="1.5" PointX="7.375" PointY="10.625" />
@@ -29,12 +28,10 @@
         <EntityTypeShape EntityType="LRCModel.tb_College" Width="1.5" PointX="5.375" PointY="15" />
         <AssociationConnector Association="LRCModel.FK_tb_Campus_tb_College" />
         <AssociationConnector Association="LRCModel.FK_tb_College_tb_District" />
-        <AssociationConnector Association="LRCModel.FK_tb_Department_tb_College" />
         <EntityTypeShape EntityType="LRCModel.tb_MemberMaster" Width="1.5" PointX="7.625" PointY="15.875" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberMaster_tb_Area" />
         <AssociationConnector Association="LRCModel.FK_tb_Attribute_tb_MemberMaster" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberMaster_tb_Categories" />
-        <AssociationConnector Association="LRCModel.FK_tb_MemberMaster_tb_Department" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberMaster_tb_Division" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberMaster_tb_Dues" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberMaster_tb_Gender" />
@@ -88,6 +85,9 @@
         <AssociationConnector Association="LRCModel.FK_tb_SemesterTaught_tb_Building" />
         <EntityTypeShape EntityType="LRCModel.tb_Employers" Width="1.5" PointX="14.125" PointY="16.5" />
         <AssociationConnector Association="LRCModel.FK_tb_AlsoWorksAt_tb_Employers" />
+        <EntityTypeShape EntityType="LRCModel.tb_Department" Width="1.5" PointX="3.5" PointY="16.125" />
+        <AssociationConnector Association="LRCModel.FK_tb_Department_tb_College" />
+        <AssociationConnector Association="LRCModel.FK_tb_MemberMaster_tb_Department" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

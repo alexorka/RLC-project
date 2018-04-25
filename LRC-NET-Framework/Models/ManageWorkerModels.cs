@@ -169,6 +169,12 @@ namespace LRC_NET_Framework.Models
         public IEnumerable<tb_CopeForms> _CopeForms { get; set; }
     }
 
+    public partial class AddDepartment
+    {
+        public string _DepartmentName { get; set; }
+        public IEnumerable<tb_Department> _Departments { get; set; }
+    }
+
     public partial class AlsoWorksAt
     {
         public int _MemberID { get; set; }

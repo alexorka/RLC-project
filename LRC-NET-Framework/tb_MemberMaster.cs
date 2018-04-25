@@ -71,7 +71,6 @@ namespace LRC_NET_Framework
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_Attribute> tb_Attribute { get; set; }
         public virtual tb_Categories tb_Categories { get; set; }
-        public virtual tb_Department tb_Department { get; set; }
         public virtual tb_Division tb_Division { get; set; }
         public virtual tb_Dues tb_Dues { get; set; }
         public virtual tb_Gender tb_Gender { get; set; }
@@ -99,5 +98,6 @@ namespace LRC_NET_Framework
         public virtual ICollection<tb_MemberRoles> tb_MemberRoles { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_AlsoWorksAt> tb_AlsoWorksAt { get; set; }
+        public virtual tb_Department tb_Department { get; set; }
     }
 }

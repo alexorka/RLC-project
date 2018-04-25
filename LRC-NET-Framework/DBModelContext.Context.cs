@@ -37,7 +37,6 @@ namespace LRC_NET_Framework
         public virtual DbSet<tb_JobStatus> tb_JobStatus { get; set; }
         public virtual DbSet<tb_District> tb_District { get; set; }
         public virtual DbSet<tb_MemberActivity> tb_MemberActivity { get; set; }
-        public virtual DbSet<tb_Department> tb_Department { get; set; }
         public virtual DbSet<tb_Division> tb_Division { get; set; }
         public virtual DbSet<tb_Categories> tb_Categories { get; set; }
         public virtual DbSet<tb_SemesterName> tb_SemesterName { get; set; }
@@ -66,5 +65,6 @@ namespace LRC_NET_Framework
         public virtual DbSet<tb_AlsoWorksAt> tb_AlsoWorksAt { get; set; }
         public virtual DbSet<tb_Building> tb_Building { get; set; }
         public virtual DbSet<tb_Employers> tb_Employers { get; set; }
+        public virtual DbSet<tb_Department> tb_Department { get; set; }
     }
 }

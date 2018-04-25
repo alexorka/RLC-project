@@ -81,7 +81,7 @@
 
         <div class="form-group">
             <div class="col-md-offset-3 col-md-9">
-                <input type="submit" value="Submit" class="btn btn-default" />
+                <input type="submit" value="Submit" class="btn btn-primary" />
             </div>
         </div>
 
@@ -128,9 +128,9 @@
     </div>
 }
 
-<div class="col-md-offset-1 col-md-11">
-    @Html.ActionLink("Back to List", "Details", "Home", new { id = Model._MemberID }, new { @class = "text -info" })
-</div>
+    <div class="col-md-offset-1 col-md-11">
+        <a href="@Url.Action("Details", "Home", new { id = Model._MemberID })" class="btn btn-info">&nbsp;&nbsp;Back<span class="glyphicon glyphicon-arrow-left pull-left" aria-hidden="true"></span></a>
+    </div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

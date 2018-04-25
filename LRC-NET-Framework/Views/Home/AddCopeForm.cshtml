@@ -37,10 +37,7 @@
             <div class="form-group">
                 <div class="col-md-11 col-md-offset-1" id="CollectedBy" style="padding-bottom:15px;">
                     @Html.Label("CollectedBy", "Collected By", htmlAttributes: new { @class = "control-label" })
-                    @Html.TextBoxFor(model => model._CollectedBy, "", new
-                    {
-                        @class = "form-control"@*, disabled = "disabled"*@, style = "width: 150px;"
-                    })
+                    @Html.TextBoxFor(model => model._CollectedBy, "", new { @class = "form-control"@*, disabled = "disabled"*@, style = "width: 150px;" })
                     <small><i style="color:gray;">The person who actually took the note. The system is keeping track of the person entering the note (you)</i></small>
                     @Html.ValidationMessageFor(model => model._CollectedBy, "", new { @class = "text-danger" })
                 </div>
