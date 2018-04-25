@@ -33,14 +33,26 @@
                 {
                 <tr style="background-color:gainsboro;">
                     <td>
+                        <div class="row h6">
+                            <div class="col-md-3">
+                                <div class="row">
+                                    <div class="col-md-5" style="font-weight:bold; padding-bottom:5px; padding-top:5px; text-align:right; background:lavender;">
+                                        Faculty&nbsp;Member
+                                    </div>
+                                    <div class="col-md-7 text-muted" style="font-weight:bold; padding-bottom:5px; padding-top:5px; background:lavender">
+                                        @Html.ActionLink(item.LastName + ", " + item.FirstName, "Edit", "Home", new { id = item.MemberID, CollegeID = ViewBag.CollegeID }, new { @class = "text -info" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="row ex1 h6">
                             <div class="col-md-3">
                                 <div class="row" style="padding-bottom:5px">
                                     <div class="col-md-5" style="font-weight:bold; text-align:right">
-                                        Faculty Member
+                                        Home School
                                     </div>
-                                    <div class="col-md-7 text-muted" style="font-weight:bold;">
-                                        @Html.ActionLink(item.LastName + ", " + item.FirstName, "Edit", "Home", new { id = item.MemberID, CollegeID = ViewBag.CollegeID }, new { @class = "text -info" })
+                                    <div class="col-md-7 text-muted">
+                                        @Html.DisplayFor(modelItem => item.tb_Department.tb_College.CollegeName)
                                     </div>
                                 </div>
                                 <div class="row" style="padding-bottom:5px">
@@ -82,9 +94,9 @@
                                     </div>
                                     <div class="col-md-7 text-muted">
                                         @if (item.HireDate != null)
-                                        {
-                                            @Convert.ToDateTime(item.HireDate).ToString("MM/dd/yyyy")
-                                        }
+                    {
+                        @Convert.ToDateTime(item.HireDate).ToString("MM/dd/yyyy")
+}
                                     </div>
                                 </div>
                                 <div class="row" style="padding-bottom:5px">
@@ -93,13 +105,13 @@
                                     </div>
                                     <div class="col-md-7 text-muted">
                                         @if (item.tb_SemesterTaught.Where(t => t.MemberID == item.MemberID).Count() > 0)
-                                        {
-                                            <span>Active</span>
-                                        }
-                                        else
-                                        {
-                                            <span>Inactive</span>
-                                        }
+                    {
+                        <span>Active</span>
+}
+else
+{
+                    <span>Inactive</span>
+}
                                     </div>
                                 </div>
                             </div>
@@ -118,13 +130,13 @@
                                     </div>
                                     <div class="col-md-5 text-muted">
                                         @if (item.LatestUnionAssessmentID != null)
-                                        {
-                                            @Html.DisplayFor(modelItem => item.tb_LatestUnionAssessment.LatestUnionAssessmentDesc)
-                                        }
-                                        else
-                                        {
-                                            <span>0</span>
-                                        }
+                    {
+                        @Html.DisplayFor(modelItem => item.tb_LatestUnionAssessment.LatestUnionAssessmentDesc)
+}
+else
+{
+                    <span>0</span>
+}
                                     </div>
                                 </div>
                                 <div class="row" style="padding-bottom:5px">
@@ -138,10 +150,10 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="row" style="padding-bottom:5px">
-                                    <div class="col-md-5" style="font-weight:bold; text-align:right">
+                                    <div class="col-md-5" style="font-weight:bold; text-align:right;">
                                         Phone
                                     </div>
-                                    <div class="col-md-7 text-muted"style="font-weight:bold;">
+                                    <div class="col-md-7 text-muted" style="font-weight:bold;">
                                         @if (item.tb_MemberPhoneNumbers.Count > 0)
                                         {
                                             @Html.ActionLink(item.tb_MemberPhoneNumbers.FirstOrDefault().PhoneNumber, "ManageContactInfo", "Home", new { id = item.MemberID, CollegeID = ViewBag.CollegeID }, new { @class = "text -info" })
@@ -175,6 +187,7 @@
                                     <th style="background-color:gainsboro;">
                                         <i>School</i>
                                     </th>
+                                    <th style="background-color:gainsboro;"></th>
                                     <th style="background-color:gainsboro;">
                                         <i>Campus</i>
                                     </th>
@@ -188,10 +201,10 @@
                                         <i>Reason</i>
                                     </th>
                                     <th style="background-color:gainsboro;">
-                                        <i>Note</i>
+                                        <i>Class</i>
                                     </th>
                                     <th style="background-color:gainsboro;">
-                                        <i>Class</i>
+                                        <i>Days</i>
                                     </th>
                                     <th style="background-color:gainsboro;">
                                         <i>Start</i>
@@ -200,14 +213,18 @@
                                         <i>End</i>
                                     </th>
                                     <th style="background-color:gainsboro;">
-                                        <i>Days</i>
+                                        <i>Note</i>
                                     </th>
+                                    <th style="background-color:gainsboro;">Schedule Status</th>
                                 </tr>
                                 @foreach (var record in item.tb_SemesterTaught)
                                 {
                                 <tr>
                                     <td>
                                         @Html.DisplayFor(modelItem => record.tb_Building.tb_Campus.tb_College.CollegeName)
+                                    </td>
+                                    <td>
+                                        <a href="#" class="btn btn-xs"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>
                                     </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => record.tb_Building.tb_Campus.CampusName)
@@ -219,9 +236,11 @@
                                         @Html.DisplayFor(modelItem => record.Room)
                                     </td>
                                     <td>???</td>
-                                    <td>???</td>
                                     <td>
                                         @Html.DisplayFor(modelItem => record.Class)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => record.tb_WeekDay.WeekDayName)
                                     </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => record.ClassStart)
@@ -229,8 +248,17 @@
                                     <td>
                                         @Html.DisplayFor(modelItem => record.ClassEnd)
                                     </td>
+
+                                    <td>???</td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => record.tb_WeekDay.WeekDayName)
+                                        @if (record != null)
+                                        {
+                                            <span>Active</span>
+                                        }
+                                        else
+                                        {
+                                            <span>Inactive</span>
+                                        }                                    
                                     </td>
                                 </tr>
                                 }

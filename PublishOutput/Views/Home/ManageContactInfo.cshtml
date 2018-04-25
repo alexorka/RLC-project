@@ -5,182 +5,229 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="font-weight-bold" style="background-color: #357ebd; color:gainsboro; padding-top:10px; padding-bottom:5px; padding-left: 30px;"><h4>Manage Contact Info</h4></div>
+<div class="font-weight-bold" style="background-color: #357ebd; border-bottom-left-radius:10px; border-bottom-right-radius:10px; color:gainsboro; padding-top:5px; padding-bottom:5px; padding-left:30px;"><h4>Manage Contact Info</h4></div>
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
 
-<div class="form-horizontal">
-
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    @Html.HiddenFor(model => model._MemberID)
-    <div class="col-md-11 col-md-offset-1"><h4>Add Phone</h4></div>
-    <hr />
-    <fieldset>
-
-        <div class="form-group">
-            <div class="col-md-11 col-md-offset-1" id="PhoneNumber">
-                @Html.Label("PhoneNumber", "Phone Number", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
-                @Html.EditorFor(model => model._PhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model._PhoneNumber, "", new { @class = "text-danger" })
+    <div class="form-horizontal" style="padding-top:5px;">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model._MemberID)
+        <div style="font-size:smaller; padding-bottom:5px; border:solid; border-radius:5px; border-width:1px; border-color:gainsboro">
+            <div class="col-md-11 h4">
+                <div class="col-md-5" style="background-color:gainsboro;padding-top:5px;  padding-bottom:5px; padding-left:30px; border-bottom-left-radius:10px; border-bottom-right-radius:10px;">Add Phone</div>
             </div>
-        </div>
+            <fieldset>
 
-        <div class="form-group">
-            <div class="col-md-11 col-md-offset-1" id="IsPhonePrimary">
-                @Html.Label("IsPhonePrimary", "Is Primary", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
-                <div class="checkbox">
-                    @Html.EditorFor(model => model._IsPhonePrimary, new { htmlAttributes = new { @class = "form-control", style = "width: 30px;" } })
-                    @Html.ValidationMessageFor(model => model._IsPhonePrimary, "", new { @class = "text-danger" })
+                <div class="row" style="padding-bottom:3px; padding-top:3px;">
+                    <div class="col-md-11 col-md-offset-1" id="PhoneNumber">
+                        @Html.Label("PhoneNumber", "Phone Number", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
+                        @Html.EditorFor(model => model._PhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model._PhoneNumber, "", new { @class = "text-danger" })
+                    </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="form-group">
-            <div class="col-md-11 col-md-offset-1" id="PhoneTypeID">
-                @Html.Label("PhoneTypeID", "Phone Type", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
-                @Html.DropDownListFor(model => model._PhoneTypeID, Model._PhoneTypes, new { @class = "form-control", style = "width: 250px;" })
-                @Html.ValidationMessageFor(model => model._PhoneTypeID, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                <div class="row" style="padding-bottom:3px; padding-top:3px;">
+                    <div class="col-md-4 col-md-offset-1" id="IsPhonePrimary" style="padding:0;">
+                        <div class="col-md-3" style="padding-top:20px;">
+                            @Html.Label("IsPhonePrimary", "Is Primary")<span class="text-danger">&nbsp;&nbsp;*</span>
+                        </div>
+                        <div class="checkbox col-md-1">
+                            @Html.EditorFor(model => model._IsPhonePrimary, new { htmlAttributes = new { @class = "form-control", style = "width: 25px;" } })
+                            @Html.ValidationMessageFor(model => model._IsPhonePrimary, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
 
-        <div class="form-group">
-            <div class="col-md-offset-1 col-md-11">
-                <input name="submit" type="submit" value="Submit New Phone" class="btn btn-primary" />
-            </div>
-        </div>
+                <div class="row" style="padding-bottom:3px; padding-top:3px;">
+                    <div class="col-md-11 col-md-offset-1" id="PhoneTypeID">
+                        @Html.Label("PhoneTypeID", "Phone Type", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
+                        @Html.DropDownListFor(model => model._PhoneTypeID, Model._PhoneTypes, new { @class = "form-control", style = "width: 250px;" })
+                        @Html.ValidationMessageFor(model => model._PhoneTypeID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
 
-        <div class="form-group">
-            <div class="col-md-11 col-md-offset-1" id="Phones">
-                @Html.Label("Phones", "Phones", htmlAttributes: new { @class = "control-label" })
-                <table class="table">
-                    <tr class="text-info">
-                        <th>
-                            Phone Number
-                        </th>
-                        <th>
-                            Status
-                        </th>
-                        <th>
-                            Type
-                        </th>
-                    </tr>
-                    @foreach (var item in Model._MemberPhoneNumbers as List<tb_MemberPhoneNumbers>)
+                <div class="row" style="padding-bottom:3px; padding-top:7px;">
+                    <div class="col-md-offset-1 col-md-11">
+                        <input name="submit" type="submit" value="Submit New Phone" class="btn btn-primary" />
+                    </div>
+                </div>
+
+                <div class="row" style="padding-bottom:3px; padding-top:3px;">
+                    <div class="col-md-7 col-md-offset-1" id="Phones" style="font-size:smaller; background-color:lavender; border:solid; border-radius:5px; border-width:1px; border-color:gainsboro">
+                        <div style="background-color:gainsboro; padding-bottom:5px; padding-left:30px; border-radius:10px;">@Html.Label("Phones", "Phones", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })</div>
+                        <table class="table">
+                            <tr class="text-info">
+                                <th>
+                                    Phone Number
+                                </th>
+                                <th>
+                                    Status
+                                </th>
+                                <th>
+                                    Created By
+                                </th>
+                                <th>
+                                    Modified Date
+                                </th>
+                                <th>
+                                    Type
+                                </th>
+                            </tr>
+                            @foreach (var item in Model._MemberPhoneNumbers as List<tb_MemberPhoneNumbers>)
+                            {
+                                <tr>
+                                    <td>
+                                        @if (item.IsPrimary)
+                                        {
+                                            <b>@Html.DisplayFor(modelItem => item.PhoneNumber)</b>
+                                        }
+                                        else
+                                        {
+                                            @Html.DisplayFor(modelItem => item.PhoneNumber)
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (item.IsPrimary)
+                                        {
+                                            <b>Primary</b>
+                                        }
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.CreatedBy) (to be done)
+                                    </td>
+                                    <td>
+                                        @if (item.ModifiedDateTime != null)
+                                        {
+                                            @Convert.ToDateTime(item.ModifiedDateTime).ToString("MM/dd/yyyy")
+                                        }
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.tb_PhoneType.PhoneTypeName)
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                </div>
+
+            </fieldset>
+        </div>
+        <br />
+        <div style="font-size:smaller; padding-bottom:5px; border:solid; border-radius:5px; border-width:1px; border-color:gainsboro">
+            <div class="col-md-11 h4">
+                <div class="col-md-5" style="background-color:gainsboro;padding-top:5px;  padding-bottom:5px; padding-left:30px; border-bottom-left-radius:10px; border-bottom-right-radius:10px;">Add Address</div>
+            </div>
+            <fieldset>
+
+                <div class="row" style="padding-bottom:3px; padding-top:3px;">
+                    <div class="col-md-11 col-md-offset-1" id="Address" style="padding-bottom:15px;">
+                        @Html.Label("Address", "Address", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
+                        @Html.EditorFor(model => model._HomeStreet1, new { htmlAttributes = new { @class = "form-control", style = "width: 300px;" } })
+                        <small>@Html.Label("Street Address", htmlAttributes: new { @class = "control-label" })</small>
+                        @Html.ValidationMessageFor(model => model._HomeStreet1, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-11 col-md-offset-1" style="padding-bottom:15px;">
+                        @Html.EditorFor(model => model._HomeStreet2, new { htmlAttributes = new { @class = "form-control", style = "width: 300px;" } })
+                        <small>@Html.Label("Street Address 2", htmlAttributes: new { @class = "control-label" })</small>
+                        @Html.ValidationMessageFor(model => model._HomeStreet2, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-4 col-md-offset-1" style="padding:0px;">
+                        <div class="col-md-6" style="padding-bottom:15px;">
+                            @Html.DropDownListFor(model => model._CityID, Model._CityStates, new { @class = "form-control", style = "width: 200px;" })
+                            <small>@Html.Label("City", htmlAttributes: new { @class = "control-label" })</small>
+                            @Html.ValidationMessageFor(model => model._PhoneTypeID, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-2">
+                            @Html.EditorFor(model => model._StateCode, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
+                            <small>@Html.Label("State", htmlAttributes: new { @class = "control-label" })</small>
+                            @Html.ValidationMessageFor(model => model._StateCode, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-4">
+                            @Html.EditorFor(model => model._ZipCode, new { htmlAttributes = new { @class = "form-control" } })
+                            <small>@Html.Label("ZIP", htmlAttributes: new { @class = "control-label" })</small>
+                            @Html.ValidationMessageFor(model => model._ZipCode, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" style="padding-bottom:3px; padding-top:3px;">
+                    <div class="col-md-11 col-md-offset-1" id="Added">
+                        @Html.Label("Added", "Added", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
+                        @Html.EditorFor(model => model._CreatedAdressDateTime, new { htmlAttributes = new { @class = "form-control", style = "width: 150px;" } })
+                        @Html.ValidationMessageFor(model => model._CreatedAdressDateTime, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-md-offset-1" id="IsAdressPrimary" style="padding:0;">
+                    <div class="col-md-3" style="padding-top:20px; padding-left:0;">
+                        @Html.Label("IsAdressPrimary", "Is Primary")<span class="text-danger">&nbsp;&nbsp;*</span>
+                    </div>
+                    <div class="checkbox col-md-1">
+                        @Html.EditorFor(model => model._IsAdressPrimary, new { htmlAttributes = new { @class = "form-control", style = "width: 25px;" } })
+                        @Html.ValidationMessageFor(model => model._IsAdressPrimary, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="col-md-11 col-md-offset-1" id="AddressSources" style="padding-bottom:15px; padding-left:0;">
+                    @Html.Label("AddressSources", "Source", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
+                    @Html.DropDownListFor(model => model._SourceID, Model._AddressSources, new { @class = "form-control", style = "width: 200px;" })
+                    @Html.ValidationMessageFor(model => model._SourceID, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="row" style="padding-bottom:3px; padding-top:3px;">
+                    <div class="col-md-offset-1 col-md-11">
+                        <input name="submit" type="submit" value="Submit New Address" class="btn btn-primary" />
+                    </div>
+                </div>
+
+                <div class="row" style="padding-bottom:3px; padding-top:3px;">
+                    <div class="col-md-7 col-md-offset-1" id="Addresses" style="font-size:smaller; background-color:lavender; border:solid; border-radius:5px; border-width:1px; border-color:gainsboro">
+                        <div style="background-color:gainsboro; padding-bottom:5px; padding-left:30px; border-radius:10px;">@Html.Label("Addresses", "Addresses", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })</div>
+                        <table class="table">
+                            <tr class="text-info">
+                                <th>
+                                    Address
+                                </th>
+                                <th>
+                                    Status
+                                </th>
+                                <th>
+                                    Source
+                                </th>
+                                <th>
+                                    Added
+                                </th>
+                            </tr>
+                            @foreach (var item in Model._MemberAddresses as List<tb_MemberAddress>)
                     {
                         <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.PhoneNumber)
-                            </td>
                             <td>
                                 @if (item.IsPrimary)
-                                {
-                                    <span>Primary</span>
-                                }
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.tb_PhoneType.PhoneTypeName)
-                            </td>
-                        </tr>
-                    }
-                </table>
-            </div>
-        </div>
-
-    </fieldset>
-
-    <div class="col-md-11 col-md-offset-1"><h4>Add Address</h4></div>
-    <hr />
-    <fieldset>
-
-        <div class="form-group">
-            <div class="col-md-11 col-md-offset-1" id="Address" style="padding-bottom:15px;">
-                @Html.Label("Address", "Address", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
-                @Html.EditorFor(model => model._HomeStreet1, new { htmlAttributes = new { @class = "form-control", style = "width: 300px;" } })
-                <small>@Html.Label("Street Address", htmlAttributes: new { @class = "control-label" })</small>
-                @Html.ValidationMessageFor(model => model._HomeStreet1, "", new { @class = "text-danger" })
-            </div>
-            <div class="col-md-11 col-md-offset-1" style="padding-bottom:15px;">
-                @Html.EditorFor(model => model._HomeStreet2, new { htmlAttributes = new { @class = "form-control", style = "width: 300px;" } })
-                <small>@Html.Label("Street Address 2", htmlAttributes: new { @class = "control-label" })</small>
-                @Html.ValidationMessageFor(model => model._HomeStreet2, "", new { @class = "text-danger" })
-            </div>
-            <div class="col-md-4 col-md-offset-1" style="padding:0px;">
-                <div class="col-md-6" style="padding-bottom:15px;">
-                    @Html.DropDownListFor(model => model._CityID, Model._CityStates, new { @class = "form-control", style = "width: 200px;" })
-                    <small>@Html.Label("City", htmlAttributes: new { @class = "control-label" })</small>
-                    @Html.ValidationMessageFor(model => model._PhoneTypeID, "", new { @class = "text-danger" })
-                </div>
-                <div class="col-md-2">
-                    @Html.EditorFor(model => model._StateCode, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
-                    <small>@Html.Label("State", htmlAttributes: new { @class = "control-label" })</small>
-                    @Html.ValidationMessageFor(model => model._StateCode, "", new { @class = "text-danger" })
-                </div>
-                <div class="col-md-4">
-                    @Html.EditorFor(model => model._ZipCode, new { htmlAttributes = new { @class = "form-control" } })
-                    <small>@Html.Label("ZIP", htmlAttributes: new { @class = "control-label" })</small>
-                    @Html.ValidationMessageFor(model => model._ZipCode, "", new { @class = "text-danger" })
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-11 col-md-offset-1" id="Added">
-                @Html.Label("Added", "Added", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
-                @Html.EditorFor(model => model._CreatedAdressDateTime, new { htmlAttributes = new { @class = "form-control", style = "width: 150px;" } })
-                @Html.ValidationMessageFor(model => model._CreatedAdressDateTime, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="col-md-11 col-md-offset-1" id="IsAdressPrimary" style="padding-bottom:15px;">
-            @Html.Label("IsAdressPrimary", "Is Primary", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
-            @Html.EditorFor(model => model._IsAdressPrimary, new { htmlAttributes = new { @class = "form-control", style = "width: 30px;" } })
-            @Html.ValidationMessageFor(model => model._IsAdressPrimary, "", new { @class = "text-danger" })
-        </div>
-
-        <div class="col-md-11 col-md-offset-1" id="AddressSources" style="padding-bottom:15px;">
-            @Html.Label("AddressSources", "Source", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
-            @Html.DropDownListFor(model => model._SourceID, Model._AddressSources, new { @class = "form-control", style = "width: 200px;" })
-            @Html.ValidationMessageFor(model => model._SourceID, "", new { @class = "text-danger" })
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-1 col-md-11">
-                <input name="submit" type="submit" value="Submit New Address" class="btn btn-primary" />
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-11 col-md-offset-1" id="Addresses">
-                @Html.Label("Addresses", "Addresses", htmlAttributes: new { @class = "control-label" })
-                <table class="table">
-                    <tr class="text-info">
-                        <th>
-                            Addresses
-                        </th>
-                        <th>
-                            Status
-                        </th>
-                        <th>
-                            Source
-                        </th>
-                        <th>
-                            Added
-                        </th>
-                    </tr>
-                    @foreach (var item in Model._MemberAddresses as List<tb_MemberAddress>)
-                    {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.HomeStreet1) @Html.DisplayFor(modelItem => item.tb_CityState.CityName),
+                        {
+                            <b>
+                                @Html.DisplayFor(modelItem => item.HomeStreet1)
+                                @Html.DisplayFor(modelItem => item.tb_CityState.CityName),
                                 @Html.DisplayFor(modelItem => item.tb_CityState.tb_States.StateCode)
                                 @Html.DisplayFor(modelItem => item.ZipCode)
+                            </b>
+                }
+                else
+                {
+                    <span>
+                        @Html.DisplayFor(modelItem => item.HomeStreet1)
+                        @Html.DisplayFor(modelItem => item.tb_CityState.CityName),
+                        @Html.DisplayFor(modelItem => item.tb_CityState.tb_States.StateCode)
+                        @Html.DisplayFor(modelItem => item.ZipCode)
+                    </span>
+        }
                             </td>
                             <td>
                                 @if (item.IsPrimary)
-                                {
-                                    <span>Primary</span>
-                                }
+                        {
+                            <b>Primary</b>
+                }
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.tb_AddressSource.SourceName)
@@ -189,99 +236,112 @@
                                 @Html.DisplayFor(model => model._MemberAddresses.FirstOrDefault().CreatedDateTime, "{0:yyyy-MM-dd}", new { @class = "form-control datecontrol", type = "date", style = "width: 150px;" })
                             </td>
                         </tr>
-                    }
-                </table>
-            </div>
-        </div>
-
-
-    </fieldset>
-
-    <div class="col-md-11 col-md-offset-1"><h4>Add Email</h4></div>
-    <hr />
-    <fieldset>
-
-        <div class="form-group">
-            <div class="col-md-11 col-md-offset-1" id="EmailAddress">
-                @Html.Label("EmailAddress", "Email Address", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
-                @Html.EditorFor(model => model._EmailAddress, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model._EmailAddress, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-11 col-md-offset-1" id="EmailTypeID">
-                @Html.Label("EmailTypeID", "Type", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
-                @Html.DropDownListFor(model => model._EmailTypeID, Model._EmailTypes, new { @class = "form-control", style = "width: 250px;" })
-                @Html.ValidationMessageFor(model => model._EmailTypeID, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-11 col-md-offset-1" id="IsEmailPrimary">
-                @Html.Label("IsEmailPrimary", "Is Primary", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
-                <div class="checkbox">
-                    @Html.EditorFor(model => model._IsEmailPrimary, new { htmlAttributes = new { @class = "form-control", style = "width: 30px;" } })
-                    @Html.ValidationMessageFor(model => model._IsEmailPrimary, "", new { @class = "text-danger" })
+            }
+                        </table>
+                    </div>
                 </div>
-            </div>
+
+
+            </fieldset>
         </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-1 col-md-11">
-                <input name="submit" type="submit" value="Submit New Email" class="btn btn-primary" />
+        <br />
+        <div style="font-size:smaller; padding-bottom:5px; border:solid; border-radius:5px; border-width:1px; border-color:gainsboro">
+            <div class="col-md-11 h4">
+                <div class="col-md-5" style="background-color:gainsboro;padding-top:5px;  padding-bottom:5px; padding-left:30px; border-bottom-left-radius:10px; border-bottom-right-radius:10px;">Add Email</div>
             </div>
-        </div>
+            <fieldset>
 
-        <div class="form-group">
-            <div class="col-md-11 col-md-offset-1" id="Phones">
-                @Html.Label("Phones", "Phones", htmlAttributes: new { @class = "control-label" })
-                <table class="table">
-                    <tr class="text-info">
-                        <th>
-                            Email Address
-                        </th>
-                        <th>
-                            Type
-                        </th>
-                        <th>
-                            Status
-                        </th>
+                <div class="row" style="padding-bottom:3px; padding-top:3px;">
+                    <div class="col-md-11 col-md-offset-1" id="EmailAddress">
+                        @Html.Label("EmailAddress", "Email Address", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
+                        @Html.EditorFor(model => model._EmailAddress, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model._EmailAddress, "", new { @class = "text-danger" })
+                    </div>
+                </div>
 
-                    </tr>
-                    @foreach (var item in Model._MemberEmails as List<tb_MemberEmail>)
+                <div class="row" style="padding-bottom:3px; padding-top:3px; padding-left:0;">
+                    <div class="col-md-11 col-md-offset-1" id="EmailTypeID">
+                        @Html.Label("EmailTypeID", "Type", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
+                        @Html.DropDownListFor(model => model._EmailTypeID, Model._EmailTypes, new { @class = "form-control", style = "width: 250px;" })
+                        @Html.ValidationMessageFor(model => model._EmailTypeID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="row" style="padding-bottom:3px; padding-top:3px;">
+                    <div class="col-md-4 col-md-offset-1" id="IsEmailPrimary">
+                        <div class="col-md-3" style="padding-top:20px; padding-left:0;">
+                            @Html.Label("IsEmailPrimary", "Is Primary")<span class="text-danger">&nbsp;&nbsp;*</span>
+                        </div>
+                        <div class="checkbox col-md-1">
+                            @Html.EditorFor(model => model._IsEmailPrimary, new { htmlAttributes = new { @class = "form-control", style = "width: 25px;" } })
+                            @Html.ValidationMessageFor(model => model._IsEmailPrimary, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" style="padding-bottom:3px; padding-top:3px;">
+                    <div class="col-md-offset-1 col-md-11">
+                        <input name="submit" type="submit" value="Submit New Email" class="btn btn-primary" />
+                    </div>
+                </div>
+
+                <div class="row" style="padding-bottom:3px; padding-top:3px;">
+                    <div class="col-md-7 col-md-offset-1" id="Addresses" style="font-size:smaller; background-color:lavender; border:solid; border-radius:5px; border-width:1px; border-color:gainsboro">
+                        <div style="background-color:gainsboro; padding-bottom:5px; padding-left:30px; border-radius:10px;">@Html.Label("Addresses", "Addresses", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })</div>
+                        <table class="table">
+                            <tr class="text-info">
+                                <th>
+                                    Email Address
+                                </th>
+                                <th>
+                                    Type
+                                </th>
+                                <th>
+                                    Status
+                                </th>
+
+                            </tr>
+                            @foreach (var item in Model._MemberEmails as List<tb_MemberEmail>)
                     {
                         <tr>
                             <td>
-                                @Html.DisplayFor(modelItem => item.EmailAddress)
+                                @if (item.IsPrimary)
+                        {
+                            <b>@Html.DisplayFor(modelItem => item.EmailAddress)</b>
+                }
+                else
+                {
+                    @Html.DisplayFor(modelItem => item.EmailAddress)
+        }
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.tb_EmailType.EmailTypeName)
                             </td>
                             <td>
                                 @if (item.IsPrimary)
-                                {
-                                    <span>Primary</span>
-                                }
+                        {
+                            <b>Primary</b>
+                }
                             </td>
                         </tr>
-                    }
-                </table>
-            </div>
+            }
+                        </table>
+                    </div>
+                </div>
+
+            </fieldset>
         </div>
-
-    </fieldset>
-</div>
+    </div>
 }
-
+<br />
 <div class="col-md-11 col-md-offset-1">
     @if (ViewBag.CollegeID != null && (int)ViewBag.CollegeID > 0)
     {
-        <a href="@Url.Action("MembersBySchool", "Home", new { CollegeID = ViewBag.CollegeID })" class="btn btn-info">&nbsp;&nbsp;Back&nbsp;to&nbsp;List<span class="glyphicon glyphicon-arrow-left pull-left" aria-hidden="true"></span></a>
+        <a href="@Url.Action("MembersBySchool", "Home", new { CollegeID = ViewBag.CollegeID })" class="btn btn-info">&nbsp;&nbsp;Back<span class="glyphicon glyphicon-arrow-left pull-left" aria-hidden="true"></span></a>
     }
     else
     {
-        <a href="@Url.Action("Details", "Home", new { id = Model._MemberID })" class="btn btn-info">&nbsp;&nbsp;Back&nbsp;to&nbsp;List<span class="glyphicon glyphicon-arrow-left pull-left" aria-hidden="true"></span></a>
+        <a href="@Url.Action("Details", "Home", new { id = Model._MemberID })" class="btn btn-info">&nbsp;&nbsp;Back<span class="glyphicon glyphicon-arrow-left pull-left" aria-hidden="true"></span></a>
     }
 </div>
 

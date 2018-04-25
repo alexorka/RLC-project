@@ -1,0 +1,90 @@
+﻿@model PagedList.IPagedList<LRC_NET_Framework.tb_Department>
+@using PagedList.Mvc
+
+@{
+    ViewBag.Title = "Manage Notes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="font-weight-bold" style="background-color: #357ebd; color:gainsboro; padding-top:10px; padding-bottom:5px; padding-left: 30px;"><h4>Manage Departments</h4></div>
+
+
+    @Html.AntiForgeryToken()
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @*@Html.HiddenFor(model => model._MemberID)*@
+    @*@Html.Hidden("hiddenMemberID", (int)ViewBag.MemberID)*@
+    
+    <div class="col-md-11 col-md-offset-1"><h4><b>Add Department</b></h4></div>
+    <hr />
+    <div class="form-horizontal">
+        @using (Html.BeginForm("AddDepartment", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+        <div class="form-group">
+            <div class="col-md-11 col-md-offset-1" id="DepartmentName">
+                @Html.Label("DepartmentName", "Department Name", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
+                @Html.TextBox("DepartmentName", null, new { @class = "form-control", placeholder = " Add Department " })
+                <span class="text-danger">@ViewBag.Duplicate</span>
+                @Html.ValidationMessageFor(model => model.FirstOrDefault().DepartmentName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-1 col-md-11">
+                <input type="submit" value="Submit" class="btn btn-primary" />
+            </div>
+        </div>
+        }
+
+        @using (Html.BeginForm("AddDepartment", "Home", FormMethod.Get, new { enctype = "multipart/form-data" }))
+        {
+        <div class="input-group col-md-offset-1 col-md-11" style="padding-bottom:5px; width:300px;">
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="submit">
+                    <i class="glyphicon glyphicon-search"></i>
+                </button>
+            </span>
+            @Html.TextBox("SearchString", null, new { @class = "form-control", placeholder = "Search" })
+        </div>
+        }
+
+        <div class="form-group" style="font-size:smaller">
+
+            <div class="col-md-11 col-md-offset-1" style="padding-bottom:5px;">
+                Showing @Model.FirstItemOnPage - @Model.Count()&nbsp;&nbsp;of&nbsp;&nbsp;@ViewData["MemberQty"].
+                Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+            </div>
+
+            <div class="col-md-11 col-md-offset-1">
+                <table class="table-condensed" style="width:300px">
+                    <tr class="text-info">
+                        <th style="background-color:gainsboro;">
+                            @Html.ActionLink("Department Name", "AddDepartment", new { sortOrder = ViewBag.NameSortParm, searchString = ViewBag.SearchString })
+                        </th>
+                    </tr>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td style="padding-bottom:1px; padding-top:1px;">
+                                @Html.DisplayFor(modelItem => item.DepartmentName, new { @class = "form-control" })
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+
+            <div class="col-md-11 col-md-offset-1" style="padding-top:2px;">
+                @Html.PagedListPager(Model, page => Url.Action("AddDepartment", new { page, sortOrder = ViewBag.NameSortParm, searchString = ViewBag.SearchString }))
+            </div>
+
+            <div class="col-md-offset-1 col-md-11">
+                <a href="@Url.Action("Edit", "Home", new { id = (int)ViewBag.MemberID })" class="btn btn-info">&nbsp;&nbsp;Back<span class="glyphicon glyphicon-arrow-left pull-left" aria-hidden="true"></span></a>
+            </div>
+
+        </div>
+    </div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
