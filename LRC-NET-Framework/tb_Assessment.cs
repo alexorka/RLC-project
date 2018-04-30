@@ -20,7 +20,7 @@ namespace LRC_NET_Framework
         public string AssessmentDesc { get; set; }
         public int ValueID { get; set; }
         public Nullable<System.DateTime> AssessmentDate { get; set; }
-        public Nullable<int> AssesedBy { get; set; }
+        public string AssesedBy { get; set; }
         public Nullable<int> AddedBy { get; set; }
         public Nullable<System.DateTime> AddedDateTime { get; set; }
         public Nullable<int> ModifiedBy { get; set; }

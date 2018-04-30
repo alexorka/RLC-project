@@ -17,6 +17,7 @@ namespace LRC_NET_Framework.Controllers
         private LRCEntities db = new LRCEntities();
 
         // GET: SchoolList
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult Index(string sortOrder, string searchString, int? page, int? CollegeID)
         {
             //CollegeID = 2; // test

@@ -18,6 +18,7 @@ namespace LRC_NET_Framework.Controllers
         private LRCEntities db = new LRCEntities();
 
         // GET: Notes
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult Index(string sortOrder, string searchString, int? page)
         {
             var MemberNotes = db.tb_MemberNotes.Include(t => t.tb_NoteType).Include(t => t.tb_MemberMaster);
@@ -57,6 +58,7 @@ namespace LRC_NET_Framework.Controllers
         }
 
         // GET: Notes/Details/5
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -72,6 +74,7 @@ namespace LRC_NET_Framework.Controllers
         }
 
         // GET: Notes/Create
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult AddNote(int? id)
         {
             //id = 1; // test REMOVE IT
@@ -96,6 +99,7 @@ namespace LRC_NET_Framework.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult AddNote(AddNote model)
         {
             var memberNotes = db.tb_MemberNotes.Where(s => s.Notes.ToUpper() == model._Note.ToUpper());
@@ -128,6 +132,7 @@ namespace LRC_NET_Framework.Controllers
         }
 
         // GET: Notes/Edit/5
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -149,6 +154,7 @@ namespace LRC_NET_Framework.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult Edit([Bind(Include = "MemberNotesID,MemberID,Notes,NoteTypeID,NoteDate,TakenBy,AddedBy,AddedDateTime,ModifiedBy,ModifiedDateTime")] tb_MemberNotes tb_MemberNotes)
         {
             if (ModelState.IsValid)
@@ -163,6 +169,7 @@ namespace LRC_NET_Framework.Controllers
         }
 
         // GET: Notes/Delete/5
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -180,6 +187,7 @@ namespace LRC_NET_Framework.Controllers
         // POST: Notes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult DeleteConfirmed(int id)
         {
             tb_MemberNotes tb_MemberNotes = db.tb_MemberNotes.Find(id);

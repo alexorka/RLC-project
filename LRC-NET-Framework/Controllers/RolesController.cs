@@ -19,6 +19,7 @@ namespace LRC_NET_Framework.Controllers
         private LRCEntities db = new LRCEntities();
 
         // GET: Roles
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult Index(string sortOrder, string searchString, int? page)
         {
             var Roles = db.tb_Roles.Include(t => t.tb_MemberRoles).Where(t => t.tb_MemberRoles.Count != 0);
@@ -58,6 +59,7 @@ namespace LRC_NET_Framework.Controllers
         }
 
         // GET: Roles/Details/5
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -73,6 +75,7 @@ namespace LRC_NET_Framework.Controllers
         }
 
         // GET: Roles/CreateMemberRoles
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult CreateMemberRoles()
         {
             var members = db.tb_MemberMaster;
@@ -104,6 +107,7 @@ namespace LRC_NET_Framework.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult CreateMemberRoles(AddRole model)
         {
             if (ModelState.IsValid)
@@ -124,6 +128,7 @@ namespace LRC_NET_Framework.Controllers
         }
 
         // GET: Roles/CreateRole
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult CreateRole()
         {
             return View();
@@ -134,6 +139,7 @@ namespace LRC_NET_Framework.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult CreateRole([Bind(Include = "RoleID,RoleName")] tb_Roles Roles)
         {
             if (ModelState.IsValid)
@@ -147,6 +153,7 @@ namespace LRC_NET_Framework.Controllers
         }
 
         // GET: Roles/CreateRole
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult CreateBody()
         {
             return View();
@@ -157,6 +164,7 @@ namespace LRC_NET_Framework.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult CreateBody([Bind(Include = "BodyID,BodyName")] tb_Body body)
         {
             if (ModelState.IsValid)
@@ -172,6 +180,7 @@ namespace LRC_NET_Framework.Controllers
         // GET: Roles/Edit/5
 
         // GET: Notes/Create
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult AddRole(int? id)
         {
             //id = 1; // test REMOVE IT
@@ -198,6 +207,7 @@ namespace LRC_NET_Framework.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult AddRole(AddRole model)
         {
             tb_MemberRoles memberRoles = new tb_MemberRoles()
@@ -216,6 +226,7 @@ namespace LRC_NET_Framework.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -235,6 +246,7 @@ namespace LRC_NET_Framework.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult Edit([Bind(Include = "RoleID,RoleName")] tb_Roles tb_Roles)
         {
             if (ModelState.IsValid)
@@ -247,6 +259,7 @@ namespace LRC_NET_Framework.Controllers
         }
 
         // GET: Roles/Delete/5
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -264,6 +277,7 @@ namespace LRC_NET_Framework.Controllers
         // POST: Roles/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult DeleteConfirmed(int id)
         {
             tb_Roles tb_Roles = db.tb_Roles.Find(id);

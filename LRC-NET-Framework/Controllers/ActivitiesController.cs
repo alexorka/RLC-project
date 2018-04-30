@@ -17,6 +17,7 @@ namespace LRC_NET_Framework.Controllers
         private LRCEntities db = new LRCEntities();
 
         // GET: Activities
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult Index(string sortOrder, string searchString, int? page)
         {
             var Activities = db.tb_Activity.Include(t => t.tb_MemberActivity);
@@ -70,6 +71,7 @@ namespace LRC_NET_Framework.Controllers
         //}
 
         // GET: Activities/Create
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult AddActivity(int? id)
         {
             id = 1;
@@ -93,6 +95,7 @@ namespace LRC_NET_Framework.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult AddActivity([Bind(Include = "MemberID,ActivityID,ActivityStatusID,ActivityDate,ActivityName,ActivityNote")] tb_MemberActivity tb_MemberActivity,
             string ActivityNote, DateTime? ActivityDate, FormCollection formCollection)
         {
@@ -117,6 +120,7 @@ namespace LRC_NET_Framework.Controllers
 
 
         // GET: Assessment/NotSure
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult NotSure()
         {
             return PartialView("NotSure");

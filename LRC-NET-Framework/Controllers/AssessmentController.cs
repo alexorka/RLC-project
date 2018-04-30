@@ -17,6 +17,7 @@ namespace LRC_NET_Framework.Controllers
         private LRCEntities db = new LRCEntities();
 
         // GET: Assessment
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult Index(string sortOrder, string searchString, int? page)
         {
             var Assessments = db.tb_Assessment.Include(t => t.tb_AssessmentName).Include(t => t.tb_MemberMaster).Include(t => t.tb_AssessmentValue);
@@ -71,6 +72,7 @@ namespace LRC_NET_Framework.Controllers
         //}
 
         // GET: Assessment/AddPersonAssessmentActivity
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult AddPersonAssessmentActivity(int? id, int? CollegeID)
         {
             ViewBag.CollegeID = CollegeID;
@@ -86,7 +88,7 @@ namespace LRC_NET_Framework.Controllers
             {
                 Assessment.AddedBy = 1;
                 Assessment.AddedDateTime = DateTime.Now;
-                Assessment.AssesedBy = 1;
+                //Assessment.AssesedBy = 1;
                 Assessment.AssessmentDate = DateTime.Now;
                 Assessment.AssessmentDesc = String.Empty;
                 Assessment.AssessmentNameID = 7; // Add Fee Payer Assess
@@ -107,11 +109,17 @@ namespace LRC_NET_Framework.Controllers
             SelectList Activities = new SelectList(db.tb_Activity, "ActivityID", "ActivityName");
             ViewBag.ActivityID = Activities;
 
+            SelectList AspNetUsers = new SelectList(db.AspNetUsers, "Id", "Email");
+            ViewBag.AssessedBy = AspNetUsers;
+
             List<tb_ActivityStatus> ActivityStatuses = new List<tb_ActivityStatus>();
             ActivityStatuses = db.tb_ActivityStatus.ToList();
 
             List<tb_MemberActivity> MemberActivities = new List<tb_MemberActivity>();
             MemberActivities = db.tb_MemberActivity.ToList();
+
+            //List<AspNetUsers> AspNetUsers = new List<AspNetUsers>();
+            //AspNetUsers = db.AspNetUsers.ToList();
 
             var model = new AssessActivityModels()
             {
@@ -130,7 +138,8 @@ namespace LRC_NET_Framework.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AddPersonAssessmentActivity(string submit, int AssessmentNameID, int ActivityID, int ActivityStatusID, int ValueID, AssessActivityModels AssessActivity, int? CollegeID)
+        [Authorize(Roles = "admin, organizer")]
+        public ActionResult AddPersonAssessmentActivity(int id, string submit, int AssessmentNameID, string AssessedBy, int ActivityID, int ActivityStatusID, int ValueID, AssessActivityModels AssessActivity, int? CollegeID)
         {
             ViewBag.CollegeID = CollegeID;
             if (ModelState.IsValid)
@@ -149,12 +158,11 @@ namespace LRC_NET_Framework.Controllers
                         oldAssessment.AssessmentID = Assessments.FirstOrDefault().AssessmentID;
                         oldAssessment.AddedBy = AssessActivity._Assessment.AddedBy;
                         oldAssessment.AddedDateTime = AssessActivity._Assessment.AddedDateTime;
-                        oldAssessment.AssesedBy = AssessActivity._Assessment.AssesedBy;
+                        oldAssessment.AssesedBy = AssessedBy; //from ViewBag.AssessedBy
                         oldAssessment.AssessmentDate = AssessActivity._Assessment.AssessmentDate;
                         oldAssessment.AssessmentDesc = AssessActivity._Assessment.AssessmentDesc;
                         oldAssessment.AssessmentNameID = AssessmentNameID; //from ViewBag.AssessmentNameID
                         oldAssessment.ModifiedBy = AssessActivity._Assessment.ModifiedBy;
-                        oldAssessment.AddedBy = AssessActivity._Assessment.AddedBy;
                         oldAssessment.ValueID = ValueID; // from ViewBag.ValueID
                         db.Entry(oldAssessment).State = EntityState.Modified;
                     }
@@ -165,18 +173,18 @@ namespace LRC_NET_Framework.Controllers
                 else if (submit == "Assign") //Adding Person to Activity
                 {
                     IQueryable<tb_MemberActivity> memberActivities = db.tb_MemberActivity;
-                    memberActivities = memberActivities.Where(p => p.ActivityID == ActivityID).Where(p => p.MemberID == AssessActivity._Assessment.MemberID);
+                    memberActivities = memberActivities.Where(p => p.ActivityID == ActivityID).Where(p => p.MemberID == id); //id = AssessActivity._Assessment.MemberID (changed to id)
                     if (memberActivities.Count() == 0) //Action isnt assigned for this member
                     {
                         tb_MemberActivity memberActivity = new tb_MemberActivity();
                         //tb_MemberActivity = db.tb_MemberActivity.Where(f => f.MemberID == AssessActivity._Assessment.MemberID);
-                        memberActivity.MemberID = AssessActivity._Assessment.MemberID;
+                        memberActivity.MemberID = id; //id = AssessActivity._Assessment.MemberID (changed to id);
                         memberActivity.ActivityID = ActivityID;
                         memberActivity.ActivityStatusID = ActivityStatusID;
                         if (ActivityStatusID == 1) // 1 - Committed
                             memberActivity.Membership = true;
                         else
-                            memberActivity.Membership = true;
+                            memberActivity.Membership = false;
                         memberActivity.MembershipCommitment++;
 
                         db.tb_MemberActivity.Add(memberActivity);
@@ -189,6 +197,7 @@ namespace LRC_NET_Framework.Controllers
         }
 
         // GET: Assessment/Edit/5
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult AddAssessment(int? id)
         {
             if (id == null)
@@ -211,6 +220,7 @@ namespace LRC_NET_Framework.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult AddAssessment([Bind(Include = "AssessmentID,MemberID,AssessmentNameID,AssessmentDesc,ValueID,AssessmentDate,BackgroundStory,Fears,AttitudeTowardUnion,IDdLeaders,FollowUp")] tb_Assessment tb_Assessment)
         {
             if (ModelState.IsValid)
@@ -227,6 +237,7 @@ namespace LRC_NET_Framework.Controllers
         }
 
         // GET: Assessment/NotSure
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult NotSure()
         {
             return PartialView("NotSure");

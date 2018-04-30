@@ -5,18 +5,17 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="font-weight-bold" style="background-color: #357ebd; border-bottom-left-radius:10px; border-bottom-right-radius:10px; color:gainsboro; padding-top:5px; padding-bottom:5px; padding-left:30px;"><h4>Manage Contact Info</h4></div>
+<div class="font-weight-bold" style="background-color: #357ebd; border-bottom-left-radius:7px; border-bottom-right-radius:7px; color:gainsboro; padding-top:5px; padding-bottom:5px; padding-left:30px;"><h4>Manage Contact Info</h4></div>
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-
-    <div class="form-horizontal" style="padding-top:5px;">
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+<div class="form-horizontal" style="padding-top:5px;">
+    @using (Html.BeginForm("ManageContactInfo", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @*@Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })*@
         @Html.HiddenFor(model => model._MemberID)
         <div style="font-size:smaller; padding-bottom:5px; border:solid; border-radius:5px; border-width:1px; border-color:gainsboro">
             <div class="col-md-11 h4">
-                <div class="col-md-5" style="background-color:gainsboro;padding-top:5px;  padding-bottom:5px; padding-left:30px; border-bottom-left-radius:10px; border-bottom-right-radius:10px;">Add Phone</div>
+                <div class="col-md-5" style="background-color:gainsboro;padding-top:5px;  padding-bottom:5px; padding-left:30px; border-bottom-left-radius:7px; border-bottom-right-radius:7px;">Add Phone</div>
             </div>
             <fieldset>
 
@@ -42,8 +41,8 @@
 
                 <div class="row" style="padding-bottom:3px; padding-top:3px;">
                     <div class="col-md-11 col-md-offset-1" id="PhoneTypeID">
-                        @Html.Label("PhoneTypeID", "Phone Type", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
-                        @Html.DropDownListFor(model => model._PhoneTypeID, Model._PhoneTypes, new { @class = "form-control", style = "width: 250px;" })
+                        @Html.Label("PhoneTypeID", "Type", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
+                        @Html.DropDownListFor(model => model._PhoneTypeID, Model._PhoneTypes, new { @class = "form-control", style = "width: 200px;" })
                         @Html.ValidationMessageFor(model => model._PhoneTypeID, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -55,25 +54,29 @@
                 </div>
 
                 <div class="row" style="padding-bottom:3px; padding-top:3px;">
-                    <div class="col-md-7 col-md-offset-1" id="Phones" style="font-size:smaller; background-color:lavender; border:solid; border-radius:5px; border-width:1px; border-color:gainsboro">
-                        <div style="background-color:gainsboro; padding-bottom:5px; padding-left:30px; border-radius:10px;">@Html.Label("Phones", "Phones", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })</div>
+                    <div class="col-md-7 col-md-offset-1" id="Phones" style="background-color:lavender; border:solid; border-radius:5px; border-width:1px; border-color:gainsboro">
+                        <div style="background-color:gainsboro; padding-bottom:5px; padding-left:30px; border-bottom-left-radius:5px; border-bottom-right-radius:5px;">@Html.Label("Phones", "Phones", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })</div>
                         <table class="table">
                             <tr class="text-info">
                                 <th>
                                     Phone Number
                                 </th>
                                 <th>
+                                    Type
+                                </th>
+                                <th>
                                     Status
                                 </th>
                                 <th>
-                                    Created By
+                                    Source
                                 </th>
                                 <th>
-                                    Modified Date
+                                    Effective Start Date
                                 </th>
                                 <th>
-                                    Type
+                                    Effective End Date
                                 </th>
+
                             </tr>
                             @foreach (var item in Model._MemberPhoneNumbers as List<tb_MemberPhoneNumbers>)
                             {
@@ -89,13 +92,22 @@
                                         }
                                     </td>
                                     <td>
+                                        @Html.DisplayFor(modelItem => item.tb_PhoneType.PhoneTypeName)
+                                    </td>
+                                    <td>
                                         @if (item.IsPrimary)
                                         {
                                             <b>Primary</b>
                                         }
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.CreatedBy) (to be done)
+                                        @Html.DisplayFor(modelItem => item.Source)
+                                    </td>
+                                    <td>
+                                        @if (item.CreatedDateTime != null)
+                                        {
+                                            @Convert.ToDateTime(item.CreatedDateTime).ToString("MM/dd/yyyy")
+                                        }
                                     </td>
                                     <td>
                                         @if (item.ModifiedDateTime != null)
@@ -103,9 +115,7 @@
                                             @Convert.ToDateTime(item.ModifiedDateTime).ToString("MM/dd/yyyy")
                                         }
                                     </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.tb_PhoneType.PhoneTypeName)
-                                    </td>
+
                                 </tr>
                             }
                         </table>
@@ -114,10 +124,16 @@
 
             </fieldset>
         </div>
-        <br />
+    }
+    <br />
+    @using (Html.BeginForm("ManageContactInfo", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.HiddenFor(model => model._MemberID)
+        @*@Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })*@
         <div style="font-size:smaller; padding-bottom:5px; border:solid; border-radius:5px; border-width:1px; border-color:gainsboro">
             <div class="col-md-11 h4">
-                <div class="col-md-5" style="background-color:gainsboro;padding-top:5px;  padding-bottom:5px; padding-left:30px; border-bottom-left-radius:10px; border-bottom-right-radius:10px;">Add Address</div>
+                <div class="col-md-5" style="background-color:gainsboro;padding-top:5px;  padding-bottom:5px; padding-left:30px; border-bottom-left-radius:7px; border-bottom-right-radius:7px;">Add Address</div>
             </div>
             <fieldset>
 
@@ -153,10 +169,10 @@
                 </div>
 
                 <div class="row" style="padding-bottom:3px; padding-top:3px;">
-                    <div class="col-md-11 col-md-offset-1" id="Added">
-                        @Html.Label("Added", "Added", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
-                        @Html.EditorFor(model => model._CreatedAdressDateTime, new { htmlAttributes = new { @class = "form-control", style = "width: 150px;" } })
-                        @Html.ValidationMessageFor(model => model._CreatedAdressDateTime, "", new { @class = "text-danger" })
+                    <div class="col-md-11 col-md-offset-1" id="AddressTypeID">
+                        @Html.Label("AddressTypeID", "Type", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
+                        @Html.DropDownListFor(model => model._AddressTypeID, Model._AddressTypes, new { @class = "form-control", style = "width: 200px;" })
+                        @Html.ValidationMessageFor(model => model._AddressTypeID, "", new { @class = "text-danger" })
                     </div>
                 </div>
 
@@ -183,12 +199,15 @@
                 </div>
 
                 <div class="row" style="padding-bottom:3px; padding-top:3px;">
-                    <div class="col-md-7 col-md-offset-1" id="Addresses" style="font-size:smaller; background-color:lavender; border:solid; border-radius:5px; border-width:1px; border-color:gainsboro">
-                        <div style="background-color:gainsboro; padding-bottom:5px; padding-left:30px; border-radius:10px;">@Html.Label("Addresses", "Addresses", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })</div>
+                    <div class="col-md-7 col-md-offset-1" id="Addresses" style="background-color:lavender; border:solid; border-radius:5px; border-width:1px; border-color:gainsboro">
+                        <div style="background-color:gainsboro; padding-bottom:5px; padding-left:30px; border-bottom-left-radius:5px; border-bottom-right-radius:5px;">@Html.Label("Addresses", "Addresses", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })</div>
                         <table class="table">
                             <tr class="text-info">
                                 <th>
                                     Address
+                                </th>
+                                <th>
+                                    Type
                                 </th>
                                 <th>
                                     Status
@@ -197,46 +216,62 @@
                                     Source
                                 </th>
                                 <th>
-                                    Added
+                                    Effective Start Date
                                 </th>
+                                <th>
+                                    Effective End Date
+                                </th>
+
                             </tr>
                             @foreach (var item in Model._MemberAddresses as List<tb_MemberAddress>)
-                    {
-                        <tr>
-                            <td>
-                                @if (item.IsPrimary)
-                        {
-                            <b>
-                                @Html.DisplayFor(modelItem => item.HomeStreet1)
-                                @Html.DisplayFor(modelItem => item.tb_CityState.CityName),
-                                @Html.DisplayFor(modelItem => item.tb_CityState.tb_States.StateCode)
-                                @Html.DisplayFor(modelItem => item.ZipCode)
-                            </b>
-                }
-                else
-                {
-                    <span>
-                        @Html.DisplayFor(modelItem => item.HomeStreet1)
-                        @Html.DisplayFor(modelItem => item.tb_CityState.CityName),
-                        @Html.DisplayFor(modelItem => item.tb_CityState.tb_States.StateCode)
-                        @Html.DisplayFor(modelItem => item.ZipCode)
-                    </span>
-        }
-                            </td>
-                            <td>
-                                @if (item.IsPrimary)
-                        {
-                            <b>Primary</b>
-                }
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.tb_AddressSource.SourceName)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(model => model._MemberAddresses.FirstOrDefault().CreatedDateTime, "{0:yyyy-MM-dd}", new { @class = "form-control datecontrol", type = "date", style = "width: 150px;" })
-                            </td>
-                        </tr>
-            }
+                            {
+                                <tr>
+                                    <td>
+                                        @if (item.IsPrimary)
+                                        {
+                                            <b>
+                                                @Html.DisplayFor(modelItem => item.HomeStreet1)
+                                                @Html.DisplayFor(modelItem => item.tb_CityState.CityName),
+                                                @Html.DisplayFor(modelItem => item.tb_CityState.tb_States.StateCode)
+                                                @Html.DisplayFor(modelItem => item.ZipCode)
+                                            </b>
+                                        }
+                                        else
+                                        {
+                                            <span>
+                                                @Html.DisplayFor(modelItem => item.HomeStreet1)
+                                                @Html.DisplayFor(modelItem => item.tb_CityState.CityName),
+                                                @Html.DisplayFor(modelItem => item.tb_CityState.tb_States.StateCode)
+                                                @Html.DisplayFor(modelItem => item.ZipCode)
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.tb_AddressType.AddressTypeName)
+                                    </td>
+                                    <td>
+                                        @if (item.IsPrimary)
+                                        {
+                                            <b>Primary</b>
+                                        }
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.tb_AddressSource.SourceName)
+                                    </td>
+                                    <td>
+                                        @if (item.CreatedDateTime != null)
+                                        {
+                                            @Convert.ToDateTime(item.CreatedDateTime).ToString("MM/dd/yyyy")
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (item.ModifiedDateTime != null)
+                                        {
+                                            @Convert.ToDateTime(item.ModifiedDateTime).ToString("MM/dd/yyyy")
+                                        }
+                                    </td>
+                                </tr>
+                            }
                         </table>
                     </div>
                 </div>
@@ -244,10 +279,16 @@
 
             </fieldset>
         </div>
-        <br />
+    }
+    <br />
+    @using (Html.BeginForm("ManageContactInfo", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.HiddenFor(model => model._MemberID)
+        @*@Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })*@
         <div style="font-size:smaller; padding-bottom:5px; border:solid; border-radius:5px; border-width:1px; border-color:gainsboro">
             <div class="col-md-11 h4">
-                <div class="col-md-5" style="background-color:gainsboro;padding-top:5px;  padding-bottom:5px; padding-left:30px; border-bottom-left-radius:10px; border-bottom-right-radius:10px;">Add Email</div>
+                <div class="col-md-5" style="background-color:gainsboro;padding-top:5px;  padding-bottom:5px; padding-left:30px; border-bottom-left-radius:7px; border-bottom-right-radius:7px;">Add Email</div>
             </div>
             <fieldset>
 
@@ -262,7 +303,7 @@
                 <div class="row" style="padding-bottom:3px; padding-top:3px; padding-left:0;">
                     <div class="col-md-11 col-md-offset-1" id="EmailTypeID">
                         @Html.Label("EmailTypeID", "Type", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
-                        @Html.DropDownListFor(model => model._EmailTypeID, Model._EmailTypes, new { @class = "form-control", style = "width: 250px;" })
+                        @Html.DropDownListFor(model => model._EmailTypeID, Model._EmailTypes, new { @class = "form-control", style = "width: 200px;" })
                         @Html.ValidationMessageFor(model => model._EmailTypeID, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -286,12 +327,12 @@
                 </div>
 
                 <div class="row" style="padding-bottom:3px; padding-top:3px;">
-                    <div class="col-md-7 col-md-offset-1" id="Addresses" style="font-size:smaller; background-color:lavender; border:solid; border-radius:5px; border-width:1px; border-color:gainsboro">
-                        <div style="background-color:gainsboro; padding-bottom:5px; padding-left:30px; border-radius:10px;">@Html.Label("Addresses", "Addresses", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })</div>
+                    <div class="col-md-7 col-md-offset-1" id="Emails" style="background-color:lavender; border:solid; border-radius:5px; border-width:1px; border-color:gainsboro">
+                        <div style="background-color:gainsboro; padding-bottom:5px; padding-left:30px; border-bottom-left-radius:5px; border-bottom-right-radius:5px;">@Html.Label("Emails", "Emails", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })</div>
                         <table class="table">
                             <tr class="text-info">
                                 <th>
-                                    Email Address
+                                    Email
                                 </th>
                                 <th>
                                     Type
@@ -299,40 +340,65 @@
                                 <th>
                                     Status
                                 </th>
+                                <th>
+                                    Source
+                                </th>
+                                <th>
+                                    Effective Start Date
+                                </th>
+                                <th>
+                                    Effective End Date
+                                </th>
 
                             </tr>
                             @foreach (var item in Model._MemberEmails as List<tb_MemberEmail>)
-                    {
-                        <tr>
-                            <td>
-                                @if (item.IsPrimary)
-                        {
-                            <b>@Html.DisplayFor(modelItem => item.EmailAddress)</b>
-                }
-                else
-                {
-                    @Html.DisplayFor(modelItem => item.EmailAddress)
-        }
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.tb_EmailType.EmailTypeName)
-                            </td>
-                            <td>
-                                @if (item.IsPrimary)
-                        {
-                            <b>Primary</b>
-                }
-                            </td>
-                        </tr>
-            }
+                            {
+                                <tr>
+                                    <td>
+                                        @if (item.IsPrimary)
+                                        {
+                                            <b>@Html.DisplayFor(modelItem => item.EmailAddress)</b>
+                                        }
+                                        else
+                                        {
+                                            @Html.DisplayFor(modelItem => item.EmailAddress)
+                                        }
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.tb_EmailType.EmailTypeName)
+                                    </td>
+                                    <td>
+                                        @if (item.IsPrimary)
+                                        {
+                                            <b>Primary</b>
+                                        }
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Source)
+                                    </td>
+                                    <td>
+                                        @if (item.CreatedDateTime != null)
+                                        {
+                                            @Convert.ToDateTime(item.CreatedDateTime).ToString("MM/dd/yyyy")
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (item.ModifiedDateTime != null)
+                                        {
+                                            @Convert.ToDateTime(item.ModifiedDateTime).ToString("MM/dd/yyyy")
+                                        }
+                                    </td>
+                                </tr>
+                            }
                         </table>
                     </div>
                 </div>
 
             </fieldset>
         </div>
-    </div>
-}
+    }
+</div>
+
 <br />
 <div class="col-md-11 col-md-offset-1">
     @if (ViewBag.CollegeID != null && (int)ViewBag.CollegeID > 0)

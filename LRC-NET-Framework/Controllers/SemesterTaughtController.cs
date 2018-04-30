@@ -16,6 +16,7 @@ namespace LRC_NET_Framework.Controllers
         private LRCEntities db = new LRCEntities();
 
         // GET: SemesterTaught
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult Index()
         {
             var tb_SemesterTaught = db.tb_SemesterTaught.Include(t => t.tb_Semesters).Include(t => t.tb_WeekDay).Include(t => t.tb_MemberMaster);
@@ -23,6 +24,7 @@ namespace LRC_NET_Framework.Controllers
         }
 
         // GET: SemesterTaught/Details/5
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -38,6 +40,7 @@ namespace LRC_NET_Framework.Controllers
         }
 
         // GET: SemesterTaught/Create
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult Create(int? id)
         {
             if (id == null)
@@ -80,6 +83,7 @@ namespace LRC_NET_Framework.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult Create(SemesterTaughtModels model, int classWeekDayID)
         //public ActionResult Create([Bind(Include = "SemesterTaughtID,SemesterRecID,MemberID,RoomID,ClassID,ClassStart,ClassEnd,ClassWeekDayID")] tb_SemesterTaught tb_SemesterTaught)
         {
@@ -129,6 +133,7 @@ namespace LRC_NET_Framework.Controllers
         }
 
         // GET: SemesterTaught/Edit/5
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -153,6 +158,7 @@ namespace LRC_NET_Framework.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult Edit([Bind(Include = "SemesterTaughtID,SemesterRecID,MemberID,RoomID,ClassID,ClassStart,ClassEnd,ClassWeekDayID")] tb_SemesterTaught tb_SemesterTaught)
         {
             if (ModelState.IsValid)
@@ -170,6 +176,7 @@ namespace LRC_NET_Framework.Controllers
         }
 
         // GET: SemesterTaught/Delete/5
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -187,6 +194,7 @@ namespace LRC_NET_Framework.Controllers
         // POST: SemesterTaught/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin, organizer")]
         public ActionResult DeleteConfirmed(int id)
         {
             tb_SemesterTaught tb_SemesterTaught = db.tb_SemesterTaught.Find(id);

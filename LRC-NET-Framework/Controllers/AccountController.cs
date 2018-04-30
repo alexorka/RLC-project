@@ -4,11 +4,13 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
+using System.Net;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using LRC_NET_Framework.Models;
+//using System.Web.Http;
 
 namespace LRC_NET_Framework.Controllers
 {
@@ -17,6 +19,7 @@ namespace LRC_NET_Framework.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        //private ApplicationRoleManager _roleManager;
 
         public AccountController()
         {
@@ -27,6 +30,15 @@ namespace LRC_NET_Framework.Controllers
             UserManager = userManager;
             SignInManager = signInManager;
         }
+
+        //public AccountController(ApplicationUserManager userManager, ISecureDataFormat<AuthenticationTicket> accessTokenFormat, ApplicationRoleManager roleManager)
+        //{
+        //    ///Make an instance of the user manager in the controller to avoid null reference exception
+        //    UserManager = userManager;
+        //    //AccessTokenFormat = accessTokenFormat;
+        //    ///Make an instance of the role manager in the constructor to avoid null reference exception
+        //    RoleManager = roleManager;
+        //}
 
         public ApplicationSignInManager SignInManager
         {
@@ -51,6 +63,18 @@ namespace LRC_NET_Framework.Controllers
                 _userManager = value;
             }
         }
+
+        //public ApplicationRoleManager RoleManager
+        //{
+        //    get
+        //    {
+        //        return _roleManager ?? Request.GetOwinContext().GetUserManager<ApplicationRoleManager>();
+        //    }
+        //    private set
+        //    {
+        //        _roleManager = value;
+        //    }
+        //}
 
         //
         // GET: /Account/Login
@@ -155,6 +179,8 @@ namespace LRC_NET_Framework.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    // если создание прошло успешно, то добавляем роль пользователя
+                    await UserManager.AddToRoleAsync(user.Id, "user");
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
@@ -171,6 +197,58 @@ namespace LRC_NET_Framework.Controllers
             // If we got this far, something failed, redisplay form
             return View(model);
         }
+
+        //[AllowAnonymous]
+        //[Route("users/{id:guid}/roles")]
+        //[HttpPut]
+        //public async Task<System.Web.Http.IHttpActionResult> AssignRolesToUser(string id, string[] rolesToAssign)
+        //{
+        //    if (rolesToAssign == null)
+        //    {
+        //        return this.BadRequest("No roles specified");
+        //    }
+
+        //    ///find the user we want to assign roles to
+        //    var appUser = await this.UserManager.FindByIdAsync(id);
+
+        //    if (appUser == null || appUser.IsDeleted)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    ///check if the user currently has any roles
+        //    var currentRoles = await this.UserManager.GetRolesAsync(appUser.Id);
+
+
+        //    var rolesNotExist = rolesToAssign.Except(this.RoleManager.Roles.Select(x => x.Name)).ToArray();
+
+        //    if (rolesNotExist.Count() > 0)
+        //    {
+        //        ModelState.AddModelError("", string.Format("Roles '{0}' does not exist in the system", string.Join(",", rolesNotExist)));
+        //        return this.BadRequest(ModelState);
+        //    }
+
+        //    ///remove user from current roles, if any
+        //    IdentityResult removeResult = await this.UserManager.RemoveFromRolesAsync(appUser.Id, currentRoles.ToArray());
+
+
+        //    if (!removeResult.Succeeded)
+        //    {
+        //        ModelState.AddModelError("", "Failed to remove user roles");
+        //        return BadRequest(ModelState);
+        //    }
+
+        //    ///assign user to the new roles
+        //    IdentityResult addResult = await this.UserManager.AddToRolesAsync(appUser.Id, rolesToAssign);
+
+        //    if (!addResult.Succeeded)
+        //    {
+        //        ModelState.AddModelError("", "Failed to add user roles");
+        //        return BadRequest(ModelState);
+        //    }
+
+        //    return Ok(new { userId = id, rolesAssigned = rolesToAssign });
+        //}
 
         //
         // GET: /Account/ConfirmEmail

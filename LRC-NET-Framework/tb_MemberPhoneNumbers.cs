@@ -19,7 +19,7 @@ namespace LRC_NET_Framework
         public int PhoneTypeID { get; set; }
         public string PhoneNumber { get; set; }
         public bool IsPrimary { get; set; }
-        public Nullable<int> CreatedBy { get; set; }
+        public string Source { get; set; }
         public Nullable<System.DateTime> CreatedDateTime { get; set; }
         public Nullable<int> ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedDateTime { get; set; }

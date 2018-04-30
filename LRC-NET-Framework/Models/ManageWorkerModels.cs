@@ -87,6 +87,7 @@ namespace LRC_NET_Framework.Models
         //PHONE
         [Phone]
         [Display(Name = "Phone Number")]
+        [Required(ErrorMessage = "required")]
         public string _PhoneNumber { get; set; }
         public bool _IsPhonePrimary { get; set; }
         //public int _CollegeID { get; set; } //Back to Member List by School
@@ -95,19 +96,20 @@ namespace LRC_NET_Framework.Models
         public IEnumerable<tb_MemberPhoneNumbers> _MemberPhoneNumbers { get; set; }
 
         // ADDRESS
-        //[Required(ErrorMessage = "Home Street is required")]
+        [Required(ErrorMessage = "required")]
         public string _HomeStreet1 { get; set; }
         public string _HomeStreet2 { get; set; }
         public string _StateCode { get; set; }
-        //[Required(ErrorMessage = "ZIP is required")]
+        [Required(ErrorMessage = "required")]
         public string _ZipCode { get; set; }
-        public int _CreatedAdressBy { get; set; }
+        //public int _CreatedAdressBy { get; set; }
         [Required(ErrorMessage = "Add Date is required")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime _CreatedAdressDateTime { get; set; }
-        [Required(ErrorMessage = "Status is required")]
         public bool _IsAdressPrimary { get; set; }
+        public int _AddressTypeID { get; set; }
+        public IEnumerable<SelectListItem> _AddressTypes { get; set; }
         public int _SourceID { get; set; }
         public IEnumerable<SelectListItem> _AddressSources { get; set; }
         public int _CityID { get; set; }
@@ -118,6 +120,7 @@ namespace LRC_NET_Framework.Models
         //EMAIL
         [Display(Name = "Email")]
         [EmailAddress]
+        [Required(ErrorMessage = "required")]
         public string _EmailAddress { get; set; }
         public bool _IsEmailPrimary { get; set; }
         public int _EmailTypeID { get; set; }

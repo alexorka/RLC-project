@@ -24,13 +24,15 @@ namespace LRC_NET_Framework
         public string HomeLatitude { get; set; }
         public string HomeLongitude { get; set; }
         public bool IsPrimary { get; set; }
+        public int AddressTypeID { get; set; }
         public int SourceID { get; set; }
-        public int CreatedBy { get; set; }
+        public string Source { get; set; }
         public System.DateTime CreatedDateTime { get; set; }
         public Nullable<int> ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedDateTime { get; set; }
     
         public virtual tb_AddressSource tb_AddressSource { get; set; }
+        public virtual tb_AddressType tb_AddressType { get; set; }
         public virtual tb_CityState tb_CityState { get; set; }
         public virtual tb_MemberMaster tb_MemberMaster { get; set; }
     }
