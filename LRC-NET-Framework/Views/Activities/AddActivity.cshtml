@@ -11,8 +11,7 @@
     @Html.AntiForgeryToken()
     @Html.HiddenFor(model => model.MemberID)
     <div class="col-md-11 col-md-offset-1"><h4>Add Activity</h4></div>
-    <hr />
-    <div class="form-horizontal">
+    <div class="form-horizontal" style="font-size:smaller;">
 
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
@@ -27,7 +26,9 @@
                             @Html.ValidationMessageFor(model => model.ActivityID, "", new { @class = "text-danger" })
                         </div>
                         <div style="float: left; margin-left:10px">
-                            <a href="@Url.Action("CreateNewActivity", "Activities")" class="btn btn-default"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+                            <button type="button" class="btn btn-secondary">
+                                <a href="@Url.Action("NotSure", "Activities")" class="glyphicon glyphicon-plus viewDialog" , data-dialog-title="Question"></a>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -82,32 +83,34 @@
     </div>
 }
 
-<div class="form-group">
-    <div class="col-md-11 col-md-offset-1" id="Activities">
-        @Html.Label("Activities", "Activities", htmlAttributes: new { @class = "control-label" })
-        <table class="table">
-            <tr class="text-info">
-                <th>
-                    Activity
-                </th>
-                <th>
-                    Date
-                </th>
-                <th>
-                    Status
-                </th>
-                <th>
-                    Note
-                </th>
-            </tr>
-            @foreach (var item in ViewBag.Activities as List<tb_MemberActivity>)
+    <div class="row" style="padding-top:20px; font-size:smaller;">
+        <div class="col-md-8 col-md-offset-1" id="Activities" style="background-color:lavender; border:solid; margin-top:20px; border-radius:5px; border-width:1px; border-color:gainsboro">
+
+            <div style="background-color:gainsboro; padding-bottom:5px; padding-left:30px; border-bottom-left-radius:5px; border-bottom-right-radius:5px;">@Html.Label("Activities", "Activities", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })</div>
+
+            <table class="table">
+                <tr class="text-info">
+                    <th>
+                        Activity
+                    </th>
+                    <th>
+                        Date
+                    </th>
+                    <th>
+                        Status
+                    </th>
+                    <th>
+                        Note
+                    </th>
+                </tr>
+                @foreach (var item in ViewBag.Activities as List<tb_MemberActivity>)
             {
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.tb_Activity.ActivityName)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.tb_Activity.ActivityDate)
+                        @Convert.ToDateTime(item.tb_Activity.ActivityDate).ToString("MM/dd/yyyy")
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.tb_ActivityStatus.ActivityStatusName)
@@ -116,16 +119,45 @@
                         @Html.DisplayFor(modelItem => item.tb_Activity.ActivityNote)
                     </td>
                 </tr>
-            }
-        </table>
+        }
+            </table>
+        </div>
     </div>
-</div>
 
-<div class="col-md-11 col-md-offset-1">
-    <a href="@Url.Action("Details", "Home", new { @id = Model.MemberID })" class="btn btn-link">Back to Manage Faculty Member</a>
-    @*@Html.ActionLink("Back to List", "Details", "Home", new { @id = Model.MemberID })*@
+<div class="col-md-11 col-md-offset-1" style="margin-top:20px;">
+    <a href="@Url.Action("Details", "Home", new { id = Model.MemberID })" class="btn btn-info">&nbsp;&nbsp;Back<span class="glyphicon glyphicon-arrow-left pull-left" aria-hidden="true"></span></a>
 </div>
 <hr />
 @section Scripts {
+    <script src='@Url.Content("~/Scripts/jquery-1.12.4.min.js")' type="text/javascript"></script>
+    <script src='@Url.Content("~/Scripts/jquery-ui-1.12.1.min.js")' type="text/javascript"></script>
+    
+
+    +
+    <script>
+        $(document).ready(function () {
+
+            $.ajaxSetup({ cache: false });
+
+            $(".viewDialog").on("click", function (e) {
+                e.preventDefault();
+
+                $("<div></div>")
+                    .addClass("dialog")
+                    .appendTo("body")
+                    .dialog({
+                        closeText: "",
+                        title: $(this).attr("data-dialog-title"),
+                        close: function () { $(this).remove() },
+                        height: 300,
+                        width: 500,
+                        modal: true
+                    })
+                    .load(this.href);
+            });
+        });
+    </script>
+
     @Scripts.Render("~/bundles/jqueryval")
 }
+
