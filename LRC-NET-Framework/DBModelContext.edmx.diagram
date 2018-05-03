@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="0440ca77908841ea9f47cfe419dc968d" Name="Diagram1" ZoomLevel="54">
+      <Diagram DiagramId="0440ca77908841ea9f47cfe419dc968d" Name="Diagram1" ZoomLevel="98" ShowGrid="false">
         <EntityTypeShape EntityType="LRCModel.tb_Area" Width="1.5" PointX="5.25" PointY="19.875" IsExpanded="true" />
         <EntityTypeShape EntityType="LRCModel.tb_Attribute" Width="1.5" PointX="5.25" PointY="23.875" IsExpanded="true" />
         <EntityTypeShape EntityType="LRCModel.tb_Dues" Width="1.5" PointX="5.25" PointY="21.875" IsExpanded="true" />
@@ -84,20 +84,22 @@
         <AssociationConnector Association="LRCModel.FK_tb_MemberAddress_tb_AddressType" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberAddress_tb_CityState" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberAddress_tb_MemberMaster" />
-        <EntityTypeShape EntityType="LRCModel.AspNetRoles" Width="1.5" PointX="0.75" PointY="2.5" />
-        <EntityTypeShape EntityType="LRCModel.AspNetUserClaims" Width="1.5" PointX="5.25" PointY="3.5" />
-        <EntityTypeShape EntityType="LRCModel.AspNetUserLogins" Width="1.5" PointX="5.25" PointY="1" />
-        <EntityTypeShape EntityType="LRCModel.AspNetUsers" Width="1.5" PointX="3" PointY="1.375" />
-        <AssociationConnector Association="LRCModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" />
-        <AssociationConnector Association="LRCModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" />
-        <AssociationConnector Association="LRCModel.AspNetUserRoles" />
         <EntityTypeShape EntityType="LRCModel.tb_Activity" Width="1.5" PointX="16" PointY="26.75" />
-        <AssociationConnector Association="LRCModel.FK_tb_Activity_AspNetUsers" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberActivity_tb_Activity1" />
         <EntityTypeShape EntityType="LRCModel.tb_Assessment" Width="1.5" PointX="9.75" PointY="19" />
         <AssociationConnector Association="LRCModel.FK_tb_Assessment_tb_AssessmentName" />
         <AssociationConnector Association="LRCModel.FK_tb_Assessment_tb_AssessmentValue" />
         <AssociationConnector Association="LRCModel.FK_tb_Assessment_tb_MemberMaster" />
+        <AssociationConnector Association="LRCModel.AspNetUserRoles3" />
+        <EntityTypeShape EntityType="LRCModel.AspNetRoles" Width="1.5" PointX="8.5" PointY="39.125" />
+        <EntityTypeShape EntityType="LRCModel.AspNetUserClaims" Width="1.5" PointX="10.75" PointY="39.125" />
+        <EntityTypeShape EntityType="LRCModel.AspNetUserLogins" Width="1.5" PointX="12.75" PointY="36.5" />
+        <EntityTypeShape EntityType="LRCModel.AspNetUsers" Width="1.5" PointX="10.625" PointY="34.5" />
+        <AssociationConnector Association="LRCModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" />
+        <AssociationConnector Association="LRCModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" />
+        <AssociationConnector Association="LRCModel.FK_tb_Activity_AspNetUsers" />
+        <AssociationConnector Association="LRCModel.AspNetUserRoles" />
+
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

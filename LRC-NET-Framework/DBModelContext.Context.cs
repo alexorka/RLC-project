@@ -65,11 +65,11 @@ namespace LRC_NET_Framework
         public virtual DbSet<tb_MemberPhoneNumbers> tb_MemberPhoneNumbers { get; set; }
         public virtual DbSet<tb_AddressType> tb_AddressType { get; set; }
         public virtual DbSet<tb_MemberAddress> tb_MemberAddress { get; set; }
+        public virtual DbSet<tb_Activity> tb_Activity { get; set; }
+        public virtual DbSet<tb_Assessment> tb_Assessment { get; set; }
         public virtual DbSet<AspNetRoles> AspNetRoles { get; set; }
         public virtual DbSet<AspNetUserClaims> AspNetUserClaims { get; set; }
         public virtual DbSet<AspNetUserLogins> AspNetUserLogins { get; set; }
         public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
-        public virtual DbSet<tb_Activity> tb_Activity { get; set; }
-        public virtual DbSet<tb_Assessment> tb_Assessment { get; set; }
     }
 }

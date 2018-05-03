@@ -3,37 +3,85 @@
     ViewBag.Title = "Register";
 }
 
-<h2>@ViewBag.Title.</h2>
+<div class="font-weight-bold" style="background-color: #357ebd; border-bottom-left-radius:7px; border-bottom-right-radius:7px; color:gainsboro; padding-top:5px; padding-bottom:5px; padding-left:30px;"><h4>Register as a new user</h4></div>
 
 @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
-    <h4>Create a new account.</h4>
-    <hr />
+
     @Html.ValidationSummary("", new { @class = "text-danger" })
-    <div class="form-group">
-        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+
+    <div style="font-size:smaller; padding-bottom:5px; border:solid; border-radius:5px; border-width:1px; border-color:gainsboro">
+        <div class="col-md-11 h4">
+            <div class="col-md-5" style="background-color:gainsboro;padding-top:5px;  padding-bottom:5px; padding-left:30px; border-bottom-left-radius:7px; border-bottom-right-radius:7px;">Add User</div>
         </div>
+        <fieldset>
+
+            <div class="row" style="padding-bottom:3px; padding-top:3px;">
+                <div class="col-md-11 col-md-offset-1" id="Email">
+                    @Html.Label("Email", "Email", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="row" style="padding-bottom:3px; padding-top:3px;">
+                <div class="col-md-11 col-md-offset-1" id="Password">
+                    @Html.Label("Password", "Password", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
+                    @Html.TextBoxFor(m => m.Password, new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="row" style="padding-bottom:3px; padding-top:3px;">
+                <div class="col-md-11 col-md-offset-1" id="ConfirmPassword">
+                    @Html.Label("ConfirmPassword", "Confirm Password", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
+                    @Html.TextBoxFor(m => m.ConfirmPassword, new { @class = "form-control" })
+                </div>
+            </div>
+
+
+            <div class="row" style="padding-bottom:15px; padding-top:3px;">
+                <div class="col-md-11 col-md-offset-1" id="Roles">
+                    @Html.Label("Roles", "Roles", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
+                    @Html.DropDownList("Roles", ViewBag.Roles as SelectList, new { @class = "form-control", style = "width: 250px" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-1 col-md-11">
+                    <input type="submit" class="btn btn-primary" value="Register" />
+                </div>
+            </div>
+
+            <div class="row" style="padding-bottom:3px; padding-top:3px;">
+                <div class="col-md-5 col-md-offset-1" id="Users" style="background-color:lavender; border:solid; border-radius:5px; border-width:1px; border-color:gainsboro">
+                    <div style="background-color:gainsboro; padding-bottom:5px; padding-left:30px; border-bottom-left-radius:5px; border-bottom-right-radius:5px;">@Html.Label("Users", "Registered Users", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })</div>
+                    <table class="table">
+                        <tr class="text-info">
+                            <th>
+                                User Name
+                            </th>
+                            <th>
+                                Role
+                            </th>
+                        </tr>
+                        @foreach (var item in ViewBag.UsersAndRoles as List<SelectListItem>)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Text)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Value)
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+
+        </fieldset>
     </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-default" value="Register" />
-        </div>
-    </div>
+
 }
 
 @section Scripts {

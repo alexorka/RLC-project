@@ -8,18 +8,24 @@ using System.Net;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
 using LRC_NET_Framework.Models;
+using System.Collections.Generic;
+
 //using System.Web.Http;
 
 namespace LRC_NET_Framework.Controllers
 {
+
     [Authorize]
     public class AccountController : Controller
     {
+        private LRCEntities db = new LRCEntities();
+
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
-        //private ApplicationRoleManager _roleManager;
+        private ApplicationRoleManager _roleManager;
 
         public AccountController()
         {
@@ -31,14 +37,14 @@ namespace LRC_NET_Framework.Controllers
             SignInManager = signInManager;
         }
 
-        //public AccountController(ApplicationUserManager userManager, ISecureDataFormat<AuthenticationTicket> accessTokenFormat, ApplicationRoleManager roleManager)
-        //{
-        //    ///Make an instance of the user manager in the controller to avoid null reference exception
-        //    UserManager = userManager;
-        //    //AccessTokenFormat = accessTokenFormat;
-        //    ///Make an instance of the role manager in the constructor to avoid null reference exception
-        //    RoleManager = roleManager;
-        //}
+        public AccountController(ApplicationUserManager userManager, ISecureDataFormat<AuthenticationTicket> accessTokenFormat, ApplicationRoleManager roleManager)
+        {
+            ///Make an instance of the user manager in the controller to avoid null reference exception
+            UserManager = userManager;
+            //AccessTokenFormat = accessTokenFormat;
+            ///Make an instance of the role manager in the constructor to avoid null reference exception
+            RoleManager = roleManager;
+        }
 
         public ApplicationSignInManager SignInManager
         {
@@ -64,17 +70,17 @@ namespace LRC_NET_Framework.Controllers
             }
         }
 
-        //public ApplicationRoleManager RoleManager
-        //{
-        //    get
-        //    {
-        //        return _roleManager ?? Request.GetOwinContext().GetUserManager<ApplicationRoleManager>();
-        //    }
-        //    private set
-        //    {
-        //        _roleManager = value;
-        //    }
-        //}
+        public ApplicationRoleManager RoleManager
+        {
+            get
+            {
+                return _roleManager ?? Request.GetOwinContext().GetUserManager<ApplicationRoleManager>();
+            }
+            private set
+            {
+                _roleManager = value;
+            }
+        }
 
         //
         // GET: /Account/Login
@@ -160,19 +166,46 @@ namespace LRC_NET_Framework.Controllers
 
         //
         // GET: /Account/Register
-        [AllowAnonymous]
+        //[AllowAnonymous]
+        [Authorize(Roles = "admin")]
         public ActionResult Register()
         {
+            //var identity = (ClaimsIdentity)User.Identity;
+            //var rr = identity.Claims.LastOrDefault().Value;
+            var roles = new SelectList(db.AspNetRoles, "Id", "Name");
+            ViewBag.Roles = roles;
+            var _users = db.AspNetUsers.ToList();
+            List<SelectListItem> _UsersRoles = new List<SelectListItem>();
+            foreach (var _user in _users)
+            {
+                var currentRoles = UserManager.GetRolesAsync(_user.Id);
+                _UsersRoles.Add(new SelectListItem() { Text = _user.UserName, Value = currentRoles.Result.FirstOrDefault() });
+            }
+            ViewBag.UsersAndRoles = _UsersRoles;
+
             return View();
         }
+
 
         //
         // POST: /Account/Register
         [HttpPost]
-        [AllowAnonymous]
+        //[AllowAnonymous]
+        [Authorize(Roles = "admin")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public async Task<ActionResult> Register(RegisterViewModel model, string Roles)
         {
+            SelectList roles = new SelectList(db.AspNetRoles, "Id", "Name");
+            ViewBag.Roles = roles;
+            var _users = db.AspNetUsers.ToList();
+            List<SelectListItem> _UsersRoles = new List<SelectListItem>();
+            foreach (var _user in _users)
+            {
+                var currentRoles = UserManager.GetRolesAsync(_user.Id);
+                _UsersRoles.Add(new SelectListItem() { Text = _user.UserName, Value = currentRoles.Result.FirstOrDefault() });
+            }
+            ViewBag.UsersAndRoles = _UsersRoles;
+
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
@@ -180,7 +213,9 @@ namespace LRC_NET_Framework.Controllers
                 if (result.Succeeded)
                 {
                     // если создание прошло успешно, то добавляем роль пользователя
-                    await UserManager.AddToRoleAsync(user.Id, "user");
+                    //var selectedRole = this.RoleManager.Roles.Select(x => x.Id == Roles);
+                    string selectedRole = roles.Where(t => t.Value == Roles).FirstOrDefault().Text;
+                    await UserManager.AddToRoleAsync(user.Id, selectedRole);
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
@@ -189,7 +224,7 @@ namespace LRC_NET_Framework.Controllers
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Register", "Account");
                 }
                 AddErrors(result);
             }
