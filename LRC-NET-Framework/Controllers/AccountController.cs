@@ -167,7 +167,8 @@ namespace LRC_NET_Framework.Controllers
         //
         // GET: /Account/Register
         //[AllowAnonymous]
-        [Authorize(Roles = "admin")]
+        [AllowAnonymous]
+        //[Authorize(Roles = "admin")]
         public ActionResult Register()
         {
             //var identity = (ClaimsIdentity)User.Identity;
@@ -186,12 +187,11 @@ namespace LRC_NET_Framework.Controllers
             return View();
         }
 
-
         //
         // POST: /Account/Register
         [HttpPost]
-        //[AllowAnonymous]
-        [Authorize(Roles = "admin")]
+        [AllowAnonymous]
+        //[Authorize(Roles = "admin")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model, string Roles)
         {
@@ -208,29 +208,90 @@ namespace LRC_NET_Framework.Controllers
 
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                string selectedRole = roles.Where(t => t.Value == Roles).FirstOrDefault().Text;
+                var user = new ApplicationUser { UserName = selectedRole, Email = model.Email }; // placing selected Role Name to User Name in AspNetUsers table
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    // если создание прошло успешно, то добавляем роль пользователя
-                    //var selectedRole = this.RoleManager.Roles.Select(x => x.Id == Roles);
-                    string selectedRole = roles.Where(t => t.Value == Roles).FirstOrDefault().Text;
-                    await UserManager.AddToRoleAsync(user.Id, selectedRole);
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
-                    // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
-                    // Send an email with this link
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-
-                    return RedirectToAction("Register", "Account");
+                    return RedirectToAction("RegistrationRequestSentToAdmin", "Account");
                 }
                 AddErrors(result);
             }
 
             // If we got this far, something failed, redisplay form
             return View(model);
+        }
+
+        //
+        // GET: /Account/Register
+        [Authorize(Roles = "admin")]
+        public ActionResult ConfirmRegistration()
+        {
+            var _users = db.AspNetUsers.ToList();
+            List<SelectListItem> _UsersRoles = new List<SelectListItem>();
+            foreach (var _user in _users)
+            {
+                string  currentRoles = UserManager.GetRolesAsync(_user.Id).Result.FirstOrDefault();
+                if (String.IsNullOrEmpty(currentRoles))
+                    _UsersRoles.Add(new SelectListItem() { Text = _user.Email + ":" + _user.UserName, Value = currentRoles });
+                else
+                    _UsersRoles.Add(new SelectListItem() { Text = _user.Email, Value = currentRoles });
+            }
+            ViewBag.UsersAndRoles = _UsersRoles;
+
+            return View();
+        }
+
+        //
+        // GET: /Account/ApplyRegistrationRequest
+        //[AllowAnonymous]
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult> ApplyRegistrationRequest(string userName)
+        {
+            var uNameRole = userName.Split(':');
+            string uName = uNameRole[0].Trim();
+            string uRole = uNameRole[1].Trim();
+            var user = await UserManager.FindByEmailAsync(uName);
+            var result = await UserManager.AddToRoleAsync(user.Id, uRole);
+            if (result.Succeeded)
+            {
+                user.UserName = uName; //Place email to UserName field in AspNetUsers table. We keeped RoleName there before
+                //await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+            }
+            AddErrors(result);
+            return RedirectToAction("ConfirmRegistration", "Account");
+        }
+
+        //
+        // GET: /Account/RejectRegistrationRequest
+        //[AllowAnonymous]
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult> RejectRegistrationRequest(string userName)
+        {
+            //var uNameRole = userName.Split(':');
+            //string uName = uNameRole[0].Trim();
+            //string uRole = uNameRole[1].Trim();
+            var user = await UserManager.FindByEmailAsync(userName.Trim());
+            string currentRoles = UserManager.GetRolesAsync(user.Id).Result.FirstOrDefault();
+            var result = await UserManager.RemoveFromRoleAsync(user.Id, currentRoles);
+
+            //result = await UserManager.AddToRoleAsync(user.Id, currentRoles);
+            if (result.Succeeded)
+            {
+                user.UserName = currentRoles; //Place RoleName to UserName field in AspNetUsers table. To keep it for confirmation
+                //await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+            }
+            AddErrors(result);
+            return RedirectToAction("ConfirmRegistration", "Account");
+        }
+
+
+        //
+        // GET: /Account/RegistrationRequestSentToAdmin
+        [AllowAnonymous]
+        public ActionResult RegistrationRequestSentToAdmin()
+        {
+            return View();
         }
 
         //[AllowAnonymous]

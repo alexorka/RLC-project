@@ -1,7 +1,11 @@
 ﻿@model LRC_NET_Framework.Models.ExternalLoginListViewModel
 @using Microsoft.Owin.Security
 
-<h4>Only users with administrator rights can request applications access.</h4>
+<h4>
+    Only the administrator has the right to add a user with access rights to the application. A regular user can
+    @Html.ActionLink("make a request", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })
+     for access rights that will be send to admin, reviewed by him and added or rejected.
+</h4>
 <hr />
 @{
     var loginProviders = Context.GetOwinContext().Authentication.GetExternalAuthenticationTypes();
