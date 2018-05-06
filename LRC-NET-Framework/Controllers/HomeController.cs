@@ -12,12 +12,99 @@ using PagedList.Mvc;
 using LRC_NET_Framework.Models;
 using System.Data.Entity.Validation;
 using System.IO;
+using System.Text;
 
 namespace LRC_NET_Framework.Controllers
 {
     public class HomeController : Controller
     {
         private LRCEntities db = new LRCEntities();
+
+        private string GetExportString(string searchString, int CollegeID)
+        {
+
+            List<tb_Department> deps = new List<tb_Department>();
+            deps = db.tb_Department.Where(c => c.CollegeID == CollegeID).ToList();
+            List<tb_MemberMaster> members = new List<tb_MemberMaster>();
+
+
+            foreach (var dep in deps)
+            {
+                List<tb_MemberMaster> membersInDep = db.tb_MemberMaster.Where(t => t.DepartmentID == dep.DepartmentID).ToList();
+                if (membersInDep.Count > 0)
+                {
+                    foreach (var item in membersInDep)
+                    {
+                        if (String.IsNullOrEmpty(searchString))
+                        {
+                            members.Add(item);
+                        }
+                        //Searching @ Filtering
+                        else if (item.LastName.ToUpper().Contains(searchString.ToUpper())
+                            || item.FirstName.ToUpper().Contains(searchString.ToUpper()))
+                        {
+                            members.Add(item);
+                        }
+                    }
+                }
+            }
+
+            //if (members == null)
+            //{
+            //    return HttpNotFound();
+            //}
+
+            var sb = new StringBuilder();
+            sb.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18}",
+                "ID",
+                "INSTRCTR",
+                "CAMPUS",
+                "LOCATION",
+                "BUILDING",
+                "ROOM",
+                "DIV",
+                "CLASS#",
+                "SECT",
+                "SUBJCD",
+                "CATBR",
+                "LEC LAB",
+                "SBTM",
+                "ATT TP",
+                "BEGTIME",
+                "ENDTIME",
+                "DAYS",
+                "CLASSEND DT",
+                Environment.NewLine);
+
+            foreach (var item in members)
+            {
+                List<tb_SemesterTaught> semesterTaught = db.tb_SemesterTaught.Where(t => t.MemberID == item.MemberID).ToList();
+                foreach (var taught in semesterTaught)
+                {
+                    sb.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18}",
+                    item.MemberIDNumber ?? String.Empty, //ID
+                    item.FirstName + " " + item.LastName + " " + item.MiddleName, //INSTRCTR
+                    taught.tb_Building.tb_Campus.CampusCode ?? String.Empty, //CAMPUS
+                    taught.tb_Building.tb_Campus.CampusCode + " MAIN", //LOCATION
+                    taught.tb_Building.BuildingName ?? String.Empty, //BUILDING
+                    taught.Room ?? String.Empty, //ROOM
+                    item.tb_Division.DivisionName ?? String.Empty, //DIV
+                    taught.Class ?? String.Empty, //CLASS#
+                    "?", //SECT
+                    "?", //SUBJCD
+                    "?", //CATBR
+                    "?", //LEC LAB
+                    "?", //SBTM
+                    "?", //ATT TP
+                    taught.ClassStart.ToString(@"hh\:mm"), //BEGTIME
+                    taught.ClassEnd.ToString(@"hh\:mm"), //ENDTIME
+                    taught.tb_WeekDay.WeekDayName, //DAYS
+                    "?", //CLASSEND DT
+                    Environment.NewLine);
+                }
+            }
+            return sb.ToString();
+        }
 
         // GET: tb_MemberMaster
         [Authorize(Roles = "admin, organizer")]
@@ -117,7 +204,7 @@ namespace LRC_NET_Framework.Controllers
 
         // GET: MembersBySchool
         [Authorize(Roles = "admin, organizer")]
-        public ActionResult MembersBySchool(string sortOrder, string searchString, int? page, int? CollegeID, FormCollection formCollection)
+        public ActionResult MembersBySchool(string sortOrder, string searchString, int? page, int? CollegeID, int? DepartmentID, FormCollection formCollection)
         {
             CollegeID = CollegeID ?? int.Parse(formCollection["CollegeID"]);
             if (CollegeID == null)
@@ -159,6 +246,8 @@ namespace LRC_NET_Framework.Controllers
                 return HttpNotFound();
             }
 
+            ViewData["MemberQty"] = members.Count();
+
             //Sorting
             var membersOrdered = members.OrderBy(s => s.LastName);
             switch (sortOrder)
@@ -171,6 +260,69 @@ namespace LRC_NET_Framework.Controllers
             int pageSize = 2;
             int pageNumber = (page ?? 1);
             return View(membersOrdered.ToPagedList(pageNumber, pageSize));
+        }
+
+        // GET: AddFilter
+        [Authorize(Roles = "admin, organizer")]
+        public ActionResult AddFilter(int CollegeID, int DepartmentID)
+        {
+            ViewBag.CollegeID = CollegeID;
+            if (DepartmentID == 0)
+                DepartmentID = 3;
+            var departments = new SelectList(db.tb_Department, "DepartmentID", "DepartmentName", DepartmentID);
+            ViewBag.Departments = departments;
+
+            var colleges = new SelectList(db.tb_College, "CollegeID", "CollegeName", CollegeID);
+            ViewBag.Colleges = colleges;
+
+            return PartialView("AddFilter");
+        }
+
+        // GET: ExportData
+        [Authorize(Roles = "admin, organizer")]
+        public ActionResult ExportData(int CollegeID)
+        {
+            ViewBag.CollegeID = CollegeID;
+            return PartialView("ExportData");
+        }
+        
+        // GET: ExportToCsv
+        [Authorize(Roles = "admin, organizer")]
+        public ActionResult ExportToCsv(string searchString, int CollegeID)
+        {
+            //Get Current Response  
+            var response = System.Web.HttpContext.Current.Response;
+            response.BufferOutput = true;
+            response.Clear();
+            response.ClearHeaders();
+            response.ContentEncoding = Encoding.Unicode;
+            response.AddHeader("content-disposition", "attachment;filename=MembersBySchool.CSV ");
+            response.ContentType = "text/plain";
+            response.Write(GetExportString(searchString, CollegeID));
+            response.End();
+
+            return View();
+        }
+
+
+        // GET: ExportToTxt
+        [Authorize(Roles = "admin, organizer")]
+        public ActionResult ExportToTxt(string searchString, int CollegeID)
+        {
+            //Get Current Response  
+            var response = System.Web.HttpContext.Current.Response;
+            response.BufferOutput = true;
+            response.Clear();
+            response.ClearHeaders();
+            response.ContentEncoding = Encoding.Unicode;
+            response.AddHeader("content-disposition", "attachment;filename=MembersBySchool.TXT ");
+            response.ContentType = "text/plain";
+            response.Write(GetExportString(searchString, CollegeID));
+            response.End();
+
+            //File(new UTF8Encoding().GetBytes(sb.ToString()), "text/csv", "MembersBySchool.txt");
+
+            return View();
         }
 
         // GET: tb_MemberMaster/Edit/5
@@ -733,6 +885,61 @@ namespace LRC_NET_Framework.Controllers
             return View(db.tb_College.ToList());
         }
 
+        // POST: Home/AddMembershipForm
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin, organizer")]
+        public ActionResult AddBuilding(HttpPostedFileBase file, int Campus, int College, string BuildingName, FormCollection formCollection)
+        {
+            //FormCollection formCollection
+            string imagesFolder = "~/Images/Buildings/";
+            if (file != null && file.ContentLength > 0)
+                try
+                {
+                    string path = Path.Combine(Server.MapPath(imagesFolder),
+                    Path.GetFileName(file.FileName));
+                    file.SaveAs(path);
+                    ViewBag.Message = "File uploaded successfully";
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.Message = "ERROR:" + ex.Message.ToString();
+                }
+            else
+            {
+                ViewBag.Message = "You have not specified a file.";
+                ViewBag.Colleges = new SelectList(db.tb_College, "CollegeID", "CollegeName", College);
+                return View();
+            }
+
+            var buildings = db.tb_Building.Where(s => s.BuildingName.ToUpper() == BuildingName.ToUpper());
+            //Check dublicates
+            if (buildings.ToList().Count == 0)
+            {
+                tb_Building building = new tb_Building()
+                {
+                    CampusID = Campus,
+                    BuildingName = BuildingName,
+                    ImagePath = imagesFolder + Path.GetFileName(file.FileName)
+                };
+                db.tb_Building.Add(building);
+            }
+            else
+            {
+                tb_Building building = buildings.FirstOrDefault();
+                building.CampusID = Campus;
+                building.BuildingName = BuildingName;
+                building.ImagePath = imagesFolder + Path.GetFileName(file.FileName);
+                db.tb_Building.Attach(building);
+            }
+            db.SaveChanges();
+            ViewBag.Colleges = new SelectList(db.tb_College, "CollegeID", "CollegeName");
+            ViewBag.CollegeID = 0;
+            return View(db.tb_College.ToList());
+        }
+
         // GET: Home/AddMembershipForm
         [Authorize(Roles = "admin, organizer")]
         public ActionResult AddDepartment(string sortOrder, string searchString, int? page, int? id)
@@ -833,61 +1040,6 @@ namespace LRC_NET_Framework.Controllers
             ViewBag.Campuses = new SelectList(campuses, "CampusID", "CampusName");
             ViewBag.CollegeID = College;
             return PartialView(campuses);
-        }
-
-        // POST: Home/AddMembershipForm
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "admin, organizer")]
-        public ActionResult AddBuilding(HttpPostedFileBase file, int Campus, int College, string BuildingName, FormCollection formCollection)
-        {
-            //FormCollection formCollection
-            string imagesFolder = "~/Images/Buildings/";
-            if (file != null && file.ContentLength > 0)
-                try
-                {
-                    string path = Path.Combine(Server.MapPath(imagesFolder),
-                    Path.GetFileName(file.FileName));
-                    file.SaveAs(path);
-                    ViewBag.Message = "File uploaded successfully";
-                }
-                catch (Exception ex)
-                {
-                    ViewBag.Message = "ERROR:" + ex.Message.ToString();
-                }
-            else
-            {
-                ViewBag.Message = "You have not specified a file.";
-                ViewBag.Colleges = new SelectList(db.tb_College, "CollegeID", "CollegeName", College);
-                return View();
-            }
-
-            var buildings = db.tb_Building.Where(s => s.BuildingName.ToUpper() == BuildingName.ToUpper());
-            //Check dublicates
-            if (buildings.ToList().Count == 0)
-            {
-                tb_Building building = new tb_Building()
-                {
-                    CampusID = Campus,
-                    BuildingName = BuildingName,
-                    ImagePath = imagesFolder + Path.GetFileName(file.FileName)
-                };
-                db.tb_Building.Add(building);
-            }
-            else
-            {
-                tb_Building building = buildings.FirstOrDefault();
-                building.CampusID = Campus;
-                building.BuildingName = BuildingName;
-                building.ImagePath = imagesFolder + Path.GetFileName(file.FileName);
-                db.tb_Building.Attach(building);
-            }
-            db.SaveChanges();
-            ViewBag.Colleges = new SelectList(db.tb_College, "CollegeID", "CollegeName");
-            ViewBag.CollegeID = 0;
-            return View(db.tb_College.ToList());
         }
 
         public ActionResult About()

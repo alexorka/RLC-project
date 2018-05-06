@@ -561,6 +561,8 @@
     <Content Include="Views\Home\AddDepartment.cshtml" />
     <Content Include="Views\Account\ConfirmRegistration.cshtml" />
     <Content Include="Views\Account\RegistrationRequestSentToAdmin.cshtml" />
+    <Content Include="Views\Home\ExportData.cshtml" />
+    <Content Include="Views\Home\AddFilter.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
