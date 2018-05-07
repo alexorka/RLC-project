@@ -230,7 +230,6 @@
     <Compile Include="Controllers\ActivitiesController.cs" />
     <Compile Include="Controllers\AssessmentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ImportExcelController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\NotesController.cs" />
     <Compile Include="Controllers\RolesController.cs" />
@@ -553,13 +552,12 @@
     <Content Include="Views\Home\AlsoWorksAt.cshtml" />
     <Content Include="Views\Home\AddBuilding.cshtml" />
     <Content Include="Views\Home\GetCampuses.cshtml" />
-    <Content Include="Views\ImportExcel\UploadExcel.cshtml" />
     <Content Include="Views\Activities\NotSure.cshtml" />
     <Content Include="Views\Assessment\NotSure.cshtml" />
     <Content Include="Views\Home\NotSure.cshtml" />
     <Content Include="Views\Home\MembersBySchool.cshtml" />
     <Content Include="Views\Home\AddDepartment.cshtml" />
-    <Content Include="Views\Account\ConfirmRegistration.cshtml" />
+    <Content Include="Views\Account\AdminTasks.cshtml" />
     <Content Include="Views\Account\RegistrationRequestSentToAdmin.cshtml" />
     <Content Include="Views\Home\ExportData.cshtml" />
     <Content Include="Views\Home\AddFilter.cshtml" />
