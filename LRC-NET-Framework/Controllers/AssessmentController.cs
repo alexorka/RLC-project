@@ -207,7 +207,8 @@ namespace LRC_NET_Framework.Controllers
             tb_Assessment tb_Assessment = db.tb_Assessment.Find(id);
             if (tb_Assessment == null)
             {
-                return HttpNotFound();
+                return RedirectToAction("Details", "Home", new { @id = id });
+                //return HttpNotFound();
             }
             ViewBag.AssessmentNameID = new SelectList(db.tb_AssessmentName, "AssessmentNameID", "AssessmentName", tb_Assessment.AssessmentNameID);
             ViewBag.ValueID = new SelectList(db.tb_AssessmentValue, "ValueID", "ValueName", tb_Assessment.ValueID /* selected value */);

@@ -20,11 +20,11 @@ namespace LRC_NET_Framework.Models
         public IEnumerable<SelectListItem> _Colleges { get; set; }
         public int _JobStatusID { get; set; }
         public IEnumerable<SelectListItem> _JobStatuses { get; set; }
-        public int _DivisionID { get; set; }
+        public Nullable<int> _DivisionID { get; set; }
         public IEnumerable<SelectListItem> _Divisions { get; set; }
-        public int _DepartmentID { get; set; }
+        public Nullable<int> _DepartmentID { get; set; }
         public IEnumerable<SelectListItem> _Departments { get; set; }
-        public int _CategoryID { get; set; }
+        public Nullable<int> _CategoryID { get; set; }
         public IEnumerable<SelectListItem> _Categories { get; set; }
         [DataType(DataType.Date)]
         //[DisplayFormat(DataFormatString = "{0:MM'/'dd'/'yyyy}", ApplyFormatInEditMode = true)]

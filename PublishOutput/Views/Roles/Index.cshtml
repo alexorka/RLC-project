@@ -1,0 +1,112 @@
+﻿@*@model IEnumerable<LRC_NET_Framework.tb_Roles>*@
+@model PagedList.IPagedList<LRC_NET_Framework.tb_Roles>
+@using PagedList.Mvc
+@{
+    ViewBag.Title = "Faculty Member Roles";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<hr />
+<ul class="list-inline">
+    <li role="button"><a href="@Url.Action("CreateMemberRoles", "Roles")" class="btn btn-default">&nbsp;&nbsp;Role<span class="glyphicon glyphicon-plus pull-left" aria-hidden="true"></span></a></li>
+</ul>
+<h2>Faculty Member Roles</h2>
+@using (Html.BeginForm("Index", "Activities", FormMethod.Post, new { @class = "margin-right: 0" }))
+{
+    <div class="form-group row list-inline">
+        <div class="col-md-2">
+            <div class="input-group">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit">
+                        <i class="glyphicon glyphicon-search"></i>
+                    </button>
+                </span>
+                @Html.TextBox("SearchString", null, new { @class = "form-control", placeholder = "Search" })
+            </div>
+        </div>
+    </div>
+}
+<div class="row ex1">
+    <div class="col-md-2 align-text-top"><small>Showing @Model.FirstItemOnPage - @Model.Count()&nbsp;&nbsp;of&nbsp;&nbsp;@ViewData["MemberQty"]</small></div>
+    <div class="col-md-3 align-text-top"></div>
+    <div class="col-md-7"></div>
+</div>
+<table class="table">
+    <tr>
+        <th>Faculty Member</th>
+        <th>Body</th>
+        <th>COPE</th>
+        <th>Phone</th>
+        <th>Email</th>
+        <th>Membership Commitment</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Expired</th>
+        <th>Active Status</th>
+    </tr>
+
+    @foreach (var role in Model)
+    {
+        if (role.tb_MemberRoles.Count > 0)
+        {
+            <tr style="font-weight:bold">
+                <td colspan="10" style="background-color:lightgray">
+                    @Html.DisplayFor(modelItem => role.RoleName)
+                </td>
+            </tr>
+            foreach (var item in role.tb_MemberRoles)
+            {
+            <tr>
+                <td>
+                    @Html.ActionLink(item.tb_MemberMaster.LastName + ", " + item.tb_MemberMaster.FirstName, "Details", "Home", new { id = item.tb_MemberMaster.MemberID }, new { @class = "text -info" })
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_Body.BodyName)
+                </td>
+                <td class="danger">
+                    ???
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_MemberMaster.tb_MemberPhoneNumbers.Where(t => t.tb_MemberMaster.MemberID == item.tb_MemberMaster.MemberID).FirstOrDefault().PhoneNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_MemberMaster.tb_MemberEmail.Where(t => t.tb_MemberMaster.MemberID == item.tb_MemberMaster.MemberID).FirstOrDefault().EmailAddress)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_MemberMaster.tb_MemberActivity.Where(t => t.tb_MemberMaster.MemberID == item.tb_MemberMaster.MemberID).LastOrDefault().MembershipCommitment)
+                </td>
+                <td>
+                    @if (item.StartDate != null)
+                    {
+                        @Convert.ToDateTime(item.StartDate).ToString("MM/dd/yyyy")
+                    }
+                </td>
+                <td>
+                    @if (item.StartDate != null)
+                    {
+                        @Convert.ToDateTime(item.EndDate).ToString("MM/dd/yyyy")
+                    }
+                </td>
+                <td class="text-center">
+                    @Html.DisplayFor(modelItem => item.Expired)
+                </td>
+                <td class="danger">
+                    ???
+                </td>
+            </tr>
+            }
+        }
+    }
+        @*@Html.ActionLink("Edit", "Edit", new { id = item.RoleID }) |
+            @Html.ActionLink("Details", "Details", new { id = item.RoleID }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.RoleID })*@
+
+    </table>
+<br />
+    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) from @Model.PageCount
+
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>

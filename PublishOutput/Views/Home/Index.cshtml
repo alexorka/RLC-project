@@ -1,0 +1,190 @@
+﻿@model PagedList.IPagedList<LRC_NET_Framework.tb_MemberMaster>
+@using PagedList.Mvc
+
+@{
+    ViewBag.Title = "Local List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<hr />
+<ul class="list-inline">
+    <li role="button">
+        <div class="btn-group">
+            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+                School&nbsp;&nbsp;&nbsp;<span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                @foreach (var c in ViewBag.Colleges)
+                {
+                    <li role="button"><a style="text-align:left" href="@Url.Action("MembersBySchool", "Home", new { CollegeID = @c.Value })" class="btn btn-link">@c.Text</a></li>
+                }
+            </ul>
+        </div>
+    </li>
+    <li role="button"><a href="@Url.Action("Index", "Activities")" class="btn btn-info">Activities&nbsp;<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="@Url.Action("Index", "Assessment")" class="btn btn-info">Assessments&nbsp;<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="#" class="btn btn-info">Attributes&nbsp;<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="@Url.Action("Index", "Notes")" class="btn btn-info">Notes&nbsp;<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="@Url.Action("Index", "Roles")" class="btn btn-info">Roles&nbsp;<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="@Url.Action("AddBuilding", "Home")" class="btn btn-info">Bldgs & Depts&nbsp;<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="#" class="btn btn-info">Membership Forms&nbsp;<span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="#" class="btn btn-info">COPE Forms&nbsp;<span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="#" class="btn btn-info">Local&nbsp;<span class="glyphicon glyphicon-stats" aria-hidden="true"></span></a></li>
+</ul>
+
+<h3><b>Local List</b></h3>
+
+@using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @class = "margin-right: 0" }))
+{
+    <div class="form-group row list-inline">
+        <div class="col-md-2">
+            <div class="input-group">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit">
+                        <i class="glyphicon glyphicon-search"></i>
+                    </button>
+                </span>
+                @Html.TextBox("SearchString", null, new { @class = "form-control", placeholder = "Search" })
+            </div>
+        </div>
+        <div class="col-md-1">
+            <span data-toggle="tooltip" title="Filter by Department">
+                @Html.DropDownList("DepartmentID", null, htmlAttributes: new { @class = "form-control " })
+            </span>
+        </div>
+        <div class="col-md-1">
+            <span data-toggle="tooltip" title="Filter by College">
+                @Html.DropDownList("CollegeID", null, htmlAttributes: new { @class = "form-control" })
+            </span>
+        </div>
+        <div class="col-md-1">
+        </div>
+        <div class="col-md-1">
+            <small><strong><a href="#" class="disabled">Active Status</a></strong></small>
+        </div>
+        <div class="col-md-5 ">
+            <small><a href="#" class="disabled">export</a></small>
+        </div>
+    </div>
+}
+
+<div class="row ex1">
+    <div class="col-md-2 align-text-top"><small>Showing @Model.FirstItemOnPage - @Model.Count()&nbsp;&nbsp;of&nbsp;&nbsp;@ViewData["MemberQty"]</small></div>
+    <div class="col-md-3 align-text-top"></div>
+    <div class="col-md-7 text-muted"></div>
+</div>
+
+<div class="ex1">
+    <table class="table table-bordered table-sm" style="font-size:smaller;">
+        <tr>
+            <th style="vertical-align:middle; background-color:gainsboro;">
+                @Html.ActionLink("Faculty Member", "Index", new { sortOrder = ViewBag.NameSortParm })
+            </th>
+            <th style="vertical-align:middle; background-color:gainsboro; text-align:center">
+                Home&nbsp;School
+            </th>
+            <th style="vertical-align:middle; background-color:gainsboro; text-align:center">
+                Class&nbsp;Category
+            </th>
+            <th style="vertical-align:middle; background-color:gainsboro; text-align:center">
+                Department
+            </th>
+            <th style="vertical-align:middle; background-color:gainsboro; text-align:center">
+                Role
+            </th>
+            <th style="vertical-align:middle; background-color:gainsboro; text-align:center">
+                COPE
+            </th>
+            <th style="vertical-align:middle; background-color:gainsboro; text-align:center">
+                Dues
+            </th>
+            <th style="vertical-align:middle; background-color:gainsboro; text-align:center">
+                Membership
+            </th>
+            <th style="vertical-align:middle; background-color:gainsboro; text-align:center">
+                Member Form
+            </th>
+            <th style="vertical-align:middle; background-color:gainsboro; text-align:center">
+                Fee Payer Assess
+            </th>
+            <th style="vertical-align:middle; background-color:gainsboro; text-align:center">
+                Membership Commitment
+            </th>
+            <th style="vertical-align:middle; background-color:gainsboro; text-align:center">
+                Phone
+            </th>
+            <th style="vertical-align:middle; background-color:gainsboro; text-align:center">
+                Address
+            </th>
+            <th style="vertical-align:middle; background-color:gainsboro; text-align:center">
+                Active Status
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.ActionLink(item.LastName + ", " + item.FirstName, "Details", "Home", new { id = item.MemberID }, new { @class = "text -info" })
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_Department.tb_College.CollegeName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_Dues.DuesName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_Department.DepartmentName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_MemberRoles.Where(t => t.MemberID == item.MemberID).LastOrDefault().tb_Roles.RoleName)
+                </td>
+                <td></td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_Dues.DuesName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_MemberActivity.Where(t => t.MemberID == item.MemberID).LastOrDefault().tb_ActivityStatus.ActivityStatusName)
+                </td>
+                <td align="center">
+                    <a href="#" class="btn btn-xs"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_Assessment.Where(t => t.MemberID == item.MemberID).LastOrDefault().tb_AssessmentName.AssessmentName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_MemberActivity.Where(t => t.MemberID == item.MemberID).LastOrDefault().MembershipCommitment)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_MemberPhoneNumbers.Where(t => t.MemberID == item.MemberID).Where(p => p.IsPrimary == true).FirstOrDefault().PhoneNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_MemberAddress.Where(t => t.MemberID == item.MemberID).FirstOrDefault().HomeStreet1)
+                    @Html.DisplayFor(modelItem => item.tb_MemberAddress.Where(t => t.MemberID == item.MemberID).FirstOrDefault().HomeStreet2)
+                    @Html.DisplayFor(modelItem => item.tb_MemberAddress.Where(t => t.MemberID == item.MemberID).FirstOrDefault().tb_CityState.CityName)
+                    @Html.DisplayFor(modelItem => item.tb_MemberAddress.Where(t => t.MemberID == item.MemberID).FirstOrDefault().tb_CityState.CityAlias)
+                    @Html.DisplayFor(modelItem => item.tb_MemberAddress.Where(t => t.MemberID == item.MemberID).FirstOrDefault().ZipCode)
+                </td>
+                <td>
+                    @*@if(item.tb_MemberActivity)*@
+                </td>
+                @*<td>
+                        <div class="btn-group" role="group" aria-label="...">
+                            @Html.ActionLink("Edit", "Edit", new { id = item.MemberID }, new { @class = "btn btn-primary" })
+                            @Html.ActionLink("Details", "Details", new { id = item.MemberID }, new { @class = "btn btn-info" })
+                            @Html.ActionLink("Delete", "Delete", new { id = item.MemberID }, new { @class = "btn btn-danger" })
+                        </div>
+                    </td>*@
+            </tr>
+        }
+    </table>
+    <br />
+    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) from @Model.PageCount
+
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>

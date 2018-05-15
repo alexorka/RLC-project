@@ -1,0 +1,137 @@
+﻿@model LRC_NET_Framework.Models.AddRole
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="font-weight-bold" style="background-color: #357ebd; border-bottom-left-radius:7px; border-bottom-right-radius:7px; color:gainsboro; padding-top:5px; padding-bottom:5px; padding-left:30px;"><h4>Manage Roles</h4></div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model._MemberID)
+        <div class="col-md-11 col-md-offset-1"><h4>Add Role</h4></div>
+        <hr />
+        @*Roles DDL*@
+        <div class="form-group">
+            <div class="col-md-11 col-md-offset-1">
+                @Html.Label("Role", "Role", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
+            </div>
+            <div class="col-md-11 col-md-offset-1" id="Role" style="overflow:hidden;">
+                <div style="width: 100%;">
+                    <div style="float: left;">
+                        @Html.DropDownListFor(model => model._RoleID, Model._Roles, new { @class = "form-control", style = "width: 250px;" })
+                        @Html.ValidationMessageFor(model => model._RoleID, "", new { @class = "text-danger" })
+                    </div>
+                    <div style="float: left; margin-left:10px">
+                        <a href="@Url.Action("CreateRole", "Roles")" class="btn btn-default"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @*Bodies DDL*@
+        <div class="form-group">
+            <div class="col-md-11 col-md-offset-1">
+                @Html.Label("Body", "Body", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
+            </div>
+            <div class="col-md-11 col-md-offset-1" id="Body" style="overflow:hidden;">
+                <div style="width: 100%;">
+                    <div style="float: left;">
+                        @Html.DropDownListFor(model => model._BodyID, Model._Bodies, new { @class = "form-control", style = "width: 250px;" })
+                        @Html.ValidationMessageFor(model => model._BodyID, "", new { @class = "text-danger" })
+                    </div>
+                    <div style="float: left; margin-left:10px">
+                        <a href="@Url.Action("CreateBody", "Roles")" class="btn btn-default"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @*Start Date*@
+        <div class="form-group">
+            <div class="col-md-11 col-md-offset-1" id="StartDate">
+                <fieldset>
+                    <div class="editor-field">
+                        @Html.Label("StartDate", "Start Date", htmlAttributes: new { @class = "control-label" })
+                        @Html.TextBoxFor(m => m._StartDate, "{0:yyyy-MM-dd}", new { @class = "form-control datecontrol", type = "date", style = "width: 150px;" })
+                        @Html.ValidationMessageFor(model => model._StartDate)
+
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+
+        @*End Date*@
+        <div class="form-group">
+            <div class="col-md-11 col-md-offset-1" id="EndDate">
+                <fieldset>
+                    <div class="editor-field">
+                        @Html.Label("EndDate", "End Date", htmlAttributes: new { @class = "control-label" })
+                        @Html.TextBoxFor(m => m._EndDate, "{0:yyyy-MM-dd}", new { @class = "form-control datecontrol", type = "date", style = "width: 150px;" })
+                        @Html.ValidationMessageFor(model => model._EndDate)
+
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-3 col-md-9">
+                <input type="submit" value="Submit" class="btn btn-primary" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-11 col-md-offset-1" id="MembershipForms">
+                @Html.Label("MembershipForms", "Membership Forms", htmlAttributes: new { @class = "control-label" })
+                <table class="table">
+                    <tr class="text-info">
+                        <th class="text-left" width="20%">
+                            Body
+                        </th>
+                        <th class="text-left">
+                            Role
+                        </th>
+                        <th class="text-left">
+                            Start&nbsp;Date
+                        </th>
+
+                        <th class="text-left">
+                            End&nbsp;Date
+                        </th>
+                    </tr>
+                    @foreach (var item in Model._MemberRoles as List<tb_MemberRoles>)
+                    {
+                        <tr>
+                            <td class="text-left">
+                                @Html.DisplayFor(modelItem => item.tb_Body.BodyName)
+                            </td>
+                            <td class="text-left">
+                                @Html.DisplayFor(modelItem => item.tb_Roles.RoleName)
+                            </td>
+                            <td class="text-left">
+                                @Html.DisplayFor(modelItem => item.StartDate, "{0:yyyy-MM-dd}", new { @class = "form-control datecontrol", type = "date", style = "width: 150px;" })
+                            </td>
+                            <td class="text-left">
+                                @Html.DisplayFor(modelItem => item.EndDate, "{0:yyyy-MM-dd}", new { @class = "form-control datecontrol", type = "date", style = "width: 150px;" })
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+
+    </div>
+}
+
+    <div class="col-md-offset-1 col-md-11">
+        <a href="@Url.Action("Details", "Home", new { id = Model._MemberID })" class="btn btn-info">&nbsp;&nbsp;Back<span class="glyphicon glyphicon-arrow-left pull-left" aria-hidden="true"></span></a>
+    </div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -24,7 +24,7 @@ namespace LRC_NET_Framework
         public Nullable<int> ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedDateTime { get; set; }
     
-        public virtual tb_MemberMaster tb_MemberMaster { get; set; }
         public virtual tb_PhoneType tb_PhoneType { get; set; }
+        public virtual tb_MemberMaster tb_MemberMaster { get; set; }
     }
 }

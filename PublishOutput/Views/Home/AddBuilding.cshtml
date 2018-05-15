@@ -1,0 +1,118 @@
+﻿@model IEnumerable<LRC_NET_Framework.tb_College> 
+@{
+    ViewBag.Title = "Manage Notes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="font-weight-bold" style="background-color: #357ebd; border-bottom-left-radius:7px; border-bottom-right-radius:7px; color:gainsboro; padding-top:5px; padding-bottom:5px; padding-left:30px;"><h4>Building Department Management</h4></div>
+<div class="form-horizontal">
+    @using (Ajax.BeginForm("GetCampuses", null, new AjaxOptions { UpdateTargetId = "resultsCollege" }, new { id = "DDLCollege" }))
+    {
+        <div class="col-md-11 col-md-offset-1"><h4>Add Building</h4></div>
+        <hr />
+
+        <div class="form-group">
+            <div class="col-md-11 col-md-offset-1" id="School">
+                @Html.Label("School", "School", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
+                @Html.DropDownList("College", ViewBag.Colleges as SelectList, "-- Select One --", new { @class = "form-control", onchange = "CollegeChanged(this)", style = "width: 300px" })
+                @Html.ValidationMessageFor(model => model.FirstOrDefault().CollegeID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    }
+
+    @using (Html.BeginForm("AddBuilding", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.Hidden("College", (int)ViewBag.CollegeID)
+        <div id="resultsCollege">
+            @*<---- particial View*@
+            <div id="searchresults">
+                <div class="form-group">
+                    <div class="col-md-11 col-md-offset-1" id="Campus">
+                        @Html.Label("Campus", "Campus", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
+                        <select disabled class="form-control" style="width: 300px">
+                            <option>  --Select School--  </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-11 col-md-offset-1" id="Building">
+                        @Html.Label("Building", "Building", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
+                        <input type="text" name="BuildingName" class="form-control" disabled />
+                        @*@Html.ValidationMessageFor(model   => model.CollegeID, "", new { @class = "text-danger" })*@
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-11 col-md-offset-1" id="BuildingPicture" style="padding-bottom:15px;">
+                @Html.Label("BuildingPicture", "Picture of Building", htmlAttributes: new { @class = "control-label" })
+                <label for="file">Choose File:</label>
+                <input class="btn btn-info" type="file" name="file" id="file" />
+                @*@Html.ValidationMessageFor(model => model._FormImagePath, "", new { @class = "text-danger" })*@
+                @ViewBag.Message
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-1 col-md-11">
+                <input type="submit" value="Submit" class="btn btn-primary" />
+            </div>
+        </div>
+    }
+
+    <fieldset>
+    <div class="form-group">
+        <div class="col-md-11 col-md-offset-1" id="BuildingList">
+            @Html.Label("BuildingList", "Building List", htmlAttributes: new { @class = "control-label", style= "font-size:larger" })
+            <table class="table">
+                <tr class="text-info" style="background-color:gainsboro;">
+                    <th class="text-left" width="20%">
+                        Campus
+                    </th>
+                    <th class="text-left">
+                        Building
+                    </th>
+                </tr>
+                @foreach (var school in Model)
+                {
+                    <tr>
+                        <td class="text-left" colspan="2" style="background-color:lightgray; font-weight:bold; font-size:larger">
+                            @Html.DisplayFor(modelItem => school.CollegeName)
+                        </td>
+                    </tr>
+                    foreach (var campus in school.tb_Campus)
+                    {
+                    <tr>
+                        <td class="text-left">
+                            @Html.DisplayFor(modelItem => campus.CampusName)
+                        </td>
+                        <td class="text-left text-info">
+                            @foreach (var building in campus.tb_Building)
+                            {
+                                @Html.DisplayFor(modelItem => building.BuildingName) <span>|</span>
+                            }
+                        </td>
+                    </tr>
+                    }
+                }
+            </table>
+        </div>
+    </div>
+    <div class="col-md-11 col-md-offset-1 text-danger">
+        <b>NOTE: </b>Department & Department Group are shared across school. This means you are responsible for maintaining consistent names of your schools. It also means you can't rename them because another local may be used that name. If you see <b>Fine Arts</b> but you want <b>Fine & Applied Arts</b>, then add it. But check to see if <b>Fine and Applied Arts</b> already exist (unless the ampersand is really important to you).
+    </div>
+</fieldset>
+</div>
+
+@section scripts{
+    @Scripts.Render("~/scripts/jquery.unobtrusive-ajax.min.js")
+    <script>
+        function CollegeChanged() {
+            $("#DDLCollege").submit();
+        }
+    </script>
+}

@@ -340,6 +340,15 @@ namespace LRC_NET_Framework.Controllers
                 return HttpNotFound();
             }
 
+            string twitterHandle = String.Empty;
+            string facebookID = String.Empty;
+            var activities = tb_MemberMaster.tb_MemberActivity.Where(t => t.MemberID == id);
+            if (activities.Count() > 0)
+            {
+                twitterHandle = activities.LastOrDefault().TwitterHandle;
+                facebookID = activities.LastOrDefault().FacebookID;
+            }
+
             EditWorkerModels model = new EditWorkerModels()
             {
                 _MemberID = tb_MemberMaster.MemberID,
@@ -355,8 +364,8 @@ namespace LRC_NET_Framework.Controllers
                 _CategoryID = tb_MemberMaster.CategoryID,
                 _Categories = new SelectList(db.tb_Categories, "CategoryID", "CategoryName", tb_MemberMaster.CategoryID),
                 _HireDate = tb_MemberMaster.HireDate?? DateTime.Now,
-                _TwitterHandle = tb_MemberMaster.tb_MemberActivity.Where(t => t.MemberID == id).LastOrDefault().TwitterHandle,
-                _FaceBookID = tb_MemberMaster.tb_MemberActivity.Where(t => t.MemberID == id).LastOrDefault().FacebookID
+                _TwitterHandle = twitterHandle,
+                _FaceBookID = facebookID
             };
             return View(model);
         }
@@ -382,7 +391,7 @@ namespace LRC_NET_Framework.Controllers
                 worker.tb_MemberActivity.Where(t => t.MemberID == model._MemberID).LastOrDefault().TwitterHandle = model._TwitterHandle;
                 worker.tb_MemberActivity.Where(t => t.MemberID == model._MemberID).LastOrDefault().FacebookID = model._FaceBookID;
 
-                db.tb_MemberMaster.Attach(worker);
+                //db.tb_MemberMaster.Attach(worker);
                 var entry = db.Entry(worker);
                 try
                 {

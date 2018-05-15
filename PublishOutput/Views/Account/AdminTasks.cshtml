@@ -1,0 +1,94 @@
+﻿@{
+    ViewBag.Title = "Confirm Registration";
+}
+
+<div class="font-weight-bold" style="background-color: #357ebd; border-bottom-left-radius:7px; border-bottom-right-radius:7px; color:gainsboro; padding-top:5px; padding-bottom:5px; padding-left:30px;">
+    <h4>
+        Confirm Registration
+    </h4>
+</div>
+
+<div style="font-size:smaller; padding-bottom:5px; border:solid; border-top-left-radius:7px; border-top-right-radius:7px; border-width:1px; border-color:gainsboro">
+    <fieldset>
+
+        <div class="row" style="padding-bottom:3px; padding-left:30px; padding-top:10px;">
+            <div class="col-md-6 col-md-offset-1" id="Users" style="background-color:lavender; border:solid; border-radius:5px; border-width:1px; border-color:gainsboro">
+                <div style="background-color:gainsboro; padding-bottom:5px; padding-left:30px; border-bottom-left-radius:5px; border-bottom-right-radius:5px;">@Html.Label("Users", "Registered Users", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })</div>
+                <table class="table">
+                    <tr class="text-info">
+                        <th>
+                            User Name
+                        </th>
+                        <th>
+                            Role
+                        </th>
+                    </tr>
+                    @foreach (var item in ViewBag.UsersAndRoles as List<SelectListItem>)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Text)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Value)
+                            </td>
+                            <td>
+                                @if (String.IsNullOrEmpty(item.Value))
+                                {
+                                    @Html.ActionLink("Confirm", "ApplyRegistrationRequest", new { userName = item.Text })
+                                    @*<span>&nbsp;|&nbsp;</span>
+                                        @Html.ActionLink("Reject", "RejectRegistrationRequest", new { userName = item.Text })*@
+                                }
+                                else
+                                {
+                                    @Html.ActionLink("Reject", "RejectRegistrationRequest", new { userName = item.Text })
+                                }
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+
+    </fieldset>
+</div>
+
+<div class="font-weight-bold" style="background-color: #357ebd; border-bottom-left-radius:7px; border-bottom-right-radius:7px; color:gainsboro; padding-top:5px; padding-bottom:5px; padding-left:30px;">
+    <h4>
+        Import Certified Bargaining Unit (CBU) file from the national union
+    </h4>
+</div>
+<div style="font-size:smaller; padding-bottom:5px; border:solid; border-top-left-radius:7px; border-top-right-radius:7px; border-width:1px; border-color:gainsboro">
+    @using (Html.BeginForm("UploadExcel", "Account", FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return myFunction()" }))
+
+    {
+        <div class="form-horizontal" style="margin-top:10px;">
+            <div class="form-group">
+                <div class="control-label col-md-2">Download Format:</div>
+                <div class="col-md-10">
+                    <a href="#" class="btn btn-default">Excel&nbsp;&nbsp;<span class="glyphicon glyphicon-import" aria-hidden="true"></span></a>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+
+                <div class="control-label col-md-2">Excel:</div>
+                <div class="col-md-10">
+                    <input type="file" id="FileUpload" name="FileUpload" class="btn btn-info" />
+                    <div id="results" class="text-danger">
+                        @ViewBag.ResultMessage
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Upload" id="btnSubmit" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    }
+</div>
+    @section Scripts {
+
+    }

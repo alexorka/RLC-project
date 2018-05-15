@@ -18,6 +18,7 @@ namespace LRC_NET_Framework
         public tb_Campus()
         {
             this.tb_Building = new HashSet<tb_Building>();
+            this.tb_MemberMaster = new HashSet<tb_MemberMaster>();
         }
     
         public int CampusID { get; set; }
@@ -28,5 +29,7 @@ namespace LRC_NET_Framework
         public virtual tb_College tb_College { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_Building> tb_Building { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tb_MemberMaster> tb_MemberMaster { get; set; }
     }
 }
