@@ -1318,7 +1318,7 @@ namespace LRC_NET_Framework.Controllers
                     //data.Add("<li>Only Excel file format is allowed</li>");
                     //data.Add("</ul>");
                     //data.ToArray();
-                    message = "Only Excel file format is allowed";
+                    message = "Only Excel file format is allowed. ContentType is " + FileUpload.ContentType;
                     //return Json(data, JsonRequestBehavior.AllowGet);
                     return RedirectToAction("AdminTasks", new { xlsSelectResult = message });
                 }
