@@ -68,6 +68,7 @@
                 <div class="col-md-10">
                     <a href="#" class="btn btn-default">Excel&nbsp;&nbsp;<span class="glyphicon glyphicon-import" aria-hidden="true"></span></a>
                 </div>
+
             </div>
 
 
@@ -80,13 +81,38 @@
                         @ViewBag.ResultMessage
                     </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Upload" id="btnSubmit" class="btn btn-primary" />
+                <div class="col-md-10 col-md-offset-2" style="margin-top:12px;">
+                    <table style="border:solid; border-radius:7px; border-width:1px; border-color:gainsboro;">
+                        <tr>
+                            <td colspan="4" style="background-color:lavender; font-weight:bolder; padding:5px;">Select Import Type:</td>
+
+                        </tr>
+                        <tr>
+                            <td style="padding:5px;">
+                                @Html.RadioButton("ImportType", "1", isChecked: false) @Html.Label("Full-Time", new { style = "font-weight:normal;" })
+                            </td>
+                            <td style="padding:10px;">
+                                @Html.RadioButton("ImportType", "2", isChecked: false) @Html.Label("Adjunct", new { style = "font-weight:normal;" })
+                            </td>
+                            <td style="padding:10px;">
+                                @Html.RadioButton("ImportType", "3", isChecked: false) @Html.Label("REG Schedule", new { style = "font-weight:normal;" })
+                            </td>
+                            <td style="padding:10px;">
+                                @Html.RadioButton("ImportType", "4", isChecked: false) @Html.Label("ADJ Schedule", new { style = "font-weight:normal;" })
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="text-danger">
+                        @ViewBag.FileTypeMessage
+                    </div>
+                </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Upload" id="btnSubmit" class="btn btn-primary" />
+                    </div>
                 </div>
             </div>
-        </div>
     }
 </div>
     @section Scripts {

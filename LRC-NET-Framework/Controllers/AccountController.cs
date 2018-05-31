@@ -18,6 +18,7 @@ using System.Data.OleDb;
 using System.IO;
 using System.Data;
 using System.Data.Entity.Validation;
+using System.Threading;
 
 //using System.Web.Http;
 
@@ -231,9 +232,9 @@ namespace LRC_NET_Framework.Controllers
         //
         // GET: /Account/AdminTasks
         [Authorize(Roles = "admin")]
-        public ActionResult AdminTasks(string xlsSelectResult)
+        public ActionResult AdminTasks(string xlsSelectResult, string fileTypeSelectResult)
         {
-            var _users = db.AspNetUsers.ToList();
+        var _users = db.AspNetUsers.ToList();
             List<SelectListItem> _UsersRoles = new List<SelectListItem>();
             foreach (var _user in _users)
             {
@@ -245,6 +246,7 @@ namespace LRC_NET_Framework.Controllers
             }
             ViewBag.UsersAndRoles = _UsersRoles;
             ViewBag.ResultMessage = xlsSelectResult ?? String.Empty;
+            ViewBag.FileTypeMessage = fileTypeSelectResult ?? String.Empty;
 
             return View();
         }
@@ -262,7 +264,10 @@ namespace LRC_NET_Framework.Controllers
             var result = await UserManager.AddToRoleAsync(user.Id, uRole);
             if (result.Succeeded)
             {
-                user.UserName = uName; //Place email to UserName field in AspNetUsers table. We keeped RoleName there before
+                //Place email to UserName field in AspNetUsers table. We keeped RoleName there before
+                user.UserName = uName; 
+                await UserManager.UpdateAsync(user);
+
                 //await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
             }
             AddErrors(result);
@@ -978,73 +983,8 @@ namespace LRC_NET_Framework.Controllers
             }
         }
 
-        ////Get tb_Employers record for current Member
-        ////Assign MemberID for existing Member or return tb_Employers.MemberID = 0 for new one
-        // Not used variant because tb_MemberMaster.MemberIDNumber = CBU.EmployeeID
-        //private tb_Employers GetEmployee(string employeeID, int mID)
-        //{
-        //    //If such member was found
-        //    if (mID > 0)
-        //    {
-        //        //Find employee by memberID
-        //        var employees = db.tb_Employers.Where(s => s.MemberID == mID);
-        //        //If current member has employeeID
-        //        if (employees.Count() > 0)
-        //        {
-        //            //Checking if employeeID already exist
-        //            employees = employees.Where(s => s.EmployerIDNumber.ToUpper() == employeeID.ToUpper());
-        //            if (employees.Count() > 0)
-        //            {
-        //                //Just return founded same as in CBU old employeeID with current memberID
-        //                tb_Employers empl = new tb_Employers();
-        //                empl = employees.FirstOrDefault();
-        //                empl.EmployerName = String.Empty;
-        //                return empl;
-        //            }
-        //            //Current member hasn't phone as in CBU
-        //            else
-        //            {
-        //                //return with current memberID and new CBU employeeID
-        //                tb_Employers empl = new tb_Employers()
-        //                {
-        //                    MemberID = mID,
-        //                    EmployerIDNumber = employeeID,
-        //                    EmployerName = String.Empty
-        //                };
-        //                return empl;
-        //            }
-        //        }
-        //        //Current member hasn't any phone(s)
-        //        else
-        //        {
-        //            //return with current memberID and new CBU employeeID
-        //            tb_Employers empl = new tb_Employers()
-        //            {
-        //                MemberID = mID,
-        //                EmployerIDNumber = employeeID,
-        //                EmployerName = String.Empty
-        //            };
-        //            return empl;
-        //        }
-        //    }
-        //    // New member
-        //    else
-        //    {
-        //        //return with memberID = 0 and with new employeeID
-        //        tb_Employers empl = new tb_Employers()
-        //        {
-        //            MemberID = 0,
-        //            EmployerIDNumber = employeeID,
-        //            EmployerName = String.Empty
-        //        };
-        //        return empl;
-        //    }
-        //}
-
-        // POST: AdminTasks
-
         [HttpPost]
-        public ActionResult UploadExcel(HttpPostedFileBase FileUpload)
+        public ActionResult UploadExcel(HttpPostedFileBase FileUpload, int? ImportType)
         {
             string test = String.Empty;
             #region Test GetAreaName
@@ -1192,7 +1132,15 @@ namespace LRC_NET_Framework.Controllers
 
                     DataTable dtable = ds.Tables["ExcelTable"];
 
-                    string sheetName = "Full time";
+                    string sheetName = String.Empty;
+                    switch (ImportType)
+                    {
+                        case 1: sheetName = "Full time"; break;
+                        case 2: sheetName = "Adjunct"; break;
+                        case 3: sheetName = "REG Schedule"; return RedirectToAction("AdminTasks", new { fileTypeSelectResult = "REG Schedule file type isn't realized" });
+                        case 4: sheetName = "ADJ Schedule"; return RedirectToAction("AdminTasks", new { fileTypeSelectResult = "ADJ Schedule file type isn't realized" });
+                        default:return RedirectToAction("AdminTasks", new { fileTypeSelectResult = "Select appropriate file type" });
+                    }
 
                     var excelFile = new ExcelQueryFactory(pathToExcelFile);
                     var members = from a in excelFile.Worksheet<ExcelMembers>(sheetName) select a;
