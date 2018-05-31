@@ -216,7 +216,7 @@ namespace LRC_NET_Framework.Controllers
             if (ModelState.IsValid)
             {
                 string selectedRole = roles.Where(t => t.Value == Roles).FirstOrDefault().Text;
-                var user = new ApplicationUser { UserName = selectedRole, Email = model.Email }; // placing selected Role Name to User Name in AspNetUsers table
+                var user = new ApplicationUser { UserName = model.Email + ":" + selectedRole, Email = model.Email }; // placing selected Role Name to User Name in AspNetUsers table
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -240,7 +240,7 @@ namespace LRC_NET_Framework.Controllers
             {
                 string  currentRoles = UserManager.GetRolesAsync(_user.Id).Result.FirstOrDefault();
                 if (String.IsNullOrEmpty(currentRoles))
-                    _UsersRoles.Add(new SelectListItem() { Text = _user.Email + ":" + _user.UserName, Value = currentRoles });
+                    _UsersRoles.Add(new SelectListItem() { Text = /*_user.Email + ":" + */_user.UserName, Value = currentRoles });
                 else
                     _UsersRoles.Add(new SelectListItem() { Text = _user.Email, Value = currentRoles });
             }
