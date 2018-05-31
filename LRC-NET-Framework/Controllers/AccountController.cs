@@ -280,19 +280,18 @@ namespace LRC_NET_Framework.Controllers
         [Authorize(Roles = "admin")]
         public async Task<ActionResult> RejectRegistrationRequest(string userName)
         {
-            //var uNameRole = userName.Split(':');
-            //string uName = uNameRole[0].Trim();
-            //string uRole = uNameRole[1].Trim();
+            //Delete user on Reject action
             var user = await UserManager.FindByEmailAsync(userName.Trim());
-            string currentRoles = UserManager.GetRolesAsync(user.Id).Result.FirstOrDefault();
-            var result = await UserManager.RemoveFromRoleAsync(user.Id, currentRoles);
+            var result = await UserManager.DeleteAsync(user);
+
+            //string currentRoles = UserManager.GetRolesAsync(user.Id).Result.FirstOrDefault();
+            //var result = await UserManager.RemoveFromRoleAsync(user.Id, currentRoles);
 
             //result = await UserManager.AddToRoleAsync(user.Id, currentRoles);
-            if (result.Succeeded)
-            {
-                user.UserName = currentRoles; //Place RoleName to UserName field in AspNetUsers table. To keep it for confirmation
-                //await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-            }
+            //if (result.Succeeded)
+            //{
+            //    //await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+            //}
             AddErrors(result);
             return RedirectToAction("AdminTasks", "Account");
         }
