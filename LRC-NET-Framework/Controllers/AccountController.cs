@@ -1101,183 +1101,155 @@ namespace LRC_NET_Framework.Controllers
             #endregion
 
             string message = String.Empty;
-            List<string> data = new List<string>();
-            if (FileUpload != null)
+            if (FileUpload == null)
             {
-                // tdata.ExecuteCommand("truncate table OtherCompanyAssets");  
-                if (FileUpload.ContentType == "application/vnd.ms-excel" || FileUpload.ContentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-                {
-                    string filename = FileUpload.FileName;
-                    string filepath = "~/ImportExcel/1/";
-                    if (!Directory.Exists(Server.MapPath(filepath)))
-                        Directory.CreateDirectory(Server.MapPath(filepath));
-                    string targetpath = Server.MapPath(filepath);
-                    FileUpload.SaveAs(targetpath + filename);
-                    string pathToExcelFile = targetpath + filename;
-                    var connectionString = "";
-                    if (filename.EndsWith(".xls"))
-                    {
-                        connectionString = string.Format("Provider=Microsoft.Jet.OLEDB.4.0; data source={0}; Extended Properties=Excel 8.0;", pathToExcelFile);
-                    }
-                    else if (filename.EndsWith(".xlsx"))
-                    {
-                        connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};Extended Properties=\"Excel 12.0 Xml;HDR=YES;IMEX=1\";", pathToExcelFile);
-                    }
-
-                    var adapter = new OleDbDataAdapter("SELECT * FROM [Full time$]", connectionString);
-                    var ds = new DataSet();
-
-                    adapter.Fill(ds, "ExcelTable");
-
-                    DataTable dtable = ds.Tables["ExcelTable"];
-
-                    string sheetName = String.Empty;
-                    switch (ImportType)
-                    {
-                        case 1: sheetName = "Full time"; break;
-                        case 2: sheetName = "Adjunct"; break;
-                        case 3: sheetName = "REG Schedule"; return RedirectToAction("AdminTasks", new { fileTypeSelectResult = "REG Schedule file type isn't realized" });
-                        case 4: sheetName = "ADJ Schedule"; return RedirectToAction("AdminTasks", new { fileTypeSelectResult = "ADJ Schedule file type isn't realized" });
-                        default:return RedirectToAction("AdminTasks", new { fileTypeSelectResult = "Select appropriate file type" });
-                    }
-
-                    var excelFile = new ExcelQueryFactory(pathToExcelFile);
-                    var members = from a in excelFile.Worksheet<ExcelMembers>(sheetName) select a;
-
-                    foreach (var cbuItem in members)
-                    {
-                        try
-                        {
-                            if (!String.IsNullOrEmpty(cbuItem.Name) || !String.IsNullOrEmpty(cbuItem.EmployeeID))
-                            {
-                                string lastName = String.Empty;
-                                string firstName = String.Empty;
-                                string middleName = String.Empty;
-                                tb_MemberMaster FM = new tb_MemberMaster();
-                                if (SplitFullName(cbuItem.Name, out lastName, out firstName, out middleName) == "Success")
-                                {
-                                    //CBU.Name
-                                    FM.LastName =   lastName;
-                                    FM.FirstName = firstName;
-                                    FM.MiddleName = middleName.Replace(".", "");
-                                    //CBU.EmployeeID
-                                    FM.MemberIDNumber = cbuItem.EmployeeID;
-                                }
-
-
-                                if (sheetName == "Full time")
-                                {
-                                    //Adjunct or Full-Time
-                                    FM.JobStatusID = 2; //2 = Full-Time
-                                    //Status
-                                    FM.DuesID = 5; // 5 = ‘Unknown - Full-time’ in tb_Dues table
-                                }
-                                else
-                                {
-                                    //Adjunct or Full-Time
-                                    FM.JobStatusID = 1; //2 = Adjunct
-                                    //Status
-                                    FM.DuesID = 4; // 5 = ‘Unknown - Adjunct’ in tb_Dues table
-                                }
-
-                                int campusId = GetCampusID(GetCampusCode(cbuItem.Location));
-
-                                //CBU.Location
-                                FM.CampusID = campusId;
-                                //CBU.Descr (1)
-                                FM.AreaID = GetAreaID(GetAreaName(cbuItem.Descr));
-                                //CBU.Descr (2)
-                                FM.DepartmentID = GetDepartmentID(GetDepartmentName(cbuItem.Descr), campusId);
-                                //DivisionID (Required field. Need to be filled)
-                                FM.DivisionID = 108; //108 = 'Unknown' from tb_Division table
-                                //CategoryID (Required field. Need to be filled)
-                                FM.CategoryID = 4; //4 = 'Unknown' from tb_Categories table
-                                //Check is Facility Member exist in DB
-                                FM.MemberID = IsMemberExistInDB(FM.LastName, FM.FirstName, FM.MiddleName);
-
-                                if (FM.MemberID == 0) // New Facility Member
-                                {
-
-                                    db.tb_MemberMaster.Add(FM);
-
-                                    try
-                                    {
-                                        db.SaveChanges();
-                                    }
-                                    catch (DbEntityValidationException ex)
-                                    {
-                                        foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
-                                        {
-                                            Response.Write("Object: " + validationError.Entry.Entity.ToString());
-                                            Response.Write("");
-                                            foreach (DbValidationError err in validationError.ValidationErrors)
-                                            {
-                                                Response.Write(err.ErrorMessage + "");
-                                            }
-                                        }
-                                    }
-                                }
-
-                                AssignAddress(cbuItem.Address, cbuItem.City, cbuItem.St, cbuItem.Postal, FM.MemberID);
-                                AssignPhoneNumber(cbuItem.Phone, FM.MemberID);
-                            }
-                            else
-                            {
-                                message = String.Empty;
-                                //data.Add("<ul>");
-                                if (cbuItem.Name == "" || cbuItem.Name == null)
-                                    message = "Name is required; ";
-                                if (cbuItem.EmployeeID == "" || cbuItem.EmployeeID == null)
-                                    message = "EmployeeID is required; ";
-
-                                return RedirectToAction("AdminTasks", new { xlsSelectResult = message });
-
-                            }
-                        }
-
-                        catch (DbEntityValidationException ex)
-                        {
-                            foreach (var entityValidationErrors in ex.EntityValidationErrors)
-                            {
-
-                                foreach (var validationError in entityValidationErrors.ValidationErrors)
-                                {
-
-                                    Response.Write("Property: " + validationError.PropertyName + " Error: " + validationError.ErrorMessage);
-
-                                }
-
-                            }
-                        }
-                    }
-                    //deleting excel file from folder  
-                    if ((System.IO.File.Exists(pathToExcelFile)))
-                    {
-                        System.IO.File.Delete(pathToExcelFile);
-                    }
-                    //return Json("success", JsonRequestBehavior.AllowGet);
-                    return RedirectToAction("Index", "Home");
-                }
-                else
-                {
-                    ////alert message for invalid file format  
-                    //data.Add("<ul>");
-                    //data.Add("<li>Only Excel file format is allowed</li>");
-                    //data.Add("</ul>");
-                    //data.ToArray();
-                    message = "Only Excel file format is allowed. ContentType is " + FileUpload.ContentType;
-                    //return Json(data, JsonRequestBehavior.AllowGet);
-                    return RedirectToAction("AdminTasks", new { xlsSelectResult = message });
-                }
-            }
-            else
-            {
-                //if (FileUpload == null) data.Add("Please choose Excel file");
-                //data.ToArray();
-                //return Json(data, JsonRequestBehavior.AllowGet);
-                if (FileUpload == null) message = "Please choose Excel file";
+                message = "Please choose Excel file";
                 return RedirectToAction("AdminTasks", new { xlsSelectResult = message });
             }
+
+            string filename = FileUpload.FileName;
+            var extension = filename.Split('.').Last().ToUpper();
+            if (extension != "XSL" && extension != "XLSX")
+            {
+                message = "Only Excel file format is allowed (.xls or .xlsx)";
+                return RedirectToAction("AdminTasks", new { xlsSelectResult = message });
+            }
+
+            if (ImportType == null)
+            {
+                message = "Excel sheet is not selected.";
+                return RedirectToAction("AdminTasks", new { xlsSelectResult = message });
+            }
+            string filepath = "~/ImportExcel/1/";
+            if (!Directory.Exists(Server.MapPath(filepath)))
+                Directory.CreateDirectory(Server.MapPath(filepath));
+            string targetpath = Server.MapPath(filepath);
+            FileUpload.SaveAs(targetpath + filename);
+            string pathToExcelFile = targetpath + filename;
+
+            string sheetName = String.Empty;
+            switch (ImportType)
+            {
+                case 1: sheetName = "Full time"; break;
+                case 2: sheetName = "Adjunct"; break;
+                case 3: sheetName = "REG Schedule"; return RedirectToAction("AdminTasks", new { fileTypeSelectResult = "REG Schedule file type isn't realized" });
+                case 4: sheetName = "ADJ Schedule"; return RedirectToAction("AdminTasks", new { fileTypeSelectResult = "ADJ Schedule file type isn't realized" });
+                default: return RedirectToAction("AdminTasks", new { fileTypeSelectResult = "Select appropriate file type" });
+            }
+
+            var excelFile = new ExcelQueryFactory(pathToExcelFile);
+            var members = from a in excelFile.Worksheet<ExcelMembers>(sheetName) select a;
+
+            foreach (var cbuItem in members)
+            {
+                try
+                {
+                    if (!String.IsNullOrEmpty(cbuItem.Name) || !String.IsNullOrEmpty(cbuItem.EmployeeID))
+                    {
+                        string lastName = String.Empty;
+                        string firstName = String.Empty;
+                        string middleName = String.Empty;
+                        tb_MemberMaster FM = new tb_MemberMaster();
+                        if (SplitFullName(cbuItem.Name, out lastName, out firstName, out middleName) == "Success")
+                        {
+                            //CBU.Name
+                            FM.LastName = lastName;
+                            FM.FirstName = firstName;
+                            FM.MiddleName = middleName.Replace(".", "");
+                            //CBU.EmployeeID
+                            FM.MemberIDNumber = cbuItem.EmployeeID;
+                        }
+
+
+                        if (sheetName == "Full time")
+                        {
+                            //Adjunct or Full-Time
+                            FM.JobStatusID = 2; //2 = Full-Time
+                                                //Status
+                            FM.DuesID = 5; // 5 = ‘Unknown - Full-time’ in tb_Dues table
+                        }
+                        else
+                        {
+                            //Adjunct or Full-Time
+                            FM.JobStatusID = 1; //2 = Adjunct
+                                                //Status
+                            FM.DuesID = 4; // 5 = ‘Unknown - Adjunct’ in tb_Dues table
+                        }
+
+                        int campusId = GetCampusID(GetCampusCode(cbuItem.Location));
+
+                        //CBU.Location
+                        FM.CampusID = campusId;
+                        //CBU.Descr (1)
+                        FM.AreaID = GetAreaID(GetAreaName(cbuItem.Descr));
+                        //CBU.Descr (2)
+                        FM.DepartmentID = GetDepartmentID(GetDepartmentName(cbuItem.Descr), campusId);
+                        //DivisionID (Required field. Need to be filled)
+                        FM.DivisionID = 108; //108 = 'Unknown' from tb_Division table
+                                             //CategoryID (Required field. Need to be filled)
+                        FM.CategoryID = 4; //4 = 'Unknown' from tb_Categories table
+                                           //Check is Facility Member exist in DB
+                        FM.MemberID = IsMemberExistInDB(FM.LastName, FM.FirstName, FM.MiddleName);
+
+                        if (FM.MemberID == 0) // New Facility Member
+                        {
+
+                            db.tb_MemberMaster.Add(FM);
+
+                            try
+                            {
+                                db.SaveChanges();
+                            }
+                            catch (DbEntityValidationException ex)
+                            {
+                                foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
+                                {
+                                    Response.Write("Object: " + validationError.Entry.Entity.ToString());
+                                    Response.Write("");
+                                    foreach (DbValidationError err in validationError.ValidationErrors)
+                                    {
+                                        Response.Write(err.ErrorMessage + "");
+                                    }
+                                }
+                            }
+                        }
+
+                        AssignAddress(cbuItem.Address, cbuItem.City, cbuItem.St, cbuItem.Postal, FM.MemberID);
+                        AssignPhoneNumber(cbuItem.Phone, FM.MemberID);
+                        }
+                        else
+                        {
+                            message = String.Empty;
+                            //data.Add("<ul>");
+                            if (cbuItem.Name == "" || cbuItem.Name == null)
+                                message = "Name is required; ";
+                            if (cbuItem.EmployeeID == "" || cbuItem.EmployeeID == null)
+                                message = "EmployeeID is required; ";
+
+                            return RedirectToAction("AdminTasks", new { xlsSelectResult = message });
+                        }
+                }
+
+                catch (DbEntityValidationException ex)
+                {
+                    foreach (var entityValidationErrors in ex.EntityValidationErrors)
+                    {
+
+                        foreach (var validationError in entityValidationErrors.ValidationErrors)
+                        {
+
+                            Response.Write("Property: " + validationError.PropertyName + " Error: " + validationError.ErrorMessage);
+
+                        }
+                    }
+                }
+            }
+            //deleting excel file from folder  
+            if ((System.IO.File.Exists(pathToExcelFile)))
+            {
+                System.IO.File.Delete(pathToExcelFile);
+            }
+            return RedirectToAction("Index", "Home");
         }
 
         //
