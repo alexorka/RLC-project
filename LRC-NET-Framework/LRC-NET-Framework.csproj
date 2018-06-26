@@ -257,6 +257,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AssessActivityModels.cs" />
     <Compile Include="Models\CommonFunctions.cs" />
+    <Compile Include="Models\Error.cs" />
     <Compile Include="Models\ExcelImport.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
