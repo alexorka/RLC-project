@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Collections;
 
 namespace ExcelImport.Models
 {
@@ -28,7 +29,8 @@ namespace ExcelImport.Models
         public string Building { get; set; }
         public string Room { get; set; }
         public string Division { get; set; }
-        public string Class { get; set; }
+        public string ClassNumber { get; set; }
+        public string CAT_NBR { get; set; }
         public string Sect { get; set; }
         public string Subject { get; set; }
         public string LecOrLab { get; set; }
@@ -38,8 +40,75 @@ namespace ExcelImport.Models
         public string EndTime { get; set; }
         public string Days { get; set; }
         public string ClassEndDate { get; set; }
+
     }
 
+    public class WeekDay
+    {
+        public string codeInExcel { get; set; }
+
+        //WeekDays from DB matching Excel Days
+        public string codeInDB { get; set; }
+
+    }
+
+    public class WeekDaysMatch
+    {
+        public const string Monday = "M";
+        public const string Tuesday = "TU";
+        public const string Wednesday = "W";
+        public const string Thursday = "TH";
+        public const string Friday = "FR";
+        public const string Saturday = "SA";
+        public const string Sunday = "SU";
+        public const string MW = "MW";
+        public const string MWF = "MWF";
+        public const string TTH = "TTH";
+        public const string MTWR = "MTWR";
+        public const string TR = "TR";
+        public const string TBA = "TBA";
+        public const string T = "T";
+        public const string R = "R";
+        public const string MTWRF = "MTWRF";
+
+        private static Hashtable DaysMatch = new Hashtable();
+
+        //--------------------------------------------------------------------------
+        /// <summary>
+        /// Constructor - add error code and message in hash table
+        /// </summary>
+        static WeekDaysMatch()
+        {
+            DaysMatch.Add(Monday, "Monday");
+            DaysMatch.Add(Tuesday, "Tuesday");
+            DaysMatch.Add(Wednesday, "Wednesday");
+            DaysMatch.Add(Thursday, "Tuesday");
+            DaysMatch.Add(Friday, "Friday");
+            DaysMatch.Add(Saturday, "Saturday");
+            DaysMatch.Add(Sunday, "Sunday");
+            DaysMatch.Add(MW, "M W");
+            DaysMatch.Add(MWF, "M W F");
+            DaysMatch.Add(TTH, "T TH");
+            DaysMatch.Add(MTWR, "M T W R");
+            DaysMatch.Add(TR, "T R");
+            DaysMatch.Add(TBA, "T B A");
+            DaysMatch.Add(T, "T");
+            DaysMatch.Add(R, "R");
+            DaysMatch.Add(MTWRF, "M T W R F");
+        }
+        public static String GetDaysCode(string hResult)
+        {
+            String eventMessage = DaysMatch[hResult] as String;
+
+            if (eventMessage == null)
+            {
+                eventMessage = "Error";
+            }
+
+            return eventMessage;
+        }
+
+    }
     //public class MemberFromExcel
     //{
     //    //Extract from Excel 'Location' field

@@ -42,7 +42,6 @@ namespace LRC_NET_Framework
         public virtual DbSet<tb_Campus> tb_Campus { get; set; }
         public virtual DbSet<tb_College> tb_College { get; set; }
         public virtual DbSet<tb_WeekDay> tb_WeekDay { get; set; }
-        public virtual DbSet<tb_SemesterTaught> tb_SemesterTaught { get; set; }
         public virtual DbSet<tb_PhoneType> tb_PhoneType { get; set; }
         public virtual DbSet<tb_AddressSource> tb_AddressSource { get; set; }
         public virtual DbSet<tb_States> tb_States { get; set; }
@@ -71,5 +70,6 @@ namespace LRC_NET_Framework
         public virtual DbSet<tb_CityState> tb_CityState { get; set; }
         public virtual DbSet<tb_Employers> tb_Employers { get; set; }
         public virtual DbSet<tb_Area> tb_Area { get; set; }
+        public virtual DbSet<tb_SemesterTaught> tb_SemesterTaught { get; set; }
     }
 }

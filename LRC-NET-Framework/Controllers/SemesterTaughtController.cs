@@ -85,8 +85,7 @@ namespace LRC_NET_Framework.Controllers
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "admin, organizer")]
         public ActionResult Create(SemesterTaughtModels model, int classWeekDayID)
-        //public ActionResult Create([Bind(Include = "SemesterTaughtID,SemesterRecID,MemberID,RoomID,ClassID,ClassStart,ClassEnd,ClassWeekDayID")] tb_SemesterTaught tb_SemesterTaught)
-        {
+         {
             //var semesterRecID = db.tb_Semesters.Where(t => t.DateFrom >= DateTime.UtcNow && t.DateTo < DateTime.UtcNow).FirstOrDefault().SemesterRecID;
             bool scheduleStatus = false;
             if (model._ScheduleStatusID == 1)

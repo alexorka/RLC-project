@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="0440ca77908841ea9f47cfe419dc968d" Name="Diagram1" ZoomLevel="45" ShowGrid="false">
+      <Diagram DiagramId="0440ca77908841ea9f47cfe419dc968d" Name="Diagram1" ZoomLevel="66" ShowGrid="false">
         <EntityTypeShape EntityType="LRCModel.tb_Attribute" Width="1.5" PointX="5.25" PointY="23.875" IsExpanded="true" />
         <EntityTypeShape EntityType="LRCModel.tb_Dues" Width="1.5" PointX="5.25" PointY="21.875" IsExpanded="true" />
         <EntityTypeShape EntityType="LRCModel.tb_Gender" Width="1.5" PointX="5.25" PointY="18" IsExpanded="true" />
@@ -26,9 +26,6 @@
         <AssociationConnector Association="LRCModel.FK_tb_Campus_tb_College" />
         <AssociationConnector Association="LRCModel.FK_tb_College_tb_District" />
         <EntityTypeShape EntityType="LRCModel.tb_WeekDay" Width="1.5" PointX="11.75" PointY="11.25" />
-        <EntityTypeShape EntityType="LRCModel.tb_SemesterTaught" Width="1.5" PointX="9.75" PointY="15.125" />
-        <AssociationConnector Association="LRCModel.FK_tb_SemesterTaught_tb_Semesters" />
-        <AssociationConnector Association="LRCModel.FK_tb_SemesterTaught_tb_WeekDay" />
         <EntityTypeShape EntityType="LRCModel.tb_PhoneType" Width="1.5" PointX="7" PointY="32.5" />
         <EntityTypeShape EntityType="LRCModel.tb_AddressSource" Width="1.5" PointX="13.875" PointY="26.375" />
         <EntityTypeShape EntityType="LRCModel.tb_States" Width="1.5" PointX="16" PointY="30.375" />
@@ -46,7 +43,6 @@
         <EntityTypeShape EntityType="LRCModel.tb_AlsoWorksAt" Width="1.5" PointX="11.75" PointY="16.5" />
         <EntityTypeShape EntityType="LRCModel.tb_Building" Width="1.5" PointX="9.75" PointY="11.125" />
         <AssociationConnector Association="LRCModel.FK_tb_Building_tb_Campus" />
-        <AssociationConnector Association="LRCModel.FK_tb_SemesterTaught_tb_Building" />
         <EntityTypeShape EntityType="LRCModel.tb_Department" Width="1.5" PointX="3.5" PointY="16.125" />
         <AssociationConnector Association="LRCModel.FK_tb_Department_tb_College" />
         <EntityTypeShape EntityType="LRCModel.tb_MemberEmail" Width="1.5" PointX="9.75" PointY="25.75" />
@@ -91,7 +87,6 @@
         <AssociationConnector Association="LRCModel.FK_tb_MemberPhoneNumbers_tb_MemberMaster" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberRoles_tb_MemberMaster" />
         <AssociationConnector Association="LRCModel.FK_tb_MembershipForms_tb_MemberMaster" />
-        <AssociationConnector Association="LRCModel.FK_tb_SemesterTaught_tb_MemberMaster" />
         <EntityTypeShape EntityType="LRCModel.tb_CityState" Width="1.5" PointX="13.875" PointY="30" />
         <AssociationConnector Association="LRCModel.FK_tb_CityState_tb_States" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberAddress_tb_CityState" />
@@ -99,6 +94,11 @@
         <AssociationConnector Association="LRCModel.FK_tb_AlsoWorksAt_tb_Employers" />
         <EntityTypeShape EntityType="LRCModel.tb_Area" Width="1.5" PointX="5.25" PointY="19.875" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberMaster_tb_Area" />
+        <EntityTypeShape EntityType="LRCModel.tb_SemesterTaught" Width="1.5" PointX="9.75" PointY="14.625" />
+        <AssociationConnector Association="LRCModel.FK_tb_SemesterTaught_tb_Building" />
+        <AssociationConnector Association="LRCModel.FK_tb_SemesterTaught_tb_MemberMaster" />
+        <AssociationConnector Association="LRCModel.FK_tb_SemesterTaught_tb_Semesters" />
+        <AssociationConnector Association="LRCModel.FK_tb_SemesterTaught_tb_WeekDay" />
 
         </Diagram>
     </edmx:Diagrams>

@@ -39,7 +39,7 @@ namespace LRC_NET_Framework.Controllers
         {
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
@@ -60,9 +60,9 @@ namespace LRC_NET_Framework.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -158,7 +158,7 @@ namespace LRC_NET_Framework.Controllers
             // If a user enters incorrect codes for a specified amount of time then the user account 
             // will be locked out for a specified amount of time. 
             // You can configure the account lockout settings in IdentityConfig
-            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
+            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -231,44 +231,6 @@ namespace LRC_NET_Framework.Controllers
         }
 
         //
-        // GET: /Account/AdminTasks
-        [Authorize(Roles = "admin")]
-        public ActionResult AdminTasks(string xlsSelectResult, string fileTypeSelectResult)
-        {
-        var _users = db.AspNetUsers.ToList();
-            List<SelectListItem> _UsersRoles = new List<SelectListItem>();
-            foreach (var _user in _users)
-            {
-                string  currentRoles = UserManager.GetRolesAsync(_user.Id).Result.FirstOrDefault();
-                if (String.IsNullOrEmpty(currentRoles))
-                    _UsersRoles.Add(new SelectListItem() { Text = /*_user.Email + ":" + */_user.UserName, Value = currentRoles });
-                else
-                    _UsersRoles.Add(new SelectListItem() { Text = _user.Email, Value = currentRoles });
-            }
-            ViewBag.UsersAndRoles = _UsersRoles;
-
-            List<SelectListItem> _errorList = new List<SelectListItem>();
-            if (!String.IsNullOrEmpty(xlsSelectResult))
-            {
-                var _errors = xlsSelectResult.Split(';');
-                int i = 0;
-                foreach (var _error in _errors)
-                {
-                    if (!String.IsNullOrEmpty(_error))
-                        _errorList.Add(new SelectListItem() { Text = _error, Value = i++.ToString() });
-                }
-            }
-            else
-            {
-                _errorList.Add(new SelectListItem() { Text = "Empty", Value = "0" });
-            }
-            ViewBag.ResultMessage = _errorList;
-            ViewBag.FileTypeMessage = fileTypeSelectResult ?? String.Empty;
-
-            return View();
-        }
-
-        //
         // GET: /Account/ApplyRegistrationRequest
         //[AllowAnonymous]
         [Authorize(Roles = "admin")]
@@ -282,7 +244,7 @@ namespace LRC_NET_Framework.Controllers
             if (result.Succeeded)
             {
                 //Place email to UserName field in AspNetUsers table. We keeped RoleName there before
-                user.UserName = uName; 
+                user.UserName = uName;
                 await UserManager.UpdateAsync(user);
 
                 //await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
@@ -597,6 +559,38 @@ namespace LRC_NET_Framework.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+
+        //
+        // GET: /Account/AdminTasks
+        [Authorize(Roles = "admin")]
+        public ActionResult AdminTasks(/*string fileTypeSelectResult*/)
+        {
+            var _users = db.AspNetUsers.ToList();
+            List<SelectListItem> _UsersRoles = new List<SelectListItem>();
+            foreach (var _user in _users)
+            {
+                string currentRoles = UserManager.GetRolesAsync(_user.Id).Result.FirstOrDefault();
+                if (String.IsNullOrEmpty(currentRoles))
+                    _UsersRoles.Add(new SelectListItem() { Text = /*_user.Email + ":" + */_user.UserName, Value = currentRoles });
+                else
+                    _UsersRoles.Add(new SelectListItem() { Text = _user.Email, Value = currentRoles });
+            }
+            ViewBag.UsersAndRoles = _UsersRoles;
+
+            List<string> errs = new List<string>();
+            if (TempData["ErrorList"] == null)
+            {
+                errs.Add("Empty");
+            }
+            else
+                errs = TempData["ErrorList"] as List<string>;
+
+            ViewData["ErrorList"] = errs;
+            //ViewBag.FileTypeMessage = fileTypeSelectResult ?? String.Empty;
+
+            return View();
+        }
+
         [HttpPost]
         public ActionResult UploadExcel(HttpPostedFileBase FileUpload, int? ImportType)
         {
@@ -715,12 +709,15 @@ namespace LRC_NET_Framework.Controllers
             //test = GetCampusCode("03DO");
             #endregion
 
-           Error error = new Error();
-           if (FileUpload == null)
+            Error error = new Error();
+            List<string> errs = new List<string>();
+            if (FileUpload == null)
             {
                 error.errCode = ErrorDetail.Failed;
                 error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Please choose file to upload";
-                return RedirectToAction("AdminTasks", new { xlsSelectResult = error.errMsg });
+                errs.Add(error.errMsg);
+                TempData["ErrorList"] = errs;
+                return RedirectToAction("AdminTasks");
             }
 
             string filename = FileUpload.FileName;
@@ -729,14 +726,18 @@ namespace LRC_NET_Framework.Controllers
             {
                 error.errCode = ErrorDetail.Failed;
                 error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Only Excel file format is allowed (.xls or .xlsx)";
-                return RedirectToAction("AdminTasks", new { xlsSelectResult = error.errMsg });
+                errs.Add(error.errMsg);
+                TempData["ErrorList"] = errs;
+                return RedirectToAction("AdminTasks");
             }
 
             if (ImportType == null)
             {
                 error.errCode = ErrorDetail.Failed;
                 error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Import type (Excel sheet) is not selected";
-                return RedirectToAction("AdminTasks", new { xlsSelectResult = error.errMsg });
+                errs.Add(error.errMsg);
+                TempData["ErrorList"] = errs;
+                return RedirectToAction("AdminTasks");
             }
             string filepath = "~/ImportExcel/1/";
             if (!Directory.Exists(Server.MapPath(filepath)))
@@ -747,24 +748,28 @@ namespace LRC_NET_Framework.Controllers
             string sheetName = String.Empty;
             switch (ImportType)
             {
-                case 1: error = MembersCbuImport(pathToExcelFile, "Full time"); break;
-                case 2: error = MembersCbuImport(pathToExcelFile, "Adjunct"); break;
-                case 3: error = FacultyScheduleImport(pathToExcelFile, "REG-Schedule"); break;
-                case 4: error = FacultyScheduleImport(pathToExcelFile, "ADJ Schedule"); break;
-                default: return RedirectToAction("AdminTasks", new { fileTypeSelectResult = "Select appropriate file type" });
+                case 1: errs = MembersCbuImport(pathToExcelFile, "Full time"); break;
+                case 2: errs = MembersCbuImport(pathToExcelFile, "Adjunct"); break;
+                case 3: errs = FacultyScheduleImport(pathToExcelFile, "REG-Schedule"); break;
+                case 4: errs = FacultyScheduleImport(pathToExcelFile, "ADJ-Schedule"); break;
+                default: return RedirectToAction("AdminTasks"/*, new { fileTypeSelectResult = "Select appropriate file type" }*/);
             }
-            if (error.errCode == ErrorDetail.Success)
+            if (errs == null || errs.Count == 0)
                 return RedirectToAction("Index", "Home");
             else
-                return RedirectToAction("AdminTasks", new { xlsSelectResult = error.errMsg });
+            {
+                TempData["ErrorList"] = errs;
+                return RedirectToAction("AdminTasks");
+            }
         }
 
         #region CBU Import
 
-        private Error MembersCbuImport(string pathToExcelFile, string sheetName)
+        private List<string> MembersCbuImport(string pathToExcelFile, string sheetName)
         {
             Error error = new Error();
             error.errCode = ErrorDetail.Success;
+            List<string> errs = new List<string>();
 
             var factory = new ExcelQueryFactory(pathToExcelFile);
             //Mapping ExcelMembers Model properties with an Excel fields
@@ -782,12 +787,23 @@ namespace LRC_NET_Framework.Controllers
             factory.StrictMapping = StrictMappingType.ClassStrict;
             factory.TrimSpaces = TrimSpacesType.Both;
             factory.ReadOnly = true;
+            List<ExcelMembers> members = new List<ExcelMembers>();
+            try
+            {
+                members = factory.Worksheet<ExcelMembers>(sheetName).ToList();
+            }
+            catch (Exception ex)
+            {
+                error.errCode = ErrorDetail.Failed;
+                error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!" + ex.Message;
+                errs.Add(error.errMsg);
+                return errs;
+            }
 
             //Common Fields Check before
-            var members = factory.Worksheet<ExcelMembers>(sheetName).ToList();
-            error = CheckFields(members);
-            if (error.errCode != ErrorDetail.Success)
-                return error;
+            errs = CheckCbuFields(members);
+            if (errs.Count > 0)
+                return errs;
 
             int record = 0;
             foreach (var cbuItem in members)
@@ -796,20 +812,21 @@ namespace LRC_NET_Framework.Controllers
                 try
                 {
                     tb_MemberMaster FM = new tb_MemberMaster();
-                    error = SplitFullName(cbuItem, out string lastName, out string firstName, out string middleName);
-                    if (error.errCode == ErrorDetail.Success)
+                    errs = SplitFullName(cbuItem.FullName, "MT", out string lastName, out string firstName, out string middleName);
+                    if (errs.Count == 0)
                     {
                         //CBU.Name
                         FM.LastName = lastName;
                         FM.FirstName = firstName;
-                        FM.MiddleName = middleName.Replace(".", "");
+                        FM.MiddleName = middleName;
                         //CBU.EmployeeID
                         FM.MemberIDNumber = cbuItem.EmployeeID;
                     }
                     else
                     {
-                        error.errMsg += "!Row #" + record.ToString();
-                        return error;
+                        error.errMsg = "!Row #" + record.ToString();
+                        errs.Add(error.errMsg);
+                        return errs;
                     }
 
                     if (sheetName == "Full time")
@@ -826,33 +843,36 @@ namespace LRC_NET_Framework.Controllers
                                             //Status
                         FM.DuesID = 4; // 5 = ‘Unknown - Adjunct’ in tb_Dues table
                     }
-
-                    error = GetCampusID(GetCampusCode(cbuItem.Location), out int campusId);
-                    if (error.errCode != ErrorDetail.Success)
-                        return error;
                     //CBU.Location
+                    errs = GetCampusCode(cbuItem.Location, out string campusCode);
+                    if (errs.Count > 0)
+                        return errs;
+                    errs = GetCampusID(campusCode, out int campusId);
+                    if (errs.Count > 0)
+                        return errs;
+
                     FM.CampusID = campusId;
                     //CBU.Descr (1)
-                    error = GetAreaName(cbuItem.Description, out string areaName);
-                    if (error.errCode != ErrorDetail.Success)
-                        return error;
-                    error = GetAreaID(areaName, out int areaID);
-                    if (error.errCode != ErrorDetail.Success)
-                        return error;
+                    errs = GetAreaName(cbuItem.Description, out string areaName);
+                    if (errs.Count > 0)
+                        return errs;
+                    errs = GetAreaID(areaName, out int areaID);
+                    if (errs.Count > 0)
+                        return errs;
                     FM.AreaID = areaID;
                     //CBU.Descr (2)
-                    error = GetDepartmentID(GetDepartmentName(cbuItem.Description), campusId, out int departmentID);
-                    if (error.errCode != ErrorDetail.Success)
-                        return error;
+                    errs = GetDepartmentID(GetDepartmentName(cbuItem.Description), campusId, out int departmentID);
+                    if (errs.Count > 0)
+                        return errs;
                     FM.DepartmentID = departmentID;
                     //DivisionID (Required field. Need to be filled)
                     FM.DivisionID = 108; //108 = 'Unknown' from tb_Division table
                                          //CategoryID (Required field. Need to be filled)
                     FM.CategoryID = 4; //4 = 'Unknown' from tb_Categories table
                     //Check is Facility Member exist in DB. Returned memberID = 0 means new member
-                    error = IsMemberExistInDB(FM.LastName, FM.FirstName, FM.MiddleName, out int memberID);
-                    if (error.errCode != ErrorDetail.Success)
-                        return error;
+                    errs = IsMemberExistInDB(FM.LastName, FM.FirstName, FM.MiddleName, out int memberID);
+                    if (errs.Count > 0)
+                        return errs;
                     FM.MemberID = memberID;
 
                     if (FM.MemberID == 0) // New Facility Member
@@ -868,38 +888,43 @@ namespace LRC_NET_Framework.Controllers
                         {
                             error.errCode = ErrorDetail.UnknownError;
                             error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!MembersCbuImport(...) function failed";
+                            errs.Add(error.errMsg);
                             foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
                             {
-                                error.errMsg += "!Object: " + validationError.Entry.Entity.ToString() + ";";
+                                error.errMsg = "!Object: " + validationError.Entry.Entity.ToString() + ";";
+                                errs.Add(error.errMsg);
                                 foreach (DbValidationError err in validationError.ValidationErrors)
                                 {
-                                    error.errMsg += ">!" + err.ErrorMessage + ";";
+                                    error.errMsg = ">!" + err.ErrorMessage + ";";
+                                    errs.Add(error.errMsg);
                                 }
                             }
-                            return error;
+                            return errs;
                         }
                     }
 
-                    error = AssignAddress(cbuItem.Address, cbuItem.City, cbuItem.State, cbuItem.Zip, FM.MemberID);
-                    if (error.errCode != ErrorDetail.Success)
-                        return error;
-                    error = AssignPhoneNumber(cbuItem.Phone, FM.MemberID);
-                    if (error.errCode != ErrorDetail.Success)
-                        return error;
+                    errs = AssignAddress(cbuItem.Address, cbuItem.City, cbuItem.State, cbuItem.Zip, FM.MemberID);
+                    if (errs.Count > 0)
+                        return errs;
+                    errs = AssignPhoneNumber(cbuItem.Phone, FM.MemberID);
+                    if (errs.Count > 0)
+                        return errs;
                 }
 
                 catch (DbEntityValidationException ex)
                 {
                     error.errCode = ErrorDetail.UnknownError;
                     error.errMsg = ErrorDetail.GetMsg(error.errCode);
+                    errs.Add(error.errMsg);
                     foreach (var entityValidationErrors in ex.EntityValidationErrors)
                     {
                         foreach (var validationError in entityValidationErrors.ValidationErrors)
                         {
-                            error.errMsg += " !Property: " + validationError.PropertyName + " Error: " + validationError.ErrorMessage + ";";
+                            error.errMsg = ">!Property: " + validationError.PropertyName + " Error: " + validationError.ErrorMessage + ";";
+                            errs.Add(error.errMsg);
                         }
                     }
-                    return error;
+                    return errs;
                 }
 
             }
@@ -908,14 +933,15 @@ namespace LRC_NET_Framework.Controllers
             {
                 System.IO.File.Delete(pathToExcelFile);
             }
-            return error;
+            return errs;
         }
 
         // Check excel spreadsheet fields are correct
-        private Error CheckFields(List<ExcelMembers> members)
+        private List<string> CheckCbuFields(List<ExcelMembers> members)
         {
             Error error = new Error();
             error.errCode = ErrorDetail.Success;
+            List<string> errs = new List<string>();
             int record = 0;
             foreach (var cbuItem in members)
             {
@@ -924,90 +950,109 @@ namespace LRC_NET_Framework.Controllers
                 if (String.IsNullOrEmpty(cbuItem.Location))
                 {
                     error.errCode = ErrorDetail.DataImportError;
-                    error.errMsg += ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'Location' is empty;";
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'Location' is empty;";
+                    errs.Add(error.errMsg);
                 }
 
                 if (String.IsNullOrEmpty(cbuItem.FullName))
                 {
                     error.errCode = ErrorDetail.DataImportError;
-                    error.errMsg += ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'Name' is empty;";
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'Name' is empty;";
+                    errs.Add(error.errMsg);
                 }
 
                 if (String.IsNullOrEmpty(cbuItem.Description))
                 {
                     error.errCode = ErrorDetail.DataImportError;
-                    error.errMsg += ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'Descr' is empty;";
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'Descr' is empty;";
+                    errs.Add(error.errMsg);
                 }
 
                 if (String.IsNullOrEmpty(cbuItem.Address))
                 {
                     error.errCode = ErrorDetail.DataImportError;
-                    error.errMsg += ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'Address'is empty;";
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'Address'is empty;";
+                    errs.Add(error.errMsg);
                 }
 
                 if (String.IsNullOrEmpty(cbuItem.City))
                 {
                     error.errCode = ErrorDetail.DataImportError;
-                    error.errMsg += ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'Location' is empty;";
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'Location' is empty;";
+                    errs.Add(error.errMsg);
                 }
                 if (String.IsNullOrEmpty(cbuItem.State))
                 {
                     error.errCode = ErrorDetail.DataImportError;
-                    error.errMsg += ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'St' is empty;";
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'St' is empty;";
+                    errs.Add(error.errMsg);
                 }
                 if (String.IsNullOrEmpty(cbuItem.Zip))
                 {
                     error.errCode = ErrorDetail.DataImportError;
-                    error.errMsg += ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'Postal' is empty;";
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'Postal' is empty;";
+                    errs.Add(error.errMsg);
                 }
                 if (String.IsNullOrEmpty(cbuItem.Phone))
                 {
                     error.errCode = ErrorDetail.DataImportError;
-                    error.errMsg += ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'Phone' is empty;";
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'Phone' is empty;";
+                    errs.Add(error.errMsg);
                 }
                 if (String.IsNullOrEmpty(cbuItem.EmployeeID))
                 {
                     error.errCode = ErrorDetail.DataImportError;
-                    error.errMsg += ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'EmployeeID' is empty;";
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'EmployeeID' is empty;";
+                    errs.Add(error.errMsg);
                 }
             }
-            return error;
+            return errs;
         }
-            // Extract Last, First, Middle Names from FullName 
-            private Error SplitFullName(ExcelMembers _item, out string _lastName, out string _firstName, out string _middleName)
+
+        // Extract Last, First, Middle Names from FullName 
+        private List<string> SplitFullName(string _fullName, string importType, out string _lastName, out string _firstName, out string _middleName)
         {
             Error error = new Error();
             error.errCode = ErrorDetail.Success;
             error.errMsg = ErrorDetail.GetMsg(error.errCode);
+            List<string> errs = new List<string>();
             _lastName = String.Empty;
             _firstName = String.Empty;
             _middleName = String.Empty;
 
-            if (String.IsNullOrEmpty(_item.FullName.Trim()))
-            {
-                error.errCode = ErrorDetail.DataImportError;
-                error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Field 'Name' Name is required (CBU file);";
-                return error;
-            }
-
-            if (String.IsNullOrEmpty(_item.EmployeeID.Trim()))
-            {
-                error.errCode = ErrorDetail.DataImportError;
-                error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Field 'EmployeeID' Name is required (CBU file);";
-                return error;
-            }
-
-            var namesComma = _item.FullName.Split(',');
+            var namesComma = _fullName.Split(',');
             if (namesComma.Length == 0)
             {
                 error.errCode = ErrorDetail.DataImportError;
-                error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Field 'Name' is empty (CBU file);";
-            }
+                error.errMsg = ErrorDetail.GetMsg(error.errCode);
+                errs.Add(error.errMsg);
+                if (importType == "MF")
+                {
+                    error.errMsg = ">!Field 'Name' is empty (Imported file);";
+                    errs.Add(error.errMsg);
+                }
+                else if (importType == "ST")
+                {
+                    error.errMsg = ">!Field 'INSTRCTR' is empty (Imported file);";
+                    errs.Add(error.errMsg);
+                }
+                }
             else if (namesComma.Length == 1)
             {
                 error.errCode = ErrorDetail.DataImportError;
-                error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Comma is absent in 'Name' field (CBU file);";
-            }
+                error.errMsg = ErrorDetail.GetMsg(error.errCode);
+                errs.Add(error.errMsg);
+                if (importType == "MF")
+                {
+                    error.errMsg = "!Comma is absent in 'Name' field (Imported file);";
+                    errs.Add(error.errMsg);
+                }
+                else if (importType == "ST")
+                {
+                    error.errMsg = "!Comma is absent in 'INSTRCTR' field (Imported file);";
+                    errs.Add(error.errMsg);
+                }
+                }
             else if (namesComma.Length == 2)
             {
                 _lastName = namesComma[0].Trim();
@@ -1017,15 +1062,20 @@ namespace LRC_NET_Framework.Controllers
                 else if (namesSpace.Length == 2)
                 {
                     _firstName = namesSpace[0].Trim();
-                    _middleName = namesSpace[1].Trim();
+                    _middleName = namesSpace[1].Replace(".", "").Trim();
                 }
             }
-            return error;
+            return errs;
         }
 
         //Extract Campus Code from CBU.location
-        private string GetCampusCode(string location)
+        private List<string> GetCampusCode(string location, out string campusCode)
         {
+            campusCode = String.Empty;
+            Error error = new Error();
+            error.errCode = ErrorDetail.Success;
+            error.errMsg = ErrorDetail.GetMsg(error.errCode);
+            List<string> errs = new List<string>();
             string[,] s = new string[,]
             {
                 {"01ARCMAIN",   "ARC"}, //ARC
@@ -1040,17 +1090,25 @@ namespace LRC_NET_Framework.Controllers
             List<string> campuses = s.Cast<string>().ToList();
 
             int indx = campuses.IndexOf(location);
-            
-            return campuses[indx + 1];
+            if (indx != -1)
+                campusCode = campuses[indx + 1];
+            else
+            {
+                error.errCode = ErrorDetail.Failed;
+                error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!GetCampusCode(...) function failed. Wrong Campus Code;";
+                errs.Add(error.errMsg);
+            }
+            return errs;
         }
 
         //Check if current Campus is present in tb_Campus and add it if not
-        private Error GetCampusID(string CampusCode, out int campusID)
+        private List<string> GetCampusID(string CampusCode, out int campusID)
         {
             campusID = 0;
             Error error = new Error();
             error.errCode = ErrorDetail.Success;
             error.errMsg = ErrorDetail.GetMsg(error.errCode);
+            List<string> errs = new List<string>();
             tb_Campus tb_campus = new tb_Campus();
             var campuses = db.tb_Campus.Where(t => t.CampusCode.ToUpper() == CampusCode.ToUpper() && t.CampusName.ToUpper().Contains(":MAIN"));
             if (campuses.Count() == 0)
@@ -1068,30 +1126,34 @@ namespace LRC_NET_Framework.Controllers
                 {
                     error.errCode = ErrorDetail.UnknownError;
                     error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!GetCampusID(...) function failed;";
+                    errs.Add(error.errMsg);
                     foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
                     {
-                        error.errMsg += " Object: " + validationError.Entry.Entity.ToString() + ";";
+                        error.errMsg = ">!Object: " + validationError.Entry.Entity.ToString() + ";";
+                        errs.Add(error.errMsg);
                         foreach (DbValidationError err in validationError.ValidationErrors)
                         {
-                            error.errMsg += err.ErrorMessage + ";";
+                            error.errMsg = ">!" + err.ErrorMessage + ";";
+                            errs.Add(error.errMsg);
                         }
                     }
-                    return error;
+                    return errs;
                 }
             }
             else
                 //return CampusID of founded Campus
                 campusID = campuses.FirstOrDefault().CampusID;
 
-            return error;
+            return errs;
         }
 
         //Conversion CBU 'descr' to AreaName
-        private Error GetAreaName(string descr, out string areaName)
+        private List<string> GetAreaName(string descr, out string areaName)
         {
             Error error = new Error();
             error.errCode = ErrorDetail.Success;
             error.errMsg = ErrorDetail.GetMsg(error.errCode);
+            List<string> errs = new List<string>();
             //add new Area
             string strTmp1, strTmp2;
             areaName = String.Empty;
@@ -1106,17 +1168,17 @@ namespace LRC_NET_Framework.Controllers
                     strTmp2 = descr.Substring(4, 5).ToUpper(); //chars 5 to 9
                                                                //Case 1 – If char 5 to 8 != PROF, but upper 5 to 9 does = 'COUNS' set field 'AreaName' to 'Counselor'
                     if (strTmp2 == "COUNS")
-                    { areaName = "Counselor"; return error; }
+                    { areaName = "Counselor"; return errs; }
 
                     //Case 2 – If char 5 to 8 != PROF, AND upper 5 to 8 does = 'LIBR' set field 'AreaName' to 'Librarian' 
                     strTmp2 = descr.Substring(4, 4).ToUpper(); //chars 5 to 8
                     if (strTmp2 == "LIBR")
-                    { areaName = "Librarian"; return error; }
+                    { areaName = "Librarian"; return errs; }
 
                     //Case 3 – If char 5 to 8 != PROF, but upper 5 to 10 does = 'Nurses' set field 'AreaName' to 'Nurses' 
                     strTmp2 = descr.Substring(4, 6).ToUpper(); //chars 5 to 10
                     if (strTmp2 == "NURSES")
-                    { areaName = "Nurses"; return error; }
+                    { areaName = "Nurses"; return errs; }
 
                     //Case 4 – If char 5 to 8 != PROF, but upper 5 to 9 does = "COORD" set field to Coord to end of string
                     strTmp2 = descr.Substring(4, 5).ToUpper(); //chars 5 to 9
@@ -1125,7 +1187,7 @@ namespace LRC_NET_Framework.Controllers
                         StringComparison comp = StringComparison.OrdinalIgnoreCase;
                         int indx = descr.IndexOf("COORD", comp);
                         areaName = descr.Substring(indx).Trim();
-                        return error;
+                        return errs;
                     }
                 }
             }
@@ -1133,38 +1195,39 @@ namespace LRC_NET_Framework.Controllers
             //Case 5 – Set to 'Miscellaneous' WHERE Field 'AreaName' is still NULL and 'misc' exists anywhere in the string
             strTmp2 = descr.ToUpper();
             if (String.IsNullOrEmpty(areaName) && strTmp2.Contains("MISC"))
-            { areaName = "Miscellaneous"; return error; }
+            { areaName = "Miscellaneous"; return errs; }
 
             //Case 6 – Set to 'CJTC' WHERE Field 'AreaName' is still NULL and 'CJTC' exists anywhere in the string
             strTmp2 = descr.ToUpper();
             if (String.IsNullOrEmpty(areaName) && strTmp2.Contains("CJTC"))
-            { areaName = "CJTC"; return error; }
-                
+            { areaName = "CJTC"; return errs; }
+
             //Case 7a – Has at least one dash AND there are two dashes (a dash found searching from the start and a dash found searching from the end are not in the same position).
             if (strTmp2.Contains("-"))
             {
                 if (strTmp2.LastIndexOf("-") != strTmp2.IndexOf("-"))
-                    { areaName = descr.Substring(descr.LastIndexOf("-") + 1).Trim(); return error; }
+                { areaName = descr.Substring(descr.LastIndexOf("-") + 1).Trim(); return errs; }
                 //Case 7b – Only one dash (a dash found searching from the start and a dash found searching from the end ARE in the same position).
                 else // strTmp2.LastIndexOf("-") == strTmp2.IndexOf("-")
-                    { areaName = descr.Substring(descr.IndexOf("-") + 1).Trim(); return error; }
+                { areaName = descr.Substring(descr.IndexOf("-") + 1).Trim(); return errs; }
 
             }
-           
+
             //Case 8 - Get entire string when 'AreaName' value is still NULL
             if (String.IsNullOrEmpty(areaName))
                 areaName = descr.Trim();
 
-            return error;
+            return errs;
         }
 
         //Check if current AreaName is present in tb_Area already and add it if not
-        private Error GetAreaID(string AreaName, out int areaID)
+        private List<string> GetAreaID(string AreaName, out int areaID)
         {
             areaID = 0;
             Error error = new Error();
             error.errCode = ErrorDetail.Success;
             error.errMsg = ErrorDetail.GetMsg(error.errCode);
+            List<string> errs = new List<string>();
             tb_Area tb_area = new tb_Area();
             var areas = db.tb_Area.Where(t => t.AreaName.ToUpper() == AreaName.ToUpper());
             if (areas.Count() == 0)
@@ -1181,21 +1244,24 @@ namespace LRC_NET_Framework.Controllers
                 {
                     error.errCode = ErrorDetail.UnknownError;
                     error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!GetAreaName(...) function failed;";
+                    errs.Add(error.errMsg);
                     foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
                     {
-                        error.errMsg += " Object: " + validationError.Entry.Entity.ToString() + ";";
+                        error.errMsg = ">!Object: " + validationError.Entry.Entity.ToString() + ";";
+                        errs.Add(error.errMsg);
                         foreach (DbValidationError err in validationError.ValidationErrors)
                         {
-                            error.errMsg += err.ErrorMessage + ";";
+                            error.errMsg = ">!" + err.ErrorMessage + ";";
+                            errs.Add(error.errMsg);
                         }
                     }
-                    return error;
+                    return errs;
                 }
             }
             else
                 //return AreaID of founded Area
                 areaID = areas.FirstOrDefault().AreaID;
-            return error;
+            return errs;
         }
 
         //Conversion CBU 'descr' to DepartmentName
@@ -1241,12 +1307,13 @@ namespace LRC_NET_Framework.Controllers
         }
 
         //Check if current DepartmentName is present in tb_Department already and add it if not
-        private Error  GetDepartmentID(string DepartmentName, int CampusID, out int departmentID)
+        private List<string> GetDepartmentID(string DepartmentName, int CampusID, out int departmentID)
         {
             departmentID = 0;
             Error error = new Error();
             error.errCode = ErrorDetail.Success;
             error.errMsg = ErrorDetail.GetMsg(error.errCode);
+            List<string> errs = new List<string>();
             tb_Department tb_department = new tb_Department();
             var departments = db.tb_Department.Where(t => t.DepartmentName.ToUpper() == DepartmentName.ToUpper());
             if (departments.Count() == 0)
@@ -1263,29 +1330,32 @@ namespace LRC_NET_Framework.Controllers
                 {
                     error.errCode = ErrorDetail.UnknownError;
                     error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!GetDepartmentID(...) function failed;";
+                    errs.Add(error.errMsg);
                     foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
                     {
-                        error.errMsg += " !Object: " + validationError.Entry.Entity.ToString() + ";";
+                        error.errMsg = ">!Object: " + validationError.Entry.Entity.ToString() + ";";
+                        errs.Add(error.errMsg);
                         foreach (DbValidationError err in validationError.ValidationErrors)
                         {
-                            error.errMsg += err.ErrorMessage + ";";
+                            error.errMsg = ">!" + err.ErrorMessage + ";";
+                            errs.Add(error.errMsg);
                         }
                     }
-                    return error;
+                    return errs;
                 }
             }
             else
                 //return AreaID of founded Area
                 departmentID = departments.FirstOrDefault().DepartmentID;
 
-            return error;
+            return errs;
         }
 
         //Check if current City is present in tb_CityState and add it if not
         private int GetCityID(string city)
         {
             tb_CityState tb_city = new tb_CityState();
-            
+
             if (db.tb_CityState.Where(t => t.CityName.ToUpper() == city.ToUpper()).Count() == 0)
             {
                 tb_city.CityName = city;
@@ -1297,12 +1367,13 @@ namespace LRC_NET_Framework.Controllers
         }
 
         //Find memberID by CBU Full Name. Return memberID = 0 if not found
-        private Error IsMemberExistInDB(string lastname, string firstname, string middlename, out int memberID)
+        private List<string> IsMemberExistInDB(string lastname, string firstname, string middlename, out int memberID)
         {
             memberID = 0;
             Error error = new Error();
             error.errCode = ErrorDetail.Success;
             error.errMsg = ErrorDetail.GetMsg(error.errCode);
+            List<string> errs = new List<string>();
             //1. Find memberID by Full Name
             try
             {
@@ -1317,18 +1388,20 @@ namespace LRC_NET_Framework.Controllers
             {
                 error.errCode = ErrorDetail.UnknownError;
                 error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!IsMemberExistInDB(...) function failed." + ex.Message + ";";
-                return error;
+                errs.Add(error.errMsg);
+                return errs;
             }
-            return error;
+            return errs;
         }
 
         //Get tb_MemberAddress record for current Member
         //Assign MemberID for existing Member or return tb_MemberAddress.MemberID = 0 for new one
-        private Error AssignAddress(string address, string city, string st, string postal, int mID)
+        private List<string> AssignAddress(string address, string city, string st, string postal, int mID)
         {
             Error error = new Error();
             error.errCode = ErrorDetail.Success;
             error.errMsg = ErrorDetail.GetMsg(error.errCode);
+            List<string> errs = new List<string>();
             int cityId = GetCityID(city);
             tb_MemberAddress ma = new tb_MemberAddress();
             // (!) We need here to set IsPrimary = false for all other addresses (have to be done)
@@ -1369,25 +1442,29 @@ namespace LRC_NET_Framework.Controllers
             {
                 error.errCode = ErrorDetail.UnknownError;
                 error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!AssignAddress(...) function failed;";
+                errs.Add(error.errMsg);
                 foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
                 {
-                    error.errMsg += " !Object: " + validationError.Entry.Entity.ToString() + ";";
+                    error.errMsg = ">!Object: " + validationError.Entry.Entity.ToString() + ";";
+                    errs.Add(error.errMsg);
                     foreach (DbValidationError err in validationError.ValidationErrors)
                     {
-                        error.errMsg += err.ErrorMessage + ";";
+                        error.errMsg = ">!" + err.ErrorMessage + ";";
+                        errs.Add(error.errMsg);
                     }
                 }
-                return error;
+                return errs;
             }
-            return error;
+            return errs;
         }
 
         //Assign tb_MemberPhoneNumbers record for current Member
-        private Error AssignPhoneNumber(string phone, int mID)
+        private List<string> AssignPhoneNumber(string phone, int mID)
         {
             Error error = new Error();
             error.errCode = ErrorDetail.Success;
             error.errMsg = ErrorDetail.GetMsg(error.errCode);
+            List<string> errs = new List<string>();
             //Find all member phones by memberID
             tb_MemberPhoneNumbers mp = new tb_MemberPhoneNumbers();
             //Check if phone from the list of current member phone already exist
@@ -1421,25 +1498,34 @@ namespace LRC_NET_Framework.Controllers
             {
                 error.errCode = ErrorDetail.UnknownError;
                 error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!AssignPhoneNumber(...) function failed;";
+                errs.Add(error.errMsg);
                 foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
                 {
-                    error.errMsg += " !Object: " + validationError.Entry.Entity.ToString() + ";";
+                    error.errMsg = ">!Object: " + validationError.Entry.Entity.ToString() + ";";
+                    errs.Add(error.errMsg);
                     foreach (DbValidationError err in validationError.ValidationErrors)
                     {
-                        error.errMsg += " !" + err.ErrorMessage + ";";
+                        error.errMsg = ">!" + err.ErrorMessage + ";";
+                        errs.Add(error.errMsg);
                     }
                 }
-                return error;
+                return errs;
             }
-            return error;
+            return errs;
         }
         #endregion
 
         #region Faculty Schedule Import
-        private Error FacultyScheduleImport(string pathToExcelFile, string sheetName)
+        ///<Author>Alex</Author>
+        /// <summary>
+        /// Fill Out Schedule from Excel file
+        /// </summary>       
+        /// <returns>Status code</returns>
+        private List<string> FacultyScheduleImport(string pathToExcelFile, string sheetName)
         {
             Error error = new Error();
             error.errCode = ErrorDetail.Success;
+            List<string> errs = new List<string>();
             var factory = new ExcelQueryFactory(pathToExcelFile);
             //Mapping ExcelSchedules Model properties with an Excel fields
             factory.AddMapping<ExcelSchedules>(x => x.Id, "ID");
@@ -1449,12 +1535,13 @@ namespace LRC_NET_Framework.Controllers
             factory.AddMapping<ExcelSchedules>(x => x.Building, "BUILDING");
             factory.AddMapping<ExcelSchedules>(x => x.Room, "ROOM");
             factory.AddMapping<ExcelSchedules>(x => x.Division, "DIV");
-            factory.AddMapping<ExcelSchedules>(x => x.Class, "CLASS #");
-            factory.AddMapping<ExcelSchedules>(x => x.Sect, "SECT");
-            factory.AddMapping<ExcelSchedules>(x => x.Subject, "SUBJ CD");
+            factory.AddMapping<ExcelSchedules>(x => x.ClassNumber, "CLASS #");
+            factory.AddMapping<ExcelSchedules>(x => x.CAT_NBR, "CAT NBR"); //?
+            factory.AddMapping<ExcelSchedules>(x => x.Sect, "SECT"); //?
+            factory.AddMapping<ExcelSchedules>(x => x.Subject, "SUBJ CD"); //?
             factory.AddMapping<ExcelSchedules>(x => x.LecOrLab, "LEC LAB");
-            factory.AddMapping<ExcelSchedules>(x => x.SB_TM, "SB TM");
-            factory.AddMapping<ExcelSchedules>(x => x.ATT_TP, "ATT TP");
+            factory.AddMapping<ExcelSchedules>(x => x.SB_TM, "SB TM"); //?
+            factory.AddMapping<ExcelSchedules>(x => x.ATT_TP, "ATT TP"); //?
             factory.AddMapping<ExcelSchedules>(x => x.BeginTime, "BEG TIME");
             factory.AddMapping<ExcelSchedules>(x => x.EndTime, "END TIME");
             factory.AddMapping<ExcelSchedules>(x => x.Days, "DAYS");
@@ -1464,133 +1551,393 @@ namespace LRC_NET_Framework.Controllers
             factory.TrimSpaces = TrimSpacesType.Both;
             factory.ReadOnly = true;
 
+            List<ExcelSchedules> schedules = new List<ExcelSchedules>();
+            try
+            {
+                schedules = factory.Worksheet<ExcelSchedules>(sheetName).ToList();
+            }
+            catch (Exception ex)
+            {
+                error.errCode = ErrorDetail.Failed;
+                error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!" + ex.Message;
+                errs.Add(error.errMsg);
+                return errs;
+            }
             //Common Fields Check before
-            var schedules = factory.Worksheet<ExcelSchedules>(sheetName).ToList();
-            //error = CheckFields(schedules);
-            //if (error.errCode != ErrorDetail.Success)
-            //    return error;
+            errs = CheckScheduleFields(schedules);
+            if (errs.Count > 0)
+                return errs;
 
-            //int record = 0;
-            //foreach (var cbuItem in schedules)
-            //{
-            //    record++;
-            //    try
-            //    {
-            //        tb_MemberMaster FM = new tb_MemberMaster();
-            //        error = SplitFullName(cbuItem, out string lastName, out string firstName, out string middleName);
-            //        if (error.errCode == ErrorDetail.Success)
-            //        {
-            //            //CBU.Name
-            //            FM.LastName = lastName;
-            //            FM.FirstName = firstName;
-            //            FM.MiddleName = middleName.Replace(".", "");
-            //            //CBU.EmployeeID
-            //            FM.MemberIDNumber = cbuItem.EmployeeID;
-            //        }
-            //        else
-            //        {
-            //            error.errMsg += "!Row #" + record.ToString();
-            //            return error;
-            //        }
+            int record = 0;
+            foreach (var item in schedules)
+            {
+                record++;
+                tb_SemesterTaught ST = new tb_SemesterTaught();
+                errs = SplitFullName(item.Instructor, "ST", out string lastName, out string firstName, out string middleName);
+                if (errs.Count > 0)
+                    return errs;
 
-            //        if (sheetName == "Full time")
-            //        {
-            //            //Adjunct or Full-Time
-            //            FM.JobStatusID = 2; //2 = Full-Time
-            //                                //Status
-            //            FM.DuesID = 5; // 5 = ‘Unknown - Full-time’ in tb_Dues table
-            //        }
-            //        else
-            //        {
-            //            //Adjunct or Full-Time
-            //            FM.JobStatusID = 1; //2 = Adjunct
-            //                                //Status
-            //            FM.DuesID = 4; // 5 = ‘Unknown - Adjunct’ in tb_Dues table
-            //        }
+                errs = IsMemberExistInDB(lastName, firstName, middleName, out int memberID);
+                if (errs.Count > 0)
+                    return errs;
 
-            //        error = GetCampusID(GetCampusCode(cbuItem.Location), out int campusId);
-            //        if (error.errCode != ErrorDetail.Success)
-            //            return error;
-            //        //CBU.Location
-            //        FM.CampusID = campusId;
-            //        //CBU.Descr (1)
-            //        error = GetAreaName(cbuItem.Description, out string areaName);
-            //        if (error.errCode != ErrorDetail.Success)
-            //            return error;
-            //        error = GetAreaID(areaName, out int areaID);
-            //        if (error.errCode != ErrorDetail.Success)
-            //            return error;
-            //        FM.AreaID = areaID;
-            //        //CBU.Descr (2)
-            //        error = GetDepartmentID(GetDepartmentName(cbuItem.Description), campusId, out int departmentID);
-            //        if (error.errCode != ErrorDetail.Success)
-            //            return error;
-            //        FM.DepartmentID = departmentID;
-            //        //DivisionID (Required field. Need to be filled)
-            //        FM.DivisionID = 108; //108 = 'Unknown' from tb_Division table
-            //                             //CategoryID (Required field. Need to be filled)
-            //        FM.CategoryID = 4; //4 = 'Unknown' from tb_Categories table
-            //        //Check is Facility Member exist in DB. Returned memberID = 0 means new member
-            //        error = IsMemberExistInDB(FM.LastName, FM.FirstName, FM.MiddleName, out int memberID);
-            //        if (error.errCode != ErrorDetail.Success)
-            //            return error;
-            //        FM.MemberID = memberID;
+                if (memberID == 0)
+                {
+                    error.errCode = ErrorDetail.Failed;
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record.ToString() + ". Instructor name: " + item.Instructor + " wasn't found in the DataBase";
+                    errs.Add(error.errMsg);
+                    return errs;
+                }
+                ST.MemberID = memberID;
 
-            //        if (FM.MemberID == 0) // New Facility Member
-            //        {
+                errs = GetSemesterRecID(item.ClassEndDate.Trim(), record, out int semesterRecID, out bool scheduleStatus);
+                if (errs.Count > 0)
+                    return errs;
+                ST.SemesterRecID = semesterRecID;
+                ST.ScheduleStatus = scheduleStatus;
 
-            //            db.tb_MemberMaster.Add(FM);
+                errs = GetClassWeekDayID(item.Days, record, out int classWeekDayID);
+                if (errs.Count > 0)
+                    return errs;
+                ST.ClassWeekDayID = classWeekDayID;
 
-            //            try
-            //            {
-            //                db.SaveChanges();
-            //            }
-            //            catch (DbEntityValidationException ex)
-            //            {
-            //                error.errCode = ErrorDetail.UnknownError;
-            //                error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!MembersCbuImport(...) function failed";
-            //                foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
-            //                {
-            //                    error.errMsg += "!Object: " + validationError.Entry.Entity.ToString() + ";";
-            //                    foreach (DbValidationError err in validationError.ValidationErrors)
-            //                    {
-            //                        error.errMsg += ">!" + err.ErrorMessage + ";";
-            //                    }
-            //                }
-            //                return error;
-            //            }
-            //        }
+                ST.Class = item.ClassNumber.Trim();
 
-            //        error = AssignAddress(cbuItem.Address, cbuItem.City, cbuItem.State, cbuItem.Zip, FM.MemberID);
-            //        if (error.errCode != ErrorDetail.Success)
-            //            return error;
-            //        error = AssignPhoneNumber(cbuItem.Phone, FM.MemberID);
-            //        if (error.errCode != ErrorDetail.Success)
-            //            return error;
-            //    }
+                item.BeginTime = item.BeginTime.Trim().Insert(5, " ");
+                ST.ClassStart = DateTime.ParseExact(item.BeginTime.Trim(), "hh:mm tt", CultureInfo.InvariantCulture).TimeOfDay;
 
-            //    catch (DbEntityValidationException ex)
-            //    {
-            //        error.errCode = ErrorDetail.UnknownError;
-            //        error.errMsg = ErrorDetail.GetMsg(error.errCode);
-            //        foreach (var entityValidationErrors in ex.EntityValidationErrors)
-            //        {
-            //            foreach (var validationError in entityValidationErrors.ValidationErrors)
-            //            {
-            //                error.errMsg += " !Property: " + validationError.PropertyName + " Error: " + validationError.ErrorMessage + ";";
-            //            }
-            //        }
-            //        return error;
-            //    }
+                item.EndTime = item.EndTime.Trim().Insert(5, " ");
+                ST.ClassEnd = DateTime.ParseExact(item.EndTime.Trim(), "hh:mm tt", CultureInfo.InvariantCulture).TimeOfDay;
 
-            //}
-            ////deleting excel file from folder  
-            //if ((System.IO.File.Exists(pathToExcelFile)))
-            //{
-            //    System.IO.File.Delete(pathToExcelFile);
-            //}
-            return error;
+                errs = GetBuildingID(item.Building, item.Campus, out int buildingID);
+                if (errs.Count > 0)
+                    return errs;
+                ST.BuildingID = buildingID;
+
+                if (String.IsNullOrEmpty(item.Room) && item.Building.ToUpper() == "ONLINE")
+                    ST.Room = "ONLINE";
+                else
+                    ST.Room = item.Room.Trim();
+
+                //Check dublicates
+                var _st = db.tb_SemesterTaught.Where(s => s.SemesterRecID == ST.SemesterRecID
+                    && s.MemberID == ST.MemberID
+                    && s.Room.ToUpper() == ST.Room.ToUpper()
+                    && s.Class.ToUpper() == ST.Class.ToUpper()
+                    && s.ClassStart == ST.ClassStart
+                    && s.ClassEnd == ST.ClassEnd
+                    && s.ClassWeekDayID == ST.ClassWeekDayID
+                    && s.BuildingID == ST.BuildingID);
+                if (_st.ToList().Count == 0) // Add new
+                {
+                    db.tb_SemesterTaught.Add(ST);
+                    try
+                    {
+                        db.SaveChanges();
+                    }
+                    catch (DbEntityValidationException ex)
+                    {
+                        error.errCode = ErrorDetail.UnknownError;
+                        error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!FacultyScheduleImport(...) function failed";
+                        errs.Add(error.errMsg);
+                        foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
+                        {
+                            error.errMsg = ">!Object: " + validationError.Entry.Entity.ToString() + ";";
+                            errs.Add(error.errMsg);
+                            foreach (DbValidationError err in validationError.ValidationErrors)
+                            {
+                                error.errMsg = ">!" + err.ErrorMessage + ";";
+                                errs.Add(error.errMsg);
+                            }
+                        }
+                        return errs;
+                    }
+                }
+            }
+            //deleting excel file from folder  
+            if ((System.IO.File.Exists(pathToExcelFile)))
+            {
+                System.IO.File.Delete(pathToExcelFile);
+            }
+
+            return errs;
         }
+
+        // Check excel spreadsheet fields are correct
+        private List<string> CheckScheduleFields(List<ExcelSchedules> schedules)
+        {
+            Error error = new Error();
+            error.errCode = ErrorDetail.Success;
+            WeekDay wd = new WeekDay();
+            List<string> errs = new List<string>();
+            IEnumerable<SelectListItem> campuses = db.tb_Campus
+                                          .GroupBy(t => t.CampusCode)
+                                          .Select(g => g.FirstOrDefault())
+                                          .Select(c => new SelectListItem
+                                          {
+                                              Value = c.CampusID.ToString(),
+                                              Text = c.CampusCode
+                                          });
+
+            int record = 1;
+            foreach (var _item in schedules)
+            {
+                record++;
+
+                if (String.IsNullOrEmpty(_item.Instructor))
+                {
+                    error.errCode = ErrorDetail.DataImportError;
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'INSTRCTR' is empty;";
+                    errs.Add(error.errMsg);
+                }
+
+                if (String.IsNullOrEmpty(_item.Campus))
+                {
+                    error.errCode = ErrorDetail.DataImportError;
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'CAMPUS' is empty;";
+                    errs.Add(error.errMsg);
+                }
+
+                if (campuses.Where(c => c.Text == _item.Campus).Count() <= 0)
+                {
+                    error.errCode = ErrorDetail.DataImportError;
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ", column 'CAMPUS'. Value: " + _item.Campus + " not exist in the tb_Campus table;";
+                    errs.Add(error.errMsg);
+                }
+
+                if (String.IsNullOrEmpty(_item.Location))
+                {
+                    error.errCode = ErrorDetail.DataImportError;
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'LOCATION' is empty;";
+                    errs.Add(error.errMsg);
+                }
+
+                if (String.IsNullOrEmpty(_item.Building))
+                {
+                    error.errCode = ErrorDetail.DataImportError;
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'BUILDING' is empty;";
+                    errs.Add(error.errMsg);
+                }
+
+                if (String.IsNullOrEmpty(_item.Room) && !String.IsNullOrEmpty(_item.Building))
+                {
+                    if (_item.Building.ToUpper() != "ONLINE")
+                    {
+                        error.errCode = ErrorDetail.DataImportError;
+                        error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'ROOM' can be empty for 'BUILDING' = 'Online' only;";
+                        errs.Add(error.errMsg);
+                    }
+                }
+                //if (String.IsNullOrEmpty(_item.Division))
+                //{
+                //    error.errCode = ErrorDetail.DataImportError;
+                //    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'DIV' is empty;";
+                //    errs.Add(error.errMsg);
+                //}
+                if (String.IsNullOrEmpty(_item.ClassNumber))
+                {
+                    error.errCode = ErrorDetail.DataImportError;
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'CLASS #' is empty;";
+                    errs.Add(error.errMsg);
+                }
+                if (String.IsNullOrEmpty(_item.BeginTime))
+                {
+                    error.errCode = ErrorDetail.DataImportError;
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'BEG TIME' is empty;";
+                    errs.Add(error.errMsg);
+                }
+                try
+                {
+                    var check = DateTime.ParseExact(_item.BeginTime.Trim().Insert(5, " "), "hh:mm tt", CultureInfo.InvariantCulture).TimeOfDay;
+                }
+                catch (Exception)
+                {
+                    error.errCode = ErrorDetail.DataImportError;
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'BEG TIME' wrong format;";
+                    errs.Add(error.errMsg);
+                }
+                if (String.IsNullOrEmpty(_item.EndTime))
+                {
+                    error.errCode = ErrorDetail.DataImportError;
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'END TIME' is empty;";
+                    errs.Add(error.errMsg);
+                }
+                try
+                {
+                    var check = DateTime.ParseExact(_item.EndTime.Trim().Insert(5, " "), "hh:mm tt", CultureInfo.InvariantCulture).TimeOfDay;
+                }
+                catch (Exception)
+                {
+                    error.errCode = ErrorDetail.DataImportError;
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'END TIME' wrong format;";
+                    errs.Add(error.errMsg);
+                }
+                if (String.IsNullOrEmpty(_item.Days))
+                {
+                    error.errCode = ErrorDetail.DataImportError;
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'DAYS' is empty;";
+                    errs.Add(error.errMsg);
+                }
+                else
+                {
+                    wd.codeInExcel = _item.Days;
+                    wd.codeInDB = WeekDaysMatch.GetDaysCode(wd.codeInExcel);
+                    if (wd.codeInDB == "Error")
+                    {
+                        error.errCode = ErrorDetail.Failed;
+                        error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record.ToString() + ". Field 'DAYS' not matching any record in the WeekDaysMatch class";
+                        errs.Add(error.errMsg);
+                        return errs;
+                    }
+                }
+
+                if (String.IsNullOrEmpty(_item.ClassEndDate))
+                {
+                    error.errCode = ErrorDetail.DataImportError;
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'CLASS END DT' is empty;";
+                    errs.Add(error.errMsg);
+                }
+                try
+                {
+                    var check = DateTime.ParseExact(_item.ClassEndDate.Trim(), "MM-dd-yyyy", CultureInfo.InvariantCulture);
+                }
+                catch (Exception)
+                {
+                    error.errCode = ErrorDetail.DataImportError;
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'CLASS END DT' wrong format;";
+                    errs.Add(error.errMsg);
+                }
+            }
+            return errs;
+        }
+
+        private List<string> GetSemesterRecID(string classEndDate, int rec, out int semesterRecID, out bool scheduleStatus)
+        {
+            semesterRecID = 0;
+            scheduleStatus = false;
+            Error error = new Error();
+            error.errCode = ErrorDetail.Success;
+            List<string> errs = new List<string>();
+            var endDate = DateTime.ParseExact(classEndDate.Trim(), "MM-dd-yyyy", CultureInfo.InvariantCulture);
+            try
+            {
+                semesterRecID = db.tb_Semesters.Where(t => t.FiscalYear == endDate.Year.ToString())
+                    .Where(t => t.DateFrom <= endDate)
+                    .Where(t => t.DateTo >= endDate).FirstOrDefault().SemesterRecID;
+            }
+            catch (Exception)
+            {
+                error.errCode = ErrorDetail.Failed;
+                error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + rec.ToString() + ". Class End Date: " + classEndDate + " There is no apropriate semester in the tb_Semesters table.";
+                errs.Add(error.errMsg);
+                return errs;
+            }
+            if (semesterRecID <= 0)
+            {
+                error.errCode = ErrorDetail.Failed;
+                error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + rec.ToString() + ". Class End Date: " + classEndDate + " There is no apropriate semester in the tb_Semesters table.";
+                errs.Add(error.errMsg);
+                return errs;
+            }
+            if (endDate >= DateTime.UtcNow)
+                scheduleStatus = true;
+
+            return errs;
+        }
+
+        private List<string> GetClassWeekDayID(string days, int rec, out int classWeekDayID)
+        {
+            Error error = new Error();
+            error.errCode = ErrorDetail.Success;
+            error.errMsg = ErrorDetail.GetMsg(error.errCode);
+            List<string> errs = new List<string>();
+            classWeekDayID = 0;
+            WeekDay wd = new WeekDay();
+            if (!String.IsNullOrEmpty(days))
+            {
+                wd.codeInExcel = days.Trim();
+                wd.codeInDB = WeekDaysMatch.GetDaysCode(wd.codeInExcel);
+            }
+            else
+            {
+                error.errCode = ErrorDetail.Failed;
+                error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + rec.ToString() + ". Field 'DAYS' is empty.";
+                errs.Add(error.errMsg);
+                return errs;
+            }
+            try
+            {
+                classWeekDayID = db.tb_WeekDay.Where(t => t.WeekDayName == wd.codeInDB).FirstOrDefault().ClassWeekDayID;
+            }
+            catch (Exception ex)
+            {
+                error.errCode = ErrorDetail.Failed;
+                error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + rec.ToString() + ". Field 'DAYS' not matching any record in the tb_WeekDay table." + ex.Message;
+                errs.Add(error.errMsg);
+                return errs;
+            }
+
+            if (classWeekDayID <= 0)
+            {
+                error.errCode = ErrorDetail.Failed;
+                error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + rec.ToString() + ". Field 'DAYS' not matching any record in the tb_WeekDay table.";
+                errs.Add(error.errMsg);
+                return errs;
+            }
+
+            return errs;
+        }
+
+        //Check if current AreaName is present in tb_Area already and add it if not
+        private List<string> GetBuildingID(string building, string campus, out int buildingID)
+        {
+            buildingID = 0;
+            Error error = new Error();
+            error.errCode = ErrorDetail.Success;
+            error.errMsg = ErrorDetail.GetMsg(error.errCode);
+            List<string> errs = new List<string>();
+            tb_Building tb_building = new tb_Building();
+            var buildings = db.tb_Building.Where(t => t.BuildingName.ToUpper() == building.ToUpper());
+            if (buildings.Count() == 0)
+            {
+                tb_building.BuildingName = building;
+
+                errs = GetCampusID(campus, out int campusId);
+                if (error.errCode != ErrorDetail.Success)
+                    return errs;
+
+                tb_building.CampusID = campusId;
+
+                db.tb_Building.Add(tb_building);
+                try
+                {
+                    db.SaveChanges();
+                    buildingID = tb_building.BuildingID; // new BuildingID of added Building
+                }
+                catch (DbEntityValidationException ex)
+                {
+                    error.errCode = ErrorDetail.UnknownError;
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!GetBuildingID(...) function failed;";
+                    errs.Add(error.errMsg);
+                    foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
+                    {
+                        error.errMsg = "!>Object: " + validationError.Entry.Entity.ToString() + ";";
+                        errs.Add(error.errMsg);
+                        foreach (DbValidationError err in validationError.ValidationErrors)
+                        {
+                            error.errMsg = ">!" + err.ErrorMessage + ";";
+                            errs.Add(error.errMsg);
+                        }
+                    }
+                    return errs;
+                }
+            }
+            else
+                //return BuildingID of founded Building
+                buildingID = buildings.FirstOrDefault().BuildingID;
+            return errs;
+        }
+
         #endregion
 
         //

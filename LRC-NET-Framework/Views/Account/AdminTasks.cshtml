@@ -99,9 +99,9 @@
                         </td>
                     </tr>
                 </table>
-                <div class="text-danger">
+                @*<div class="text-danger">
                     @ViewBag.FileTypeMessage
-                </div>
+                </div>*@
             </div>
         </div>
         <div class="form-group">
@@ -111,12 +111,12 @@
         </div>
 
         <div class="row" style="padding-left:30px;">
-        @foreach (var item in ViewBag.ResultMessage as List<SelectListItem>)
+        @foreach (var item in ViewData["ErrorList"] as List<string>)
         {
-            if (item.Text != "Empty")
+            if (item != "Empty")
             {
-                var _errors = item.Text.Split('!');
-            <div class="alert col-md-2" style="background-color:khaki; text-align:right">
+                var _errors = item.Split('!');
+            <div class="alert col-md-2" style="text-align:right">
                 <span class="glyphicon glyphicon-warning-sign"></span>&nbsp;&nbsp;&nbsp;@_errors[0] :
             </div>
                 <div class="alert col-md-9" style="background-color:khaki;"><strong>@_errors[1]</strong></div>
