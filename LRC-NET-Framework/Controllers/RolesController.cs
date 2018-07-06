@@ -152,7 +152,7 @@ namespace LRC_NET_Framework.Controllers
             return View(Roles);
         }
 
-        // GET: Roles/CreateRole
+        // GET: Roles/CreateBody
         [Authorize(Roles = "admin, organizer")]
         public ActionResult CreateBody()
         {

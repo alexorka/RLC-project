@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -129,6 +130,64 @@ namespace LRC_NET_Framework.Controllers
             }
 
             return View(model);
+        }
+
+        // GET: SemesterTaught/AddWeekDays
+        [Authorize(Roles = "admin, organizer")]
+        public ActionResult AddWeekDays()
+        {
+            List<string> errs = new List<string>();
+            if (TempData["ErrorList"] == null)
+            {
+                errs.Add("Empty");
+            }
+            else
+                errs = TempData["ErrorList"] as List<string>;
+
+            ViewData["ErrorList"] = errs;
+
+            return View();
+        }
+
+        // POST: SemesterTaught/AddWeekDays
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin, organizer")]
+        public ActionResult AddWeekDays([Bind(Include = "WeekDayName,CbuWeekDay")] tb_WeekDay WeekDay)
+        {
+            Error error = new Error();
+            error.errCode = ErrorDetail.Success;
+            error.errMsg = ErrorDetail.GetMsg(error.errCode);
+            List<string> errs = new List<string>();
+
+            if (ModelState.IsValid)
+            {
+                db.tb_WeekDay.Add(WeekDay);
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch (DbEntityValidationException ex)
+                {
+                    error.errCode = ErrorDetail.DataImportError;
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode);
+                    foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
+                    {
+                        error.errMsg += ". Object: " + validationError.Entry.Entity.ToString();
+                        foreach (DbValidationError err in validationError.ValidationErrors)
+                        {
+                            error.errMsg += ". " + err.ErrorMessage;
+                        }
+                    }
+                    errs.Add("Error #" + error.errCode.ToString() + "!" + error.errMsg);
+                }
+            }
+
+            TempData["ErrorList"] = errs;
+            return RedirectToAction("AdminTasks", "Account", null);
+            //return View(WeekDay);
         }
 
         // GET: SemesterTaught/Edit/5

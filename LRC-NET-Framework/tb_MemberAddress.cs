@@ -28,12 +28,14 @@ namespace LRC_NET_Framework
         public int SourceID { get; set; }
         public string Source { get; set; }
         public System.DateTime CreatedDateTime { get; set; }
-        public Nullable<int> ModifiedBy { get; set; }
+        public string ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedDateTime { get; set; }
+        public Nullable<System.DateTime> StartDate { get; set; }
+        public Nullable<System.DateTime> EndDate { get; set; }
     
         public virtual tb_AddressSource tb_AddressSource { get; set; }
         public virtual tb_AddressType tb_AddressType { get; set; }
-        public virtual tb_MemberMaster tb_MemberMaster { get; set; }
         public virtual tb_CityState tb_CityState { get; set; }
+        public virtual tb_MemberMaster tb_MemberMaster { get; set; }
     }
 }

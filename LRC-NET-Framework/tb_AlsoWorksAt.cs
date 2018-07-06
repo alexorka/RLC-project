@@ -21,7 +21,7 @@ namespace LRC_NET_Framework
         public Nullable<System.DateTime> AddedDateTime { get; set; }
         public Nullable<int> AddedBy { get; set; }
     
-        public virtual tb_MemberMaster tb_MemberMaster { get; set; }
         public virtual tb_Employers tb_Employers { get; set; }
+        public virtual tb_MemberMaster tb_MemberMaster { get; set; }
     }
 }

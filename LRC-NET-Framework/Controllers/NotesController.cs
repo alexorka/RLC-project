@@ -131,6 +131,14 @@ namespace LRC_NET_Framework.Controllers
             return View(model);
         }
 
+
+        // GET: Assessment/NotSure
+        [Authorize(Roles = "admin, organizer")]
+        public ActionResult NotSure()
+        {
+            return PartialView("NotSure");
+        }
+
         // GET: Notes/Edit/5
         [Authorize(Roles = "admin, organizer")]
         public ActionResult Edit(int? id)

@@ -22,6 +22,7 @@ namespace LRC_NET_Framework
     
         public int ClassWeekDayID { get; set; }
         public string WeekDayName { get; set; }
+        public string CbuWeekDay { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_SemesterTaught> tb_SemesterTaught { get; set; }

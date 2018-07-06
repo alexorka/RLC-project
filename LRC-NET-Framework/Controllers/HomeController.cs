@@ -13,6 +13,8 @@ using LRC_NET_Framework.Models;
 using System.Data.Entity.Validation;
 using System.IO;
 using System.Text;
+using Microsoft.AspNet.Identity;
+
 
 namespace LRC_NET_Framework.Controllers
 {
@@ -110,6 +112,12 @@ namespace LRC_NET_Framework.Controllers
         [Authorize(Roles = "admin, organizer")]
         public ActionResult Index(string sortOrder, string searchString, int? page, int? CollegeID, int? DepartmentID)
         {
+            Error error = new Error();
+            ExcelImport.Models.ExcelMembers excelMembers= new ExcelImport.Models.ExcelMembers();
+            error = excelMembers.SetPhonePrimaryFalse(1);
+
+            //var uName = HttpContext.GetOwinContext().Authentication.User.Identity.GetUserId();
+
             var tb_MemberMasters = db.tb_MemberMaster.Include(t => t.tb_Area).Include(t => t.tb_Department).Include(t => t.tb_Dues).Include(t => t.tb_LatestUnionAssessment).Include(t => t.tb_Dues);
 
             tb_MemberMasters.Select(t => t.tb_Department.tb_College);
@@ -603,7 +611,6 @@ namespace LRC_NET_Framework.Controllers
                         var memberEmails = context.tb_MemberEmail.Where(s => s.MemberID == model._MemberID);
                         if (model._IsPhonePrimary)
                         {
-
                             foreach (var memberEmail in context.tb_MemberEmail)
                             {
                                 memberEmail.IsPrimary = false;

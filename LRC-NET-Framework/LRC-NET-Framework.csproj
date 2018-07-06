@@ -564,6 +564,8 @@
     <Content Include="Views\Home\ExportData.cshtml" />
     <Content Include="Views\Home\AddFilter.cshtml" />
     <Content Include="Views\Import\Index.cshtml" />
+    <Content Include="Views\Notes\NotSure.cshtml" />
+    <Content Include="Views\SemesterTaught\AddWeekDays.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

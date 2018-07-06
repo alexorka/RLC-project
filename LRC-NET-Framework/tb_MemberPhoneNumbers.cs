@@ -21,10 +21,12 @@ namespace LRC_NET_Framework
         public bool IsPrimary { get; set; }
         public string Source { get; set; }
         public Nullable<System.DateTime> CreatedDateTime { get; set; }
-        public Nullable<int> ModifiedBy { get; set; }
+        public string ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedDateTime { get; set; }
+        public Nullable<System.DateTime> StartDate { get; set; }
+        public Nullable<System.DateTime> EndDate { get; set; }
     
-        public virtual tb_PhoneType tb_PhoneType { get; set; }
         public virtual tb_MemberMaster tb_MemberMaster { get; set; }
+        public virtual tb_PhoneType tb_PhoneType { get; set; }
     }
 }
