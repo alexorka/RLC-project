@@ -119,11 +119,18 @@ namespace ExcelImport.Models
                 }
 
                 errs = UpdateMember(excelRec, FM, semesterRecID, record, isNewMember, out warning, uName);
-                if (errs.Count > 0)
-                    return errs;
+                if (errs.Count > 0 || !String.IsNullOrEmpty(warning))
+                {
+                    Error errToSQL = FillOutErrorsTable(excelRec, errs, warning, record);
+                    if (errToSQL.errCode != ErrorDetail.Success)
+                        errs.Add(errToSQL.errMsg);
+                    if(errs.Count > 0)
+                        return errs;
+                }
                 if (!String.IsNullOrEmpty(warning))
                     warnings.Add(warning);
             }
+
             //deleting excel file from folder  
             if ((System.IO.File.Exists(pathToExcelFile)))
             {
@@ -132,13 +139,72 @@ namespace ExcelImport.Models
 
             if (warnings.Count > 0)
             {
-                foreach(var item in warnings)
+                foreach (var item in warnings)
                 {
                     errs.Add(item);
                 }
             }
 
             return errs;
+        }
+
+        private Error FillOutErrorsTable(ExcelMembers excelRec, List<string> errs, string warning, int record)
+        {
+            Error error = new Error();
+            error.errCode = ErrorDetail.Success;
+            error.errMsg = ErrorDetail.GetMsg(error.errCode);
+            using (LRCEntities context = new LRCEntities())
+            {
+                try
+                {
+                    tb_MemberError me = new tb_MemberError
+                    {
+                        ErrorDateTime = DateTime.UtcNow,
+                        RecordInCBU = record,
+                        Location = excelRec.Location,
+                        FullName = excelRec.FullName,
+                        Description = excelRec.Description,
+                        Address = excelRec.Address,
+                        City = excelRec.City,
+                        State = excelRec.State,
+                        Zip = excelRec.Zip,
+                        Phone = excelRec.Phone,
+                        Status = excelRec.Status
+                    };
+                    if (errs.Count > 0)
+                    {
+                        foreach (var err in errs)
+                        {
+                            me.Error = err;
+                            if (!String.IsNullOrEmpty(warning))
+                                me.Warning = warning;
+                            context.tb_MemberError.Add(me);
+                            context.SaveChanges();
+                        }
+                    }
+                    else if (!String.IsNullOrEmpty(warning))
+                    {
+                        me.Warning = warning;
+                        context.tb_MemberError.Add(me);
+                        context.SaveChanges();
+                    }
+                }
+                catch (DbEntityValidationException ex)
+                {
+                    error.errCode = ErrorDetail.DataImportError;
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode);
+                    foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
+                    {
+                        error.errMsg += ". Object: " + validationError.Entry.Entity.ToString();
+                        foreach (DbValidationError err in validationError.ValidationErrors)
+                        {
+                            error.errMsg += ". " + err.ErrorMessage;
+                        }
+                    }
+                    return error;
+                }
+            }
+            return error;
         }
 
         private List<string> UpdateMember(ExcelMembers excelRec, tb_MemberMaster FM, int semesterRecID, int record, bool isNewMember, out string warning, string uName)
@@ -245,13 +311,16 @@ namespace ExcelImport.Models
             int record = 0;
             foreach (var excelRec in members)
             {
+                List<string> errsToSQL = new List<string>();
                 record++;
+                error.errCode = ErrorDetail.Success;
 
                 if (String.IsNullOrEmpty(excelRec.Location))
                 {
                     error.errCode = ErrorDetail.DataImportError;
                     error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Column 'Location': Is empty";
                     errs.Add(error.errMsg);
+                    errsToSQL.Add(error.errMsg);
                 }
 
                 if (String.IsNullOrEmpty(excelRec.FullName))
@@ -259,12 +328,16 @@ namespace ExcelImport.Models
                     error.errCode = ErrorDetail.DataImportError;
                     error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Column 'Name': Is empty";
                     errs.Add(error.errMsg);
+                    errsToSQL.Add(error.errMsg);
                 }
                 else
                 {
                     error = SplitFullName(excelRec.FullName, "MF", record, out string lastName, out string firstName, out string middleName);
                     if (error.errCode != ErrorDetail.Success)
+                    {
                         errs.Add(error.errMsg);
+                        errsToSQL.Add(error.errMsg);
+                    }
                 }
 
                 if (String.IsNullOrEmpty(excelRec.Description))
@@ -272,6 +345,7 @@ namespace ExcelImport.Models
                     error.errCode = ErrorDetail.DataImportError;
                     error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Column 'Descr': Is empty";
                     errs.Add(error.errMsg);
+                    errsToSQL.Add(error.errMsg);
                 }
 
                 if (String.IsNullOrEmpty(excelRec.Address))
@@ -279,6 +353,7 @@ namespace ExcelImport.Models
                     error.errCode = ErrorDetail.DataImportError;
                     error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Column 'Address': Is empty";
                     errs.Add(error.errMsg);
+                    errsToSQL.Add(error.errMsg);
                 }
 
                 if (String.IsNullOrEmpty(excelRec.City))
@@ -286,30 +361,41 @@ namespace ExcelImport.Models
                     error.errCode = ErrorDetail.DataImportError;
                     error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Column 'Location': Is empty";
                     errs.Add(error.errMsg);
+                    errsToSQL.Add(error.errMsg);
                 }
                 if (String.IsNullOrEmpty(excelRec.State))
                 {
                     error.errCode = ErrorDetail.DataImportError;
                     error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Column 'St': Is empty";
                     errs.Add(error.errMsg);
+                    errsToSQL.Add(error.errMsg);
                 }
                 if (String.IsNullOrEmpty(excelRec.Zip))
                 {
                     error.errCode = ErrorDetail.DataImportError;
                     error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Column 'Postal': Is empty";
                     errs.Add(error.errMsg);
+                    errsToSQL.Add(error.errMsg);
                 }
                 if (String.IsNullOrEmpty(excelRec.Phone))
                 {
                     error.errCode = ErrorDetail.DataImportError;
                     error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Column 'Phone': Is empty";
                     errs.Add(error.errMsg);
+                    errsToSQL.Add(error.errMsg);
                 }
                 if (String.IsNullOrEmpty(excelRec.EmployeeID))
                 {
                     error.errCode = ErrorDetail.DataImportError;
                     error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Column 'EmployeeID': Is empty";
                     errs.Add(error.errMsg);
+                    errsToSQL.Add(error.errMsg);
+                }
+                if (error.errCode != ErrorDetail.Success)
+                {
+                    Error errToSQL = FillOutErrorsTable(excelRec, errsToSQL, null, record);
+                    if (errToSQL.errCode != ErrorDetail.Success)
+                        errs.Add(errToSQL.errMsg);
                 }
             }
             return errs;
@@ -770,70 +856,83 @@ namespace ExcelImport.Models
             error.errMsg = ErrorDetail.GetMsg(error.errCode);
             List<string> errs = new List<string>();
             int cityId = GetCityID(city);
-            tb_MemberAddress ma = new tb_MemberAddress();
-            // Set IsPrimary = false for all other addresses of current member
-            error = SetAdressesPrimaryFalse(mID);
-            if (error.errCode != ErrorDetail.Success)
-            {
-                errs.Add(error.errMsg);
-                return errs;
-            }
-            var memberAddresses = db.tb_MemberAddress.Where(s => s.MemberID == mID
-                && s.HomeStreet1.ToUpper() == address.ToUpper()
-                && s.CityID == cityId
-                && s.ZipCode.ToUpper() == postal.ToUpper());
-            //Checking if address from the list of current member addresses already exist
-            if (memberAddresses.Count() > 0)
-            {
-                //Just return founded same as in CBU old address with current memberID. Update founded address
-                ma = memberAddresses.FirstOrDefault();
-                ma.Country = "USA";
-                ma.SourceID = 2; //Employer
-                ma.Source = "CBU";
-                ma.AddressTypeID = 1; //Mailing (from tb_AddressType table)
-                ma.IsPrimary = true;
-                ma.ModifiedBy = uName;
-                ma.ModifiedDateTime = DateTime.UtcNow;
-                ma.StartDate = DateTime.UtcNow;
-                ma.EndDate = null;
-                var entry = db.Entry(ma);
-            }
-            //Current member hasn't address as in CBU
-            else
-            {
-                ma.MemberID = mID;
-                ma.HomeStreet1 = address;
-                ma.CityID = cityId;
-                ma.ZipCode = postal;
-                ma.Country = "USA";
-                ma.SourceID = 2; //Employer
-                ma.Source = "CBU";
-                ma.IsPrimary = true;
-                ma.AddressTypeID = 1; //Mailing (from tb_AddressType table)
-                ma.CreatedDateTime = DateTime.UtcNow;
-                ma.StartDate = DateTime.UtcNow;
-                ma.EndDate = null;
-                db.tb_MemberAddress.Add(ma);
-            }
 
-            try
+            using (LRCEntities context = new LRCEntities())
             {
-                db.SaveChanges();
-            }
-            catch (DbEntityValidationException ex)
-            {
-                error.errCode = ErrorDetail.DataImportError;
-                error.errMsg = ErrorDetail.GetMsg(error.errCode);
-                foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
+                // Check if address(es) exist for current member
+                var memberAddresses = context.tb_MemberAddress.Where(s => s.MemberID == mID).OrderByDescending(s => s.CreatedDateTime).ToArray();
+
+                if (memberAddresses.Count() > 0) //Current member has address(es)
                 {
-                    error.errMsg += ". Object: " + validationError.Entry.Entity.ToString();
-                    foreach (DbValidationError err in validationError.ValidationErrors)
+                    int recornNumber = 0;
+                    foreach (var ma in memberAddresses)
                     {
-                        error.errMsg += ". " + err.ErrorMessage;
+                        if (++recornNumber <= 2) //Leaving 2 records only and updating them
+                        {
+                            ma.IsPrimary = false; //Set IsPrimary to false for all member addresses
+                            if (ma.EndDate == null) //EndDate == null means current Member Address is actual (isn't record for history)
+                                ma.EndDate = DateTime.UtcNow;
+                        }
+                        else //Remove the excess. In the history we leave only 3 entries
+                        {
+                            context.tb_MemberAddress.Remove(ma);
+                        }
+                        try
+                        {
+                            context.SaveChanges();
+                        }
+                        catch (DbEntityValidationException ex)
+                        {
+                            error.errCode = ErrorDetail.DataImportError;
+                            error.errMsg = ErrorDetail.GetMsg(error.errCode);
+                            foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
+                            {
+                                error.errMsg += ". Object: " + validationError.Entry.Entity.ToString();
+                                foreach (DbValidationError err in validationError.ValidationErrors)
+                                {
+                                    error.errMsg += ". " + err.ErrorMessage;
+                                }
+                            }
+                            errs.Add("Error #" + error.errCode.ToString() + "!" + error.errMsg);
+                            return errs;
+                        }
                     }
                 }
-                errs.Add("Error #" + error.errCode.ToString() + "!" + error.errMsg);
-                return errs;
+
+                //Assign new address to ac current Member
+                tb_MemberAddress maNew = new tb_MemberAddress();
+                maNew.MemberID = mID;
+                maNew.HomeStreet1 = address;
+                maNew.CityID = cityId;
+                maNew.ZipCode = postal;
+                maNew.Country = "USA";
+                maNew.SourceID = 2; //Employer
+                maNew.Source = "CBU";
+                maNew.IsPrimary = true;
+                maNew.AddressTypeID = 1; //Mailing (from tb_AddressType table)
+                maNew.CreatedDateTime = DateTime.UtcNow;
+                maNew.StartDate = DateTime.UtcNow.AddDays(-1);
+                maNew.EndDate = null;
+                context.tb_MemberAddress.Add(maNew);
+                try
+                {
+                    context.SaveChanges();
+                }
+                catch (DbEntityValidationException ex)
+                {
+                    error.errCode = ErrorDetail.DataImportError;
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode);
+                    foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
+                    {
+                        error.errMsg += ". Object: " + validationError.Entry.Entity.ToString();
+                        foreach (DbValidationError err in validationError.ValidationErrors)
+                        {
+                            error.errMsg += ". " + err.ErrorMessage;
+                        }
+                    }
+                    errs.Add("Error #" + error.errCode.ToString() + "!" + error.errMsg);
+                    return errs;
+                }
             }
             return errs;
         }
@@ -845,64 +944,82 @@ namespace ExcelImport.Models
             error.errCode = ErrorDetail.Success;
             error.errMsg = ErrorDetail.GetMsg(error.errCode);
             List<string> errs = new List<string>();
-            //Find all member phones by memberID
-            tb_MemberPhoneNumbers mp = new tb_MemberPhoneNumbers();
-            // Set IsPrimary = false for all other addresses of current member
-            error = SetPhonePrimaryFalse(mID);
-            if (error.errCode != ErrorDetail.Success)
+            using (LRCEntities context = new LRCEntities())
             {
-                errs.Add(error.errMsg);
-                return errs;
-            }
-            //Check if phone from the list of current member phone already exist
-            var memberPhoneNumbers = db.tb_MemberPhoneNumbers.Where(s => s.MemberID == mID && s.PhoneNumber.ToUpper() == phone.ToUpper());
-            if (memberPhoneNumbers.Count() > 0)
-            {
-                //Obtained record with a same as in CBU phone number. Just set IsPrimary = true
-                mp = memberPhoneNumbers.FirstOrDefault();
-                mp.Source = "CBU";
-                mp.IsPrimary = true;
-                mp.PhoneTypeID = 1; //Mobile in the tb_PhoneType table
-                mp.ModifiedBy = uName;
-                mp.ModifiedDateTime = DateTime.UtcNow;
-                var entry = db.Entry(mp);
-            }
-            //Current member hasn't phone as in CBU
-            else
-            {
-                //Create the record with new phone from CBU
-                mp.MemberID = mID;
-                mp.PhoneNumber = phone;
-                mp.Source = "CBU";
-                mp.IsPrimary = true;
-                mp.PhoneTypeID = 1; //Mobile in the tb_PhoneType table
-                mp.CreatedDateTime = DateTime.UtcNow;
-                db.tb_MemberPhoneNumbers.Add(mp);
-            }
+                // Check if phone(s) exist for current member
+                var memberPhoneNumbers = context.tb_MemberPhoneNumbers.Where(s => s.MemberID == mID).OrderByDescending(s => s.CreatedDateTime).ToArray();
 
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbEntityValidationException ex)
-            {
-                error.errCode = ErrorDetail.DataImportError;
-                error.errMsg = ErrorDetail.GetMsg(error.errCode);
-                foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
+                if (memberPhoneNumbers.Count() > 0) //Current member has phone(s)
                 {
-                    error.errMsg += ". Object: " + validationError.Entry.Entity.ToString();
-                    foreach (DbValidationError err in validationError.ValidationErrors)
+                    int recornNumber = 0;
+                    foreach (var mp in memberPhoneNumbers)
                     {
-                        error.errMsg += ". " + err.ErrorMessage;
+                        if (++recornNumber <= 2) //Leaving 2 records only and updating them
+                        {
+                            mp.IsPrimary = false; //Set IsPrimary to false for all member phones
+                            if (mp.EndDate == null) //EndDate == null means current Member phone is actual (isn't record for history)
+                                mp.EndDate = DateTime.UtcNow;
+                        }
+                        else //Remove the excess. In the history we leave only 3 entries
+                        {
+                            context.tb_MemberPhoneNumbers.Remove(mp);
+                        }
+                        try
+                        {
+                            context.SaveChanges();
+                        }
+                        catch (DbEntityValidationException ex)
+                        {
+                            error.errCode = ErrorDetail.DataImportError;
+                            error.errMsg = ErrorDetail.GetMsg(error.errCode);
+                            foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
+                            {
+                                error.errMsg += ". Object: " + validationError.Entry.Entity.ToString();
+                                foreach (DbValidationError err in validationError.ValidationErrors)
+                                {
+                                    error.errMsg += ". " + err.ErrorMessage;
+                                }
+                            }
+                            errs.Add("Error #" + error.errCode.ToString() + "!" + error.errMsg);
+                            return errs;
+                        }
                     }
                 }
-                errs.Add("Error #" + error.errCode.ToString() + "!" + error.errMsg);
+
+                //Assign new phone to a current Member
+                tb_MemberPhoneNumbers mpNew = new tb_MemberPhoneNumbers();
+                mpNew.MemberID = mID;
+                mpNew.PhoneNumber = phone;
+                mpNew.Source = "CBU";
+                mpNew.IsPrimary = true;
+                mpNew.PhoneTypeID = 1; //Mobile in the tb_PhoneType table
+                mpNew.CreatedDateTime = DateTime.UtcNow;
+                mpNew.StartDate = DateTime.UtcNow.AddDays(-1);
+                mpNew.EndDate = null;
+                context.tb_MemberPhoneNumbers.Add(mpNew);
+                try
+                {
+                    context.SaveChanges();
+                }
+                catch (DbEntityValidationException ex)
+                {
+                    error.errCode = ErrorDetail.DataImportError;
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode);
+                    foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
+                    {
+                        error.errMsg += ". Object: " + validationError.Entry.Entity.ToString();
+                        foreach (DbValidationError err in validationError.ValidationErrors)
+                        {
+                            error.errMsg += ". " + err.ErrorMessage;
+                        }
+                    }
+                    errs.Add("Error #" + error.errCode.ToString() + "!" + error.errMsg);
+                    return errs;
+                }
                 return errs;
             }
-            return errs;
         }
         #endregion
-
     }
 
     public class ExcelSchedules

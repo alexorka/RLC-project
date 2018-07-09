@@ -339,6 +339,26 @@
           <Property Name="StartDate" Type="date" />
           <Property Name="EndDate" Type="date" />
         </EntityType>
+        <EntityType Name="tb_MemberError">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ErrorDateTime" Type="datetime" />
+          <Property Name="RecordInCBU" Type="int" />
+          <Property Name="Location" Type="nvarchar" MaxLength="50" />
+          <Property Name="FullName" Type="nvarchar" MaxLength="125" />
+          <Property Name="Description" Type="nvarchar" MaxLength="125" />
+          <Property Name="Address" Type="nvarchar" MaxLength="125" />
+          <Property Name="City" Type="nvarchar" MaxLength="50" />
+          <Property Name="State" Type="nvarchar" MaxLength="50" />
+          <Property Name="Zip" Type="nvarchar" MaxLength="50" />
+          <Property Name="Phone" Type="nvarchar" MaxLength="50" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="EmployeeID" Type="nvarchar" MaxLength="50" />
+          <Property Name="Error" Type="nvarchar" MaxLength="255" />
+          <Property Name="Warning" Type="nvarchar" MaxLength="255" />
+        </EntityType>
         <EntityType Name="tb_MemberMaster">
           <Key>
             <PropertyRef Name="MemberID" />
@@ -458,6 +478,34 @@
           </Key>
           <Property Name="RoleID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="RoleName" Type="nvarchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tb_Schedule_Error">
+          <Key>
+            <PropertyRef Name="ErrorId" />
+          </Key>
+          <Property Name="ErrorId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ErrorDateTime" Type="datetime" />
+          <Property Name="RecordInCBU" Type="int" />
+          <Property Name="Id" Type="nvarchar" MaxLength="50" />
+          <Property Name="Instructor" Type="nvarchar" MaxLength="125" />
+          <Property Name="Campus" Type="nvarchar" MaxLength="50" />
+          <Property Name="Location" Type="nvarchar" MaxLength="50" />
+          <Property Name="Building" Type="nvarchar" MaxLength="125" />
+          <Property Name="Room" Type="nvarchar" MaxLength="50" />
+          <Property Name="Division" Type="nvarchar" MaxLength="50" />
+          <Property Name="ClassNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="CAT_NBR" Type="nvarchar" MaxLength="50" />
+          <Property Name="Sect" Type="nvarchar" MaxLength="50" />
+          <Property Name="Subject" Type="nvarchar" MaxLength="50" />
+          <Property Name="LecOrLab" Type="nvarchar" MaxLength="50" />
+          <Property Name="SB_TM" Type="nvarchar" MaxLength="50" />
+          <Property Name="ATT_TP" Type="nvarchar" MaxLength="50" />
+          <Property Name="BeginTime" Type="nvarchar" MaxLength="50" />
+          <Property Name="EndTime" Type="nvarchar" MaxLength="50" />
+          <Property Name="Days" Type="nvarchar" MaxLength="50" />
+          <Property Name="ClassEndDate" Type="nvarchar" MaxLength="50" />
+          <Property Name="Error" Type="nvarchar" MaxLength="255" />
+          <Property Name="Warning" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="tb_SemesterName">
           <Key>
@@ -1126,6 +1174,7 @@
           <EntitySet Name="tb_MemberActivity" EntityType="Self.tb_MemberActivity" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_MemberAddress" EntityType="Self.tb_MemberAddress" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_MemberEmail" EntityType="Self.tb_MemberEmail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tb_MemberError" EntityType="Self.tb_MemberError" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_MemberMaster" EntityType="Self.tb_MemberMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_MemberNotes" EntityType="Self.tb_MemberNotes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_MemberPhoneNumbers" EntityType="Self.tb_MemberPhoneNumbers" Schema="dbo" store:Type="Tables" />
@@ -1134,6 +1183,7 @@
           <EntitySet Name="tb_NoteType" EntityType="Self.tb_NoteType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_PhoneType" EntityType="Self.tb_PhoneType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_Roles" EntityType="Self.tb_Roles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tb_Schedule_Error" EntityType="Self.tb_Schedule_Error" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_SemesterName" EntityType="Self.tb_SemesterName" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_Semesters" EntityType="Self.tb_Semesters" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_SemesterTaught" EntityType="Self.tb_SemesterTaught" Schema="dbo" store:Type="Tables" />
@@ -1601,6 +1651,8 @@
             <End Role="tb_PhoneType" EntitySet="tb_PhoneType" />
             <End Role="tb_MemberPhoneNumbers" EntitySet="tb_MemberPhoneNumbers" />
           </AssociationSet>
+          <EntitySet Name="tb_MemberError" EntityType="LRCModel.tb_MemberError" />
+          <EntitySet Name="tb_Schedule_Error" EntityType="LRCModel.tb_Schedule_Error" />
           </EntityContainer>
         <EntityType Name="tb_ActivityStatus">
           <Key>
@@ -2720,6 +2772,54 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="tb_MemberError">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ErrorDateTime" Type="DateTime" Precision="3" />
+          <Property Name="RecordInCBU" Type="Int32" />
+          <Property Name="Location" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FullName" Type="String" MaxLength="125" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="125" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="125" FixedLength="false" Unicode="true" />
+          <Property Name="City" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="State" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Zip" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EmployeeID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Error" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Warning" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="tb_Schedule_Error">
+          <Key>
+            <PropertyRef Name="ErrorId" />
+          </Key>
+          <Property Name="ErrorId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ErrorDateTime" Type="DateTime" Precision="3" />
+          <Property Name="RecordInCBU" Type="Int32" />
+          <Property Name="Id" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Instructor" Type="String" MaxLength="125" FixedLength="false" Unicode="true" />
+          <Property Name="Campus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Location" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Building" Type="String" MaxLength="125" FixedLength="false" Unicode="true" />
+          <Property Name="Room" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Division" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ClassNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CAT_NBR" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Sect" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Subject" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LecOrLab" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SB_TM" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ATT_TP" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BeginTime" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EndTime" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Days" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ClassEndDate" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Error" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Warning" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -3269,6 +3369,56 @@
                 <ScalarProperty Name="PhoneTypeID" ColumnName="PhoneTypeID" />
                 <ScalarProperty Name="MemberID" ColumnName="MemberID" />
                 <ScalarProperty Name="PhoneRecID" ColumnName="PhoneRecID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tb_MemberError">
+            <EntityTypeMapping TypeName="LRCModel.tb_MemberError">
+              <MappingFragment StoreEntitySet="tb_MemberError">
+                <ScalarProperty Name="Warning" ColumnName="Warning" />
+                <ScalarProperty Name="Error" ColumnName="Error" />
+                <ScalarProperty Name="EmployeeID" ColumnName="EmployeeID" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Zip" ColumnName="Zip" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="Location" ColumnName="Location" />
+                <ScalarProperty Name="RecordInCBU" ColumnName="RecordInCBU" />
+                <ScalarProperty Name="ErrorDateTime" ColumnName="ErrorDateTime" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tb_Schedule_Error">
+            <EntityTypeMapping TypeName="LRCModel.tb_Schedule_Error">
+              <MappingFragment StoreEntitySet="tb_Schedule_Error">
+                <ScalarProperty Name="Warning" ColumnName="Warning" />
+                <ScalarProperty Name="Error" ColumnName="Error" />
+                <ScalarProperty Name="ClassEndDate" ColumnName="ClassEndDate" />
+                <ScalarProperty Name="Days" ColumnName="Days" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="BeginTime" ColumnName="BeginTime" />
+                <ScalarProperty Name="ATT_TP" ColumnName="ATT_TP" />
+                <ScalarProperty Name="SB_TM" ColumnName="SB_TM" />
+                <ScalarProperty Name="LecOrLab" ColumnName="LecOrLab" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="Sect" ColumnName="Sect" />
+                <ScalarProperty Name="CAT_NBR" ColumnName="CAT_NBR" />
+                <ScalarProperty Name="ClassNumber" ColumnName="ClassNumber" />
+                <ScalarProperty Name="Division" ColumnName="Division" />
+                <ScalarProperty Name="Room" ColumnName="Room" />
+                <ScalarProperty Name="Building" ColumnName="Building" />
+                <ScalarProperty Name="Location" ColumnName="Location" />
+                <ScalarProperty Name="Campus" ColumnName="Campus" />
+                <ScalarProperty Name="Instructor" ColumnName="Instructor" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="RecordInCBU" ColumnName="RecordInCBU" />
+                <ScalarProperty Name="ErrorDateTime" ColumnName="ErrorDateTime" />
+                <ScalarProperty Name="ErrorId" ColumnName="ErrorId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

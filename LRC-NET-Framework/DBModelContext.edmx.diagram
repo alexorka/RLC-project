@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="0440ca77908841ea9f47cfe419dc968d" Name="Diagram1" ZoomLevel="86" ShowGrid="false">
+      <Diagram DiagramId="0440ca77908841ea9f47cfe419dc968d" Name="Diagram1" ZoomLevel="29" ShowGrid="false">
         <EntityTypeShape EntityType="LRCModel.tb_Attribute" Width="1.5" PointX="5.25" PointY="23.875" IsExpanded="true" />
         <EntityTypeShape EntityType="LRCModel.tb_Dues" Width="1.5" PointX="5.25" PointY="21.875" IsExpanded="true" />
         <EntityTypeShape EntityType="LRCModel.tb_Gender" Width="1.5" PointX="5.25" PointY="18" IsExpanded="true" />
@@ -99,6 +99,8 @@
         <AssociationConnector Association="LRCModel.FK_tb_MemberEmail_tb_MemberMaster" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberPhoneNumbers_tb_MemberMaster" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberPhoneNumbers_tb_PhoneType" />
+        <EntityTypeShape EntityType="LRCModel.tb_MemberError" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="LRCModel.tb_Schedule_Error" Width="1.5" PointX="2.75" PointY="0.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

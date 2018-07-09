@@ -71,5 +71,7 @@ namespace LRC_NET_Framework
         public virtual DbSet<tb_MemberAddress> tb_MemberAddress { get; set; }
         public virtual DbSet<tb_MemberEmail> tb_MemberEmail { get; set; }
         public virtual DbSet<tb_MemberPhoneNumbers> tb_MemberPhoneNumbers { get; set; }
+        public virtual DbSet<tb_MemberError> tb_MemberError { get; set; }
+        public virtual DbSet<tb_Schedule_Error> tb_Schedule_Error { get; set; }
     }
 }

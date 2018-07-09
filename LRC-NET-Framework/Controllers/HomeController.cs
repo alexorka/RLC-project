@@ -112,9 +112,9 @@ namespace LRC_NET_Framework.Controllers
         [Authorize(Roles = "admin, organizer")]
         public ActionResult Index(string sortOrder, string searchString, int? page, int? CollegeID, int? DepartmentID)
         {
-            Error error = new Error();
-            ExcelImport.Models.ExcelMembers excelMembers= new ExcelImport.Models.ExcelMembers();
-            error = excelMembers.SetPhonePrimaryFalse(1);
+            //Error error = new Error();
+            //ExcelImport.Models.ExcelMembers excelMembers= new ExcelImport.Models.ExcelMembers();
+            //error = excelMembers.SetPhonePrimaryFalse(1);
 
             //var uName = HttpContext.GetOwinContext().Authentication.User.Identity.GetUserId();
 
