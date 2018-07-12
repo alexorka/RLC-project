@@ -586,8 +586,8 @@ namespace LRC_NET_Framework.Controllers
             {
                 semesters.Add(new SelectListItem() {
                     Text = "Semester #" + semester.SemesterID.ToString() + ": " +
-                    Convert.ToDateTime(semester.DateFrom).ToString("MM/dd/yyyy") + " - " + Convert.ToDateTime(semester.DateTo).ToString("MM/dd/yyyy"),
-                    Value = semester.SemesterRecID.ToString() });
+                    Convert.ToDateTime(semester.SemesterStartDate).ToString("MM/dd/yyyy") + " - " + Convert.ToDateTime(semester.SemesterEndDate).ToString("MM/dd/yyyy"),
+                    Value = semester.SemesterID.ToString() });
             }
             ViewBag.Semesters = semesters;
             ViewBag.CollegeID = 0;
@@ -712,14 +712,14 @@ namespace LRC_NET_Framework.Controllers
             #endregion
 
             #region Test GetCampusDescr
-            //test = GetCampusCode("01ARCMAIN");
-            //test = GetCampusCode("01SRPSTC");
-            //test = GetCampusCode("02CRCMAIN");
-            //test = GetCampusCode("04FLCMAIN");
-            //test = GetCampusCode("04EDC");
-            //test = GetCampusCode("05SCCMAIN");
-            //test = GetCampusCode("03ETHAN");
-            //test = GetCampusCode("03DO");
+            //test = GetCollegeCode("01ARCMAIN");
+            //test = GetCollegeCode("01SRPSTC");
+            //test = GetCollegeCode("02CRCMAIN");
+            //test = GetCollegeCode("04FLCMAIN");
+            //test = GetCollegeCode("04EDC");
+            //test = GetCollegeCode("05SCCMAIN");
+            //test = GetCollegeCode("03ETHAN");
+            //test = GetCollegeCode("03DO");
             #endregion
 
             Error error = new Error();

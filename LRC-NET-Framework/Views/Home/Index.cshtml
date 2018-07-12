@@ -158,10 +158,10 @@
                     @Html.DisplayFor(modelItem => item.tb_MemberPhoneNumbers.Where(t => t.MemberID == item.MemberID).Where(p => p.IsPrimary == true).FirstOrDefault().PhoneNumber)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.tb_MemberAddress.Where(t => t.MemberID == item.MemberID).FirstOrDefault().HomeStreet1)
+                    @Html.DisplayFor(modelItem => item.tb_MemberAddress.Where(t => t.MemberID == item.MemberID).FirstOrDefault().HomeStreet1),
                     @Html.DisplayFor(modelItem => item.tb_MemberAddress.Where(t => t.MemberID == item.MemberID).FirstOrDefault().HomeStreet2)
-                    @Html.DisplayFor(modelItem => item.tb_MemberAddress.Where(t => t.MemberID == item.MemberID).FirstOrDefault().tb_CityState.CityName)
-                    @Html.DisplayFor(modelItem => item.tb_MemberAddress.Where(t => t.MemberID == item.MemberID).FirstOrDefault().tb_CityState.CityAlias)
+                    @Html.DisplayFor(modelItem => item.tb_MemberAddress.Where(t => t.MemberID == item.MemberID).FirstOrDefault().City),
+                    @Html.DisplayFor(modelItem => item.tb_MemberAddress.Where(t => t.MemberID == item.MemberID).FirstOrDefault().tb_States.StateCode),
                     @Html.DisplayFor(modelItem => item.tb_MemberAddress.Where(t => t.MemberID == item.MemberID).FirstOrDefault().ZipCode)
                 </td>
                 <td>

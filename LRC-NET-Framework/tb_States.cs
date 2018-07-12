@@ -17,14 +17,15 @@ namespace LRC_NET_Framework
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public tb_States()
         {
-            this.tb_CityState = new HashSet<tb_CityState>();
+            this.tb_MemberAddress = new HashSet<tb_MemberAddress>();
         }
     
-        public int StateCodeID { get; set; }
+        public int StateID { get; set; }
         public string StateName { get; set; }
         public string StateCode { get; set; }
+        public Nullable<int> StateOrder { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tb_CityState> tb_CityState { get; set; }
+        public virtual ICollection<tb_MemberAddress> tb_MemberAddress { get; set; }
     }
 }

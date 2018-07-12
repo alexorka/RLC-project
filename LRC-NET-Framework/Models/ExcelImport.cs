@@ -217,7 +217,7 @@ namespace ExcelImport.Models
             // Check semester Date From
             try
             {
-                var semesterStartDate = db.tb_Semesters.Find(semesterRecID).DateFrom;
+                var semesterStartDate = db.tb_Semesters.Find(semesterRecID).SemesterStartDate;
                 if (FM.LastSeenDate > semesterStartDate)
                 {
                     warning = "Warning!Row #" + record.ToString() + " Facility member data has not been updated. Last Seen Date content is > Semester Start Date of the semester file being loaded.";
@@ -233,10 +233,10 @@ namespace ExcelImport.Models
             }
 
             //FM.Location
-            errs = GetCampusCode(excelRec.Location, out string campusCode);
+            errs = GetCollegeCode(excelRec.Location, out string collegeCode);
             if (errs.Count > 0)
                 return errs;
-            errs = GetCampusID(campusCode, out int campusId);
+            errs = GetCampusID(collegeCode, out int campusId);
             if (errs.Count > 0)
                 return errs;
             FM.CampusID = campusId;
@@ -359,7 +359,7 @@ namespace ExcelImport.Models
                 if (String.IsNullOrEmpty(excelRec.City))
                 {
                     error.errCode = ErrorDetail.DataImportError;
-                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Column 'Location': Is empty";
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Column 'City': Is empty";
                     errs.Add(error.errMsg);
                     errsToSQL.Add(error.errMsg);
                 }
@@ -459,9 +459,10 @@ namespace ExcelImport.Models
         }
 
         //Extract Campus Code from CBU.location
-        private List<string> GetCampusCode(string location, out string campusCode)
+        private List<string> GetCollegeCode(string location, out string collegeCode)
         {
-            campusCode = String.Empty;
+            //var campuses = db.tb_Campus.Where(t => t.CollegeCode.ToUpper() == CollegeCode.ToUpper() && t.CampusName.ToUpper().Contains(":MAIN"));
+            collegeCode = String.Empty;
             Error error = new Error();
             error.errCode = ErrorDetail.Success;
             error.errMsg = ErrorDetail.GetMsg(error.errCode);
@@ -472,27 +473,26 @@ namespace ExcelImport.Models
                 {"01SRPSTC",    "ARC"}, //ARC
                 {"02CRCMAIN",   "CRC"}, //CRC
                 {"04FLCMAIN",   "FLC"}, //Folsom Lk College   
-                {"04EDC",       "EDC"}, //El dorado Center
+                {"04EDC",       "FLC"}, //El dorado Center
                 {"05SCCMAIN",   "SCC"}, //SCC
-                {"03ETHAN",     "DOF"}, //District Offices (DO)
-                {"03DO",        "DOF"}  //District Offices (DO)
+                {"03ETHAN",     "DO"}, //District Offices (DO)
             };
             List<string> campuses = s.Cast<string>().ToList();
 
             int indx = campuses.IndexOf(location);
             if (indx != -1)
-                campusCode = campuses[indx + 1];
+                collegeCode = campuses[indx + 1];
             else
             {
                 error.errCode = ErrorDetail.Failed;
-                error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!GetCampusCode(...) function failed. Wrong Campus Code";
+                error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!GetCollegeCode(...) function failed. Wrong Campus Code";
                 errs.Add(error.errMsg);
             }
             return errs;
         }
 
         //Check if current Campus is present in tb_Campus and add it if not
-        public List<string> GetCampusID(string CampusCode, out int campusID)
+        public List<string> GetCampusID(string CollegeCode, out int campusID)
         {
             campusID = 0;
             Error error = new Error();
@@ -500,11 +500,11 @@ namespace ExcelImport.Models
             error.errMsg = ErrorDetail.GetMsg(error.errCode);
             List<string> errs = new List<string>();
             tb_Campus tb_campus = new tb_Campus();
-            var campuses = db.tb_Campus.Where(t => t.CampusCode.ToUpper() == CampusCode.ToUpper() && t.CampusName.ToUpper().Contains(":MAIN"));
+            var campuses = db.tb_Campus.Where(t => t.CollegeCode.ToUpper() == CollegeCode.ToUpper() && t.CampusName.ToUpper().Contains(":MAIN"));
             if (campuses.Count() == 0)
             {
                 //add new Campus
-                tb_campus.CampusCode = CampusCode;
+                tb_campus.CollegeCode = CollegeCode;
                 tb_campus.CampusName = String.Empty; // ??? may be add it later with some Edit Campuses Form
                 db.tb_Campus.Add(tb_campus);
                 try
@@ -732,20 +732,20 @@ namespace ExcelImport.Models
             return errs;
         }
 
-        //Check if current City is present in tb_CityState and add it if not
-        private int GetCityID(string city)
-        {
-            tb_CityState tb_city = new tb_CityState();
+        ////Check if current City is present in tb_CityState and add it if not
+        //private int GetCityID(string city)
+        //{
+        //    tb_States tb_satates = new tb_CityState();
 
-            if (db.tb_CityState.Where(t => t.CityName.ToUpper() == city.ToUpper()).Count() == 0)
-            {
-                tb_city.CityName = city;
-                tb_city.StateCodeID = 1; //we have only 1 record for now
-                db.tb_CityState.Add(tb_city);
-                db.SaveChanges();
-            }
-            return db.tb_CityState.Where(t => t.CityName.ToUpper() == city.ToUpper()).FirstOrDefault().CityID;
-        }
+        //    if (db.tb_CityState.Where(t => t.CityName.ToUpper() == city.ToUpper()).Count() == 0)
+        //    {
+        //        tb_city.CityName = city;
+        //        tb_city.StateCodeID = 1; //we have only 1 record for now
+        //        db.tb_CityState.Add(tb_city);
+        //        db.SaveChanges();
+        //    }
+        //    return db.tb_CityState.Where(t => t.CityName.ToUpper() == city.ToUpper()).FirstOrDefault().CityID;
+        //}
 
         //Find memberID by CBU Full Name. Return memberID = 0 if not found
         public List<string> IsMemberExistInDB(string lastname, string firstname, string middlename, out tb_MemberMaster fm)
@@ -855,7 +855,7 @@ namespace ExcelImport.Models
             error.errCode = ErrorDetail.Success;
             error.errMsg = ErrorDetail.GetMsg(error.errCode);
             List<string> errs = new List<string>();
-            int cityId = GetCityID(city);
+            //int cityId = GetCityID(city);
 
             using (LRCEntities context = new LRCEntities())
             {
@@ -903,7 +903,7 @@ namespace ExcelImport.Models
                 tb_MemberAddress maNew = new tb_MemberAddress();
                 maNew.MemberID = mID;
                 maNew.HomeStreet1 = address;
-                maNew.CityID = cityId;
+                //maNew.CityID = cityId;
                 maNew.ZipCode = postal;
                 maNew.Country = "USA";
                 maNew.SourceID = 2; //Employer
@@ -1240,12 +1240,12 @@ namespace ExcelImport.Models
             error.errCode = ErrorDetail.Success;
             List<string> errs = new List<string>();
             IEnumerable<SelectListItem> campuses = db.tb_Campus
-                                          .GroupBy(t => t.CampusCode)
+                                          .GroupBy(t => t.CollegeCode)
                                           .Select(g => g.FirstOrDefault())
                                           .Select(c => new SelectListItem
                                           {
                                               Value = c.CampusID.ToString(),
-                                              Text = c.CampusCode
+                                              Text = c.CollegeCode
                                           });
 
             int record = 1;
@@ -1368,7 +1368,7 @@ namespace ExcelImport.Models
             return errs;
         }
 
-        private List<string> GetSemesterRecID(string classEndDate, int rec, int semesterRecID, out bool scheduleStatus)
+        private List<string> GetSemesterRecID(string classEndDate, int rec, int semesterId, out bool scheduleStatus)
         {
             scheduleStatus = false;
             Error error = new Error();
@@ -1377,9 +1377,9 @@ namespace ExcelImport.Models
             var endDate = DateTime.ParseExact(classEndDate.Trim(), "MM-dd-yyyy", CultureInfo.InvariantCulture);
             try
             {
-                semesterRecID = db.tb_Semesters.Where(t => t.FiscalYear == endDate.Year.ToString())
-                    .Where(t => t.DateFrom <= endDate)
-                    .Where(t => t.DateTo >= endDate).FirstOrDefault().SemesterRecID;
+                semesterId = db.tb_Semesters.Where(t => t.SemesterYear == endDate.Year.ToString())
+                    .Where(t => t.SemesterStartDate <= endDate)
+                    .Where(t => t.SemesterEndDate >= endDate).FirstOrDefault().SemesterID;
             }
             catch (Exception)
             {
@@ -1388,7 +1388,7 @@ namespace ExcelImport.Models
                 errs.Add(error.errMsg);
                 return errs;
             }
-            if (semesterRecID <= 0)
+            if (semesterId <= 0)
             {
                 error.errCode = ErrorDetail.Failed;
                 error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + rec.ToString() + ". Class End Date: " + classEndDate + " There is no apropriate semester in the tb_Semesters table.";

@@ -74,7 +74,6 @@ namespace LRC_NET_Framework.Controllers
         [Authorize(Roles = "admin, organizer")]
         public ActionResult AddActivity(int? id)
         {
-            id = 1;
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);

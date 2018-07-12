@@ -86,8 +86,8 @@ namespace LRC_NET_Framework.Controllers
                     sb.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18}",
                     item.MemberIDNumber ?? String.Empty, //ID
                     item.FirstName + " " + item.LastName + " " + item.MiddleName, //INSTRCTR
-                    taught.tb_Building.tb_Campus.CampusCode ?? String.Empty, //CAMPUS
-                    taught.tb_Building.tb_Campus.CampusCode + " MAIN", //LOCATION
+                    taught.tb_Building.tb_Campus.CollegeCode ?? String.Empty, //CAMPUS
+                    taught.tb_Building.tb_Campus.CollegeCode + " MAIN", //LOCATION
                     taught.tb_Building.BuildingName ?? String.Empty, //BUILDING
                     taught.Room ?? String.Empty, //ROOM
                     item.tb_Division.DivisionName ?? String.Empty, //DIV
@@ -192,8 +192,12 @@ namespace LRC_NET_Framework.Controllers
             }
             tb_MemberAddress ma = Worker.tb_MemberAddress.Where(t => t.MemberID == id).Where(t => t.IsPrimary == true).FirstOrDefault();
             if (ma != null)
-                ViewBag.MemberAddress = ma.HomeStreet1 + " " + ma.HomeStreet2 + ", " + ma.tb_CityState.CityName + ", " +
-                    ma.tb_CityState.CityAlias + ", " + ma.ZipCode;
+            {
+                var space = String.Empty;
+                if (!String.IsNullOrEmpty(ma.HomeStreet2))
+                    space = " ";
+                ViewBag.MemberAddress = ma.HomeStreet1 + space + ma.HomeStreet2 + ", " + ma.City + ", " + ma.tb_States.StateCode + ", " + ma.ZipCode;
+            }
             else
                 ViewBag.MemberAddress = "Primary Address is not present";
 
@@ -444,8 +448,8 @@ namespace LRC_NET_Framework.Controllers
                 _PhoneTypeID = 1,
                 _PhoneTypes = new SelectList(db.tb_PhoneType, "PhoneTypeID", "PhoneTypeName"),
                 _MemberPhoneNumbers = db.tb_MemberPhoneNumbers.Where(t => t.MemberID == id).ToList(),
-                // ADDRESS
-                _StateCode = db.tb_States.Where(p => p.StateCodeID == db.tb_CityState.Where(r => r.CityID == db.tb_MemberAddress.Where(t => t.MemberID == id).FirstOrDefault().CityID).FirstOrDefault().StateCodeID).FirstOrDefault().StateCode,
+                // ADDRESS >>check here
+                _StateCode = db.tb_States.Where(r => r.StateID == db.tb_MemberAddress.Where(t => t.MemberID == id).FirstOrDefault().StateID).FirstOrDefault().StateCode,
                 //_CreatedAdressBy = 2,
                 _CreatedAdressDateTime = DateTime.Now,
                 _IsAdressPrimary = true,
@@ -453,8 +457,10 @@ namespace LRC_NET_Framework.Controllers
                 _AddressTypes = new SelectList(db.tb_AddressType, "AddressTypeID", "AddressTypeName"),
                 _SourceID = 1,
                 _AddressSources = new SelectList(db.tb_AddressSource, "SourceID", "SourceName"),
-                _CityID = 1,
-                _CityStates = new SelectList(db.tb_CityState.ToList(), "CityID", "CityName"),
+                // >>check here
+                _City = String.Empty,
+                // >>check here
+                _States = new SelectList(db.tb_States.ToList(), "StateID", "StateCode"),
                 _MemberAddresses = db.tb_MemberAddress.Where(t => t.MemberID == id).ToList(),
                 //EMAIL
                 _EmailTypeID = 1,
@@ -564,7 +570,8 @@ namespace LRC_NET_Framework.Controllers
                         memberAddresses = context.tb_MemberAddress.Where(s => s.HomeStreet1.ToUpper() == model._HomeStreet1.ToUpper()
                             && s.HomeStreet2.ToUpper() == model._HomeStreet2.ToUpper()
                             && s.ZipCode.ToUpper() == model._ZipCode.ToUpper()
-                            && s.CityID == model._CityID);
+                           // >> check here
+                            && s.City == model._City);
                         if (memberAddresses.ToList().Count == 0) // Add new
                         {
                             tb_MemberAddress memberAddress = new tb_MemberAddress()
@@ -572,7 +579,8 @@ namespace LRC_NET_Framework.Controllers
                                 MemberID = model._MemberID,
                                 HomeStreet1 = model._HomeStreet1,
                                 HomeStreet2 = model._HomeStreet2,
-                                CityID = model._CityID,
+                                // >>check here
+                                City = model._City,
                                 ZipCode = model._ZipCode,
                                 Country = "USA",
                                 CreatedDateTime = DateTime.Now,
@@ -590,7 +598,8 @@ namespace LRC_NET_Framework.Controllers
                             memberAddress.MemberID = model._MemberID;
                             memberAddress.HomeStreet1 = model._HomeStreet1;
                             memberAddress.HomeStreet2 = model._HomeStreet2;
-                            memberAddress.CityID = model._CityID;
+                            // >>check here
+                            memberAddress.City = model._City;
                             memberAddress.ZipCode = model._ZipCode;
                             memberAddress.Country = "USA";
                             //memberAddress.CreatedDateTime = DateTime.Now;
@@ -661,9 +670,11 @@ namespace LRC_NET_Framework.Controllers
 
             model._PhoneTypes = new SelectList(db.tb_PhoneType, "PhoneTypeID", "PhoneTypeName");
             model._MemberPhoneNumbers = db.tb_MemberPhoneNumbers.Where(t => t.MemberID == model._MemberID).ToList();
-            model._StateCode = db.tb_States.Where(p => p.StateCodeID == db.tb_CityState.Where(r => r.CityID == db.tb_MemberAddress.Where(t => t.MemberID == model._MemberID).FirstOrDefault().CityID).FirstOrDefault().StateCodeID).FirstOrDefault().StateCode;
+            // >> check here
+            model._StateCode = db.tb_States.Where(p => p.StateID == db.tb_MemberAddress.Where(t => t.MemberID == model._MemberID).FirstOrDefault().StateID).FirstOrDefault().StateCode;
             model._AddressSources = new SelectList(db.tb_AddressSource, "SourceID", "SourceName");
-            model._CityStates = new SelectList(db.tb_CityState.ToList(), "CityID", "CityName");
+            // >> check here
+            model._States = new SelectList(db.tb_States.ToList(), "StateID", "StateName");
             model._AddressTypes = new SelectList(db.tb_AddressType, "AddressTypeID", "AddressTypeName");
             model._MemberAddresses = db.tb_MemberAddress.Where(t => t.MemberID == model._MemberID).ToList();
             model._EmailTypes = new SelectList(db.tb_EmailType.ToList(), "EmailTypeID", "EmailTypeName");

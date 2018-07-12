@@ -20,13 +20,12 @@ namespace LRC_NET_Framework
             this.tb_SemesterTaught = new HashSet<tb_SemesterTaught>();
         }
     
-        public int SemesterRecID { get; set; }
-        public Nullable<System.DateTime> DateFrom { get; set; }
-        public Nullable<System.DateTime> DateTo { get; set; }
-        public string FiscalYear { get; set; }
         public int SemesterID { get; set; }
+        public string SemesterName { get; set; }
+        public string SemesterYear { get; set; }
+        public System.DateTime SemesterStartDate { get; set; }
+        public System.DateTime SemesterEndDate { get; set; }
     
-        public virtual tb_SemesterName tb_SemesterName { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_SemesterTaught> tb_SemesterTaught { get; set; }
     }

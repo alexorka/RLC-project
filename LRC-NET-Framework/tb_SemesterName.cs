@@ -14,16 +14,7 @@ namespace LRC_NET_Framework
     
     public partial class tb_SemesterName
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public tb_SemesterName()
-        {
-            this.tb_Semesters = new HashSet<tb_Semesters>();
-        }
-    
         public int SemesterID { get; set; }
         public string SemesterName { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tb_Semesters> tb_Semesters { get; set; }
     }
 }

@@ -99,6 +99,8 @@ namespace LRC_NET_Framework.Models
         [Required(ErrorMessage = "required")]
         public string _HomeStreet1 { get; set; }
         public string _HomeStreet2 { get; set; }
+        [Required(ErrorMessage = "required")]
+        public string _City { get; set; }
         public string _StateCode { get; set; }
         [Required(ErrorMessage = "required")]
         public string _ZipCode { get; set; }
@@ -112,8 +114,8 @@ namespace LRC_NET_Framework.Models
         public IEnumerable<SelectListItem> _AddressTypes { get; set; }
         public int _SourceID { get; set; }
         public IEnumerable<SelectListItem> _AddressSources { get; set; }
-        public int _CityID { get; set; }
-        public IEnumerable<SelectListItem> _CityStates { get; set; }
+        public string _StateID { get; set; }
+        public IEnumerable<SelectListItem> _States { get; set; }
         public int _MemberAddressID { get; set; }
         public IEnumerable<tb_MemberAddress> _MemberAddresses { get; set; }
 

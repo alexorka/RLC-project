@@ -19,17 +19,21 @@ namespace LRC_NET_Framework
         {
             this.tb_Building = new HashSet<tb_Building>();
             this.tb_MemberMaster = new HashSet<tb_MemberMaster>();
+            this.tb_CampusMapping = new HashSet<tb_CampusMapping>();
         }
     
         public int CampusID { get; set; }
         public int CollegeID { get; set; }
-        public string CampusCode { get; set; }
+        public string CollegeCode { get; set; }
         public string CampusName { get; set; }
+        public bool IsMain { get; set; }
     
-        public virtual tb_College tb_College { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_Building> tb_Building { get; set; }
+        public virtual tb_College tb_College { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_MemberMaster> tb_MemberMaster { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tb_CampusMapping> tb_CampusMapping { get; set; }
     }
 }

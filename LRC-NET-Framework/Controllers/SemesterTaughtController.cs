@@ -95,14 +95,16 @@ namespace LRC_NET_Framework.Controllers
             int semesterRecID = 0;
             try
             {
-                semesterRecID = db.tb_Semesters.Where(t => t.FiscalYear == DateTime.UtcNow.Year.ToString())
-                    .Where(t => t.DateFrom <= DateTime.UtcNow)
-                    .Where(t => t.DateTo > DateTime.UtcNow).FirstOrDefault().SemesterRecID;
+                // >>check here
+                semesterRecID = db.tb_Semesters.Where(t => t.SemesterYear == DateTime.UtcNow.Year.ToString())
+                    .Where(t => t.SemesterStartDate <= DateTime.UtcNow)
+                    .Where(t => t.SemesterEndDate > DateTime.UtcNow).FirstOrDefault().SemesterID;
             }
             catch (Exception)
             {
                 // not good here. situation when DateTime.UtcNow isn't in semester period. taking next semester then
-                semesterRecID = db.tb_Semesters.Where(t => t.DateTo > DateTime.UtcNow).FirstOrDefault().SemesterRecID;
+                // >>check here
+                semesterRecID = db.tb_Semesters.Where(t => t.SemesterStartDate > DateTime.UtcNow).FirstOrDefault().SemesterID;
             }
 
             tb_SemesterTaught newSemesterTaught = new tb_SemesterTaught()

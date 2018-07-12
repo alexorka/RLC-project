@@ -25,8 +25,8 @@ namespace LRC_NET_Framework
         public int CampusID { get; set; }
         public string ImagePath { get; set; }
     
-        public virtual tb_Campus tb_Campus { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_SemesterTaught> tb_SemesterTaught { get; set; }
+        public virtual tb_Campus tb_Campus { get; set; }
     }
 }

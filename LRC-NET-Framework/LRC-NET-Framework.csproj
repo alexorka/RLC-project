@@ -303,10 +303,10 @@
     <Compile Include="tb_Campus.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
-    <Compile Include="tb_Categories.cs">
+    <Compile Include="tb_CampusMapping.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
-    <Compile Include="tb_CityState.cs">
+    <Compile Include="tb_Categories.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
     <Compile Include="tb_College.cs">
@@ -572,6 +572,9 @@
     <Content Include="Views\Notes\NotSure.cshtml" />
     <Content Include="Views\SemesterTaught\AddWeekDays.cshtml" />
     <Content Include="Views\Import\MemberImportErrors.cshtml" />
+    <Content Include="Views\Import\ScheduleImportErrors.cshtml" />
+    <Content Include="Views\Import\CollegesMapping.cshtml" />
+    <Content Include="Views\Import\CampusesMapping.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

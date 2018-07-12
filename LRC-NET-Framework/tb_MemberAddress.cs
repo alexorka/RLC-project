@@ -18,8 +18,9 @@ namespace LRC_NET_Framework
         public int MemberID { get; set; }
         public string HomeStreet1 { get; set; }
         public string HomeStreet2 { get; set; }
-        public int CityID { get; set; }
+        public string City { get; set; }
         public string ZipCode { get; set; }
+        public Nullable<int> StateID { get; set; }
         public string Country { get; set; }
         public string HomeLatitude { get; set; }
         public string HomeLongitude { get; set; }
@@ -35,7 +36,7 @@ namespace LRC_NET_Framework
     
         public virtual tb_AddressSource tb_AddressSource { get; set; }
         public virtual tb_AddressType tb_AddressType { get; set; }
-        public virtual tb_CityState tb_CityState { get; set; }
         public virtual tb_MemberMaster tb_MemberMaster { get; set; }
+        public virtual tb_States tb_States { get; set; }
     }
 }
