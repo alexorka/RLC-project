@@ -311,7 +311,7 @@
           <Property Name="HomeStreet2" Type="nvarchar" MaxLength="255" />
           <Property Name="City" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="ZipCode" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="StateID" Type="int" />
+          <Property Name="StateID" Type="int" Nullable="false" />
           <Property Name="Country" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="HomeLatitude" Type="nvarchar" MaxLength="50" />
           <Property Name="HomeLongitude" Type="nvarchar" MaxLength="50" />
@@ -460,6 +460,15 @@
           <Property Name="CollectedBy" Type="int" />
           <Property Name="AddedBy" Type="int" />
         </EntityType>
+        <EntityType Name="tb_MembersImportMapping">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ColumnNameCBU" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ModelCorrespondingField" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="IsUsed" Type="bit" Nullable="false" />
+        </EntityType>
         <EntityType Name="tb_NoteType">
           <Key>
             <PropertyRef Name="NoteTypeID" />
@@ -508,6 +517,15 @@
           <Property Name="ClassEndDate" Type="nvarchar" MaxLength="50" />
           <Property Name="Error" Type="nvarchar" MaxLength="255" />
           <Property Name="Warning" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="tb_ScheduleImportMapping">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ColumnNameCBU" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ModelCorrespondingField" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="IsUsed" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="tb_SemesterName">
           <Key>
@@ -843,7 +861,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_tb_MemberAddress_tb_States">
-          <End Role="tb_States" Type="Self.tb_States" Multiplicity="0..1" />
+          <End Role="tb_States" Type="Self.tb_States" Multiplicity="1" />
           <End Role="tb_MemberAddress" Type="Self.tb_MemberAddress" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="tb_States">
@@ -1171,10 +1189,12 @@
           <EntitySet Name="tb_MemberPhoneNumbers" EntityType="Self.tb_MemberPhoneNumbers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_MemberRoles" EntityType="Self.tb_MemberRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_MembershipForms" EntityType="Self.tb_MembershipForms" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tb_MembersImportMapping" EntityType="Self.tb_MembersImportMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_NoteType" EntityType="Self.tb_NoteType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_PhoneType" EntityType="Self.tb_PhoneType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_Roles" EntityType="Self.tb_Roles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_Schedule_Error" EntityType="Self.tb_Schedule_Error" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tb_ScheduleImportMapping" EntityType="Self.tb_ScheduleImportMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_SemesterName" EntityType="Self.tb_SemesterName" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_Semesters" EntityType="Self.tb_Semesters" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_SemesterTaught" EntityType="Self.tb_SemesterTaught" Schema="dbo" store:Type="Tables" />
@@ -1613,6 +1633,14 @@
             <End Role="tb_Campus" EntitySet="tb_Campus" />
             <End Role="tb_CampusMapping" EntitySet="tb_CampusMapping" />
           </AssociationSet>
+          <EntitySet Name="tb_Semesters" EntityType="LRCModel.tb_Semesters" />
+          <AssociationSet Name="FK_tb_SemesterTaught_tb_Semesters" Association="LRCModel.FK_tb_SemesterTaught_tb_Semesters">
+            <End Role="tb_Semesters" EntitySet="tb_Semesters" />
+            <End Role="tb_SemesterTaught" EntitySet="tb_SemesterTaught" />
+          </AssociationSet>
+          <EntitySet Name="tb_States" EntityType="LRCModel.tb_States" />
+          <EntitySet Name="tb_MembersImportMapping" EntityType="LRCModel.tb_MembersImportMapping" />
+          <EntitySet Name="tb_ScheduleImportMapping" EntityType="LRCModel.tb_ScheduleImportMapping" />
           <EntitySet Name="tb_MemberAddress" EntityType="LRCModel.tb_MemberAddress" />
           <AssociationSet Name="FK_tb_MemberAddress_tb_AddressSource" Association="LRCModel.FK_tb_MemberAddress_tb_AddressSource">
             <End Role="tb_AddressSource" EntitySet="tb_AddressSource" />
@@ -1626,12 +1654,6 @@
             <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
             <End Role="tb_MemberAddress" EntitySet="tb_MemberAddress" />
           </AssociationSet>
-          <EntitySet Name="tb_Semesters" EntityType="LRCModel.tb_Semesters" />
-          <AssociationSet Name="FK_tb_SemesterTaught_tb_Semesters" Association="LRCModel.FK_tb_SemesterTaught_tb_Semesters">
-            <End Role="tb_Semesters" EntitySet="tb_Semesters" />
-            <End Role="tb_SemesterTaught" EntitySet="tb_SemesterTaught" />
-          </AssociationSet>
-          <EntitySet Name="tb_States" EntityType="LRCModel.tb_States" />
           <AssociationSet Name="FK_tb_MemberAddress_tb_States" Association="LRCModel.FK_tb_MemberAddress_tb_States">
             <End Role="tb_States" EntitySet="tb_States" />
             <End Role="tb_MemberAddress" EntitySet="tb_MemberAddress" />
@@ -2683,6 +2705,57 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="tb_Semesters">
+          <Key>
+            <PropertyRef Name="SemesterID" />
+          </Key>
+          <Property Name="SemesterID" Type="Int32" Nullable="false" />
+          <Property Name="SemesterName" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="SemesterYear" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="SemesterStartDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="SemesterEndDate" Type="DateTime" Nullable="false" Precision="0" />
+          <NavigationProperty Name="tb_SemesterTaught" Relationship="LRCModel.FK_tb_SemesterTaught_tb_Semesters" FromRole="tb_Semesters" ToRole="tb_SemesterTaught" />
+        </EntityType>
+        <Association Name="FK_tb_SemesterTaught_tb_Semesters">
+          <End Type="LRCModel.tb_Semesters" Role="tb_Semesters" Multiplicity="1" />
+          <End Type="LRCModel.tb_SemesterTaught" Role="tb_SemesterTaught" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_Semesters">
+              <PropertyRef Name="SemesterID" />
+            </Principal>
+            <Dependent Role="tb_SemesterTaught">
+              <PropertyRef Name="SemesterRecID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="tb_States">
+          <Key>
+            <PropertyRef Name="StateID" />
+          </Key>
+          <Property Name="StateID" Type="Int32" Nullable="false" />
+          <Property Name="StateName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StateCode" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="StateOrder" Type="Int32" />
+          <NavigationProperty Name="tb_MemberAddress" Relationship="LRCModel.FK_tb_MemberAddress_tb_States" FromRole="tb_States" ToRole="tb_MemberAddress" />
+        </EntityType>
+        <EntityType Name="tb_MembersImportMapping">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ColumnNameCBU" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ModelCorrespondingField" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsUsed" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tb_ScheduleImportMapping">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ColumnNameCBU" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ModelCorrespondingField" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsUsed" Type="Boolean" Nullable="false" />
+        </EntityType>
         <EntityType Name="tb_MemberAddress">
           <Key>
             <PropertyRef Name="MemberAddressID" />
@@ -2693,7 +2766,7 @@
           <Property Name="HomeStreet2" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="City" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ZipCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="StateID" Type="Int32" />
+          <Property Name="StateID" Type="Int32" Nullable="false" />
           <Property Name="Country" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="HomeLatitude" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="HomeLongitude" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -2747,41 +2820,8 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="tb_Semesters">
-          <Key>
-            <PropertyRef Name="SemesterID" />
-          </Key>
-          <Property Name="SemesterID" Type="Int32" Nullable="false" />
-          <Property Name="SemesterName" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="SemesterYear" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
-          <Property Name="SemesterStartDate" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="SemesterEndDate" Type="DateTime" Nullable="false" Precision="0" />
-          <NavigationProperty Name="tb_SemesterTaught" Relationship="LRCModel.FK_tb_SemesterTaught_tb_Semesters" FromRole="tb_Semesters" ToRole="tb_SemesterTaught" />
-        </EntityType>
-        <Association Name="FK_tb_SemesterTaught_tb_Semesters">
-          <End Type="LRCModel.tb_Semesters" Role="tb_Semesters" Multiplicity="1" />
-          <End Type="LRCModel.tb_SemesterTaught" Role="tb_SemesterTaught" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tb_Semesters">
-              <PropertyRef Name="SemesterID" />
-            </Principal>
-            <Dependent Role="tb_SemesterTaught">
-              <PropertyRef Name="SemesterRecID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="tb_States">
-          <Key>
-            <PropertyRef Name="StateID" />
-          </Key>
-          <Property Name="StateID" Type="Int32" Nullable="false" />
-          <Property Name="StateName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="StateCode" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="StateOrder" Type="Int32" />
-          <NavigationProperty Name="tb_MemberAddress" Relationship="LRCModel.FK_tb_MemberAddress_tb_States" FromRole="tb_States" ToRole="tb_MemberAddress" />
-        </EntityType>
         <Association Name="FK_tb_MemberAddress_tb_States">
-          <End Type="LRCModel.tb_States" Role="tb_States" Multiplicity="0..1" />
+          <End Type="LRCModel.tb_States" Role="tb_States" Multiplicity="1" />
           <End Type="LRCModel.tb_MemberAddress" Role="tb_MemberAddress" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="tb_States">
@@ -3351,6 +3391,47 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="tb_Semesters">
+            <EntityTypeMapping TypeName="LRCModel.tb_Semesters">
+              <MappingFragment StoreEntitySet="tb_Semesters">
+                <ScalarProperty Name="SemesterEndDate" ColumnName="SemesterEndDate" />
+                <ScalarProperty Name="SemesterStartDate" ColumnName="SemesterStartDate" />
+                <ScalarProperty Name="SemesterYear" ColumnName="SemesterYear" />
+                <ScalarProperty Name="SemesterName" ColumnName="SemesterName" />
+                <ScalarProperty Name="SemesterID" ColumnName="SemesterID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tb_States">
+            <EntityTypeMapping TypeName="LRCModel.tb_States">
+              <MappingFragment StoreEntitySet="tb_States">
+                <ScalarProperty Name="StateOrder" ColumnName="StateOrder" />
+                <ScalarProperty Name="StateCode" ColumnName="StateCode" />
+                <ScalarProperty Name="StateName" ColumnName="StateName" />
+                <ScalarProperty Name="StateID" ColumnName="StateID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tb_MembersImportMapping">
+            <EntityTypeMapping TypeName="LRCModel.tb_MembersImportMapping">
+              <MappingFragment StoreEntitySet="tb_MembersImportMapping">
+                <ScalarProperty Name="IsUsed" ColumnName="IsUsed" />
+                <ScalarProperty Name="ModelCorrespondingField" ColumnName="ModelCorrespondingField" />
+                <ScalarProperty Name="ColumnNameCBU" ColumnName="ColumnNameCBU" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tb_ScheduleImportMapping">
+            <EntityTypeMapping TypeName="LRCModel.tb_ScheduleImportMapping">
+              <MappingFragment StoreEntitySet="tb_ScheduleImportMapping">
+                <ScalarProperty Name="IsUsed" ColumnName="IsUsed" />
+                <ScalarProperty Name="ModelCorrespondingField" ColumnName="ModelCorrespondingField" />
+                <ScalarProperty Name="ColumnNameCBU" ColumnName="ColumnNameCBU" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="tb_MemberAddress">
             <EntityTypeMapping TypeName="LRCModel.tb_MemberAddress">
               <MappingFragment StoreEntitySet="tb_MemberAddress">
@@ -3373,27 +3454,6 @@
                 <ScalarProperty Name="HomeStreet1" ColumnName="HomeStreet1" />
                 <ScalarProperty Name="MemberID" ColumnName="MemberID" />
                 <ScalarProperty Name="MemberAddressID" ColumnName="MemberAddressID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="tb_Semesters">
-            <EntityTypeMapping TypeName="LRCModel.tb_Semesters">
-              <MappingFragment StoreEntitySet="tb_Semesters">
-                <ScalarProperty Name="SemesterEndDate" ColumnName="SemesterEndDate" />
-                <ScalarProperty Name="SemesterStartDate" ColumnName="SemesterStartDate" />
-                <ScalarProperty Name="SemesterYear" ColumnName="SemesterYear" />
-                <ScalarProperty Name="SemesterName" ColumnName="SemesterName" />
-                <ScalarProperty Name="SemesterID" ColumnName="SemesterID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="tb_States">
-            <EntityTypeMapping TypeName="LRCModel.tb_States">
-              <MappingFragment StoreEntitySet="tb_States">
-                <ScalarProperty Name="StateOrder" ColumnName="StateOrder" />
-                <ScalarProperty Name="StateCode" ColumnName="StateCode" />
-                <ScalarProperty Name="StateName" ColumnName="StateName" />
-                <ScalarProperty Name="StateID" ColumnName="StateID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

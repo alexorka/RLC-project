@@ -369,6 +369,9 @@
     <Compile Include="tb_MembershipForms.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
+    <Compile Include="tb_MembersImportMapping.cs">
+      <DependentUpon>DBModelContext.tt</DependentUpon>
+    </Compile>
     <Compile Include="tb_NoteType.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
@@ -376,6 +379,9 @@
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
     <Compile Include="tb_Roles.cs">
+      <DependentUpon>DBModelContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tb_ScheduleImportMapping.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
     <Compile Include="tb_Schedule_Error.cs">
@@ -575,6 +581,8 @@
     <Content Include="Views\Import\ScheduleImportErrors.cshtml" />
     <Content Include="Views\Import\CollegesMapping.cshtml" />
     <Content Include="Views\Import\CampusesMapping.cshtml" />
+    <Content Include="Views\Import\MembersMapping.cshtml" />
+    <Content Include="Views\Import\ScheduleMapping.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

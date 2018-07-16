@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data.Entity;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
@@ -41,19 +42,25 @@ namespace ExcelImport.Models
             List<string> errs = new List<string>();
             List<string> warnings = new List<string>();
             string warning = String.Empty;
+            Hashtable MapTable = new Hashtable();
+            var modelFields = db.tb_MembersImportMapping.ToList();
+            foreach (var modelField in modelFields)
+            {
+                MapTable.Add(modelField.ModelCorrespondingField, modelField.ColumnNameCBU);
+            }
 
             var factory = new ExcelQueryFactory(pathToExcelFile);
             //Mapping ExcelMembers Model properties with an Excel fields
-            factory.AddMapping<ExcelMembers>(x => x.Location, "Location");
-            factory.AddMapping<ExcelMembers>(x => x.FullName, "Name");
-            factory.AddMapping<ExcelMembers>(x => x.Description, "Descr");
-            factory.AddMapping<ExcelMembers>(x => x.Address, "Address");
-            factory.AddMapping<ExcelMembers>(x => x.City, "City");
-            factory.AddMapping<ExcelMembers>(x => x.State, "St");
-            factory.AddMapping<ExcelMembers>(x => x.Zip, "Postal");
-            factory.AddMapping<ExcelMembers>(x => x.Phone, "Phone");
-            factory.AddMapping<ExcelMembers>(x => x.Status, "Status");
-            factory.AddMapping<ExcelMembers>(x => x.EmployeeID, "EmployeeID");
+            factory.AddMapping<ExcelMembers>(x => x.Location, MapTable["Location"].ToString());
+            factory.AddMapping<ExcelMembers>(x => x.FullName, MapTable["FullName"].ToString());
+            factory.AddMapping<ExcelMembers>(x => x.Description, MapTable["Description"].ToString());
+            factory.AddMapping<ExcelMembers>(x => x.Address, MapTable["Address"].ToString());
+            factory.AddMapping<ExcelMembers>(x => x.City, MapTable["City"].ToString());
+            factory.AddMapping<ExcelMembers>(x => x.State, MapTable["State"].ToString());
+            factory.AddMapping<ExcelMembers>(x => x.Zip, MapTable["Zip"].ToString());
+            factory.AddMapping<ExcelMembers>(x => x.Phone, MapTable["Phone"].ToString());
+            //factory.AddMapping<ExcelMembers>(x => x.Status, MapTable["Status"].ToString());
+            factory.AddMapping<ExcelMembers>(x => x.EmployeeID, MapTable["EmployeeID"].ToString());
 
             factory.StrictMapping = StrictMappingType.ClassStrict;
             factory.TrimSpaces = TrimSpacesType.Both;
@@ -121,7 +128,7 @@ namespace ExcelImport.Models
                 errs = UpdateMember(excelRec, FM, semesterRecID, record, isNewMember, out warning, uName);
                 if (errs.Count > 0 || !String.IsNullOrEmpty(warning))
                 {
-                    Error errToSQL = FillOutErrorsTable(excelRec, errs, warning, record);
+                    Error errToSQL = FillOutMemberErrorsTable(excelRec, errs, warning, record);
                     if (errToSQL.errCode != ErrorDetail.Success)
                         errs.Add(errToSQL.errMsg);
                     if(errs.Count > 0)
@@ -148,7 +155,7 @@ namespace ExcelImport.Models
             return errs;
         }
 
-        private Error FillOutErrorsTable(ExcelMembers excelRec, List<string> errs, string warning, int record)
+        private Error FillOutMemberErrorsTable(ExcelMembers excelRec, List<string> errs, string warning, int record)
         {
             Error error = new Error();
             error.errCode = ErrorDetail.Success;
@@ -232,13 +239,17 @@ namespace ExcelImport.Models
                 return errs;
             }
 
-            //FM.Location
-            errs = GetCollegeCode(excelRec.Location, out string collegeCode);
-            if (errs.Count > 0)
+            //campusId from FM.Location
+            var campusses = db.tb_CampusMapping.Where(m => m.MemberMappingCode != null
+                && m.MemberMappingCode.ToUpper() == excelRec.Location.ToUpper()); // Getting MAIN campuses here. It will be college name
+            if (campusses.Count() <= 0)
+            {
+                error.errCode = ErrorDetail.DataImportError;
+                error.errMsg = ErrorDetail.GetMsg(error.errCode) + "Error!Row #" + record.ToString() + " Column 'Location'. " + excelRec.Location + " value doesn't exist in the College Mapping table. Resolution: Fix it in the loaded file or add new record to College Mapping table ('Colleges Mapping' button)";
+                errs.Add(error.errMsg);
                 return errs;
-            errs = GetCampusID(collegeCode, out int campusId);
-            if (errs.Count > 0)
-                return errs;
+            }
+            int campusId = campusses.FirstOrDefault().CampusID;
             FM.CampusID = campusId;
 
             //FM.Descr (1)
@@ -393,7 +404,7 @@ namespace ExcelImport.Models
                 }
                 if (error.errCode != ErrorDetail.Success)
                 {
-                    Error errToSQL = FillOutErrorsTable(excelRec, errsToSQL, null, record);
+                    Error errToSQL = FillOutMemberErrorsTable(excelRec, errsToSQL, null, record);
                     if (errToSQL.errCode != ErrorDetail.Success)
                         errs.Add(errToSQL.errMsg);
                 }
@@ -458,83 +469,86 @@ namespace ExcelImport.Models
             return error;
         }
 
-        //Extract Campus Code from CBU.location
-        private List<string> GetCollegeCode(string location, out string collegeCode)
-        {
-            //var campuses = db.tb_Campus.Where(t => t.CollegeCode.ToUpper() == CollegeCode.ToUpper() && t.CampusName.ToUpper().Contains(":MAIN"));
-            collegeCode = String.Empty;
-            Error error = new Error();
-            error.errCode = ErrorDetail.Success;
-            error.errMsg = ErrorDetail.GetMsg(error.errCode);
-            List<string> errs = new List<string>();
-            string[,] s = new string[,]
-            {
-                {"01ARCMAIN",   "ARC"}, //ARC
-                {"01SRPSTC",    "ARC"}, //ARC
-                {"02CRCMAIN",   "CRC"}, //CRC
-                {"04FLCMAIN",   "FLC"}, //Folsom Lk College   
-                {"04EDC",       "FLC"}, //El dorado Center
-                {"05SCCMAIN",   "SCC"}, //SCC
-                {"03ETHAN",     "DO"}, //District Offices (DO)
-            };
-            List<string> campuses = s.Cast<string>().ToList();
+        ////Extract Campus Code from CBU.location
+        //private List<string> GetCollegeCode(string location, out string collegeCode)
+        //{
+        //    var collegeId = db.tb_CampusMapping.Include(c => c.tb_Campus).Where(m => m.MemberMappingCode != null 
+        //    && m.MemberMappingCode == location).FirstOrDefault().CampusID;
 
-            int indx = campuses.IndexOf(location);
-            if (indx != -1)
-                collegeCode = campuses[indx + 1];
-            else
-            {
-                error.errCode = ErrorDetail.Failed;
-                error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!GetCollegeCode(...) function failed. Wrong Campus Code";
-                errs.Add(error.errMsg);
-            }
-            return errs;
-        }
+        //    //var campuses = db.tb_Campus.Where(t => t.CollegeCode.ToUpper() == CollegeCode.ToUpper() && t.CampusName.ToUpper().Contains(":MAIN"));
+        //    collegeCode = String.Empty;
+        //    Error error = new Error();
+        //    error.errCode = ErrorDetail.Success;
+        //    error.errMsg = ErrorDetail.GetMsg(error.errCode);
+        //    List<string> errs = new List<string>();
+        //    string[,] s = new string[,]
+        //    {
+        //        {"01ARCMAIN",   "ARC"}, //ARC
+        //        {"01SRPSTC",    "ARC"}, //ARC
+        //        {"02CRCMAIN",   "CRC"}, //CRC
+        //        {"04FLCMAIN",   "FLC"}, //Folsom Lk College   
+        //        {"04EDC",       "FLC"}, //El dorado Center
+        //        {"05SCCMAIN",   "SCC"}, //SCC
+        //        {"03ETHAN",     "DO"}, //District Offices (DO)
+        //    };
+        //    List<string> campuses = s.Cast<string>().ToList();
 
-        //Check if current Campus is present in tb_Campus and add it if not
-        public List<string> GetCampusID(string CollegeCode, out int campusID)
-        {
-            campusID = 0;
-            Error error = new Error();
-            error.errCode = ErrorDetail.Success;
-            error.errMsg = ErrorDetail.GetMsg(error.errCode);
-            List<string> errs = new List<string>();
-            tb_Campus tb_campus = new tb_Campus();
-            var campuses = db.tb_Campus.Where(t => t.CollegeCode.ToUpper() == CollegeCode.ToUpper() && t.CampusName.ToUpper().Contains(":MAIN"));
-            if (campuses.Count() == 0)
-            {
-                //add new Campus
-                tb_campus.CollegeCode = CollegeCode;
-                tb_campus.CampusName = String.Empty; // ??? may be add it later with some Edit Campuses Form
-                db.tb_Campus.Add(tb_campus);
-                try
-                {
-                    db.SaveChanges();
-                    campusID = tb_campus.CampusID; // new campusID of added Campus
-                }
-                catch (DbEntityValidationException ex)
-                {
-                    error.errCode = ErrorDetail.DataImportError;
-                    error.errMsg = ErrorDetail.GetMsg(error.errCode);
-                    foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
-                    {
-                        error.errMsg += ". Object: " + validationError.Entry.Entity.ToString();
-                        foreach (DbValidationError err in validationError.ValidationErrors)
-                        {
-                            error.errMsg += ". " + err.ErrorMessage;
-                        }
-                    }
-                    errs.Add("Error #" + error.errCode.ToString() + "!" + error.errMsg);
-                    return errs;
-                }
+        //    int indx = campuses.IndexOf(location);
+        //    if (indx != -1)
+        //        collegeCode = campuses[indx + 1];
+        //    else
+        //    {
+        //        error.errCode = ErrorDetail.Failed;
+        //        error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!GetCollegeCode(...) function failed. Wrong Campus Code";
+        //        errs.Add(error.errMsg);
+        //    }
+        //    return errs;
+        //}
 
-            }
-            else
-                //return CampusID of founded Campus
-                campusID = campuses.FirstOrDefault().CampusID;
+        ////Check if current Campus is present in tb_Campus and add it if not
+        //public List<string> GetCampusID(string CollegeCode, out int campusID)
+        //{
+        //    campusID = 0;
+        //    Error error = new Error();
+        //    error.errCode = ErrorDetail.Success;
+        //    error.errMsg = ErrorDetail.GetMsg(error.errCode);
+        //    List<string> errs = new List<string>();
+        //    tb_Campus tb_campus = new tb_Campus();
+        //    var campuses = db.tb_Campus.Where(t => t.CollegeCode.ToUpper() == CollegeCode.ToUpper() && t.CampusName.ToUpper().Contains(":MAIN"));
+        //    if (campuses.Count() == 0)
+        //    {
+        //        //add new Campus
+        //        tb_campus.CollegeCode = CollegeCode;
+        //        tb_campus.CampusName = String.Empty; // ??? may be add it later with some Edit Campuses Form
+        //        db.tb_Campus.Add(tb_campus);
+        //        try
+        //        {
+        //            db.SaveChanges();
+        //            campusID = tb_campus.CampusID; // new campusID of added Campus
+        //        }
+        //        catch (DbEntityValidationException ex)
+        //        {
+        //            error.errCode = ErrorDetail.DataImportError;
+        //            error.errMsg = ErrorDetail.GetMsg(error.errCode);
+        //            foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
+        //            {
+        //                error.errMsg += ". Object: " + validationError.Entry.Entity.ToString();
+        //                foreach (DbValidationError err in validationError.ValidationErrors)
+        //                {
+        //                    error.errMsg += ". " + err.ErrorMessage;
+        //                }
+        //            }
+        //            errs.Add("Error #" + error.errCode.ToString() + "!" + error.errMsg);
+        //            return errs;
+        //        }
 
-            return errs;
-        }
+        //    }
+        //    else
+        //        //return CampusID of founded Campus
+        //        campusID = campuses.FirstOrDefault().CampusID;
+
+        //    return errs;
+        ///}
 
         //Conversion CBU 'descr' to AreaName
         private string GetAreaName(string descr)
@@ -690,7 +704,7 @@ namespace ExcelImport.Models
         }
 
         //Check if current DepartmentName is present in tb_Department already and add it if not
-        private List<string> GetDepartmentID(string DepartmentName, int CampusID, out int departmentID)
+        private List<string> GetDepartmentID(string DepartmentName, int campusId, out int departmentID)
         {
             departmentID = 0;
             Error error = new Error();
@@ -702,7 +716,7 @@ namespace ExcelImport.Models
             if (departments.Count() == 0)
             {
                 tb_department.DepartmentName = DepartmentName;
-                tb_department.CollegeID = db.tb_Campus.Find(CampusID).CollegeID; //from founded before CampusID
+                tb_department.CollegeID = db.tb_Campus.Find(campusId).CollegeID; //from founded before CampusID
                 db.tb_Department.Add(tb_department);
                 try
                 {
@@ -903,8 +917,9 @@ namespace ExcelImport.Models
                 tb_MemberAddress maNew = new tb_MemberAddress();
                 maNew.MemberID = mID;
                 maNew.HomeStreet1 = address;
-                //maNew.CityID = cityId;
+                maNew.City = city;
                 maNew.ZipCode = postal;
+                maNew.StateID = 1; // "CA"
                 maNew.Country = "USA";
                 maNew.SourceID = 2; //Employer
                 maNew.Source = "CBU";
@@ -1024,26 +1039,44 @@ namespace ExcelImport.Models
 
     public class ExcelSchedules
     {
-        public string Id { get; set; }
+        //public string Id { get; set; }
         public string Instructor { get; set; }
         public string Campus { get; set; }
         public string Location { get; set; }
         public string Building { get; set; }
         public string Room { get; set; }
-        public string Division { get; set; }
+        //public string Division { get; set; }
         public string ClassNumber { get; set; }
-        public string CAT_NBR { get; set; }
-        public string Sect { get; set; }
-        public string Subject { get; set; }
-        public string LecOrLab { get; set; }
-        public string SB_TM { get; set; }
-        public string ATT_TP { get; set; }
+        //public string CAT_NBR { get; set; }
+        //public string Sect { get; set; }
+        //public string Subject { get; set; }
+        //public string LecOrLab { get; set; }
+        //public string SB_TM { get; set; }
+        //public string ATT_TP { get; set; }
         public string BeginTime { get; set; }
         public string EndTime { get; set; }
         public string Days { get; set; }
         public string ClassEndDate { get; set; }
 
         private LRCEntities db = new LRCEntities();
+
+        private static Hashtable MapTable = new Hashtable();
+
+        //--------------------------------------------------------------------------
+        /// <summary>
+        /// Constructor - add ColumnNameCBU and ModelCorrespondingField in hash table
+        /// </summary>
+        static ExcelSchedules()
+        {
+            using (LRCEntities context = new LRCEntities())
+            {
+                var modelFields = context.tb_ScheduleImportMapping.Where(t => t.IsUsed == true).ToList();
+                foreach (var modelField in modelFields)
+                {
+                    MapTable.Add(modelField.ModelCorrespondingField, modelField.ColumnNameCBU);
+                }
+            }
+        }
 
         #region Faculty Schedule Import
         ///<Author>Alex</Author>
@@ -1060,26 +1093,27 @@ namespace ExcelImport.Models
             List<string> warnings = new List<string>();
             string warning = String.Empty;
 
+
             var factory = new ExcelQueryFactory(pathToExcelFile);
-            //Mapping ExcelSchedules Model properties with an Excel fields
-            factory.AddMapping<ExcelSchedules>(x => x.Id, "ID");
-            factory.AddMapping<ExcelSchedules>(x => x.Instructor, "INSTRCTR");
-            factory.AddMapping<ExcelSchedules>(x => x.Campus, "CAMPUS");
-            factory.AddMapping<ExcelSchedules>(x => x.Location, "LOCATION");
-            factory.AddMapping<ExcelSchedules>(x => x.Building, "BUILDING");
-            factory.AddMapping<ExcelSchedules>(x => x.Room, "ROOM");
-            factory.AddMapping<ExcelSchedules>(x => x.Division, "DIV");
-            factory.AddMapping<ExcelSchedules>(x => x.ClassNumber, "CLASS #");
-            factory.AddMapping<ExcelSchedules>(x => x.CAT_NBR, "CAT NBR"); //?
-            factory.AddMapping<ExcelSchedules>(x => x.Sect, "SECT"); //?
-            factory.AddMapping<ExcelSchedules>(x => x.Subject, "SUBJ CD"); //?
-            factory.AddMapping<ExcelSchedules>(x => x.LecOrLab, "LEC LAB");
-            factory.AddMapping<ExcelSchedules>(x => x.SB_TM, "SB TM"); //?
-            factory.AddMapping<ExcelSchedules>(x => x.ATT_TP, "ATT TP"); //?
-            factory.AddMapping<ExcelSchedules>(x => x.BeginTime, "BEG TIME");
-            factory.AddMapping<ExcelSchedules>(x => x.EndTime, "END TIME");
-            factory.AddMapping<ExcelSchedules>(x => x.Days, "DAYS");
-            factory.AddMapping<ExcelSchedules>(x => x.ClassEndDate, "CLASS END DT");
+            ///Mapping ExcelSchedules Model properties with an Excel fields
+            //factory.AddMapping<ExcelSchedules>(x => x.Id, MapTable["Id"].ToString()); //?
+            factory.AddMapping<ExcelSchedules>(x => x.Instructor, MapTable["Instructor"].ToString());
+            factory.AddMapping<ExcelSchedules>(x => x.Campus, MapTable["Campus"].ToString());
+            factory.AddMapping<ExcelSchedules>(x => x.Location, MapTable["Location"].ToString());
+            factory.AddMapping<ExcelSchedules>(x => x.Building, MapTable["Building"].ToString());
+            factory.AddMapping<ExcelSchedules>(x => x.Room, MapTable["Room"].ToString());
+            //factory.AddMapping<ExcelSchedules>(x => x.Division, MapTable["Division"].ToString()); //?
+            factory.AddMapping<ExcelSchedules>(x => x.ClassNumber, MapTable["ClassNumber"].ToString());
+            //factory.AddMapping<ExcelSchedules>(x => x.CAT_NBR, MapTable["CAT_NBR"].ToString()); //?
+            //factory.AddMapping<ExcelSchedules>(x => x.Sect, MapTable["Sect"].ToString()); //?
+            //factory.AddMapping<ExcelSchedules>(x => x.Subject, MapTable["Subject"].ToString()); //?
+            //factory.AddMapping<ExcelSchedules>(x => x.LecOrLab, MapTable["LecOrLab"].ToString());
+            //factory.AddMapping<ExcelSchedules>(x => x.SB_TM, MapTable["SB_TM"].ToString()); //?
+            //factory.AddMapping<ExcelSchedules>(x => x.ATT_TP, MapTable["ATT_TP"].ToString()); //?
+            factory.AddMapping<ExcelSchedules>(x => x.BeginTime, MapTable["BeginTime"].ToString());
+            factory.AddMapping<ExcelSchedules>(x => x.EndTime, MapTable["EndTime"].ToString());
+            factory.AddMapping<ExcelSchedules>(x => x.Days, MapTable["Days"].ToString());
+            factory.AddMapping<ExcelSchedules>(x => x.ClassEndDate, MapTable["ClassEndDate"].ToString());
 
             factory.StrictMapping = StrictMappingType.ClassStrict;
             factory.TrimSpaces = TrimSpacesType.Both;
@@ -1129,10 +1163,17 @@ namespace ExcelImport.Models
                 ST.MemberID = FM.MemberID;
 
                 errs = UpdateSchedule(excelRec, ST, semesterRecID, FM.LastSeenDate, record, out warning, uName);
-                if (errs.Count > 0)
-                    return errs;
+                if (errs.Count > 0 || !String.IsNullOrEmpty(warning))
+                {
+                    Error errToSQL = FillOutScheduleErrorsTable(excelRec, errs, warning, record);
+                    if (errToSQL.errCode != ErrorDetail.Success)
+                        errs.Add(errToSQL.errMsg);
+                    if (errs.Count > 0)
+                        return errs;
+                }
                 if (!String.IsNullOrEmpty(warning))
                     warnings.Add(warning);
+
             }
             //deleting excel file from folder  
             if ((System.IO.File.Exists(pathToExcelFile)))
@@ -1141,6 +1182,66 @@ namespace ExcelImport.Models
             }
 
             return errs;
+        }
+
+        private Error FillOutScheduleErrorsTable(ExcelSchedules excelRec, List<string> errs, string warning, int record)
+        {
+            Error error = new Error();
+            error.errCode = ErrorDetail.Success;
+            error.errMsg = ErrorDetail.GetMsg(error.errCode);
+            using (LRCEntities context = new LRCEntities())
+            {
+                try
+                {
+                    tb_Schedule_Error sErr = new tb_Schedule_Error
+                    {
+                        ErrorDateTime = DateTime.UtcNow,
+                        RecordInCBU = record,
+                        Instructor = excelRec.Instructor,
+                        Campus = excelRec.Campus,
+                        Location = excelRec.Location,
+                        Building = excelRec.Building,
+                        Room = excelRec.Room,
+                        ClassNumber = excelRec.ClassNumber,
+                        BeginTime = excelRec.BeginTime,
+                        EndTime = excelRec.EndTime,
+                        Days = excelRec.Days,
+                        ClassEndDate = excelRec.ClassEndDate
+                    };
+                    if (errs.Count > 0)
+                    {
+                        foreach (var err in errs)
+                        {
+                            sErr.Error = err;
+                            if (!String.IsNullOrEmpty(warning))
+                                sErr.Warning = warning;
+                            context.tb_Schedule_Error.Add(sErr);
+                            context.SaveChanges();
+                        }
+                    }
+                    else if (!String.IsNullOrEmpty(warning))
+                    {
+                        sErr.Warning = warning;
+                        context.tb_Schedule_Error.Add(sErr);
+                        context.SaveChanges();
+                    }
+                }
+                catch (DbEntityValidationException ex)
+                {
+                    error.errCode = ErrorDetail.DataImportError;
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode);
+                    foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
+                    {
+                        error.errMsg += ". Object: " + validationError.Entry.Entity.ToString();
+                        foreach (DbValidationError err in validationError.ValidationErrors)
+                        {
+                            error.errMsg += ". " + err.ErrorMessage;
+                        }
+                    }
+                    return error;
+                }
+            }
+            return error;
         }
 
         private List<string> UpdateSchedule(ExcelSchedules excelRec, tb_SemesterTaught ST, int semesterRecID, DateTime lastSeenDate, int record, out string warning, string uName)
@@ -1187,7 +1288,17 @@ namespace ExcelImport.Models
             excelRec.EndTime = excelRec.EndTime.Trim().Insert(5, " ");
             ST.ClassEnd = DateTime.ParseExact(excelRec.EndTime.Trim(), "hh:mm tt", CultureInfo.InvariantCulture).TimeOfDay;
 
-            errs = GetBuildingID(excelRec.Building, excelRec.Campus, out int buildingID);
+            var tb_CampusMapping = db.tb_CampusMapping.Where(m => m.ScheduleMappingName == excelRec.Location); // Getting MAIN campuses here. Its a college name
+            if (tb_CampusMapping.Count() <= 0)
+            {
+                error.errCode = ErrorDetail.DataImportError;
+                error.errMsg = ErrorDetail.GetMsg(error.errCode) + "Error!Row #" + record.ToString() + " Check College Mapping.";
+                errs.Add(error.errMsg);
+                return errs;
+            }
+            int collegeId = tb_CampusMapping.FirstOrDefault().CampusID;
+
+            errs = GetBuildingID(excelRec.Building, collegeId, out int buildingID);
             if (errs.Count > 0)
                 return errs;
             ST.BuildingID = buildingID;
@@ -1249,8 +1360,10 @@ namespace ExcelImport.Models
                                           });
 
             int record = 1;
+            Hashtable errColumnNames = MapTable;
             foreach (var _item in schedules)
             {
+                List<string> errsToSQL = new List<string>();
                 record++;
 
                 if (String.IsNullOrEmpty(_item.Instructor))
@@ -1258,20 +1371,27 @@ namespace ExcelImport.Models
                     error.errCode = ErrorDetail.DataImportError;
                     error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'INSTRCTR' is empty;";
                     errs.Add(error.errMsg);
+                    errsToSQL.Add(error.errMsg);
                 }
+                else
+                    errColumnNames.Remove("Instructor"); // remove field from columns error list if found even one not NULL value
 
                 if (String.IsNullOrEmpty(_item.Campus))
                 {
                     error.errCode = ErrorDetail.DataImportError;
                     error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'CAMPUS' is empty;";
                     errs.Add(error.errMsg);
+                    errsToSQL.Add(error.errMsg);
                 }
+                else
+                    errColumnNames.Remove("Campus");
 
                 if (campuses.Where(c => c.Text == _item.Campus).Count() <= 0)
                 {
                     error.errCode = ErrorDetail.DataImportError;
                     error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ", column 'CAMPUS'. Value: " + _item.Campus + " not exist in the tb_Campus table;";
                     errs.Add(error.errMsg);
+                    errsToSQL.Add(error.errMsg);
                 }
 
                 if (String.IsNullOrEmpty(_item.Location))
@@ -1279,14 +1399,20 @@ namespace ExcelImport.Models
                     error.errCode = ErrorDetail.DataImportError;
                     error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'LOCATION' is empty;";
                     errs.Add(error.errMsg);
+                    errsToSQL.Add(error.errMsg);
                 }
+                else
+                    errColumnNames.Remove("Location");
 
                 if (String.IsNullOrEmpty(_item.Building))
                 {
                     error.errCode = ErrorDetail.DataImportError;
                     error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'BUILDING' is empty;";
                     errs.Add(error.errMsg);
+                    errsToSQL.Add(error.errMsg);
                 }
+                else
+                    errColumnNames.Remove("Building");
 
                 if (String.IsNullOrEmpty(_item.Room) && !String.IsNullOrEmpty(_item.Building))
                 {
@@ -1295,26 +1421,33 @@ namespace ExcelImport.Models
                         error.errCode = ErrorDetail.DataImportError;
                         error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'ROOM' can be empty for 'BUILDING' = 'Online' only;";
                         errs.Add(error.errMsg);
+                        errsToSQL.Add(error.errMsg);
                     }
                 }
-                //if (String.IsNullOrEmpty(_item.Division))
-                //{
-                //    error.errCode = ErrorDetail.DataImportError;
-                //    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'DIV' is empty;";
-                //    errs.Add(error.errMsg);
-                //}
+
+                if (!String.IsNullOrEmpty(_item.Room))
+                    errColumnNames.Remove("Room");
+
                 if (String.IsNullOrEmpty(_item.ClassNumber))
                 {
                     error.errCode = ErrorDetail.DataImportError;
                     error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'CLASS #' is empty;";
                     errs.Add(error.errMsg);
+                    errsToSQL.Add(error.errMsg);
                 }
+                else
+                    errColumnNames.Remove("ClassNumber");
+
                 if (String.IsNullOrEmpty(_item.BeginTime))
                 {
                     error.errCode = ErrorDetail.DataImportError;
                     error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'BEG TIME' is empty;";
                     errs.Add(error.errMsg);
+                    errsToSQL.Add(error.errMsg);
                 }
+                else
+                    errColumnNames.Remove("BeginTime");
+
                 try
                 {
                     var check = DateTime.ParseExact(_item.BeginTime.Trim().Insert(5, " "), "hh:mm tt", CultureInfo.InvariantCulture).TimeOfDay;
@@ -1324,13 +1457,19 @@ namespace ExcelImport.Models
                     error.errCode = ErrorDetail.DataImportError;
                     error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'BEG TIME' wrong format;";
                     errs.Add(error.errMsg);
+                    errsToSQL.Add(error.errMsg);
                 }
+
                 if (String.IsNullOrEmpty(_item.EndTime))
                 {
                     error.errCode = ErrorDetail.DataImportError;
                     error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'END TIME' is empty;";
                     errs.Add(error.errMsg);
+                    errsToSQL.Add(error.errMsg);
                 }
+                else
+                    errColumnNames.Remove("EndTime");
+
                 try
                 {
                     var check = DateTime.ParseExact(_item.EndTime.Trim().Insert(5, " "), "hh:mm tt", CultureInfo.InvariantCulture).TimeOfDay;
@@ -1340,20 +1479,29 @@ namespace ExcelImport.Models
                     error.errCode = ErrorDetail.DataImportError;
                     error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'END TIME' wrong format;";
                     errs.Add(error.errMsg);
+                    errsToSQL.Add(error.errMsg);
                 }
+
                 if (String.IsNullOrEmpty(_item.Days))
                 {
                     error.errCode = ErrorDetail.DataImportError;
                     error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'DAYS' is empty;";
                     errs.Add(error.errMsg);
+                    errsToSQL.Add(error.errMsg);
                 }
+                else
+                    errColumnNames.Remove("Days");
 
                 if (String.IsNullOrEmpty(_item.ClassEndDate))
                 {
                     error.errCode = ErrorDetail.DataImportError;
                     error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'CLASS END DT' is empty;";
                     errs.Add(error.errMsg);
+                    errsToSQL.Add(error.errMsg);
                 }
+                else
+                    errColumnNames.Remove("ClassEndDate");
+
                 try
                 {
                     var check = DateTime.ParseExact(_item.ClassEndDate.Trim(), "MM-dd-yyyy", CultureInfo.InvariantCulture);
@@ -1363,8 +1511,27 @@ namespace ExcelImport.Models
                     error.errCode = ErrorDetail.DataImportError;
                     error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'CLASS END DT' wrong format;";
                     errs.Add(error.errMsg);
+                    errsToSQL.Add(error.errMsg);
+                }
+
+                if (error.errCode != ErrorDetail.Success)
+                {
+                    Error errToSQL = FillOutScheduleErrorsTable(_item, errsToSQL, null, record);
+                    if (errToSQL.errCode != ErrorDetail.Success)
+                        errs.Add(errToSQL.errMsg);
                 }
             }
+
+            if (errColumnNames.Count > 0)
+            {
+                error.errCode = ErrorDetail.DataImportError;
+                foreach (var item in errColumnNames)
+                {
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Error. Column name: '" + ((System.Collections.DictionaryEntry)item).Value + "' in the loaded file has wrong name or format. Correct column name or change fields mapping ('Schedule Fields Mapping' button)";
+                }
+                errs.Add(error.errMsg);
+            }
+
             return errs;
         }
 
@@ -1432,8 +1599,8 @@ namespace ExcelImport.Models
             return errs;
         }
 
-        //Check if current AreaName is present in tb_Area already and add it if not
-        private List<string> GetBuildingID(string building, string campus, out int buildingID)
+        //Check if current BuildingName is present in tb_Building already and add it if not
+        private List<string> GetBuildingID(string building, int campusId, out int buildingID)
         {
             buildingID = 0;
             Error error = new Error();
@@ -1446,11 +1613,6 @@ namespace ExcelImport.Models
             if (buildings.Count() == 0)
             {
                 tb_building.BuildingName = building;
-
-                errs = excelMembers.GetCampusID(campus, out int campusId);
-                if (error.errCode != ErrorDetail.Success)
-                    return errs;
-
                 tb_building.CampusID = campusId;
 
                 db.tb_Building.Add(tb_building);
@@ -1478,6 +1640,50 @@ namespace ExcelImport.Models
             else
                 //return BuildingID of founded Building
                 buildingID = buildings.FirstOrDefault().BuildingID;
+            return errs;
+        }
+
+        //Check if current StateCode is present in tb_States already and add it if not (not using for now)
+        private List<string> GetStateID(string state, out int stateID)
+        {
+            stateID = 0;
+            Error error = new Error();
+            error.errCode = ErrorDetail.Success;
+            error.errMsg = ErrorDetail.GetMsg(error.errCode);
+            ExcelMembers excelMembers = new ExcelMembers();
+            List<string> errs = new List<string>();
+            tb_States tb_States = new tb_States();
+            var states = db.tb_States.Where(t => t.StateCode.ToUpper() == state.ToUpper());
+            if (states.Count() == 0)
+            {
+                tb_States.StateCode = state;
+                tb_States.StateName = state; // ??
+
+                db.tb_States.Add(tb_States);
+                try
+                {
+                    db.SaveChanges();
+                    stateID = tb_States.StateID; // new StateID of added States
+                }
+                catch (DbEntityValidationException ex)
+                {
+                    error.errCode = ErrorDetail.DataImportError;
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode);
+                    foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
+                    {
+                        error.errMsg += ". Object: " + validationError.Entry.Entity.ToString();
+                        foreach (DbValidationError err in validationError.ValidationErrors)
+                        {
+                            error.errMsg += ". " + err.ErrorMessage;
+                        }
+                    }
+                    errs.Add("Error #" + error.errCode.ToString() + "!" + error.errMsg);
+                    return errs;
+                }
+            }
+            else
+                //return StateID of founded State
+                stateID = states.FirstOrDefault().StateID;
             return errs;
         }
 

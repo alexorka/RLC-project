@@ -70,8 +70,10 @@ namespace LRC_NET_Framework
         public virtual DbSet<tb_Schedule_Error> tb_Schedule_Error { get; set; }
         public virtual DbSet<tb_Campus> tb_Campus { get; set; }
         public virtual DbSet<tb_CampusMapping> tb_CampusMapping { get; set; }
-        public virtual DbSet<tb_MemberAddress> tb_MemberAddress { get; set; }
         public virtual DbSet<tb_Semesters> tb_Semesters { get; set; }
         public virtual DbSet<tb_States> tb_States { get; set; }
+        public virtual DbSet<tb_MembersImportMapping> tb_MembersImportMapping { get; set; }
+        public virtual DbSet<tb_ScheduleImportMapping> tb_ScheduleImportMapping { get; set; }
+        public virtual DbSet<tb_MemberAddress> tb_MemberAddress { get; set; }
     }
 }

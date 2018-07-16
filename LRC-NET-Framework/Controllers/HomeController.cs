@@ -140,8 +140,6 @@ namespace LRC_NET_Framework.Controllers
                 tb_MemberMasters = tb_MemberMasters.Where(f => f.DepartmentID == DepartmentID);
             }
             List<tb_College> colleges = db.tb_College.ToList();
-            // устанавливаем начальный элемент, который позволит выбрать всех
-            //_colleges.Insert(0, new tb_College { CollegeDesc = "All", CollegeID = 0 });
             ViewBag.Colleges = new SelectList(colleges, "CollegeID", "CollegeName");
             List<tb_Department> departments = db.tb_Department.ToList();
             tb_MemberMaster tb_MemberMaster = db.tb_MemberMaster.Find(1);
@@ -190,7 +188,7 @@ namespace LRC_NET_Framework.Controllers
             {
                 return HttpNotFound();
             }
-            tb_MemberAddress ma = Worker.tb_MemberAddress.Where(t => t.MemberID == id).Where(t => t.IsPrimary == true).FirstOrDefault();
+            tb_MemberAddress ma = db.tb_MemberAddress.Where(t => t.MemberID == id).Where(t => t.IsPrimary == true).FirstOrDefault();
             if (ma != null)
             {
                 var space = String.Empty;

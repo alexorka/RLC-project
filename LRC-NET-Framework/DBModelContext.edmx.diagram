@@ -92,13 +92,15 @@
         <AssociationConnector Association="LRCModel.FK_tb_MemberMaster_tb_Campus" />
         <EntityTypeShape EntityType="LRCModel.tb_CampusMapping" Width="1.5" PointX="11.75" PointY="7.75" />
         <AssociationConnector Association="LRCModel.FK_tb_CampusMapping_tb_Campus" />
-        <EntityTypeShape EntityType="LRCModel.tb_MemberAddress" Width="1.5" PointX="11.75" PointY="26.625" />
-        <AssociationConnector Association="LRCModel.FK_tb_MemberAddress_tb_AddressSource" />
-        <AssociationConnector Association="LRCModel.FK_tb_MemberAddress_tb_AddressType" />
-        <AssociationConnector Association="LRCModel.FK_tb_MemberAddress_tb_MemberMaster" />
         <EntityTypeShape EntityType="LRCModel.tb_Semesters" Width="1.5" PointX="7.375" PointY="12.75" />
         <AssociationConnector Association="LRCModel.FK_tb_SemesterTaught_tb_Semesters" />
         <EntityTypeShape EntityType="LRCModel.tb_States" Width="1.5" PointX="14" PointY="30.25" />
+        <EntityTypeShape EntityType="LRCModel.tb_MembersImportMapping" Width="1.5" PointX="4.875" PointY="0.75" />
+        <EntityTypeShape EntityType="LRCModel.tb_ScheduleImportMapping" Width="1.5" PointX="4.875" PointY="2.75" />
+        <EntityTypeShape EntityType="LRCModel.tb_MemberAddress" Width="1.5" PointX="11.75" PointY="26.5" />
+        <AssociationConnector Association="LRCModel.FK_tb_MemberAddress_tb_AddressSource" />
+        <AssociationConnector Association="LRCModel.FK_tb_MemberAddress_tb_AddressType" />
+        <AssociationConnector Association="LRCModel.FK_tb_MemberAddress_tb_MemberMaster" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberAddress_tb_States" />
         </Diagram>
     </edmx:Diagrams>
