@@ -66,8 +66,6 @@ namespace LRC_NET_Framework
         public virtual DbSet<tb_MemberMaster> tb_MemberMaster { get; set; }
         public virtual DbSet<tb_MemberEmail> tb_MemberEmail { get; set; }
         public virtual DbSet<tb_MemberPhoneNumbers> tb_MemberPhoneNumbers { get; set; }
-        public virtual DbSet<tb_MemberError> tb_MemberError { get; set; }
-        public virtual DbSet<tb_Schedule_Error> tb_Schedule_Error { get; set; }
         public virtual DbSet<tb_Campus> tb_Campus { get; set; }
         public virtual DbSet<tb_CampusMapping> tb_CampusMapping { get; set; }
         public virtual DbSet<tb_Semesters> tb_Semesters { get; set; }
@@ -75,5 +73,7 @@ namespace LRC_NET_Framework
         public virtual DbSet<tb_MembersImportMapping> tb_MembersImportMapping { get; set; }
         public virtual DbSet<tb_ScheduleImportMapping> tb_ScheduleImportMapping { get; set; }
         public virtual DbSet<tb_MemberAddress> tb_MemberAddress { get; set; }
+        public virtual DbSet<tb_MemberError> tb_MemberError { get; set; }
+        public virtual DbSet<tb_Schedule_Error> tb_Schedule_Error { get; set; }
     }
 }

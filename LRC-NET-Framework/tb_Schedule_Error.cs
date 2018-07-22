@@ -15,22 +15,14 @@ namespace LRC_NET_Framework
     public partial class tb_Schedule_Error
     {
         public int ErrorId { get; set; }
-        public Nullable<System.DateTime> ErrorDateTime { get; set; }
-        public Nullable<int> RecordInCBU { get; set; }
-        public string Id { get; set; }
+        public System.DateTime ErrorDateTime { get; set; }
+        public int RecordInCBU { get; set; }
         public string Instructor { get; set; }
         public string Campus { get; set; }
         public string Location { get; set; }
         public string Building { get; set; }
         public string Room { get; set; }
-        public string Division { get; set; }
         public string ClassNumber { get; set; }
-        public string CAT_NBR { get; set; }
-        public string Sect { get; set; }
-        public string Subject { get; set; }
-        public string LecOrLab { get; set; }
-        public string SB_TM { get; set; }
-        public string ATT_TP { get; set; }
         public string BeginTime { get; set; }
         public string EndTime { get; set; }
         public string Days { get; set; }

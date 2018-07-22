@@ -9,7 +9,17 @@
 
         <div class="row" style="padding-bottom:10px; padding-top:10px; margin:2px;">
             <div class="col-md-12" id="Schedules" style="background-color:lavender; border:solid; border-radius:5px; border-width:1px; border-color:gainsboro">
-                <div style="background-color:gainsboro; padding-bottom:5px; padding-left:30px; border-bottom-left-radius:5px; border-bottom-right-radius:5px;">@Html.Label("Schedules", "Schedules Import Errors", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })</div>
+                <div style="background-color:gainsboro; padding-bottom:5px; padding-left:30px; border-bottom-left-radius:5px; border-bottom-right-radius:5px;">
+                    @Html.Label("Schedules", "Schedules Import Errors", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })&nbsp;&nbsp;
+                    @if (Model.Count() > 0)
+                    {
+                        @Html.ActionLink("Remove all records", "RemoveAllScheduleErrorRecords")
+                    }
+                    else
+                    {
+                        <span>(No error or warning messages)</span>
+                    }
+                    </div>
                 <table class="table">
                     <tr class="text-info">
                         <th width="10%">
@@ -28,52 +38,52 @@
                     </tr>
                     @foreach (var item in Model)
                     {
-                    <tr>
-                        <td style="font-size:smaller;">
-                            @Convert.ToDateTime(item.ErrorDateTime).ToString("MM/dd/yyyy hh:mm")
-                        </td>
-                        <td style="font-size:smaller;">
-                            @Html.DisplayFor(modelItem => item.RecordInCBU)
-                        </td>
-                        <td style="font-size:smaller;">
-                            @if (!String.IsNullOrEmpty(item.Error))
-                            {
-                                var _errors = item.Error.Split('!');
-                                <div class="row"style="color:darkred;">
-                                    <div class="col-md-4">
-                                        @_errors[0]
+                        <tr>
+                            <td style="font-size:smaller;">
+                                @Convert.ToDateTime(item.ErrorDateTime).ToString("MM/dd/yyyy hh:mm")
+                            </td>
+                            <td style="font-size:smaller;">
+                                @Html.DisplayFor(modelItem => item.RecordInCBU)
+                            </td>
+                            <td style="font-size:smaller;">
+                                @if (!String.IsNullOrEmpty(item.Error))
+                                {
+                                    var _errors = item.Error.Split('!');
+                                    <div class="row"style="color:darkred;">
+                                        <div class="col-md-4">
+                                            @_errors[0]
+                                        </div>
+                                        <div class="col-md-8">@_errors[1]</div>
                                     </div>
-                                    <div class="col-md-8">@_errors[1]</div>
-                                </div>
-                            }
+                                }
                                
-                            @if (!String.IsNullOrEmpty(item.Warning))
-                            {
-                                var _errors = item.Warning.Split('!');
-                                <div class="row"style="color:darkorange;">
-                                    <div class="col-md-4">
-                                        @_errors[0]
+                                @if (!String.IsNullOrEmpty(item.Warning))
+                                {
+                                    var _errors = item.Warning.Split('!');
+                                    <div class="row"style="color:darkorange;">
+                                        <div class="col-md-4">
+                                            @_errors[0]
+                                        </div>
+                                        <div class="col-md-8">@_errors[1]</div>
                                     </div>
-                                    <div class="col-md-8">@_errors[1]</div>
-                                </div>
-                            }
-                        </td>
-                        <td style="font-size:smaller;">
-                            Instructor: @Html.DisplayFor(modelItem => item.Instructor)<br />
-                            Campus: @Html.DisplayFor(modelItem => item.Campus)<br />
-                            Location: @Html.DisplayFor(modelItem => item.Location)<br />
-                            Building: @Html.DisplayFor(modelItem => item.Building)<br />
-                            Room: @Html.DisplayFor(modelItem => item.Room)<br />
-                            Class: @Html.DisplayFor(modelItem => item.ClassNumber)<br />
-                            Begin: @Html.DisplayFor(modelItem => item.BeginTime)<br />
-                            End: @Html.DisplayFor(modelItem => item.EndTime)<br />
-                            Days: @Html.DisplayFor(modelItem => item.Days)<br />
-                            ClassEndDate: @Html.DisplayFor(modelItem => item.ClassEndDate)<br />
-                        </td>
-                        <td>
-                            @Html.ActionLink("Delete Error", "DeleteScheduleRecord", new { errId = item.Id })
-                        </td>
-                    </tr>
+                                }
+                            </td>
+                            <td style="font-size:smaller;">
+                                Instructor: @Html.DisplayFor(modelItem => item.Instructor)<br />
+                                Campus: @Html.DisplayFor(modelItem => item.Campus)<br />
+                                Location: @Html.DisplayFor(modelItem => item.Location)<br />
+                                Building: @Html.DisplayFor(modelItem => item.Building)<br />
+                                Room: @Html.DisplayFor(modelItem => item.Room)<br />
+                                Class: @Html.DisplayFor(modelItem => item.ClassNumber)<br />
+                                Begin: @Html.DisplayFor(modelItem => item.BeginTime)<br />
+                                End: @Html.DisplayFor(modelItem => item.EndTime)<br />
+                                Days: @Html.DisplayFor(modelItem => item.Days)<br />
+                                ClassEndDate: @Html.DisplayFor(modelItem => item.ClassEndDate)<br />
+                            </td>
+                            <td>
+                                @Html.ActionLink("Delete Error", "DeleteScheduleRecord", new { errId = item.ErrorId })
+                            </td>
+                        </tr>
                     }
                 </table>
             </div>

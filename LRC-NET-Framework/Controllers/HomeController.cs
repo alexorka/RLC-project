@@ -168,7 +168,7 @@ namespace LRC_NET_Framework.Controllers
             }
 
             //Paging
-            int pageSize = 3;
+            int pageSize = 20;
             int pageNumber = (page ?? 1);
 
             return View(tb_MemberMasters.ToPagedList(pageNumber, pageSize));
@@ -267,7 +267,7 @@ namespace LRC_NET_Framework.Controllers
                     break;
             }           
             //Paging
-            int pageSize = 2;
+            int pageSize = 20;
             int pageNumber = (page ?? 1);
             return View(membersOrdered.ToPagedList(pageNumber, pageSize));
         }

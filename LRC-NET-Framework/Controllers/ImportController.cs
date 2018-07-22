@@ -31,8 +31,12 @@ namespace LRC_NET_Framework.Controllers
 
         // GET: Delete Member Import Errors
         [Authorize(Roles = "admin, organizer")]
-        public ActionResult DeleteMemberRecord(int errId)
+        public ActionResult DeleteMemberRecord(int? errId)
         {
+            if (errId == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
             using (LRCEntities context = new LRCEntities())
             {
                 var me = context.tb_MemberError.Find(errId);
@@ -49,10 +53,50 @@ namespace LRC_NET_Framework.Controllers
             return RedirectToAction("MemberImportErrors");
         }
 
+        // GET: Remove All Member Import Errors
+        [Authorize(Roles = "admin, organizer")]
+        public ActionResult RemoveAllMemberErrorRecords()
+        {
+            using (LRCEntities context = new LRCEntities())
+            {
+                try
+                {
+                    context.Database.ExecuteSqlCommand("TRUNCATE TABLE [dbo].[tb_MemberError]");
+                }
+                catch (DbEntityValidationException ex)
+                {
+
+                }
+            }
+            return RedirectToAction("MemberImportErrors");
+        }
+
+        // GET: Remove All Member Import Errors
+        [Authorize(Roles = "admin, organizer")]
+        public ActionResult RemoveAllScheduleErrorRecords()
+        {
+            using (LRCEntities context = new LRCEntities())
+            {
+                try
+                {
+                    context.Database.ExecuteSqlCommand("TRUNCATE TABLE [dbo].[tb_Schedule_Error]");
+                }
+                catch (DbEntityValidationException ex)
+                {
+
+                }
+            }
+            return RedirectToAction("MemberImportErrors");
+        }
+
         // GET: Delete Schedule Import Errors
         [Authorize(Roles = "admin, organizer")]
-        public ActionResult DeleteScheduleRecord(int errId)
+        public ActionResult DeleteScheduleRecord(int? errId)
         {
+            if (errId == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
             using (LRCEntities context = new LRCEntities())
             {
                 var me = context.tb_Schedule_Error.Find(errId);
@@ -113,11 +157,15 @@ namespace LRC_NET_Framework.Controllers
 
         // GET: Delete College Mapping Record (Member CBU Import)
         [Authorize(Roles = "admin, organizer")]
-        public ActionResult RemoveMemberCollegeMapping(int Id)
+        public ActionResult RemoveMemberCollegeMapping(int? errId)
         {
+            if (errId == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
             using (LRCEntities context = new LRCEntities())
             {
-                var rec = context.tb_CampusMapping.Find(Id);
+                var rec = context.tb_CampusMapping.Find(errId);
                 context.tb_CampusMapping.Remove(rec);
                 try
                 {
@@ -175,8 +223,12 @@ namespace LRC_NET_Framework.Controllers
 
         // GET: Delete Campus Mapping Record (Schedule CBU Import)
         [Authorize(Roles = "admin, organizer")]
-        public ActionResult RemoveScheduleCampusMapping(int Id)
+        public ActionResult RemoveScheduleCampusMapping(int? Id)
         {
+            if (Id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
             using (LRCEntities context = new LRCEntities())
             {
                 var rec = context.tb_CampusMapping.Find(Id);
@@ -270,8 +322,5 @@ namespace LRC_NET_Framework.Controllers
             ViewBag.ID = modelFields;
             return View();
         }
-
-        
-
     }
 }

@@ -14,9 +14,9 @@ namespace LRC_NET_Framework
     
     public partial class tb_MemberError
     {
-        public int Id { get; set; }
-        public Nullable<System.DateTime> ErrorDateTime { get; set; }
-        public Nullable<int> RecordInCBU { get; set; }
+        public int ErrorId { get; set; }
+        public System.DateTime ErrorDateTime { get; set; }
+        public int RecordInCBU { get; set; }
         public string Location { get; set; }
         public string FullName { get; set; }
         public string Description { get; set; }
@@ -25,7 +25,6 @@ namespace LRC_NET_Framework
         public string State { get; set; }
         public string Zip { get; set; }
         public string Phone { get; set; }
-        public string Status { get; set; }
         public string EmployeeID { get; set; }
         public string Error { get; set; }
         public string Warning { get; set; }

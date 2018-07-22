@@ -84,8 +84,6 @@
         <AssociationConnector Association="LRCModel.FK_tb_MemberEmail_tb_MemberMaster" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberPhoneNumbers_tb_MemberMaster" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberPhoneNumbers_tb_PhoneType" />
-        <EntityTypeShape EntityType="LRCModel.tb_MemberError" Width="1.5" PointX="0.75" PointY="0.75" />
-        <EntityTypeShape EntityType="LRCModel.tb_Schedule_Error" Width="1.5" PointX="2.75" PointY="0.75" />
         <EntityTypeShape EntityType="LRCModel.tb_Campus" Width="1.5" PointX="9.625" PointY="7.75" />
         <AssociationConnector Association="LRCModel.FK_tb_Building_tb_Campus" />
         <AssociationConnector Association="LRCModel.FK_tb_Campus_tb_College" />
@@ -102,6 +100,8 @@
         <AssociationConnector Association="LRCModel.FK_tb_MemberAddress_tb_AddressType" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberAddress_tb_MemberMaster" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberAddress_tb_States" />
+        <EntityTypeShape EntityType="LRCModel.tb_MemberError" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="LRCModel.tb_Schedule_Error" Width="1.5" PointX="2.375" PointY="0.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
