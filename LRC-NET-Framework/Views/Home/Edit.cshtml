@@ -1,4 +1,4 @@
-﻿@model LRC_NET_Framework.Models.EditWorkerModels
+﻿@model LRC_NET_Framework.Models.MemberEditModel
 
 @{
     ViewBag.Title = "Edit Faculty Member Details";
@@ -13,9 +13,9 @@
 <div>
     <div class="form-horizontal">
         <div class="col-md-10 col-md-offset-2">
-            <h4><b>@Html.DisplayFor(model => model._WorkerFullName)</b></h4>
+            <h4><b>@Html.DisplayFor(model => model._MemberFullName)</b></h4>
         </div>
-        @Html.ValidationMessageFor(model => model._WorkerFullName, "", new { @class = "text-danger" })
+        @Html.ValidationMessageFor(model => model._MemberFullName, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model._MemberID)
 
         @*Home School DDL*@

@@ -39,17 +39,17 @@ namespace ExcelImport.Models
         /// <summary>
         /// Constructor - add ColumnNameCBU and ModelCorrespondingField in hash table
         /// </summary>
-        static ExcelMembers()
-        {
-            using (LRCEntities context = new LRCEntities())
-            {
-                var modelFields = context.tb_MembersImportMapping.Where(t => t.IsUsed == true).ToList();
-                foreach (var modelField in modelFields)
-                {
-                    MapTable.Add(modelField.ModelCorrespondingField, modelField.ColumnNameCBU);
-                }
-            }
-        }
+        //static ExcelMembers()
+        //{
+        //    using (LRCEntities context = new LRCEntities())
+        //    {
+        //        var modelFields = context.tb_MembersImportMapping.Where(t => t.IsUsed == true).ToList();
+        //        foreach (var modelField in modelFields)
+        //        {
+        //            MapTable.Add(modelField.ModelCorrespondingField, modelField.ColumnNameCBU);
+        //        }
+        //    }
+        //}
 
         #region Facility Member Import
 
@@ -61,7 +61,7 @@ namespace ExcelImport.Models
             List<string> warnings = new List<string>();
             string warning = String.Empty;
             Hashtable MapTable = new Hashtable();
-            var modelFields = db.tb_MembersImportMapping.ToList();
+            var modelFields = db.tb_MembersImportMapping.Where(t => t.IsUsed == true).ToList();
             foreach (var modelField in modelFields)
             {
                 MapTable.Add(modelField.ModelCorrespondingField, modelField.ColumnNameCBU);
@@ -97,7 +97,7 @@ namespace ExcelImport.Models
             }
 
             //Common Fields Check before
-            errs = CheckMemberFields(members);
+            errs = CheckMemberFields(members, MapTable);
             if (errs.Count > 0)
                 return errs;
 
@@ -267,7 +267,8 @@ namespace ExcelImport.Models
                 var semesterStartDate = db.tb_Semesters.Find(semesterRecID).SemesterStartDate;
                 if (FM.LastSeenDate > semesterStartDate)
                 {
-                    warning = "Warning!Row #" + record.ToString() + " Facility member data has not been updated. Last Seen Date content is > Semester Start Date";
+                    warning = "Warning!Row #" + record.ToString() + " Facility member data has not been updated. Last Seen Date content (" + 
+                        FM.LastSeenDate + ") is > Semester Start Date (" + semesterStartDate + ")";
                     return errs;
                 }
             }
@@ -293,7 +294,7 @@ namespace ExcelImport.Models
             FM.CampusID = campusId;
 
             //FM.Descr (1)
-            errs = GetAreaID(GetAreaName(excelRec.Description), out int areaID);
+            errs = CreateMemberModel.GetAreaID(GetAreaName(excelRec.Description), out int areaID);
             if (errs.Count > 0)
                 return errs;
             FM.AreaID = areaID;
@@ -343,10 +344,10 @@ namespace ExcelImport.Models
                 return errs;
             }
 
-            errs = AssignAddress(excelRec.Address, excelRec.City, excelRec.State, excelRec.Zip, FM.MemberID, uName);
+            errs = CreateMemberModel.AssignAddress(excelRec.Address, null, excelRec.City, excelRec.State, excelRec.Zip, 1, "CBU", 2, FM.MemberID, uName);
             if (errs.Count > 0)
                 return errs;
-            errs = AssignPhoneNumber(excelRec.Phone, FM.MemberID, uName);
+            errs = CreateMemberModel.AssignPhoneNumber(excelRec.Phone, 1, "CBU", FM.MemberID, uName);
             if (errs.Count > 0)
                 return errs;
 
@@ -354,7 +355,7 @@ namespace ExcelImport.Models
         }
 
         // Check excel spreadsheet fields are correct
-        public List<string> CheckMemberFields(List<ExcelMembers> members)
+        public List<string> CheckMemberFields(List<ExcelMembers> members, Hashtable MapTable)
         {
             Error error = new Error();
             error.errCode = ErrorDetail.Success;
@@ -391,7 +392,7 @@ namespace ExcelImport.Models
                 error.errCode = ErrorDetail.DataImportError;
                 foreach (var item in errColumnNames)
                 {
-                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Column name: '" + item +
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Column name: '" + ((System.Collections.DictionaryEntry)item).Value +
                         "' has wrong contents or formats in the loaded file. Correct column name or change mapping ('Member Fields Mapping' button)" +
                         ". Tip: If column name of loaded file looks right but you got this error message you have to clear cells to remove the cell contents (formulas and data), formats and any attached comments. Select cell and 'Clear content' from context menu. The cleared cells remain as blank or unformatted cells on the worksheet. Insert or type correct column name to cleared cell and save file.";
                     errs.Add(error.errMsg);
@@ -723,48 +724,6 @@ namespace ExcelImport.Models
             return areaName;
         }
 
-        //Check if current AreaName is present in tb_Area already and add it if not
-        private List<string> GetAreaID(string AreaName, out int areaID)
-        {
-            areaID = 0;
-            Error error = new Error();
-            error.errCode = ErrorDetail.Success;
-            error.errMsg = ErrorDetail.GetMsg(error.errCode);
-            List<string> errs = new List<string>();
-            tb_Area tb_area = new tb_Area();
-            var areas = db.tb_Area.Where(t => t.AreaName.ToUpper() == AreaName.ToUpper());
-            if (areas.Count() == 0)
-            {
-                tb_area.AreaName = AreaName;
-                tb_area.AreaDesc = String.Empty; //??? may be add it later with some Edit Area Form
-                db.tb_Area.Add(tb_area);
-                try
-                {
-                    db.SaveChanges();
-                    areaID = tb_area.AreaID; // new AreaID of added Area
-                }
-                catch (DbEntityValidationException ex)
-                {
-                    error.errCode = ErrorDetail.DataImportError;
-                    error.errMsg = ErrorDetail.GetMsg(error.errCode);
-                    foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
-                    {
-                        error.errMsg += ". Object: " + validationError.Entry.Entity.ToString();
-                        foreach (DbValidationError err in validationError.ValidationErrors)
-                        {
-                            error.errMsg += ". " + err.ErrorMessage;
-                        }
-                    }
-                    errs.Add("Error #" + error.errCode.ToString() + "!" + error.errMsg);
-                    return errs;
-                }
-            }
-            else
-                //return AreaID of founded Area
-                areaID = areas.FirstOrDefault().AreaID;
-            return errs;
-        }
-
         //Conversion FM 'descr' to DepartmentName
         private string GetDepartmentName(string descr)
         {
@@ -965,179 +924,6 @@ namespace ExcelImport.Models
             return error;
         }
 
-        //Get tb_MemberAddress record for current Member
-        //Assign MemberID for existing Member or return tb_MemberAddress.MemberID = 0 for new one
-        private List<string> AssignAddress(string address, string city, string st, string postal, int mID, string uName)
-        {
-            Error error = new Error();
-            error.errCode = ErrorDetail.Success;
-            error.errMsg = ErrorDetail.GetMsg(error.errCode);
-            List<string> errs = new List<string>();
-            //int cityId = GetCityID(city);
-
-            using (LRCEntities context = new LRCEntities())
-            {
-                // Check if address(es) exist for current member
-                var memberAddresses = context.tb_MemberAddress.Where(s => s.MemberID == mID).OrderByDescending(s => s.CreatedDateTime).ToArray();
-
-                if (memberAddresses.Count() > 0) //Current member has address(es)
-                {
-                    int recornNumber = 0;
-                    foreach (var ma in memberAddresses)
-                    {
-                        if (++recornNumber <= 2) //Leaving 2 records only and updating them
-                        {
-                            ma.IsPrimary = false; //Set IsPrimary to false for all member addresses
-                            if (ma.EndDate == null) //EndDate == null means current Member Address is actual (isn't record for history)
-                                ma.EndDate = DateTime.UtcNow;
-                        }
-                        else //Remove the excess. In the history we leave only 3 entries
-                        {
-                            context.tb_MemberAddress.Remove(ma);
-                        }
-                        try
-                        {
-                            context.SaveChanges();
-                        }
-                        catch (DbEntityValidationException ex)
-                        {
-                            error.errCode = ErrorDetail.DataImportError;
-                            error.errMsg = ErrorDetail.GetMsg(error.errCode);
-                            foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
-                            {
-                                error.errMsg += ". Object: " + validationError.Entry.Entity.ToString();
-                                foreach (DbValidationError err in validationError.ValidationErrors)
-                                {
-                                    error.errMsg += ". " + err.ErrorMessage;
-                                }
-                            }
-                            errs.Add("Error #" + error.errCode.ToString() + "!" + error.errMsg);
-                            return errs;
-                        }
-                    }
-                }
-
-                //Assign new address to ac current Member
-                tb_MemberAddress maNew = new tb_MemberAddress();
-                maNew.MemberID = mID;
-                maNew.HomeStreet1 = address;
-                maNew.City = city;
-                maNew.ZipCode = postal;
-                maNew.StateID = 1; // "CA"
-                maNew.Country = "USA";
-                maNew.SourceID = 2; //Employer
-                maNew.Source = "CBU";
-                maNew.IsPrimary = true;
-                maNew.AddressTypeID = 1; //Mailing (from tb_AddressType table)
-                maNew.CreatedDateTime = DateTime.UtcNow;
-                maNew.StartDate = DateTime.UtcNow.AddDays(-1);
-                maNew.EndDate = null;
-                context.tb_MemberAddress.Add(maNew);
-                try
-                {
-                    context.SaveChanges();
-                }
-                catch (DbEntityValidationException ex)
-                {
-                    error.errCode = ErrorDetail.DataImportError;
-                    error.errMsg = ErrorDetail.GetMsg(error.errCode);
-                    foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
-                    {
-                        error.errMsg += ". Object: " + validationError.Entry.Entity.ToString();
-                        foreach (DbValidationError err in validationError.ValidationErrors)
-                        {
-                            error.errMsg += ". " + err.ErrorMessage;
-                        }
-                    }
-                    errs.Add("Error #" + error.errCode.ToString() + "!" + error.errMsg);
-                    return errs;
-                }
-            }
-            return errs;
-        }
-
-        //Assign tb_MemberPhoneNumbers record for current Member
-        private List<string> AssignPhoneNumber(string phone, int mID, string uName)
-        {
-            Error error = new Error();
-            error.errCode = ErrorDetail.Success;
-            error.errMsg = ErrorDetail.GetMsg(error.errCode);
-            List<string> errs = new List<string>();
-            using (LRCEntities context = new LRCEntities())
-            {
-                // Check if phone(s) exist for current member
-                var memberPhoneNumbers = context.tb_MemberPhoneNumbers.Where(s => s.MemberID == mID).OrderByDescending(s => s.CreatedDateTime).ToArray();
-
-                if (memberPhoneNumbers.Count() > 0) //Current member has phone(s)
-                {
-                    int recornNumber = 0;
-                    foreach (var mp in memberPhoneNumbers)
-                    {
-                        if (++recornNumber <= 2) //Leaving 2 records only and updating them
-                        {
-                            mp.IsPrimary = false; //Set IsPrimary to false for all member phones
-                            if (mp.EndDate == null) //EndDate == null means current Member phone is actual (isn't record for history)
-                                mp.EndDate = DateTime.UtcNow;
-                        }
-                        else //Remove the excess. In the history we leave only 3 entries
-                        {
-                            context.tb_MemberPhoneNumbers.Remove(mp);
-                        }
-                        try
-                        {
-                            context.SaveChanges();
-                        }
-                        catch (DbEntityValidationException ex)
-                        {
-                            error.errCode = ErrorDetail.DataImportError;
-                            error.errMsg = ErrorDetail.GetMsg(error.errCode);
-                            foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
-                            {
-                                error.errMsg += ". Object: " + validationError.Entry.Entity.ToString();
-                                foreach (DbValidationError err in validationError.ValidationErrors)
-                                {
-                                    error.errMsg += ". " + err.ErrorMessage;
-                                }
-                            }
-                            errs.Add("Error #" + error.errCode.ToString() + "!" + error.errMsg);
-                            return errs;
-                        }
-                    }
-                }
-
-                //Assign new phone to a current Member
-                tb_MemberPhoneNumbers mpNew = new tb_MemberPhoneNumbers();
-                mpNew.MemberID = mID;
-                mpNew.PhoneNumber = phone;
-                mpNew.Source = "CBU";
-                mpNew.IsPrimary = true;
-                mpNew.PhoneTypeID = 1; //Mobile in the tb_PhoneType table
-                mpNew.CreatedDateTime = DateTime.UtcNow;
-                mpNew.StartDate = DateTime.UtcNow.AddDays(-1);
-                mpNew.EndDate = null;
-                context.tb_MemberPhoneNumbers.Add(mpNew);
-                try
-                {
-                    context.SaveChanges();
-                }
-                catch (DbEntityValidationException ex)
-                {
-                    error.errCode = ErrorDetail.DataImportError;
-                    error.errMsg = ErrorDetail.GetMsg(error.errCode);
-                    foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
-                    {
-                        error.errMsg += ". Object: " + validationError.Entry.Entity.ToString();
-                        foreach (DbValidationError err in validationError.ValidationErrors)
-                        {
-                            error.errMsg += ". " + err.ErrorMessage;
-                        }
-                    }
-                    errs.Add("Error #" + error.errCode.ToString() + "!" + error.errMsg);
-                    return errs;
-                }
-                return errs;
-            }
-        }
         #endregion
     }
 

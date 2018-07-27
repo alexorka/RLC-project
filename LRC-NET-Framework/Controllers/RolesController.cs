@@ -87,7 +87,7 @@ namespace LRC_NET_Framework.Controllers
                     Name = member.LastName + ", " + member.FirstName
                 });
 
-            AddRole model = new AddRole()
+            CreateRoleModel model = new CreateRoleModel()
             {
                 _MemberID = 0,
                 _Members = new SelectList(memberList, "Id", "Name"),
@@ -108,7 +108,7 @@ namespace LRC_NET_Framework.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "admin, organizer")]
-        public ActionResult CreateMemberRoles(AddRole model)
+        public ActionResult CreateMemberRoles(CreateRoleModel model)
         {
             if (ModelState.IsValid)
             {
@@ -188,7 +188,7 @@ namespace LRC_NET_Framework.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            AddRole model = new AddRole()
+            CreateRoleModel model = new CreateRoleModel()
             {
                 _MemberID = id ?? 0,
                 _RoleID = 1,
@@ -208,7 +208,7 @@ namespace LRC_NET_Framework.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "admin, organizer")]
-        public ActionResult AddRole(AddRole model)
+        public ActionResult AddRole(CreateRoleModel model)
         {
             tb_MemberRoles memberRoles = new tb_MemberRoles()
             {

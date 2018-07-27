@@ -32,6 +32,5 @@ namespace LRC_NET_Framework
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_MemberActivity> tb_MemberActivity { get; set; }
-        public virtual AspNetUsers AspNetUsers { get; set; }
     }
 }

@@ -261,7 +261,7 @@
     <Compile Include="Models\ExcelImport.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Models\ManageWorkerModels.cs" />
+    <Compile Include="Models\ManageMemberModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="tb_Activity.cs">
@@ -583,6 +583,9 @@
     <Content Include="Views\Import\CampusesMapping.cshtml" />
     <Content Include="Views\Import\MembersMapping.cshtml" />
     <Content Include="Views\Import\ScheduleMapping.cshtml" />
+    <Content Include="Views\Home\AddMember.cshtml" />
+    <Content Include="Views\Home\CreateNewMember.cshtml" />
+    <Content Include="Views\Home\GetDepartments.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

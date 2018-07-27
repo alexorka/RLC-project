@@ -174,7 +174,7 @@ namespace LRC_NET_Framework.Controllers
             return View(tb_MemberMasters.ToPagedList(pageNumber, pageSize));
         }
 
-        // GET: ManageWorkerModels
+        // GET: Details
         [Authorize(Roles = "admin, organizer")]
         public ActionResult Details(int? id)
         {
@@ -204,9 +204,9 @@ namespace LRC_NET_Framework.Controllers
             List<tb_AssessmentName> AssessmentNames = new List<tb_AssessmentName>();
             AssessmentNames = db.tb_AssessmentName.ToList();
 
-            var model = new ManageWorkerModels()
+            var model = new MemberDetailsModel()
             {
-                _Worker = Worker,
+                _Member = Worker,
                 _AssessmentName = AssessmentNames
             };
             return View(model);
@@ -270,22 +270,6 @@ namespace LRC_NET_Framework.Controllers
             int pageSize = 20;
             int pageNumber = (page ?? 1);
             return View(membersOrdered.ToPagedList(pageNumber, pageSize));
-        }
-
-        // GET: AddFilter
-        [Authorize(Roles = "admin, organizer")]
-        public ActionResult AddFilter(int CollegeID, int DepartmentID)
-        {
-            ViewBag.CollegeID = CollegeID;
-            if (DepartmentID == 0)
-                DepartmentID = 3;
-            var departments = new SelectList(db.tb_Department, "DepartmentID", "DepartmentName", DepartmentID);
-            ViewBag.Departments = departments;
-
-            var colleges = new SelectList(db.tb_College, "CollegeID", "CollegeName", CollegeID);
-            ViewBag.Colleges = colleges;
-
-            return PartialView("AddFilter");
         }
 
         // GET: ExportData
@@ -359,10 +343,10 @@ namespace LRC_NET_Framework.Controllers
                 facebookID = activities.LastOrDefault().FacebookID;
             }
 
-            EditWorkerModels model = new EditWorkerModels()
+            MemberEditModel model = new MemberEditModel()
             {
                 _MemberID = tb_MemberMaster.MemberID,
-                _WorkerFullName = tb_MemberMaster.LastName + ", " + tb_MemberMaster.FirstName,
+                _MemberFullName = tb_MemberMaster.LastName + ", " + tb_MemberMaster.FirstName,
                 _CollegeID = tb_MemberMaster.tb_Department.CollegeID,
                 _Colleges = new SelectList(db.tb_College.OrderBy(s => s.CollegeName), "CollegeID", "CollegeName", tb_MemberMaster.tb_Department.CollegeID),
                 _JobStatusID = tb_MemberMaster.JobStatusID,
@@ -386,7 +370,7 @@ namespace LRC_NET_Framework.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "admin, organizer")]
-        public ActionResult Edit(EditWorkerModels model, int? CollegeID)
+        public ActionResult Edit(MemberEditModel model, int? CollegeID)
          {
             ViewBag.CollegeID = CollegeID;
             if (ModelState.IsValid)
@@ -437,7 +421,7 @@ namespace LRC_NET_Framework.Controllers
 
             ViewBag.CollegeID = CollegeID;
 
-            ManageContactInfoModels model = new ManageContactInfoModels()
+            MemberContactInfoModel model = new MemberContactInfoModel()
             {
                 //PHONE
                 _MemberID = id ?? 0,
@@ -475,7 +459,7 @@ namespace LRC_NET_Framework.Controllers
         [HttpPost]
         //[ValidateAntiForgeryToken]
         [Authorize(Roles = "admin, organizer")]
-        public ActionResult ManageContactInfo(string submit, ManageContactInfoModels model, int? CollegeID)
+        public ActionResult ManageContactInfo(string submit, MemberContactInfoModel model, int? CollegeID)
         {
             ViewBag.CollegeID = CollegeID;
 
@@ -689,7 +673,7 @@ namespace LRC_NET_Framework.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            AddMembershipForm model = new AddMembershipForm()
+            AddMembershipFormModel model = new AddMembershipFormModel()
             {
                 _MemberID = id ?? 0,
                 _Signed = DateTime.Now,
@@ -708,7 +692,7 @@ namespace LRC_NET_Framework.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "admin, organizer")]
-        public ActionResult AddMembershipForm(AddMembershipForm model, HttpPostedFileBase file)
+        public ActionResult AddMembershipForm(AddMembershipFormModel model, HttpPostedFileBase file)
         {
             string imagesFolder = "~/Images/MembershipForms/";
             if (file != null && file.ContentLength > 0)
@@ -766,7 +750,7 @@ namespace LRC_NET_Framework.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            AddCopeForm model = new AddCopeForm()
+            AddCopeFormModel model = new AddCopeFormModel()
             {
                 _MemberID = id ?? 0,
                 _Signed = DateTime.Now,
@@ -785,7 +769,7 @@ namespace LRC_NET_Framework.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "admin, organizer")]
-        public ActionResult AddCopeForm(AddCopeForm model, HttpPostedFileBase file)
+        public ActionResult AddCopeForm(AddCopeFormModel model, HttpPostedFileBase file)
         {
             string imagesFolder = "~/Images/CopeForms/";
             if (file != null && file.ContentLength > 0)
@@ -845,7 +829,7 @@ namespace LRC_NET_Framework.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            AlsoWorksAt model = new AlsoWorksAt()
+            AlsoWorksAtModel model = new AlsoWorksAtModel()
             {
                 _MemberID = id ?? 0,
                 _EmployerID = 1,
@@ -863,7 +847,7 @@ namespace LRC_NET_Framework.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AlsoWorksAt(AlsoWorksAt model)
+        public ActionResult AlsoWorksAt(AlsoWorksAtModel model)
         {
             var memberAlsoWorksAts = db.tb_AlsoWorksAt.Where(s => s.Note.ToUpper() == model._Note.ToUpper());
             //Check dublicates
@@ -901,7 +885,95 @@ namespace LRC_NET_Framework.Controllers
             return PartialView("NotSure");
         }
 
-        // GET: Home/AddMembershipForm
+        // GET: Home/AddDepartment
+        [Authorize(Roles = "admin, organizer")]
+        public ActionResult AddDepartment(string sortOrder, string searchString, int? page, int? id)
+        {
+            ViewBag.MemberID = id ?? 1;
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            //Paging
+            int pageSize = 20;
+            int pageNumber = (page ?? 1);
+            var _Departments = db.tb_Department.Include(t => t.tb_College);
+            ViewData["MemberQty"] = _Departments.Count();
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Name desc" : "";
+            ViewBag.SearchString = searchString;
+
+            //Searching
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                _Departments = _Departments.Where(s => s.DepartmentName.ToUpper().Contains(searchString.ToUpper()));
+            }            
+            
+            //Sorting
+            switch (sortOrder)
+            {
+                case "Name desc":
+                    _Departments = _Departments.OrderByDescending(s => s.DepartmentName);
+                    break;
+                default:
+                    _Departments = _Departments.OrderBy(s => s.DepartmentName);
+                    break;
+            }
+
+            return View(_Departments.ToPagedList(pageNumber, pageSize));
+        }
+
+        // POST: Home/AddDepartment
+        [HttpPost]
+        [Authorize(Roles = "admin, organizer")]
+        public ActionResult AddDepartment(string sortOrder, string searchString, int? page, string DepartmentName, int? CollegeID, int? id)
+        {
+            ViewBag.MemberID = id ?? 1;
+            var _Departments = db.tb_Department.Where(s => s.DepartmentName.ToUpper() == DepartmentName.ToUpper());
+            if (!String.IsNullOrEmpty(DepartmentName))
+            {
+                //Check dublicates
+                if (_Departments.ToList().Count == 0)
+                {
+                    tb_Department newDepartment = new tb_Department() { DepartmentName = DepartmentName, CollegeID = CollegeID ?? 1 }; // I do not know yet which College will be appointed
+                    db.tb_Department.Add(newDepartment);
+                    db.SaveChanges();
+                    ViewBag.Duplicate = String.Empty;
+                }
+                else
+                {
+                    ViewBag.Duplicate = DepartmentName + " department is already in the list";
+                }
+            }
+
+            _Departments = db.tb_Department.Include(t => t.tb_College);
+            //Paging
+            int pageSize = 20;
+            int pageNumber = (page ?? 1);
+            ViewData["MemberQty"] = _Departments.Count();
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Name desc" : "";
+            ViewBag.SearchString = searchString;
+
+            //Searching
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                _Departments = _Departments.Where(s => s.DepartmentName.ToUpper().Contains(searchString.ToUpper()));
+            }
+
+            //Sorting
+            switch (sortOrder)
+            {
+                case "Name desc":
+                    _Departments = _Departments.OrderByDescending(s => s.DepartmentName);
+                    break;
+                default:
+                    _Departments = _Departments.OrderBy(s => s.DepartmentName);
+                    break;
+            }
+
+            return View(_Departments.ToPagedList(pageNumber, pageSize));
+        }
+
+        // GET: Home/AddBuilding
         public ActionResult AddBuilding()
         {
             var colleges = new SelectList(db.tb_College, "CollegeID", "CollegeName");
@@ -910,7 +982,7 @@ namespace LRC_NET_Framework.Controllers
             return View(db.tb_College.ToList());
         }
 
-        // POST: Home/AddMembershipForm
+        // POST: Home/AddBuilding
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -965,96 +1037,9 @@ namespace LRC_NET_Framework.Controllers
             return View(db.tb_College.ToList());
         }
 
-        // GET: Home/AddMembershipForm
-        [Authorize(Roles = "admin, organizer")]
-        public ActionResult AddDepartment(string sortOrder, string searchString, int? page, int? id)
-        {
-            ViewBag.MemberID = id ?? 1;
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            //Paging
-            int pageSize = 20;
-            int pageNumber = (page ?? 1);
-            var _Departments = db.tb_Department.Include(t => t.tb_College);
-            ViewData["MemberQty"] = _Departments.Count();
-            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Name desc" : "";
-            ViewBag.SearchString = searchString;
-
-            //Searching
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                _Departments = _Departments.Where(s => s.DepartmentName.ToUpper().Contains(searchString.ToUpper()));
-            }            
-            
-            //Sorting
-            switch (sortOrder)
-            {
-                case "Name desc":
-                    _Departments = _Departments.OrderByDescending(s => s.DepartmentName);
-                    break;
-                default:
-                    _Departments = _Departments.OrderBy(s => s.DepartmentName);
-                    break;
-            }
-
-            return View(_Departments.ToPagedList(pageNumber, pageSize));
-        }
-
-        // POST: Home/AddMembershipForm
         [HttpPost]
         [Authorize(Roles = "admin, organizer")]
-        public ActionResult AddDepartment(string sortOrder, string searchString, int? page, string DepartmentName, int? CollegeID, int? id)
-        {
-            ViewBag.MemberID = id ?? 1;
-            var _Departments = db.tb_Department.Where(s => s.DepartmentName.ToUpper() == DepartmentName.ToUpper());
-            if (!String.IsNullOrEmpty(DepartmentName))
-            {
-                //Check dublicates
-                if (_Departments.ToList().Count == 0)
-                {
-                    tb_Department newDepartment = new tb_Department() { DepartmentName = DepartmentName, CollegeID = CollegeID ?? 1 }; // I do not know yet which College will be appointed
-                    db.tb_Department.Add(newDepartment);
-                    db.SaveChanges();
-                    ViewBag.Duplicate = String.Empty;
-                }
-                else
-                {
-                    ViewBag.Duplicate = DepartmentName + " department is already in the list";
-                }
-            }
-
-            _Departments = db.tb_Department.Include(t => t.tb_College);
-            //Paging
-            int pageSize = 20;
-            int pageNumber = (page ?? 1);
-            ViewData["MemberQty"] = _Departments.Count();
-            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Name desc" : "";
-            ViewBag.SearchString = searchString;
-
-            //Searching
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                _Departments = _Departments.Where(s => s.DepartmentName.ToUpper().Contains(searchString.ToUpper()));
-            }
-
-            //Sorting
-            switch (sortOrder)
-            {
-                case "Name desc":
-                    _Departments = _Departments.OrderByDescending(s => s.DepartmentName);
-                    break;
-                default:
-                    _Departments = _Departments.OrderBy(s => s.DepartmentName);
-                    break;
-            }
-
-            return View(_Departments.ToPagedList(pageNumber, pageSize));
-        }
-
-        [HttpPost]
-        [Authorize(Roles = "admin, organizer")]
+        //AJAX Partitial View
         public ActionResult GetCampuses(int College)
         {
             var campuses = db.tb_Campus.Where(s => s.CollegeID == College).ToList();
@@ -1067,6 +1052,242 @@ namespace LRC_NET_Framework.Controllers
             return PartialView(campuses);
         }
 
+        // GET: Home/AddMembershipForm
+        public ActionResult CreateNewMember()
+        {
+            var colleges = db.tb_Campus.Where(t => t.IsMain == true).OrderBy(s => s.CollegeID);
+            var collegeList = new SelectList(colleges, "CollegeID", "CampusName");
+            var collegeID = colleges.ToArray().FirstOrDefault().CollegeID; //Initial value for Home School DDL
+            ViewBag.Colleges = collegeList;
+            ViewBag.CollegeID = collegeID;
+            CreateMemberModel model = new CreateMemberModel()
+            {
+                _StateID = 0,
+                _States = new SelectList(db.tb_States.ToList(), "StateID", "StateCode"),
+                _AddressTypeID = 0,
+                _AddressTypes = new SelectList(db.tb_AddressType, "AddressTypeID", "AddressTypeName"),
+                _PhoneTypeID = 0,
+                _PhoneTypes = new SelectList(db.tb_PhoneType.ToList(), "PhoneTypeID", "PhoneTypeName"),
+                _EmailTypeID = 0,
+                _EmailTypes = new SelectList(db.tb_EmailType.ToList(), "EmailTypeID", "EmailTypeName"),
+                _CategoryID = 0,
+                _Categories = new SelectList(db.tb_Categories.ToList(), "CategoryID", "CategoryName"),
+                _JobStatusID = 0,
+                _JobStatuses = new SelectList(db.tb_JobStatus.ToList(), "JobStatusID", "JobStatusName"),
+                _DepartmentID = 0,
+                _Departments = new SelectList(db.tb_Department.Where(t => t.CollegeID == collegeID).ToList(), "DepartmentID", "DepartmentName"),
+                //_CampusID = 0,
+                //_Campuses = new SelectList(db.tb_Campus.Where(t => t.IsMain == true).ToList(), "CampusID", "CollegeCode")
+            };
+
+            List<string> errs = new List<string>();
+            if (TempData["ErrorList"] == null)
+            {
+                errs.Add("Empty");
+            }
+            else
+                errs = TempData["ErrorList"] as List<string>;
+
+            ViewData["ErrorList"] = errs;
+
+            return View(model);
+        }
+
+        // POST: Home/AddMembershipForm
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin, organizer")]
+        public ActionResult CreateNewMember(CreateMemberModel model, int? College, int? Department, FormCollection formCollection)
+        {
+
+            Error error = new Error();
+            List<string> errs = new List<string>();
+            int newMemberID = 0;
+
+            var colleges = db.tb_Campus.Where(t => t.IsMain == true);
+            var collegeList = new SelectList(colleges, "CollegeID", "CampusName");
+            ViewBag.Colleges = collegeList;
+            ViewBag.CollegeID = College;
+            model._States = new SelectList(db.tb_States.ToList(), "StateID", "StateCode");
+            model._AddressTypes = new SelectList(db.tb_AddressType, "AddressTypeID", "AddressTypeName");
+            model._PhoneTypes = new SelectList(db.tb_PhoneType.ToList(), "PhoneTypeID", "PhoneTypeName");
+            model._EmailTypes = new SelectList(db.tb_EmailType.ToList(), "EmailTypeID", "EmailTypeName");
+            model._Categories = new SelectList(db.tb_Categories.ToList(), "CategoryID", "CategoryName");
+            model._JobStatuses = new SelectList(db.tb_JobStatus.ToList(), "JobStatusID", "JobStatusName");
+            //model._CampusID = College;
+            //model._Campuses = new SelectList(colleges.ToList(), "CampusID", "CollegeCode");
+            //model._DepartmentID = Department;
+            model._Departments = new SelectList(db.tb_Department.Where(t => t.CollegeID == College).ToList(), "DepartmentID", "DepartmentName");
+
+            if (model._DepartmentID == null && Department == null)
+            {
+                error.errCode = ErrorDetail.Failed;
+                error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!DepartmentID = NULL (Department is not selected)";
+                errs.Add(error.errMsg);
+                ViewData["ErrorList"] = errs;
+                return View(model);
+            }
+            if (model._DepartmentID == null)
+                model._DepartmentID = Department;
+
+            var uName = HttpContext.GetOwinContext().Authentication.User.Identity.GetUserName();
+
+            using (LRCEntities context = new LRCEntities())
+            {
+                using (var transaction = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        // Checking unique EmployeeID (tb_MemberMaster.MemberIDNumber) if not exist in tb_MemberMaster table
+                        var tb_MemberMasters = context.tb_MemberMaster.Where(s => s.MemberIDNumber.ToUpper() == model._MemberIDNumber.ToUpper()).ToArray();
+                        if (tb_MemberMasters.Count() > 0) //Address found in the DB
+                        {
+                            var fm = tb_MemberMasters.FirstOrDefault();
+                            error.errCode = ErrorDetail.Failed;
+                            error.errMsg = ErrorDetail.GetMsg(error.errCode) + "! EmployeeID = " + fm.MemberIDNumber + " (MemberIDNumber in tb_MemberMaster table) already exist for Member: " +
+                                fm.LastName + ", " + fm.FirstName + " " + fm.MiddleName;
+                            errs.Add(error.errMsg);
+                            ViewData["ErrorList"] = errs;
+                            return View(model);
+                        }
+
+                        // Checking Member Name if not exist in tb_MemberMaster table
+                        tb_MemberMasters = context.tb_MemberMaster.Where(s => s.LastName.ToUpper() == model._LastName.ToUpper() &&
+                            s.FirstName.ToUpper() == model._FirstName.ToUpper() &&
+                            s.MiddleName.ToUpper() == model._MiddleName.ToUpper()).ToArray();
+                        if (tb_MemberMasters.Count() > 0) //Address found in the DB
+                        {
+                            var fm = tb_MemberMasters.FirstOrDefault();
+                            error.errCode = ErrorDetail.Failed;
+                            error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Member with name " + fm.LastName + ", " + fm.FirstName + " " + fm.MiddleName + " already exist in the tb_MemberMaster table";
+                            errs.Add(error.errMsg);
+                            ViewData["ErrorList"] = errs;
+                            return View(model);
+                        }
+
+                        //Check if Area (from Role input) exist in tb_Area
+                        //Optional field. Check if it entered firstly
+                        int areaID = -1;
+                        if (!String.IsNullOrEmpty(model._Area))
+                        {
+                            errs = CreateMemberModel.GetAreaID(model._Area, out areaID);
+                            if (errs.Count() > 0)
+                            {
+                                ViewData["ErrorList"] = errs;
+                                return View(model);
+                            }
+                        }
+
+                        // Fill out tb_MemberMaster fields from model
+                        tb_MemberMaster FM = new tb_MemberMaster
+                        {
+                            MemberIDNumber = model._MemberIDNumber,
+                            FirstName = model._FirstName,
+                            LastName = model._LastName,
+                            MiddleName = model._MiddleName,
+                            CategoryID = model._CategoryID,
+                            JobStatusID = model._JobStatusID,
+                            DepartmentID = model._DepartmentID, //from AJAX particial view
+                            CampusID = College, //selecting MAIN campuses from tb_Campus only - its a College Name (from AJAX particial view)
+                            LastSeenDate = DateTime.UtcNow,
+                            AddedBy = uName,
+                            AddedDateTime = DateTime.UtcNow
+                        };
+                        if (areaID > 0)
+                            FM.AreaID = areaID;
+
+                        context.tb_MemberMaster.Add(FM);
+                        try
+                        {
+                            context.SaveChanges();
+                        }
+                        catch (DbEntityValidationException ex)
+                        {
+                            error.errCode = ErrorDetail.DataImportError;
+                            error.errMsg = ErrorDetail.GetMsg(error.errCode);
+                            foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
+                            {
+                                error.errMsg += ". Object: " + validationError.Entry.Entity.ToString();
+                                foreach (DbValidationError err in validationError.ValidationErrors)
+                                {
+                                    error.errMsg += ". " + err.ErrorMessage;
+                                }
+                            }
+                            errs.Add("Error #" + error.errCode.ToString() + "!" + error.errMsg);
+                            ViewData["ErrorList"] = errs;
+                            return View(model);
+                        }
+                        newMemberID = FM.MemberID;
+                        errs = CreateMemberModel.AssignAddress(model._HomeStreet1, model._HomeStreet2, model._City, model._StateID.ToString(), model._ZipCode, model._AddressTypeID, "Form", 1, FM.MemberID, uName);
+                        if (errs.Count > 0)
+                        {
+                            ViewData["ErrorList"] = errs;
+                            transaction.Rollback();
+                            return View(model);
+                        }
+
+                        errs = CreateMemberModel.AssignPhoneNumber(model._PhoneNumber, model._PhoneTypeID, "Form", FM.MemberID, uName);
+                        if (errs.Count > 0)
+                        {
+                            ViewData["ErrorList"] = errs;
+                            transaction.Rollback();
+                            return View(model);
+                        }
+
+                        errs = CreateMemberModel.AssignEmail(model._EmailAddress, model._EmailTypeID, "Form", FM.MemberID, uName);
+                        if (errs.Count > 0)
+                        {
+                            ViewData["ErrorList"] = errs;
+                            transaction.Rollback();
+                            return View(model);
+                        }
+
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                    }
+                }
+            }
+            errs.Add("Empty");
+            ViewData["ErrorList"] = errs;
+            return RedirectToAction("Details", "Home", new { @id = newMemberID });
+            //return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "admin, organizer")]
+        //AJAX Partitial View
+        public ActionResult GetDepartments(int College, FormCollection formCollection)
+        {
+            var tb_Departments = db.tb_Department.Where(s => s.CollegeID == College).ToList();
+            if (tb_Departments.Count <= 0)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.Departments = new SelectList(tb_Departments, "DepartmentID", "DepartmentName");
+            ViewBag.CollegeID = College;
+            return PartialView(tb_Departments);
+        }        
+
+        // GET: AddFilter
+        [Authorize(Roles = "admin, organizer")]
+        public ActionResult AddFilter(int CollegeID, int DepartmentID)
+        {
+            ViewBag.CollegeID = CollegeID;
+            if (DepartmentID == 0)
+                DepartmentID = 3;
+            var departments = new SelectList(db.tb_Department, "DepartmentID", "DepartmentName", DepartmentID);
+            ViewBag.Departments = departments;
+
+            var colleges = new SelectList(db.tb_College, "CollegeID", "CollegeName", CollegeID);
+            ViewBag.Colleges = colleges;
+
+            return PartialView("AddFilter");
+        }
         public ActionResult About()
         {
             ViewBag.Message = "This application manages current and historical data regarding Local 2279 union members working for the Los Rios Community College District (hereafter referred to as the District) colleges and campuses. The application supports administrative efforts to track and support membership and organizer efforts to support and increase participation of members.";
@@ -1080,6 +1301,7 @@ namespace LRC_NET_Framework.Controllers
 
             return View();
         }
+
 
     }
 }

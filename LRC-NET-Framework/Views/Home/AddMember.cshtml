@@ -1,0 +1,306 @@
+﻿@model LRC_NET_Framework.Models.CreateMemberModel
+
+@{
+    ViewBag.Title = "Add New Member";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="font-weight-bold" style="background-color: #357ebd; border-bottom-left-radius:7px; border-bottom-right-radius:7px; color:gainsboro; padding-top:5px; padding-bottom:5px; padding-left:30px;"><h4>Create New Member</h4></div>
+
+<div class="form-horizontal">
+    @*MemberIDNumber*@
+    <div class="form-group" style="padding-top:15px;">
+        <div class="col-md-3">
+            <p class="control-label"><span class="text-danger">*</span>EmployeeID:</p>
+        </div>
+        <div class="col-md-9">
+            <fieldset>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model._MemberIDNumber, new { htmlAttributes = new { @class = "form-control", @required = "required" } })
+                    @Html.ValidationMessageFor(model => model._MemberIDNumber, "", new { @class = "text-danger" })
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+    @*Employee first name*@
+    <div class="form-group">
+        <div class="col-md-3">
+            <p class="control-label"><span class="text-danger">*</span>First Name:</p>
+        </div>
+        <div class="col-md-9">
+            <fieldset>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model._FirstName, new { htmlAttributes = new { @class = "form-control", @required = "required" } })
+                    @Html.ValidationMessageFor(model => model._FirstName, "", new { @class = "text-danger" })
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+    @*Employee last name*@
+    <div class="form-group">
+        <div class="col-md-3">
+            <p class="control-label"><span class="text-danger">*</span>Last Name:</p>
+        </div>
+        <div class="col-md-9">
+            <fieldset>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model._LastName, new { htmlAttributes = new { @class = "form-control", @required = "required" } })
+                    @Html.ValidationMessageFor(model => model._LastName, "", new { @class = "text-danger" })
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+    @*Employee middle name*@
+    <div class="form-group">
+        <div class="col-md-3">
+            <p class="control-label">Middle Name:</p>
+        </div>
+        <div class="col-md-9">
+            <fieldset>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model._MiddleName, new { htmlAttributes = new { @class = "form-control", style = "width: 80px;" } })
+                    @Html.ValidationMessageFor(model => model._MiddleName, "", new { @class = "text-danger" })
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+    @*Street number and name of employee mailing address.  May include apartment or unit number.*@
+    <div class="form-group">
+        <div class="col-md-3">
+            <p class="control-label"><span class="text-danger">*</span>Address:</p>
+        </div>
+        <div class="col-md-9">
+            <fieldset>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model._HomeStreet1, new { htmlAttributes = new { @class = "form-control", @required = "required" } })
+                    @Html.ValidationMessageFor(model => model._HomeStreet1, "", new { @class = "text-danger" })
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+    @*Employee middle name*@
+    <div class="form-group">
+        <div class="col-md-3">
+            <p class="control-label">Address 2:</p>
+        </div>
+        <div class="col-md-9">
+            <fieldset>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model._HomeStreet2, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model._HomeStreet2, "", new { @class = "text-danger" })
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+    @*City of employee mailing address*@
+    <div class="form-group">
+        <div class="col-md-3">
+            <p class="control-label"><span class="text-danger">*</span>City:</p>
+        </div>
+        <div class="col-md-9">
+            <fieldset>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model._City, new { htmlAttributes = new { @class = "form-control", @required = "required" } })
+                    @Html.ValidationMessageFor(model => model._City, "", new { @class = "text-danger" })
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+    @*State of employee mailing address*@
+    <div class="form-group">
+        <div class="col-md-3">
+            <p class="control-label"><span class="text-danger">*</span>State:</p>
+        </div>
+        <div class="col-md-9">
+            @Html.DropDownListFor(model => model._StateID, Model._States, new { @class = "form-control", style = "width: 250px;" })
+            @Html.ValidationMessageFor(model => model._StateID, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    @*Zip code of mailing address. Typically zip 5, sometimes Zip 5 + 4*@
+    <div class="form-group">
+        <div class="col-md-3">
+            <p class="control-label"><span class="text-danger">*</span>ZIP:</p>
+        </div>
+        <div class="col-md-9">
+            <fieldset>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model._ZipCode, new { htmlAttributes = new { @class = "form-control", @required = "required" } })
+                    @Html.ValidationMessageFor(model => model._ZipCode, "", new { @class = "text-danger" })
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+    @*Address Type: Mailing, Residence or Work*@
+    <div class="form-group">
+        <div class="col-md-3">
+            <p class="control-label"><span class="text-danger">*</span>Address Type:</p>
+        </div>
+        <div class="col-md-9">
+            @Html.DropDownListFor(model => model._AddressTypeID, Model._AddressTypes, new { @class = "form-control", style = "width: 250px;" })
+            @Html.ValidationMessageFor(model => model._AddressTypeID, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    @*Phone Number*@
+    <div class="form-group">
+        <div class="col-md-3">
+            <p class="control-label"><span class="text-danger">*</span>Phone Number:</p>
+        </div>
+        <div class="col-md-9">
+            <fieldset>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model._PhoneNumber, new { htmlAttributes = new { @class = "form-control", @required = "required" } })
+                    @Html.ValidationMessageFor(model => model._PhoneNumber, "", new { @class = "text-danger" })
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+    @*Phone Type: Mobile, Home, Work, Unknown*@
+    <div class="form-group">
+        <div class="col-md-3">
+            <p class="control-label"><span class="text-danger">*</span>  Phone Type:</p>
+        </div>
+        <div class="col-md-9">
+            @Html.DropDownListFor(model => model._PhoneTypeID, Model._PhoneTypes, new { @class = "form-control", @required = "required", style = "width: 250px;" })
+            @Html.ValidationMessageFor(model => model._PhoneTypeID, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    @*Email Address*@
+    <div class="form-group">
+        <div class="col-md-3">
+            <p class="control-label">Email Address:</p>
+        </div>
+        <div class="col-md-9">
+            <fieldset>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model._EmailAddress, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model._EmailAddress, "", new { @class = "text-danger" })
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+    @*Email Type: Home, Work*@
+    <div class="form-group">
+        <div class="col-md-3">
+            <p class="control-label">Email Type:</p>
+        </div>
+        <div class="col-md-9">
+            @Html.DropDownListFor(model => model._EmailTypeID, Model._EmailTypes, new { @class = "form-control", style = "width: 250px;" })
+            @Html.ValidationMessageFor(model => model._EmailTypeID, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    @*MEMBER STATUS: Member, Non-member*@
+    <div class="form-group">
+        <div class="col-md-3">
+            <p class="control-label">Member Status:</p>
+        </div>
+        <div class="col-md-9">
+            @Html.DropDownListFor(model => model._CategoryID, Model._Categories, new { @class = "form-control", style = "width: 250px;" })
+            @Html.ValidationMessageFor(model => model._CategoryID, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    @*MEMBER CATEGORY (Job Status)*@
+    <div class="form-group">
+        <div class="col-md-3">
+            <p class="control-label"><span class="text-danger">*</span>Job Status:</p>
+        </div>
+        <div class="col-md-9">
+            @Html.DropDownListFor(model => model._JobStatusID, Model._JobStatuses, new { @class = "form-control", @required = "required", style = "width: 250px;" })
+            @Html.ValidationMessageFor(model => model._JobStatusID, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    @using (Ajax.BeginForm("GetDepartments", null, new AjaxOptions { UpdateTargetId = "resultsCollege" }, new { id = "DDLCollege" }))
+    {
+        @*MEMBER COLLEGE (Valid values include: ARC, FLC, SCC, CRC, DO)*@
+        <div class="form-group">
+            <div class="col-md-3">
+                <p class="control-label">Home School:</p>
+            </div>
+            <div class="col-md-9">
+                @Html.DropDownListFor(model => model._CampusID, Model._Campuses, "-- Select One --", new { @class = "form-control", onchange = "CollegeChanged(this)", style = "width: 250px" })
+                @Html.ValidationMessageFor(model => model._CampusID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    }
+
+    @*@using (Html.BeginForm())*@
+    @using (Html.BeginForm("AddMember", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.Hidden("College", (int)ViewBag.CollegeID)
+        @*The department that the employee works for*@
+        <div id="resultsCollege">
+            @*<---- particial View*@
+            <div id="searchresults">
+                <div class="form-group">
+                    <div class="col-md-3">
+                        <p class="control-label">Department:</p>
+                    </div>
+                    <div class="col-md-9" id="Campus">
+                        <select disabled class="form-control" style="width: 250px">
+                            <option>  --Select Home School--  </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*<div class="form-group">
+                <div class="col-md-3">
+                    <p class="control-label">Department:</p>
+                </div>
+                <div class="col-md-9">
+                    @Html.DropDownListFor(model => model._DepartmentID, Model._Departments, new { @class = "form-control", style = "width: 250px;" })
+                    @Html.ValidationMessageFor(model => model._DepartmentID, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
+
+        @*MEMBER ROLE (The subject matter of the course (e.g., NURSE, ENGRD)*@
+        <div class="form-group">
+            <div class="col-md-3">
+                <p class="control-label">Division:</p>
+            </div>
+            <div class="col-md-9">
+                @Html.DropDownListFor(model => model._DivisionID, Model._Divisions, new { @class = "form-control", style = "width: 250px;" })
+                @Html.ValidationMessageFor(model => model._DivisionID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-3 col-md-9">
+                <button type="submit" value="New Member" class="btn btn-primary">
+                    &nbsp;&nbsp;New Member
+                    <span class="glyphicon glyphicon-plus pull-left"></span>
+                </button>
+                @*<input type="submit" value="New Member" class="btn btn-primary" />*@
+            </div>
+        </div>
+    }
+</div>
+
+    <div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>
+
+    @section scripts{
+        @Scripts.Render("~/scripts/jquery.unobtrusive-ajax.min.js")
+        <script>
+        function CollegeChanged() {
+            $("#DDLCollege").submit();
+        }
+        </script>
+    }

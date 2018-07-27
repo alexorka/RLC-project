@@ -1,0 +1,17 @@
+﻿@model IEnumerable<LRC_NET_Framework.tb_Department>
+
+<div id="searchresults">
+    @Html.Hidden("College", (int)ViewBag.CollegeID)
+    <div class="form-group">
+        <div class="col-md-3">
+            <p class="control-label">Department:</p>
+        </div>
+        <div class="col-md-9">
+            <fieldset>
+                <div class="editor-field">
+                    @Html.DropDownList("Department", ViewBag.Departments as SelectList, new { @class = "form-control", style = "width: 250px" })
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>

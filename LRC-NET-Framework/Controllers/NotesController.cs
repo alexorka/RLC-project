@@ -82,7 +82,7 @@ namespace LRC_NET_Framework.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            AddNote model = new AddNote()
+            AddNoteModel model = new AddNoteModel()
             {
                 _MemberID = id?? 0,
                 _NoteDate = DateTime.Now,
@@ -100,7 +100,7 @@ namespace LRC_NET_Framework.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "admin, organizer")]
-        public ActionResult AddNote(AddNote model)
+        public ActionResult AddNote(AddNoteModel model)
         {
             var memberNotes = db.tb_MemberNotes.Where(s => s.Notes.ToUpper() == model._Note.ToUpper());
             //Check dublicates

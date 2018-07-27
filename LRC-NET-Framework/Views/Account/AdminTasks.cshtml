@@ -71,12 +71,6 @@
             <li role="button"><a href="@Url.Action("ScheduleMapping", "Import")" class="btn-sm btn-info">Schedule Fields Mapping&nbsp;&nbsp;<span class="glyphicon glyphicon-transfer" aria-hidden="true"></span></a></li>
         </ul>
     </div>
-    @*@using (Ajax.BeginForm("UploadExcel", "Account", FormMethod.Post, new AjaxOptions
-        {
-            UpdateTargetId = "results",
-            LoadingElementId = "loading",
-            LoadingElementDuration = 100
-        }))*@
     @using (Html.BeginForm("UploadExcel", "Account", FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return myFunction()", id = "myform" }))
     {
         <div class="form-horizontal" style="margin-top:10px;">
@@ -127,102 +121,72 @@
                         <img src="~/Images/loading30.gif" alt="Loading..." />
                     </span>
                 </div>
-
             </div>
 
-            <div class="row" style="padding-left:30px;">
-                @foreach (var item in ViewData["ErrorList"] as List<string>)
-                {
-                    if (item != "Empty")
+            <div  id="myErrorList" class="alert-warning" style="padding-left:30px;">
+                <div class="col-md-12" style="padding:0px;">
+                @{
+                    var errList = ViewData["ErrorList"] as List<string>;
+                    if (errList[0] != "Empty")
                     {
-                        var _errors = item.Split('!');
-                        <div class="alert col-md-2" style="text-align:right">
-                            <span class="glyphicon glyphicon-warning-sign"></span>&nbsp;&nbsp;&nbsp;@_errors[0] :
-                        </div>
-                        <div class="alert col-md-9" style="background-color:khaki;"><strong>@_errors[1]</strong></div>
+                    <img src="~/Images/warning.gif" alt="Warning!..." height="48" /><strong>&nbsp; &nbsp; &nbsp;Errors/Warnings List:</strong>
+                        <ul>
+                        @foreach (var item in ViewData["ErrorList"] as List<string>)
+                        {
+                            if (item != "Empty")
+                            {
+                                var _errors = item.Split('!');
+                                <li><strong>@_errors[0]: </strong>&nbsp; &nbsp; &nbsp;@_errors[1]</li>
+                            }
+                        }
+                        </ul>
                     }
                 }
+                </div>
             </div>
         </div>
     }
 </div>
-
+<hr />
 
 @section Scripts {
 <script>
     $("#myform").submit(function (e) {
         $("#myLoadingElement").show();
+        $("#myErrorList").hide();
     });
 </script>
 
+<script src='@Url.Content("~/Scripts/jquery-1.12.4.min.js")' type="text/javascript"></script>
+    <script src='@Url.Content("~/Scripts/jquery-ui-1.12.1.min.js")' type="text/javascript"></script>
+    <link href="~/Content/themes/base/all.css" rel="stylesheet" />
+    <script>
+        $(document).ready(function () {
 
-    @*<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
-    <script src="http://malsup.github.com/jquery.form.js"></script>
+            $.ajaxSetup({ cache: false });
+
+            $(".viewDialog").on("click", function (e) {
+                e.preventDefault();
+
+                $("<div></div>")
+                    .addClass("dialog")
+                    .appendTo("body")
+                    .dialog({
+                        closeText: "",
+                        title: $(this).attr("data-dialog-title"),
+                        close: function () { $(this).remove() },
+                        height: 300,
+                        width: 500,
+                        modal: true
+                    })
+                    .load(this.href);
+            });
+        });
+    </script>
 
     <script>
-        (function () {
-
-            var bar = $('.progress-bar');
-            var percent = $('.progress-bar');
-            var status = $('#status');
-
-            $('form').ajaxForm({
-                beforeSend: function () {
-                    status.empty();
-                    var percentVal = '0%';
-                    bar.width(percentVal)
-                    percent.html(percentVal);
-                },
-                uploadProgress: function (event, position, total, percentComplete) {
-                    var percentVal = percentComplete + '%';
-                    bar.width(percentVal)
-                    percent.html(percentVal);
-                },
-                success: function () {
-                    var percentVal = '100%';
-                    bar.width(percentVal)
-                    percent.html(percentVal);
-                },
-                complete: function (xhr) {
-                    status.html(xhr.responseText);
-                }
-            });
-
-        })();
-    </script>*@
-
-
-
-    <script src='@Url.Content("~/Scripts/jquery-1.12.4.min.js")' type="text/javascript"></script>
-        <script src='@Url.Content("~/Scripts/jquery-ui-1.12.1.min.js")' type="text/javascript"></script>
-        <link href="~/Content/themes/base/all.css" rel="stylesheet" />
-        <script>
-                $(document).ready(function () {
-
-                    $.ajaxSetup({ cache: false });
-
-                    $(".viewDialog").on("click", function (e) {
-                        e.preventDefault();
-
-                        $("<div></div>")
-                            .addClass("dialog")
-                            .appendTo("body")
-                            .dialog({
-                                closeText: "",
-                                title: $(this).attr("data-dialog-title"),
-                                close: function () { $(this).remove() },
-                                height: 300,
-                                width: 500,
-                                modal: true
-                            })
-                            .load(this.href);
-                    });
-                });
-        </script>
-
-        <script>
-                $(document).ready(function () {
-                    $('[data-toggle="tooltip"]').tooltip();
-                });
-        </script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
 }

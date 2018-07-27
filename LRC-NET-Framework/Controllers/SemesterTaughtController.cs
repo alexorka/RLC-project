@@ -56,7 +56,7 @@ namespace LRC_NET_Framework.Controllers
             ScheduleStatuses.Add(new SelectListItem() { Text = "Inactive", Value = "0" });
             ScheduleStatuses.Add(new SelectListItem() { Text = "Active", Value = "1" });
 
-            SemesterTaughtModels model = new SemesterTaughtModels()
+            SemesterTaughtModel model = new SemesterTaughtModel()
             {
                 _MemberID = id?? 0,
                 _CollegeID = 0,
@@ -85,7 +85,7 @@ namespace LRC_NET_Framework.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "admin, organizer")]
-        public ActionResult Create(SemesterTaughtModels model, int classWeekDayID)
+        public ActionResult Create(SemesterTaughtModel model, int classWeekDayID)
          {
             //var semesterRecID = db.tb_Semesters.Where(t => t.DateFrom >= DateTime.UtcNow && t.DateTo < DateTime.UtcNow).FirstOrDefault().SemesterRecID;
             bool scheduleStatus = false;

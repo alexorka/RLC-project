@@ -1,5 +1,5 @@
 ﻿@using LRC_NET_Framework.Models;
-@model ManageWorkerModels
+@model MemberDetailsModel
 
 
 @{
@@ -9,18 +9,18 @@
 
 <hr />
 <ul class="list-inline">
-    <li role="button"><a href="@Url.Action("Create", "SemesterTaught", new { @id = Model._Worker.MemberID })" class="btn btn-default">Schedules&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
-    <li role="button"><a href="@Url.Action("AddAssessment", "Assessment", new { @id = Model._Worker.MemberID })" class="btn btn-default">Assessments&nbsp;&nbsp;<span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></li>
-    <li role="button"><a href="@Url.Action("AddActivity", "Activities", new { @id = Model._Worker.MemberID })" class="btn btn-default">Activities&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
-    <li role="button"><a href="@Url.Action("ManageContactInfo", "Home", new { @id = Model._Worker.MemberID })" class="btn btn-default">Contact Info&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
-    <li role="button"><a href="@Url.Action("AddMembershipForm", "Home", new { @id = Model._Worker.MemberID })" class="btn btn-default">Member Forms&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
-    <li role="button"><a href="@Url.Action("AddCopeForm", "Home", new { @id = Model._Worker.MemberID })" class="btn btn-default">COPE Forms&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
-    <li role="button"><a href="@Url.Action("AddNote", "Notes", new { @id = Model._Worker.MemberID })" class="btn btn-default">Notes&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
-    <li role="button"><a href="@Url.Action("AddRole", "Roles", new { @id = Model._Worker.MemberID })" class="btn btn-default">Roles&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
-    <li role="button"><a href="@Url.Action("AlsoWorksAt", "Home", new { @id = Model._Worker.MemberID })" class="btn btn-default">Also Works At&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="@Url.Action("Create", "SemesterTaught", new { @id = Model._Member.MemberID })" class="btn btn-default">Schedules&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="@Url.Action("AddAssessment", "Assessment", new { @id = Model._Member.MemberID })" class="btn btn-default">Assessments&nbsp;&nbsp;<span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="@Url.Action("AddActivity", "Activities", new { @id = Model._Member.MemberID })" class="btn btn-default">Activities&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="@Url.Action("ManageContactInfo", "Home", new { @id = Model._Member.MemberID })" class="btn btn-default">Contact Info&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="@Url.Action("AddMembershipForm", "Home", new { @id = Model._Member.MemberID })" class="btn btn-default">Member Forms&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="@Url.Action("AddCopeForm", "Home", new { @id = Model._Member.MemberID })" class="btn btn-default">COPE Forms&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="@Url.Action("AddNote", "Notes", new { @id = Model._Member.MemberID })" class="btn btn-default">Notes&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="@Url.Action("AddRole", "Roles", new { @id = Model._Member.MemberID })" class="btn btn-default">Roles&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="@Url.Action("AlsoWorksAt", "Home", new { @id = Model._Member.MemberID })" class="btn btn-default">Also Works At&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
 </ul>
 
-<h2 style="font-family:sans-serif">@Html.DisplayFor(n => n._Worker.LastName), @Html.DisplayFor(n => n._Worker.FirstName)</h2>
+<h2 style="font-family:sans-serif">@Html.DisplayFor(n => n._Member.LastName), @Html.DisplayFor(n => n._Member.FirstName)</h2>
 <div class="row ex1 h6">
     <div class="col-md-3">
         <div class="row" style="padding-bottom:5px">
@@ -28,7 +28,7 @@
                 Home School
             </div>
             <div class="col-md-7 text-muted">
-                @Html.DisplayFor(n => n._Worker.tb_Department.tb_College.CollegeName)
+                @Html.DisplayFor(n => n._Member.tb_Department.tb_College.CollegeName)
             </div>
         </div>
         <div class="row" style="padding-bottom:5px">
@@ -36,7 +36,7 @@
                 Employee ID
             </div>
             <div class="col-md-7 text-muted">
-                @Html.DisplayFor(n => n._Worker.MemberIDNumber)
+                @Html.DisplayFor(n => n._Member.MemberIDNumber)
             </div>
         </div>
         <div class="row" style="padding-bottom:5px">
@@ -52,7 +52,7 @@
                 Department
             </div>
             <div class="col-md-7 text-muted">
-                @Html.DisplayFor(n => n._Worker.tb_Department.DepartmentName)
+                @Html.DisplayFor(n => n._Member.tb_Department.DepartmentName)
             </div>
         </div>
     </div>
@@ -62,7 +62,7 @@
                 Category
             </div>
             <div class="col-md-7 text-muted">
-                @Html.DisplayFor(n => n._Worker.tb_Categories.CategoryName)
+                @Html.DisplayFor(n => n._Member.tb_Categories.CategoryName)
             </div>
         </div>
         <div class="row" style="padding-bottom:5px">
@@ -70,9 +70,9 @@
                 Hire Date (Aprox)
             </div>
             <div class="col-md-7 text-muted">
-                @if (Model._Worker.HireDate != null)
+                @if (Model._Member.HireDate != null)
                 {
-                    @Convert.ToDateTime(Model._Worker.HireDate).ToString("MM/dd/yyyy")
+                    @Convert.ToDateTime(Model._Member.HireDate).ToString("MM/dd/yyyy")
                 }
             </div>
         </div>
@@ -81,7 +81,7 @@
                 Active
             </div>
             <div class="col-md-7 text-muted">
-                @if (Model._Worker.tb_SemesterTaught.Where(t => t.MemberID == Model._Worker.MemberID).Count() > 0)
+                @if (Model._Member.tb_SemesterTaught.Where(t => t.MemberID == Model._Member.MemberID).Count() > 0)
                 {
                     <span>Active</span>
                 }
@@ -98,7 +98,7 @@
                 Member Status
             </div>
             <div class="col-md-5 text-muted">
-                @Html.DisplayFor(n => n._Worker.tb_MemberActivity.Where(t => t.MemberID == Model._Worker.MemberID).LastOrDefault().tb_ActivityStatus.ActivityStatusName)
+                @Html.DisplayFor(n => n._Member.tb_MemberActivity.Where(t => t.MemberID == Model._Member.MemberID).LastOrDefault().tb_ActivityStatus.ActivityStatusName)
             </div>
         </div>
         <div class="row" style="padding-bottom:5px">
@@ -106,9 +106,9 @@
                 Fee Payer Assess
             </div>
             <div class="col-md-5 text-muted">
-                @if (Model._Worker.LatestUnionAssessmentID != null)
+                @if (Model._Member.LatestUnionAssessmentID != null)
                 {
-                    @Html.DisplayFor(n => n._Worker.tb_LatestUnionAssessment.LatestUnionAssessmentDesc)
+                    @Html.DisplayFor(n => n._Member.tb_LatestUnionAssessment.LatestUnionAssessmentDesc)
                 }
                 else
                 {
@@ -121,7 +121,7 @@
                 Membership&nbsp;Commitment
             </div>
             <div class="col-md-5 text-muted">
-                @Html.DisplayFor(n => n._Worker.tb_MemberActivity.Where(t => t.MemberID == Model._Worker.MemberID).LastOrDefault().MembershipCommitment)
+                @Html.DisplayFor(n => n._Member.tb_MemberActivity.Where(t => t.MemberID == Model._Member.MemberID).LastOrDefault().MembershipCommitment)
             </div>
         </div>
     </div>
@@ -131,7 +131,7 @@
                 Phone
             </div>
             <div class="col-md-7 text-muted">
-                @Html.DisplayFor(n => n._Worker.tb_MemberPhoneNumbers.Where(t => t.IsPrimary == true).FirstOrDefault().PhoneNumber)
+                @Html.DisplayFor(n => n._Member.tb_MemberPhoneNumbers.Where(t => t.IsPrimary == true).FirstOrDefault().PhoneNumber)
             </div>
         </div>
         <div class="row" style="padding-bottom:5px">
@@ -144,7 +144,7 @@
         </div>
     </div>
 </div>
-<a href="@Url.Action("Edit", "Home", new { id = Model._Worker.MemberID })" class="btn btn-link">&nbsp;&nbsp;Edit<span class="glyphicon glyphicon-edit pull-left" aria-hidden="true"></span></a>
+<a href="@Url.Action("Edit", "Home", new { id = Model._Member.MemberID })" class="btn btn-link">&nbsp;&nbsp;Edit<span class="glyphicon glyphicon-edit pull-left" aria-hidden="true"></span></a>
 
 <p><a name="Schedules"></a></p>
 <h3 style="font-family:sans-serif">Schedule (Active)</h3>
@@ -163,9 +163,9 @@
         <th>Note</th>
         <th>Schedule Status</th>
     </tr>
-    @foreach (var item in Model._Worker.tb_SemesterTaught)
+    @foreach (var item in Model._Member.tb_SemesterTaught)
     {
-        <tr class="text-muted">
+        <tr style="color:dimgray;">
             <td>
                 @Html.DisplayFor(modelItem => item.tb_Building.tb_Campus.tb_College.CollegeName)
             </td>
@@ -231,11 +231,11 @@
         </th>
     </tr>
 
-    @foreach (var item in Model._Worker.tb_MemberActivity.Where(t => t.MemberID == Model._Worker.MemberID))
+    @foreach (var item in Model._Member.tb_MemberActivity.Where(t => t.MemberID == Model._Member.MemberID))
     {
         if (item != null)
         {
-            <tr class="text-muted">
+            <tr style="color:dimgray;">
                 <td>
                     @Html.DisplayFor(modelItem => item.tb_Activity.ActivityName)
                 </td>
@@ -243,7 +243,7 @@
                     @Convert.ToDateTime(item.tb_Activity.ActivityDate).ToString("MM/dd/yyyy")
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.tb_MemberMaster.tb_MemberRoles.Where(t => t.MemberID == Model._Worker.MemberID).LastOrDefault().tb_Roles.RoleName)
+                    @Html.DisplayFor(modelItem => item.tb_MemberMaster.tb_MemberRoles.Where(t => t.MemberID == Model._Member.MemberID).LastOrDefault().tb_Roles.RoleName)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.tb_Activity.ActivityNote)
@@ -252,7 +252,7 @@
         }
         else
         {
-            <tr class="text-muted">
+            <tr style="color:dimgray;">
                 <td><span>No activities</span></td>
             </tr>
         }
@@ -277,11 +277,11 @@
         </th>
     </tr>
 
-    @foreach (var item in Model._Worker.tb_MemberRoles.Where(t => t.MemberID == Model._Worker.MemberID))
+    @foreach (var item in Model._Member.tb_MemberRoles.Where(t => t.MemberID == Model._Member.MemberID))
     {
         if (item != null)
         {
-            <tr class="text-muted">
+            <tr style="color:dimgray;">
                 <td>
                     @Html.DisplayFor(modelItem => item.tb_Roles.RoleName)
                 </td>
@@ -304,7 +304,7 @@
         }
         else
         {
-            <tr class="text-muted">
+            <tr style="color:dimgray;">
                 <td><span>No activities</span></td>
             </tr>
         }
@@ -336,13 +336,13 @@
                 @Html.DisplayFor(modelItem => item.AssessmentName)
             </td>
         </tr>
-        foreach (var assess in item.tb_Assessment.Where(t => t.MemberID == Model._Worker.MemberID))
+        foreach (var assess in item.tb_Assessment.Where(t => t.MemberID == Model._Member.MemberID))
         {
             if (item != null)
             {
-                <tr class="text-muted">
+                <tr style="color:dimgray;">
                     <td>
-                        @Html.DisplayFor(n => n._Worker.CampaignVolunteer)
+                        @Html.DisplayFor(n => n._Member.CampaignVolunteer)
                     </td>
                     <td>
                         @if (assess.AssessmentDate != null)
@@ -358,7 +358,7 @@
             }
             else
             {
-                <tr class="text-muted">
+                <tr style="color:dimgray;">
                     <td><span>No activities</span></td>
                 </tr>
             }
@@ -382,11 +382,11 @@
         </th>
     </tr>
 
-    @foreach (var item in Model._Worker.tb_MemberNotes.Where(t => t.MemberID == Model._Worker.MemberID))
+    @foreach (var item in Model._Member.tb_MemberNotes.Where(t => t.MemberID == Model._Member.MemberID))
     {
         if (item != null)
         {
-            <tr class="text-muted">
+            <tr style="color:dimgray;">
                 <td>
                     @Html.DisplayFor(modelItem => item.Notes)
                 </td>
@@ -403,7 +403,7 @@
         }
         else
         {
-            <tr class="text-muted">
+            <tr style="color:dimgray;">
                 <td><span>No data</span></td>
             </tr>
         }
@@ -429,11 +429,11 @@
         </th>
     </tr>
 
-    @foreach (var item in Model._Worker.tb_MemberPhoneNumbers.Where(t => t.MemberID == Model._Worker.MemberID))
+    @foreach (var item in Model._Member.tb_MemberPhoneNumbers.Where(t => t.MemberID == Model._Member.MemberID))
     {
         if (item != null)
         {
-            <tr class="text-muted">
+            <tr style="color:dimgray;">
                 <td>
                     @Html.DisplayFor(modelItem => item.PhoneNumber)
                 </td>
@@ -460,7 +460,7 @@
         }
         else
         {
-            <tr class="text-muted">
+            <tr style="color:dimgray;">
                 <td><span>No data</span></td>
             </tr>
         }
@@ -486,11 +486,11 @@
 
     </tr>
 
-    @foreach (var item in Model._Worker.tb_MemberEmail.Where(t => t.MemberID == Model._Worker.MemberID))
+    @foreach (var item in Model._Member.tb_MemberEmail.Where(t => t.MemberID == Model._Member.MemberID))
     {
         if (item != null)
         {
-            <tr class="text-muted">
+            <tr style="color:dimgray;">
                 <td>
                     @Html.DisplayFor(modelItem => item.EmailAddress)
                 </td>
@@ -518,7 +518,7 @@
         }
         else
         {
-            <tr class="text-muted">
+            <tr style="color:dimgray;">
                 <td><span>No data</span></td>
             </tr>
         }
@@ -544,11 +544,11 @@
 
     </tr>
 
-    @foreach (var item in Model._Worker.tb_MemberAddress.Where(t => t.MemberID == Model._Worker.MemberID))
+    @foreach (var item in Model._Member.tb_MemberAddress.Where(t => t.MemberID == Model._Member.MemberID))
     {
         if (item != null)
         {
-            <tr class="text-muted">
+            <tr style="color:dimgray;">
                 <td>
                     @ViewBag.MemberAddress
                 </td>
@@ -568,15 +568,15 @@
                         @Convert.ToDateTime(item.CreatedDateTime).ToString("MM/dd/yyyy")
                     }
                 </td>
-                <td class="danger">
-                    ??? Employeer
+                <td>
+                    @Html.DisplayFor(modelItem => item.Source)
                 </td>
 
             </tr>
         }
         else
         {
-            <tr class="text-muted">
+            <tr style="color:dimgray;">
                 <td><span>No data</span></td>
             </tr>
         }

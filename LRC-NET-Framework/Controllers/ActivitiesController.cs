@@ -78,15 +78,12 @@ namespace LRC_NET_Framework.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            tb_MemberActivity tb_MemberActivity = db.tb_MemberActivity.Find(id);
-            if (tb_MemberActivity == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.ActivityID = new SelectList(db.tb_Activity, "ActivityID", "ActivityName", tb_MemberActivity.ActivityID);
-            ViewBag.Activities = db.tb_MemberActivity.ToList();
+            tb_MemberActivity MA = new tb_MemberActivity { MemberID = id ?? 0 };
+
+            ViewBag.ActivityID = new SelectList(db.tb_Activity, "ActivityID", "ActivityName");
+            ViewBag.Activities = db.tb_MemberActivity.Where(t => t.MemberID == id).ToList();
             ViewBag.ActivityStatusID = db.tb_ActivityStatus.ToList();
-            return View(tb_MemberActivity);
+            return View(MA);
         }
 
         // POST: Activities/AddActivity
@@ -99,7 +96,6 @@ namespace LRC_NET_Framework.Controllers
             string ActivityNote, DateTime? ActivityDate, FormCollection formCollection)
         {
             tb_Activity activity = db.tb_Activity.Find(tb_MemberActivity.ActivityID);
-            //DateTime myDate = DateTime.Parse(formCollection["tb_Activity.ActivityDate"]);
             activity.ActivityDate = DateTime.Parse(formCollection["tb_Activity.ActivityDate"]);
             activity.ActivityNote = formCollection["tb_Activity.ActivityNote"];
 
@@ -110,11 +106,12 @@ namespace LRC_NET_Framework.Controllers
 
                 db.tb_Activity.Attach(activity);
                 db.SaveChanges();
-
-                return RedirectToAction("AddActivity");
             }
-
-            return View(tb_MemberActivity);
+            //ViewBag.ActivityID = new SelectList(db.tb_Activity, "ActivityID", "ActivityName");
+            //ViewBag.Activities = db.tb_MemberActivity.Where(t => t.MemberID == tb_MemberActivity.MemberID).ToList();
+            //ViewBag.ActivityStatusID = db.tb_ActivityStatus.ToList();
+            //return View(tb_MemberActivity);
+            return RedirectToAction("AddActivity", new { @id = tb_MemberActivity.MemberID });
         }
 
 

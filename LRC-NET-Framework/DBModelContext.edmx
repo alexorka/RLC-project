@@ -623,18 +623,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_tb_Activity_AspNetUsers">
-          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="0..1" />
-          <End Role="tb_Activity" Type="Self.tb_Activity" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="tb_Activity">
-              <PropertyRef Name="AddedBy" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_tb_AlsoWorksAt_tb_Employers">
           <End Role="tb_Employers" Type="Self.tb_Employers" Multiplicity="1" />
           <End Role="tb_AlsoWorksAt" Type="Self.tb_AlsoWorksAt" Multiplicity="*" />
@@ -1207,10 +1195,6 @@
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
           </AssociationSet>
-          <AssociationSet Name="FK_tb_Activity_AspNetUsers" Association="Self.FK_tb_Activity_AspNetUsers">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="tb_Activity" EntitySet="tb_Activity" />
-          </AssociationSet>
           <AssociationSet Name="FK_tb_AlsoWorksAt_tb_Employers" Association="Self.FK_tb_AlsoWorksAt_tb_Employers">
             <End Role="tb_Employers" EntitySet="tb_Employers" />
             <End Role="tb_AlsoWorksAt" EntitySet="tb_AlsoWorksAt" />
@@ -1418,17 +1402,12 @@
           <EntitySet Name="tb_Attribute" EntityType="Self.tb_Attribute" />
           <EntitySet Name="tb_Dues" EntityType="Self.tb_Dues" />
           <EntitySet Name="tb_Gender" EntityType="Self.tb_Gender" />
-          <EntitySet Name="tb_ActivityStatus" EntityType="LRCModel.tb_ActivityStatus" />
           <EntitySet Name="tb_AssessmentName" EntityType="LRCModel.tb_AssessmentName" />
           <EntitySet Name="tb_AssessmentValue" EntityType="LRCModel.tb_AssessmentValue" />
           <EntitySet Name="tb_LatestUnionAssessment" EntityType="LRCModel.tb_LatestUnionAssessment" />
           <EntitySet Name="tb_JobStatus" EntityType="LRCModel.tb_JobStatus" />
           <EntitySet Name="tb_District" EntityType="LRCModel.tb_District" />
           <EntitySet Name="tb_MemberActivity" EntityType="LRCModel.tb_MemberActivity" />
-          <AssociationSet Name="FK_tb_MemberActivity_tb_ActivityStatus" Association="LRCModel.FK_tb_MemberActivity_tb_ActivityStatus">
-            <End Role="tb_ActivityStatus" EntitySet="tb_ActivityStatus" />
-            <End Role="tb_MemberActivity" EntitySet="tb_MemberActivity" />
-          </AssociationSet>
           <EntitySet Name="tb_Division" EntityType="LRCModel.tb_Division" />
           <EntitySet Name="tb_Categories" EntityType="LRCModel.tb_Categories" />
           <EntitySet Name="tb_SemesterName" EntityType="LRCModel.tb_SemesterName" />
@@ -1467,11 +1446,6 @@
             <End Role="tb_Department" EntitySet="tb_Department" />
           </AssociationSet>
           <EntitySet Name="tb_AddressType" EntityType="LRCModel.tb_AddressType" />
-          <EntitySet Name="tb_Activity" EntityType="LRCModel.tb_Activity" />
-          <AssociationSet Name="FK_tb_MemberActivity_tb_Activity1" Association="LRCModel.FK_tb_MemberActivity_tb_Activity1">
-            <End Role="tb_Activity" EntitySet="tb_Activity" />
-            <End Role="tb_MemberActivity" EntitySet="tb_MemberActivity" />
-          </AssociationSet>
           <EntitySet Name="tb_Assessment" EntityType="LRCModel.tb_Assessment" />
           <AssociationSet Name="FK_tb_Assessment_tb_AssessmentName" Association="LRCModel.FK_tb_Assessment_tb_AssessmentName">
             <End Role="tb_AssessmentName" EntitySet="tb_AssessmentName" />
@@ -1492,10 +1466,6 @@
           <AssociationSet Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" Association="LRCModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="AspNetUserLogins" EntitySet="AspNetUserLogins" />
-          </AssociationSet>
-          <AssociationSet Name="FK_tb_Activity_AspNetUsers" Association="LRCModel.FK_tb_Activity_AspNetUsers">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="tb_Activity" EntitySet="tb_Activity" />
           </AssociationSet>
           <AssociationSet Name="AspNetUserRoles" Association="LRCModel.AspNetUserRoles">
             <End Role="AspNetRoles" EntitySet="AspNetRoles" />
@@ -1649,15 +1619,17 @@
           </AssociationSet>
           <EntitySet Name="tb_MemberError" EntityType="LRCModel.tb_MemberError" />
           <EntitySet Name="tb_Schedule_Error" EntityType="LRCModel.tb_Schedule_Error" />
+          <EntitySet Name="tb_Activity" EntityType="LRCModel.tb_Activity" />
+          <EntitySet Name="tb_ActivityStatus" EntityType="LRCModel.tb_ActivityStatus" />
+          <AssociationSet Name="FK_tb_MemberActivity_tb_Activity1" Association="LRCModel.FK_tb_MemberActivity_tb_Activity1">
+            <End Role="tb_Activity" EntitySet="tb_Activity" />
+            <End Role="tb_MemberActivity" EntitySet="tb_MemberActivity" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tb_MemberActivity_tb_ActivityStatus" Association="LRCModel.FK_tb_MemberActivity_tb_ActivityStatus">
+            <End Role="tb_ActivityStatus" EntitySet="tb_ActivityStatus" />
+            <End Role="tb_MemberActivity" EntitySet="tb_MemberActivity" />
+          </AssociationSet>
           </EntityContainer>
-        <EntityType Name="tb_ActivityStatus">
-          <Key>
-            <PropertyRef Name="ActivityStatusID" />
-          </Key>
-          <Property Name="ActivityStatusID" Type="Int32" Nullable="false" />
-          <Property Name="ActivityStatusName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="tb_MemberActivity" Relationship="LRCModel.FK_tb_MemberActivity_tb_ActivityStatus" FromRole="tb_ActivityStatus" ToRole="tb_MemberActivity" />
-        </EntityType>
         <EntityType Name="tb_AssessmentName">
           <Key>
             <PropertyRef Name="AssessmentNameID" />
@@ -1710,22 +1682,10 @@
           <Property Name="MemberID" Type="Int32" Nullable="false" />
           <Property Name="TwitterHandle" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="FacebookID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="tb_ActivityStatus" Relationship="LRCModel.FK_tb_MemberActivity_tb_ActivityStatus" FromRole="tb_MemberActivity" ToRole="tb_ActivityStatus" />
-          <NavigationProperty Name="tb_Activity" Relationship="LRCModel.FK_tb_MemberActivity_tb_Activity1" FromRole="tb_MemberActivity" ToRole="tb_Activity" />
           <NavigationProperty Name="tb_MemberMaster" Relationship="LRCModel.FK_tb_MemberActivity_tb_MemberMaster" FromRole="tb_MemberActivity" ToRole="tb_MemberMaster" />
+          <NavigationProperty Name="tb_Activity" Relationship="LRCModel.FK_tb_MemberActivity_tb_Activity1" FromRole="tb_MemberActivity" ToRole="tb_Activity" />
+          <NavigationProperty Name="tb_ActivityStatus" Relationship="LRCModel.FK_tb_MemberActivity_tb_ActivityStatus" FromRole="tb_MemberActivity" ToRole="tb_ActivityStatus" />
         </EntityType>
-        <Association Name="FK_tb_MemberActivity_tb_ActivityStatus">
-          <End Type="LRCModel.tb_ActivityStatus" Role="tb_ActivityStatus" Multiplicity="1" />
-          <End Type="LRCModel.tb_MemberActivity" Role="tb_MemberActivity" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tb_ActivityStatus">
-              <PropertyRef Name="ActivityStatusID" />
-            </Principal>
-            <Dependent Role="tb_MemberActivity">
-              <PropertyRef Name="ActivityStatusID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="tb_Division">
           <Key>
             <PropertyRef Name="DivisionID" />
@@ -1973,34 +1933,6 @@
           <Property Name="AddressTypeName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="tb_MemberAddress" Relationship="LRCModel.FK_tb_MemberAddress_tb_AddressType" FromRole="tb_AddressType" ToRole="tb_MemberAddress" />
         </EntityType>
-        <EntityType Name="tb_Activity">
-          <Key>
-            <PropertyRef Name="ActivityID" />
-          </Key>
-          <Property Name="ActivityID" Type="Int32" Nullable="false" />
-          <Property Name="ActivityStatusID" Type="Int32" Nullable="false" />
-          <Property Name="ActivityDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ActivityName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ActivityNote" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="AddedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="AddedDateTime" Type="DateTime" Precision="3" />
-          <Property Name="ModifiedBy" Type="Int32" />
-          <Property Name="ModifiedDateTime" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="tb_MemberActivity" Relationship="LRCModel.FK_tb_MemberActivity_tb_Activity1" FromRole="tb_Activity" ToRole="tb_MemberActivity" />
-          <NavigationProperty Name="AspNetUsers" Relationship="LRCModel.FK_tb_Activity_AspNetUsers" FromRole="tb_Activity" ToRole="AspNetUsers" />
-        </EntityType>
-        <Association Name="FK_tb_MemberActivity_tb_Activity1">
-          <End Type="LRCModel.tb_Activity" Role="tb_Activity" Multiplicity="1" />
-          <End Type="LRCModel.tb_MemberActivity" Role="tb_MemberActivity" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tb_Activity">
-              <PropertyRef Name="ActivityID" />
-            </Principal>
-            <Dependent Role="tb_MemberActivity">
-              <PropertyRef Name="ActivityID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="tb_Assessment">
           <Key>
             <PropertyRef Name="AssessmentID" />
@@ -2096,7 +2028,6 @@
           <Property Name="UserName" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="AspNetUserClaims" Relationship="LRCModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserClaims" />
           <NavigationProperty Name="AspNetUserLogins" Relationship="LRCModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserLogins" />
-          <NavigationProperty Name="tb_Activity" Relationship="LRCModel.FK_tb_Activity_AspNetUsers" FromRole="AspNetUsers" ToRole="tb_Activity" />
           <NavigationProperty Name="AspNetRoles" Relationship="LRCModel.AspNetUserRoles" FromRole="AspNetUsers" ToRole="AspNetRoles" />
         </EntityType>
         <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
@@ -2124,18 +2055,6 @@
             </Principal>
             <Dependent Role="AspNetUserLogins">
               <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_tb_Activity_AspNetUsers">
-          <End Type="LRCModel.AspNetUsers" Role="AspNetUsers" Multiplicity="0..1" />
-          <End Type="LRCModel.tb_Activity" Role="tb_Activity" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="tb_Activity">
-              <PropertyRef Name="AddedBy" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2814,6 +2733,53 @@
           <Property Name="Error" Type="String" MaxLength="1020" FixedLength="false" Unicode="true" />
           <Property Name="Warning" Type="String" MaxLength="1020" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="tb_Activity">
+          <Key>
+            <PropertyRef Name="ActivityID" />
+          </Key>
+          <Property Name="ActivityID" Type="Int32" Nullable="false" />
+          <Property Name="ActivityStatusID" Type="Int32" Nullable="false" />
+          <Property Name="ActivityDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ActivityName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ActivityNote" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="AddedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="AddedDateTime" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedDateTime" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="tb_MemberActivity" Relationship="LRCModel.FK_tb_MemberActivity_tb_Activity1" FromRole="tb_Activity" ToRole="tb_MemberActivity" />
+        </EntityType>
+        <EntityType Name="tb_ActivityStatus">
+          <Key>
+            <PropertyRef Name="ActivityStatusID" />
+          </Key>
+          <Property Name="ActivityStatusID" Type="Int32" Nullable="false" />
+          <Property Name="ActivityStatusName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="tb_MemberActivity" Relationship="LRCModel.FK_tb_MemberActivity_tb_ActivityStatus" FromRole="tb_ActivityStatus" ToRole="tb_MemberActivity" />
+        </EntityType>
+        <Association Name="FK_tb_MemberActivity_tb_Activity1">
+          <End Type="LRCModel.tb_Activity" Role="tb_Activity" Multiplicity="1" />
+          <End Type="LRCModel.tb_MemberActivity" Role="tb_MemberActivity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_Activity">
+              <PropertyRef Name="ActivityID" />
+            </Principal>
+            <Dependent Role="tb_MemberActivity">
+              <PropertyRef Name="ActivityID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tb_MemberActivity_tb_ActivityStatus">
+          <End Type="LRCModel.tb_ActivityStatus" Role="tb_ActivityStatus" Multiplicity="1" />
+          <End Type="LRCModel.tb_MemberActivity" Role="tb_MemberActivity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_ActivityStatus">
+              <PropertyRef Name="ActivityStatusID" />
+            </Principal>
+            <Dependent Role="tb_MemberActivity">
+              <PropertyRef Name="ActivityStatusID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2847,14 +2813,6 @@
               <MappingFragment StoreEntitySet="tb_Gender">
                 <ScalarProperty Name="GenderID" ColumnName="GenderID" />
                 <ScalarProperty Name="GenderName" ColumnName="GenderName" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="tb_ActivityStatus">
-            <EntityTypeMapping TypeName="LRCModel.tb_ActivityStatus">
-              <MappingFragment StoreEntitySet="tb_ActivityStatus">
-                <ScalarProperty Name="ActivityStatusName" ColumnName="ActivityStatusName" />
-                <ScalarProperty Name="ActivityStatusID" ColumnName="ActivityStatusID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -3089,21 +3047,6 @@
               <MappingFragment StoreEntitySet="tb_AddressType">
                 <ScalarProperty Name="AddressTypeName" ColumnName="AddressTypeName" />
                 <ScalarProperty Name="AddressTypeID" ColumnName="AddressTypeID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="tb_Activity">
-            <EntityTypeMapping TypeName="LRCModel.tb_Activity">
-              <MappingFragment StoreEntitySet="tb_Activity">
-                <ScalarProperty Name="ModifiedDateTime" ColumnName="ModifiedDateTime" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="AddedDateTime" ColumnName="AddedDateTime" />
-                <ScalarProperty Name="AddedBy" ColumnName="AddedBy" />
-                <ScalarProperty Name="ActivityNote" ColumnName="ActivityNote" />
-                <ScalarProperty Name="ActivityName" ColumnName="ActivityName" />
-                <ScalarProperty Name="ActivityDate" ColumnName="ActivityDate" />
-                <ScalarProperty Name="ActivityStatusID" ColumnName="ActivityStatusID" />
-                <ScalarProperty Name="ActivityID" ColumnName="ActivityID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -3427,6 +3370,29 @@
                 <ScalarProperty Name="RecordInCBU" ColumnName="RecordInCBU" />
                 <ScalarProperty Name="ErrorDateTime" ColumnName="ErrorDateTime" />
                 <ScalarProperty Name="ErrorId" ColumnName="ErrorId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tb_Activity">
+            <EntityTypeMapping TypeName="LRCModel.tb_Activity">
+              <MappingFragment StoreEntitySet="tb_Activity">
+                <ScalarProperty Name="ModifiedDateTime" ColumnName="ModifiedDateTime" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="AddedDateTime" ColumnName="AddedDateTime" />
+                <ScalarProperty Name="AddedBy" ColumnName="AddedBy" />
+                <ScalarProperty Name="ActivityNote" ColumnName="ActivityNote" />
+                <ScalarProperty Name="ActivityName" ColumnName="ActivityName" />
+                <ScalarProperty Name="ActivityDate" ColumnName="ActivityDate" />
+                <ScalarProperty Name="ActivityStatusID" ColumnName="ActivityStatusID" />
+                <ScalarProperty Name="ActivityID" ColumnName="ActivityID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tb_ActivityStatus">
+            <EntityTypeMapping TypeName="LRCModel.tb_ActivityStatus">
+              <MappingFragment StoreEntitySet="tb_ActivityStatus">
+                <ScalarProperty Name="ActivityStatusName" ColumnName="ActivityStatusName" />
+                <ScalarProperty Name="ActivityStatusID" ColumnName="ActivityStatusID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

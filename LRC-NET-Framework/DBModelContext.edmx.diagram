@@ -8,14 +8,12 @@
         <EntityTypeShape EntityType="LRCModel.tb_Attribute" Width="1.5" PointX="5.25" PointY="23.875" IsExpanded="true" />
         <EntityTypeShape EntityType="LRCModel.tb_Dues" Width="1.5" PointX="5.25" PointY="21.875" IsExpanded="true" />
         <EntityTypeShape EntityType="LRCModel.tb_Gender" Width="1.5" PointX="5.25" PointY="18" IsExpanded="true" />
-        <EntityTypeShape EntityType="LRCModel.tb_ActivityStatus" Width="1.5" PointX="14.125" PointY="24.5" />
         <EntityTypeShape EntityType="LRCModel.tb_AssessmentName" Width="1.5" PointX="11.75" PointY="21" />
         <EntityTypeShape EntityType="LRCModel.tb_AssessmentValue" Width="1.5" PointX="11.75" PointY="19.125" />
         <EntityTypeShape EntityType="LRCModel.tb_LatestUnionAssessment" Width="1.5" PointX="9.75" PointY="23.875" />
         <EntityTypeShape EntityType="LRCModel.tb_JobStatus" Width="1.5" PointX="5.25" PointY="28.5" />
         <EntityTypeShape EntityType="LRCModel.tb_District" Width="1.5" PointX="3.25" PointY="14.25" />
         <EntityTypeShape EntityType="LRCModel.tb_MemberActivity" Width="1.5" PointX="11.75" PointY="22.75" />
-        <AssociationConnector Association="LRCModel.FK_tb_MemberActivity_tb_ActivityStatus" />
         <EntityTypeShape EntityType="LRCModel.tb_Division" Width="1.5" PointX="5.625" PointY="12.875" />
         <EntityTypeShape EntityType="LRCModel.tb_Categories" Width="1.5" PointX="5.25" PointY="26.625" />
         <EntityTypeShape EntityType="LRCModel.tb_SemesterName" Width="1.5" PointX="7.375" PointY="9.5" />
@@ -39,8 +37,6 @@
         <EntityTypeShape EntityType="LRCModel.tb_Department" Width="1.5" PointX="3.5" PointY="16.125" />
         <AssociationConnector Association="LRCModel.FK_tb_Department_tb_College" />
         <EntityTypeShape EntityType="LRCModel.tb_AddressType" Width="1.5" PointX="13.875" PointY="28.125" />
-        <EntityTypeShape EntityType="LRCModel.tb_Activity" Width="1.5" PointX="16" PointY="26.75" />
-        <AssociationConnector Association="LRCModel.FK_tb_MemberActivity_tb_Activity1" />
         <EntityTypeShape EntityType="LRCModel.tb_Assessment" Width="1.5" PointX="9.75" PointY="19" />
         <AssociationConnector Association="LRCModel.FK_tb_Assessment_tb_AssessmentName" />
         <AssociationConnector Association="LRCModel.FK_tb_Assessment_tb_AssessmentValue" />
@@ -51,7 +47,6 @@
         <EntityTypeShape EntityType="LRCModel.AspNetUsers" Width="1.5" PointX="10.625" PointY="34.5" />
         <AssociationConnector Association="LRCModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" />
         <AssociationConnector Association="LRCModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" />
-        <AssociationConnector Association="LRCModel.FK_tb_Activity_AspNetUsers" />
         <AssociationConnector Association="LRCModel.AspNetUserRoles" />
         <EntityTypeShape EntityType="LRCModel.tb_Employers" Width="1.5" PointX="14" PointY="15.5" />
         <AssociationConnector Association="LRCModel.FK_tb_AlsoWorksAt_tb_Employers" />
@@ -102,6 +97,10 @@
         <AssociationConnector Association="LRCModel.FK_tb_MemberAddress_tb_States" />
         <EntityTypeShape EntityType="LRCModel.tb_MemberError" Width="1.5" PointX="0.75" PointY="0.75" />
         <EntityTypeShape EntityType="LRCModel.tb_Schedule_Error" Width="1.5" PointX="2.375" PointY="0.75" />
+        <EntityTypeShape EntityType="LRCModel.tb_Activity" Width="1.5" PointX="13.875" PointY="21.125" />
+        <EntityTypeShape EntityType="LRCModel.tb_ActivityStatus" Width="1.5" PointX="13.875" PointY="24.375" />
+        <AssociationConnector Association="LRCModel.FK_tb_MemberActivity_tb_Activity1" />
+        <AssociationConnector Association="LRCModel.FK_tb_MemberActivity_tb_ActivityStatus" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
