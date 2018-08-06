@@ -19,11 +19,11 @@ namespace LRC_NET_Framework
         public int AssessmentNameID { get; set; }
         public string AssessmentDesc { get; set; }
         public int ValueID { get; set; }
-        public Nullable<System.DateTime> AssessmentDate { get; set; }
-        public string AssesedBy { get; set; }
-        public Nullable<int> AddedBy { get; set; }
-        public Nullable<System.DateTime> AddedDateTime { get; set; }
-        public Nullable<int> ModifiedBy { get; set; }
+        public System.DateTime AssessmentDate { get; set; }
+        public string AssessedBy { get; set; }
+        public string AddedBy { get; set; }
+        public System.DateTime AddedDateTime { get; set; }
+        public string ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedDateTime { get; set; }
         public string BackgroundStory { get; set; }
         public string Fears { get; set; }

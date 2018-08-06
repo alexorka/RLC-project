@@ -52,11 +52,9 @@ namespace LRC_NET_Framework
         public virtual DbSet<tb_Building> tb_Building { get; set; }
         public virtual DbSet<tb_Department> tb_Department { get; set; }
         public virtual DbSet<tb_AddressType> tb_AddressType { get; set; }
-        public virtual DbSet<tb_Assessment> tb_Assessment { get; set; }
         public virtual DbSet<AspNetRoles> AspNetRoles { get; set; }
         public virtual DbSet<AspNetUserClaims> AspNetUserClaims { get; set; }
         public virtual DbSet<AspNetUserLogins> AspNetUserLogins { get; set; }
-        public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
         public virtual DbSet<tb_Employers> tb_Employers { get; set; }
         public virtual DbSet<tb_Area> tb_Area { get; set; }
         public virtual DbSet<tb_SemesterTaught> tb_SemesterTaught { get; set; }
@@ -73,7 +71,9 @@ namespace LRC_NET_Framework
         public virtual DbSet<tb_MemberAddress> tb_MemberAddress { get; set; }
         public virtual DbSet<tb_MemberError> tb_MemberError { get; set; }
         public virtual DbSet<tb_Schedule_Error> tb_Schedule_Error { get; set; }
-        public virtual DbSet<tb_Activity> tb_Activity { get; set; }
         public virtual DbSet<tb_ActivityStatus> tb_ActivityStatus { get; set; }
+        public virtual DbSet<tb_Assessment> tb_Assessment { get; set; }
+        public virtual DbSet<tb_Activity> tb_Activity { get; set; }
+        public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
     }
 }

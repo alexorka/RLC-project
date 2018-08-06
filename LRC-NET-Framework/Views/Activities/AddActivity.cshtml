@@ -6,6 +6,9 @@
 }
 <div class="font-weight-bold" style="background-color: #357ebd; border-bottom-left-radius:7px; border-bottom-right-radius:7px; color:gainsboro; padding-top:5px; padding-bottom:5px; padding-left:30px;"><h4>Manage Member Activities</h4></div>
 
+@using LRC_NET_Framework.Helpers
+@Html.CreateList(ViewData["ErrorList"] as List<string>)
+
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
@@ -30,9 +33,6 @@
                         </div>
                     </div>
                 </div>
-
-
-
             </div>
         </div>
 
@@ -81,46 +81,46 @@
     </div>
 }
 
-    <div class="row" style="padding-top:20px; font-size:smaller;">
-        <div class="col-md-8 col-md-offset-1" id="Activities" style="background-color:lavender; border:solid; margin-top:20px; border-radius:5px; border-width:1px; border-color:gainsboro">
+<div class="row" style="padding-top:20px; font-size:smaller;">
+    <div class="col-md-8 col-md-offset-1" id="Activities" style="background-color:lavender; border:solid; margin-top:20px; border-radius:5px; border-width:1px; border-color:gainsboro">
 
-            <div style="background-color:gainsboro; padding-bottom:5px; padding-left:30px; border-bottom-left-radius:5px; border-bottom-right-radius:5px;">@Html.Label("Activities", "Activities", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })</div>
+        <div style="background-color:gainsboro; padding-bottom:5px; padding-left:30px; border-bottom-left-radius:5px; border-bottom-right-radius:5px;">@Html.Label("Activities", "Activities", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })</div>
 
-            <table class="table">
-                <tr class="text-info">
-                    <th>
-                        Activity
-                    </th>
-                    <th>
-                        Date
-                    </th>
-                    <th>
-                        Status
-                    </th>
-                    <th>
-                        Note
-                    </th>
+        <table class="table">
+            <tr class="text-info">
+                <th>
+                    Activity
+                </th>
+                <th>
+                    Date
+                </th>
+                <th>
+                    Status
+                </th>
+                <th>
+                    Note
+                </th>
+            </tr>
+            @foreach (var item in ViewBag.Activities as List<tb_MemberActivity>)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.tb_Activity.ActivityName)
+                    </td>
+                    <td>
+                        @Convert.ToDateTime(item.tb_Activity.ActivityDate).ToString("MM/dd/yyyy")
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.tb_ActivityStatus.ActivityStatusName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.tb_Activity.ActivityNote)
+                    </td>
                 </tr>
-                @foreach (var item in ViewBag.Activities as List<tb_MemberActivity>)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.tb_Activity.ActivityName)
-                        </td>
-                        <td>
-                            @Convert.ToDateTime(item.tb_Activity.ActivityDate).ToString("MM/dd/yyyy")
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.tb_ActivityStatus.ActivityStatusName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.tb_Activity.ActivityNote)
-                        </td>
-                    </tr>
-                }
-            </table>
-        </div>
+            }
+        </table>
     </div>
+</div>
 
 <div class="col-md-11 col-md-offset-1" style="margin-top:20px;">
     <a href="@Url.Action("Details", "Home", new { id = Model.MemberID })" class="btn btn-info">&nbsp;&nbsp;Back<span class="glyphicon glyphicon-arrow-left pull-left" aria-hidden="true"></span></a>
@@ -129,7 +129,7 @@
 @section Scripts {
     <script src='@Url.Content("~/Scripts/jquery-1.12.4.min.js")' type="text/javascript"></script>
     <script src='@Url.Content("~/Scripts/jquery-ui-1.12.1.min.js")' type="text/javascript"></script>
-    
+
 
     <script>
         $(document).ready(function () {

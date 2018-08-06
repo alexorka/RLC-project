@@ -6,10 +6,12 @@
 }
 <div class="font-weight-bold" style="background-color: #357ebd; border-bottom-left-radius:7px; border-bottom-right-radius:7px; color:gainsboro; padding-top:5px; padding-bottom:5px; padding-left:30px;"><h4>Add Assessement</h4></div>
 
+@using LRC_NET_Framework.Helpers
+@Html.CreateList(ViewData["ErrorList"] as List<string>)
+
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    <hr />
     <div class="form-horizontal">
 
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -80,10 +82,10 @@
         </div>
 
         <div class="form-group">
-            <div class="col-md-11 col-md-offset-1" id="AssesedBy">
-                @Html.Label("AssesedBy", "Assessment By", htmlAttributes: new { @class = "control-label" })
-                @Html.EditorFor(model => model.AssesedBy, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.AssesedBy, "", new { @class = "text-danger" })
+            <div class="col-md-11 col-md-offset-1" id="AssessedBy">
+                @Html.Label("AssessedBy", "Assessment By", htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.AssessedBy, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.AssessedBy, "", new { @class = "text-danger" })
             </div>
         </div>
 

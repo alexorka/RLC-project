@@ -27,7 +27,7 @@ namespace LRC_NET_Framework
         public string ActivityNote { get; set; }
         public string AddedBy { get; set; }
         public Nullable<System.DateTime> AddedDateTime { get; set; }
-        public Nullable<int> ModifiedBy { get; set; }
+        public string ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedDateTime { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

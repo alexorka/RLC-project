@@ -50,7 +50,6 @@ namespace LRC_NET_Framework.Models
     {
         [Required]
         [Display(Name = "Email")]
-        [EmailAddress]
         public string Email { get; set; }
 
         [Required]
@@ -64,6 +63,13 @@ namespace LRC_NET_Framework.Models
 
     public class RegisterViewModel
     {
+        [Required]
+        [Display(Name = "User Name")]
+        public string UserLastFirstName { get; set; } // To show user name but not email
+
+        [Display(Name = "User Name")]
+        public string UserName { get; set; }
+
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]

@@ -5,6 +5,15 @@ using Microsoft.Owin.Security;
 
 namespace LRC_NET_Framework.Models
 {
+    //public class UserInfo
+    //{
+    //    public static string GetLoggedUserName()
+    //    {
+    //        //var uName = HttpContext.GetOwinContext().Authentication.User.Identity.GetUserName();
+    //        //return uName;
+    //    }
+    //}
+
     public class IndexViewModel
     {
         public bool HasPassword { get; set; }

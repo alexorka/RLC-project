@@ -24,7 +24,7 @@ namespace LRC_NET_Framework
         public string FacebookID { get; set; }
     
         public virtual tb_MemberMaster tb_MemberMaster { get; set; }
-        public virtual tb_Activity tb_Activity { get; set; }
         public virtual tb_ActivityStatus tb_ActivityStatus { get; set; }
+        public virtual tb_Activity tb_Activity { get; set; }
     }
 }

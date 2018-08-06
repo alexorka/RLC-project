@@ -193,7 +193,6 @@ namespace LRC_NET_Framework.Controllers
                 _UsersRoles.Add(new SelectListItem() { Text = _user.UserName, Value = currentRoles.Result.FirstOrDefault() });
             }
             ViewBag.UsersAndRoles = _UsersRoles;
-
             return View();
         }
 
@@ -215,6 +214,14 @@ namespace LRC_NET_Framework.Controllers
                 _UsersRoles.Add(new SelectListItem() { Text = _user.UserName, Value = currentRoles.Result.FirstOrDefault() });
             }
             ViewBag.UsersAndRoles = _UsersRoles;
+            ExcelMembers excelMembers = new ExcelMembers();
+
+            Error error = excelMembers.SplitFullName(model.UserLastFirstName, null, 0, out string lastName, out string firstName, out string middleName);
+            if (error.errCode != ErrorDetail.Success)
+            {
+                ModelState.AddModelError("User Name Error", error.errMsg + ". Please enter last name and first name, separated by a comma.");
+                return View(model);
+            }
 
             if (ModelState.IsValid)
             {
@@ -223,6 +230,34 @@ namespace LRC_NET_Framework.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    using (LRCEntities context = new LRCEntities())
+                    {
+                        try
+                        {
+                            AspNetUsers aUser = context.AspNetUsers.Where(s => s.Email.ToUpper() == model.Email.ToUpper()).FirstOrDefault();
+                            aUser.LastFirstName = model.UserLastFirstName;
+                            context.SaveChanges();
+                        }
+                        catch (DbEntityValidationException ex)
+                        {
+                            error.errCode = ErrorDetail.DataImportError;
+                            error.errMsg = ErrorDetail.GetMsg(error.errCode);
+                            foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
+                            {
+                                error.errMsg += ". Object: " + validationError.Entry.Entity.ToString();
+                                foreach (DbValidationError err in validationError.ValidationErrors)
+                                {
+                                    error.errMsg += ". " + err.ErrorMessage;
+                                }
+                            }
+                        }
+                    }
+                    if (error.errCode != ErrorDetail.Success)
+                    {
+                        ModelState.AddModelError("User Name Update Failed", error.errMsg);
+                        return View(model);
+                    }
+
                     return RedirectToAction("RegistrationRequestSentToAdmin", "Account");
                 }
                 AddErrors(result);
@@ -241,12 +276,16 @@ namespace LRC_NET_Framework.Controllers
             var uNameRole = userName.Split(':');
             string uName = uNameRole[0].Trim();
             string uRole = uNameRole[1].Trim();
-            var user = await UserManager.FindByEmailAsync(uName);
+
+            // LastFirstName is a added to AspNetUsers table custom field so we cant use default built-in functionality and 
+            // have to use standart DB request
+            var user = await UserManager.FindByEmailAsync(db.AspNetUsers.Where(s => s.LastFirstName == uName).FirstOrDefault().Email.Trim());
+
             var result = await UserManager.AddToRoleAsync(user.Id, uRole);
             if (result.Succeeded)
             {
-                //Place email to UserName field in AspNetUsers table. We keeped RoleName there before
-                user.UserName = uName;
+                //Place Email to UserName field in AspNetUsers table. We keeped RoleName there before
+                user.UserName = user.Email;
                 await UserManager.UpdateAsync(user);
 
                 //await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
@@ -262,7 +301,7 @@ namespace LRC_NET_Framework.Controllers
         public async Task<ActionResult> RejectRegistrationRequest(string userName)
         {
             //Delete user on Reject action
-            var user = await UserManager.FindByEmailAsync(userName.Trim());
+            var user = await UserManager.FindByEmailAsync(db.AspNetUsers.Where(s => s.LastFirstName == userName).FirstOrDefault().Email.Trim());
             var result = await UserManager.DeleteAsync(user);
 
             //string currentRoles = UserManager.GetRolesAsync(user.Id).Result.FirstOrDefault();
@@ -565,7 +604,7 @@ namespace LRC_NET_Framework.Controllers
         //
         // GET: /Account/AdminTasks
         [Authorize(Roles = "admin")]
-        public ActionResult AdminTasks(/*string fileTypeSelectResult*/)
+        public ActionResult AdminTasks()
         {
             var _users = db.AspNetUsers.ToList();
             List<SelectListItem> _UsersRoles = new List<SelectListItem>();
@@ -573,9 +612,14 @@ namespace LRC_NET_Framework.Controllers
             {
                 string currentRoles = UserManager.GetRolesAsync(_user.Id).Result.FirstOrDefault();
                 if (String.IsNullOrEmpty(currentRoles))
-                    _UsersRoles.Add(new SelectListItem() { Text = /*_user.Email + ":" + */_user.UserName, Value = currentRoles });
+                {
+                    var uNameRole = _user.UserName.Split(':');
+                    string uName = uNameRole[0].Trim();
+                    string uRole = uNameRole[1].Trim();
+                    _UsersRoles.Add(new SelectListItem() { Text = _user.LastFirstName + " : " + uRole, Value = String.Empty });
+                }
                 else
-                    _UsersRoles.Add(new SelectListItem() { Text = _user.Email, Value = currentRoles });
+                    _UsersRoles.Add(new SelectListItem() { Text = _user.LastFirstName, Value = currentRoles });
             }
             ViewBag.UsersAndRoles = _UsersRoles;
 

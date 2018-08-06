@@ -11,7 +11,7 @@
 <ul class="list-inline">
     <li role="button"><a href="@Url.Action("Create", "SemesterTaught", new { @id = Model._Member.MemberID })" class="btn btn-default">Schedules&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
     <li role="button"><a href="@Url.Action("AddAssessment", "Assessment", new { @id = Model._Member.MemberID })" class="btn btn-default">Assessments&nbsp;&nbsp;<span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></li>
-    <li role="button"><a href="@Url.Action("AddActivity", "Activities", new { @id = Model._Member.MemberID })" class="btn btn-default">Activities&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="@Url.Action("AddActivity", "Activities", new { @id = Model._Member.MemberID })" class="btn btn-default">Activities&nbsp;&nbsp;<span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></li>
     <li role="button"><a href="@Url.Action("ManageContactInfo", "Home", new { @id = Model._Member.MemberID })" class="btn btn-default">Contact Info&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
     <li role="button"><a href="@Url.Action("AddMembershipForm", "Home", new { @id = Model._Member.MemberID })" class="btn btn-default">Member Forms&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
     <li role="button"><a href="@Url.Action("AddCopeForm", "Home", new { @id = Model._Member.MemberID })" class="btn btn-default">COPE Forms&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
@@ -350,7 +350,9 @@
                             @Convert.ToDateTime(assess.AssessmentDate).ToString("MM/dd/yyyy")
                         }
                     </td>
-                    <td></td>
+                    <td>
+                        @Html.DisplayFor(modelItem => assess.AssessedBy)
+                    </td>
                     <td>
                         @Html.DisplayFor(modelItem => assess.AssessmentDesc)
                     </td>
@@ -494,8 +496,8 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.EmailAddress)
                 </td>
-                <td class="danger">
-                    ???
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_EmailType.EmailTypeName)
                 </td>
                 <td>
                     @if (item.IsPrimary)

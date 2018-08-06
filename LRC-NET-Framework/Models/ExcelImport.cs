@@ -531,6 +531,8 @@ namespace ExcelImport.Models
                     error.errMsg += "!Row #" + record.ToString() + ". Column 'INSTRCTR': Is empty";
                     //errs.Add(error.errMsg);
                 }
+                else
+                    error.errMsg += "!Field is empty";
             }
             else if (namesComma.Length == 1)
             {
@@ -546,6 +548,8 @@ namespace ExcelImport.Models
                     error.errMsg += "!Row #" + record.ToString() + ". Column 'INSTRCTR': Comma is absent";
                     //errs.Add(error.errMsg);
                 }
+                else
+                    error.errMsg += "!Comma is absent";
             }
             else if (namesComma.Length == 2)
             {

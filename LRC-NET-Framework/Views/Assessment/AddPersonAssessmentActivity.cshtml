@@ -12,10 +12,11 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-
-
-
 <div class="form-horizontal" style="padding-top:20px;">
+
+    @using LRC_NET_Framework.Helpers
+    @Html.CreateList(ViewData["AssessmentErrorList"] as List<string>)
+
     <div style="font-size:smaller; padding: 0px 10px 5px 10px; margin-bottom:20px; border:solid; border-radius:5px; border-width:1px; border-color:gainsboro">
         <div class="col-md-11 h4" style="padding-bottom:10px;">
             <div class="col-md-5" style="background-color:gainsboro;border-bottom-left-radius:7px; border-bottom-right-radius:7px;">Add Assessment</div>
@@ -83,6 +84,8 @@
         </fieldset>
     </div>
 
+    @using LRC_NET_Framework.Helpers
+    @Html.CreateList(ViewData["ActivityErrorList"] as List<string>)
 
     <div style="font-size:smaller; padding: 0px 10px 20px 10px; border:solid; border-radius:5px; border-width:1px; border-color:gainsboro">
         <div class="col-md-11 h4" style="padding-bottom:10px;">
@@ -158,13 +161,13 @@
                 </div>
             </div>
 
-            <div class="col-md-8" id="Activities" style="background-color:lavender; border:solid; margin-top:20px; border-radius:5px; border-width:1px; border-color:gainsboro">
+            <div class="col-md-10" id="Activities" style="background-color:lavender; border:solid; margin-top:20px; border-radius:5px; border-width:1px; border-color:gainsboro">
 
                 <div style="background-color:gainsboro; padding-bottom:5px; padding-left:30px; border-bottom-left-radius:5px; border-bottom-right-radius:5px;">@Html.Label("Activities", "Activities", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })</div>
 
                 <table class="table">
                     <tr class="text-info">
-                        <th>
+                        <th style="width:20%">
                             Activity
                         </th>
                         <th>
@@ -179,26 +182,38 @@
                         <th>
                             Added By
                         </th>
+                        <th>
+                            Modified By
+                        </th>
+                        <th>
+                            Modified Date
+                        </th>
                     </tr>
                     @foreach (var myVal in Model._MemberActivity)
                     {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(m => myVal.tb_Activity.ActivityName)
-                            </td>
-                            <td class="col-md-2">
-                                @Convert.ToDateTime(myVal.tb_Activity.ActivityDate).ToString("MM/dd/yyyy")
-                            </td>
-                            <td class="col-md-2">
-                                @Html.DisplayFor(m => myVal.tb_ActivityStatus.ActivityStatusName)
-                            </td>
-                            <td class="col-md-2">
-                                @Html.DisplayFor(m => myVal.tb_Activity.ActivityNote)
-                            </td>
-                            <td class="col-md-3">
-                                @Html.DisplayFor(m => myVal.tb_Activity.AspNetUsers.Email)
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(m => myVal.tb_Activity.ActivityName)
+                        </td>
+                        <td class="col-md-2">
+                            @Convert.ToDateTime(myVal.tb_Activity.ActivityDate).ToString("MM/dd/yyyy")
+                        </td>
+                        <td class="col-md-2">
+                            @Html.DisplayFor(m => myVal.tb_ActivityStatus.ActivityStatusName)
+                        </td>
+                        <td class="col-md-2">
+                            @Html.DisplayFor(m => myVal.tb_Activity.ActivityNote)
+                        </td>
+                        <td class="col-md-3">
+                            @Html.DisplayFor(m => myVal.tb_Activity.AddedBy)
+                        </td>
+                        <td class="col-md-3">
+                            @Html.DisplayFor(m => myVal.tb_Activity.ModifiedBy)
+                        </td>
+                        <td class="col-md-3">
+                            @Convert.ToDateTime(myVal.tb_Activity.ModifiedDateTime).ToString("MM/dd/yyyy")
+                        </td>
+                    </tr>
                     }
                 </table>
             </div>

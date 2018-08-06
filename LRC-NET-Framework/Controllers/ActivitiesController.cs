@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using LRC_NET_Framework;
+using LRC_NET_Framework.Models;
+using Microsoft.AspNet.Identity;
 using PagedList;
 using PagedList.Mvc;
 
@@ -76,13 +79,17 @@ namespace LRC_NET_Framework.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Errors", new { name = "Bad Request", description = "Member ID as parameter cannot be NULL" });
             }
+            List<string> errs = new List<string>();
             tb_MemberActivity MA = new tb_MemberActivity { MemberID = id ?? 0 };
-
             ViewBag.ActivityID = new SelectList(db.tb_Activity, "ActivityID", "ActivityName");
             ViewBag.Activities = db.tb_MemberActivity.Where(t => t.MemberID == id).ToList();
             ViewBag.ActivityStatusID = db.tb_ActivityStatus.ToList();
+
+            errs.Add("Empty");
+            ViewData["ErrorList"] = errs;
+
             return View(MA);
         }
 
@@ -92,26 +99,63 @@ namespace LRC_NET_Framework.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "admin, organizer")]
-        public ActionResult AddActivity([Bind(Include = "MemberID,ActivityID,ActivityStatusID,ActivityDate,ActivityName,ActivityNote")] tb_MemberActivity tb_MemberActivity,
+        public ActionResult AddActivity([Bind(Include = "MemberID,ActivityID,ActivityStatusID,ActivityDate,ActivityName,ActivityNote")] tb_MemberActivity model,
             string ActivityNote, DateTime? ActivityDate, FormCollection formCollection)
         {
-            tb_Activity activity = db.tb_Activity.Find(tb_MemberActivity.ActivityID);
-            activity.ActivityDate = DateTime.Parse(formCollection["tb_Activity.ActivityDate"]);
-            activity.ActivityNote = formCollection["tb_Activity.ActivityNote"];
+            Error error = new Error();
+            error.errCode = ErrorDetail.Success;
+            List<string> errs = new List<string>();
+
+            ViewBag.ActivityID = new SelectList(db.tb_Activity, "ActivityID", "ActivityName");
+            ViewBag.Activities = db.tb_MemberActivity.Where(t => t.MemberID == model.MemberID).ToList();
+            ViewBag.ActivityStatusID = db.tb_ActivityStatus.ToList();
 
             if (ModelState.IsValid)
             {
-                db.tb_MemberActivity.Add(tb_MemberActivity);
-                db.SaveChanges();
+                tb_Activity activity = db.tb_Activity.Find(model.ActivityID);
+                activity.ActivityDate = DateTime.Parse(formCollection["tb_Activity.ActivityDate"]);
+                activity.ActivityNote = formCollection["tb_Activity.ActivityNote"];
+                try
+                {
+                    db.tb_MemberActivity.Add(model);
+                    db.SaveChanges();
 
-                db.tb_Activity.Attach(activity);
-                db.SaveChanges();
+                    db.tb_Activity.Attach(activity);
+                    db.SaveChanges();
+                }
+                catch (DbEntityValidationException ex)
+                {
+                    error.errCode = ErrorDetail.DataImportError;
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode);
+                    foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
+                    {
+                        error.errMsg += ". Object: " + validationError.Entry.Entity.ToString();
+                        foreach (DbValidationError err in validationError.ValidationErrors)
+                        {
+                            error.errMsg += ". " + err.ErrorMessage;
+                        }
+                    }
+                    errs.Add("Error #" + error.errCode.ToString() + "!" + error.errMsg);
+                    ViewData["ErrorList"] = errs;
+                    return View(model);
+                }
+                return RedirectToAction("Details", "Home", new { @id = model.MemberID });
             }
-            //ViewBag.ActivityID = new SelectList(db.tb_Activity, "ActivityID", "ActivityName");
-            //ViewBag.Activities = db.tb_MemberActivity.Where(t => t.MemberID == tb_MemberActivity.MemberID).ToList();
-            //ViewBag.ActivityStatusID = db.tb_ActivityStatus.ToList();
-            //return View(tb_MemberActivity);
-            return RedirectToAction("AddActivity", new { @id = tb_MemberActivity.MemberID });
+            else
+            {
+                error.errCode = ErrorDetail.DataImportError;
+                error.errMsg = ErrorDetail.GetMsg(error.errCode);
+                foreach (var state in ModelState)
+                {
+                    foreach (var err in state.Value.Errors)
+                    {
+                        error.errMsg += ". " + err.ErrorMessage;
+                    }
+                }
+                errs.Add("Error #" + error.errCode.ToString() + "!" + error.errMsg);
+                ViewData["ErrorList"] = errs;
+                return View(model);
+            }
         }
 
 

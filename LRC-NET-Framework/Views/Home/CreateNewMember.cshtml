@@ -6,27 +6,10 @@
 
 <div class="font-weight-bold" style="background-color: #357ebd; border-bottom-left-radius:7px; border-bottom-right-radius:7px; color:gainsboro; padding-top:5px; padding-bottom:5px; padding-left:30px;"><h4>Create New Member</h4></div>
 
-<div class="alert-warning" style="padding-left:30px;">
-    <div class="alert col-md-8 col-md-offset-2" style="padding:0px;">
-    @{
-        var errList = ViewData["ErrorList"] as List<string>;
-        if (errList[0] != "Empty")
-        {
-        <img src="~/Images/warning.gif" alt="Warning!..." height="48" />
-            foreach (var item in ViewData["ErrorList"] as List<string>)
-            {
-                if (item != "Empty")
-                {
-                    var _errors = item.Split('!');
-                    <strong>&nbsp; &nbsp; &nbsp;@_errors[0] ...</strong><br />
-                    @_errors[1]<br />
-                }
-            }
-        }
-    }
-    </div>
-</div>
-<div class="form-horizontal">
+@using LRC_NET_Framework.Helpers
+@Html.CreateList(ViewData["ErrorList"] as List<string>)
+
+<div class="form-horizontal" style="padding-top:10px;">
 
     @using (Ajax.BeginForm("GetDepartments", null, new AjaxOptions { UpdateTargetId = "resultsCollege" }, new { id = "DDLCollege" }))
     {

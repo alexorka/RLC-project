@@ -1,0 +1,12 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="well" style="border-radius:7px; border-color:coral; border-width:thick; margin:20px; padding:0px;">
+
+    @using LRC_NET_Framework.Helpers
+    @Html.CreateList(ViewData["ErrorList"] as List<string>)
+
+</div>
+
