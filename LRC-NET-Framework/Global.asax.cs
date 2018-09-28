@@ -10,6 +10,9 @@ namespace LRC_NET_Framework
 {
     public class MvcApplication : System.Web.HttpApplication
     {
+        public const int MaxRecordsInPhoneHistory = 10;
+        public const int MaxRecordsInAddressHistory = 5;
+        public const int MaxRecordsInEmailHistory = 10;
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();

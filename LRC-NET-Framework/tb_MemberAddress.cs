@@ -36,7 +36,7 @@ namespace LRC_NET_Framework
     
         public virtual tb_AddressSource tb_AddressSource { get; set; }
         public virtual tb_AddressType tb_AddressType { get; set; }
-        public virtual tb_MemberMaster tb_MemberMaster { get; set; }
         public virtual tb_States tb_States { get; set; }
+        public virtual tb_MemberMaster tb_MemberMaster { get; set; }
     }
 }

@@ -344,10 +344,10 @@ namespace ExcelImport.Models
                 return errs;
             }
 
-            errs = CreateMemberModel.AssignAddress(excelRec.Address, null, excelRec.City, excelRec.State, excelRec.Zip, 1, "CBU", 2, FM.MemberID, uName);
+            errs = CreateMemberModel.AssignAddress(excelRec.Address, null, excelRec.City, excelRec.State, excelRec.Zip, 1, true, "CBU", 2, FM.MemberID, uName);
             if (errs.Count > 0)
                 return errs;
-            errs = CreateMemberModel.AssignPhoneNumber(excelRec.Phone, 1, "CBU", FM.MemberID, uName);
+            errs = CreateMemberModel.AssignPhoneNumber(excelRec.Phone, 1, true, "CBU", FM.MemberID, uName);
             if (errs.Count > 0)
                 return errs;
 
@@ -891,42 +891,42 @@ namespace ExcelImport.Models
             return error;
         }
 
-        //Set Member Phone Numbers IsPrimary to false from true
-        public Error SetPhonePrimaryFalse(int mID)
-        {
-            Error error = new Error();
-            error.errCode = ErrorDetail.Success;
-            error.errMsg = ErrorDetail.GetMsg(error.errCode);
-            using (LRCEntities context = new LRCEntities())
-            {
-                var phones = context.tb_MemberPhoneNumbers.Where(t => t.MemberID == mID && t.IsPrimary == true);
-                if (phones.Count() > 0)
-                {
-                    foreach (var phone in phones)
-                        phone.IsPrimary = false;
-                    try
-                    {
-                        context.SaveChanges();
-                    }
-                    catch (DbEntityValidationException ex)
-                    {
-                        error.errCode = ErrorDetail.DataImportError;
-                        error.errMsg = ErrorDetail.GetMsg(error.errCode);
-                        foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
-                        {
-                            error.errMsg += ". Object: " + validationError.Entry.Entity.ToString();
-                            foreach (DbValidationError err in validationError.ValidationErrors)
-                            {
-                                error.errMsg += ". " + err.ErrorMessage;
-                            }
-                        }
-                        error.errMsg = "Error #" + error.errCode.ToString() + "!" + error.errMsg;
-                        return error;
-                    }
-                }
-            }
-            return error;
-        }
+        ////Set Member Phone Numbers IsPrimary to false from true
+        //public Error SetPhonePrimaryFalse(int mID)
+        //{
+        //    Error error = new Error();
+        //    error.errCode = ErrorDetail.Success;
+        //    error.errMsg = ErrorDetail.GetMsg(error.errCode);
+        //    using (LRCEntities context = new LRCEntities())
+        //    {
+        //        var phones = context.tb_MemberPhoneNumbers.Where(t => t.MemberID == mID && t.IsPrimary == true);
+        //        if (phones.Count() > 0)
+        //        {
+        //            foreach (var phone in phones)
+        //                phone.IsPrimary = false;
+        //            try
+        //            {
+        //                context.SaveChanges();
+        //            }
+        //            catch (DbEntityValidationException ex)
+        //            {
+        //                error.errCode = ErrorDetail.DataImportError;
+        //                error.errMsg = ErrorDetail.GetMsg(error.errCode);
+        //                foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
+        //                {
+        //                    error.errMsg += ". Object: " + validationError.Entry.Entity.ToString();
+        //                    foreach (DbValidationError err in validationError.ValidationErrors)
+        //                    {
+        //                        error.errMsg += ". " + err.ErrorMessage;
+        //                    }
+        //                }
+        //                error.errMsg = "Error #" + error.errCode.ToString() + "!" + error.errMsg;
+        //                return error;
+        //            }
+        //        }
+        //    }
+        //    return error;
+        //}
 
         #endregion
     }

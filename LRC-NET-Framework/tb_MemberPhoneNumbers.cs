@@ -26,7 +26,7 @@ namespace LRC_NET_Framework
         public Nullable<System.DateTime> StartDate { get; set; }
         public Nullable<System.DateTime> EndDate { get; set; }
     
-        public virtual tb_MemberMaster tb_MemberMaster { get; set; }
         public virtual tb_PhoneType tb_PhoneType { get; set; }
+        public virtual tb_MemberMaster tb_MemberMaster { get; set; }
     }
 }

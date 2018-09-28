@@ -19,6 +19,11 @@ namespace LRC_NET_Framework
         {
             this.AspNetUserClaims = new HashSet<AspNetUserClaims>();
             this.AspNetUserLogins = new HashSet<AspNetUserLogins>();
+            this.tb_Activity = new HashSet<tb_Activity>();
+            this.tb_Activity1 = new HashSet<tb_Activity>();
+            this.tb_Assessment = new HashSet<tb_Assessment>();
+            this.tb_Assessment1 = new HashSet<tb_Assessment>();
+            this.tb_Assessment2 = new HashSet<tb_Assessment>();
         }
     
         public string Id { get; set; }
@@ -39,5 +44,15 @@ namespace LRC_NET_Framework
         public virtual ICollection<AspNetUserClaims> AspNetUserClaims { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AspNetUserLogins> AspNetUserLogins { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tb_Activity> tb_Activity { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tb_Activity> tb_Activity1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tb_Assessment> tb_Assessment { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tb_Assessment> tb_Assessment1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tb_Assessment> tb_Assessment2 { get; set; }
     }
 }

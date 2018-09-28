@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="font-weight-bold" style="background-color: #357ebd; border-bottom-left-radius:7px; border-bottom-right-radius:7px; color:gainsboro; padding-top:5px; padding-bottom:5px; padding-left:30px;"><h4>Manage Contact Info</h4></div>
+<div class="font-weight-bold" style="background-color: #357ebd; border-bottom-left-radius:7px; border-bottom-right-radius:7px; color:gainsboro; padding-top:5px; padding-bottom:5px; padding-left:30px;"><h4>Manage Contact Info (@Model._MemberName)</h4></div>
 
 <div class="form-horizontal" style="padding-top:5px;">
     @using (Html.BeginForm("ManageContactInfo", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
@@ -76,6 +76,8 @@
                                 <th>
                                     Effective End Date
                                 </th>
+                                <th>
+                                </th>
 
                             </tr>
                             @foreach (var item in Model._MemberPhoneNumbers as List<tb_MemberPhoneNumbers>)
@@ -97,25 +99,27 @@
                                     <td>
                                         @if (item.IsPrimary)
                                         {
-                                            <b>Primary</b>
+                                            <span class="glyphicon glyphicon-star" style="color:darkgoldenrod" aria-hidden="true"></span>
                                         }
                                     </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.Source)
                                     </td>
                                     <td>
-                                        @if (item.CreatedDateTime != null)
+                                        @if (item.StartDate != null)
                                         {
-                                            @Convert.ToDateTime(item.CreatedDateTime).ToString("MM/dd/yyyy")
+                                            @Convert.ToDateTime(item.StartDate).ToString("MM/dd/yyyy")
                                         }
                                     </td>
                                     <td>
-                                        @if (item.ModifiedDateTime != null)
+                                        @if (item.EndDate != null)
                                         {
-                                            @Convert.ToDateTime(item.ModifiedDateTime).ToString("MM/dd/yyyy")
+                                            @Convert.ToDateTime(item.EndDate).ToString("MM/dd/yyyy")
                                         }
                                     </td>
-
+                                    <td>
+                                        <a href="@Url.Action("DeletePhone", "Home", new { @PhoneRecID = item.PhoneRecID, MemberId = item.MemberID, CollegeID = ViewBag.CollegeID })" class="btn btn-xs"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+                                    </td>
                                 </tr>
                             }
                         </table>
@@ -150,20 +154,18 @@
                         @Html.ValidationMessageFor(model => model._HomeStreet2, "", new { @class = "text-danger" })
                     </div>
                     <div class="col-md-6 col-md-offset-1" style="padding:0px;">
-                        <div class="col-md-7" style="padding-bottom:15px;">
-                            @Html.EditorFor(model => model._City, new { htmlAttributes = new { @class = "form-control", style = "width: 300px;" } })
+                        <div class="col-md-6" style="padding-bottom:15px;">
+                            @Html.EditorFor(model => model._City, new { htmlAttributes = new { @class = "form-control", style = "width: 250px;" } })
                             <span class="text-danger">*&nbsp;</span><small>@Html.Label("City", htmlAttributes: new { @class = "control-label" })</small>
                             @Html.ValidationMessageFor(model => model._City, "", new { @class = "text-danger" })
-                            @*@Html.DropDownListFor(model => model._StateID, Model._States, new { @class = "form-control", style = "width: 200px;" })
-        <small>@Html.Label("State", htmlAttributes: new { @class = "control-label" })</small>
-        @Html.ValidationMessageFor(model => model._StateID, "", new { @class = "text-danger" })*@
+                        </div>
+                        <div class="col-md-4">
+                            @Html.DropDownListFor(model => model._StateID, Model._States, new { @class = "form-control", style = "width: 150px;" })
+                            <small>@Html.Label("State", htmlAttributes: new { @class = "control-label" })</small>
+                            @Html.ValidationMessageFor(model => model._StateID, "", new { @class = "text-danger" })
+
                         </div>
                         <div class="col-md-2">
-                            @Html.EditorFor(model => model._StateCode, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
-                            <span class="text-danger">*&nbsp;</span><small>@Html.Label("State", htmlAttributes: new { @class = "control-label" })</small>
-                            @Html.ValidationMessageFor(model => model._StateCode, "", new { @class = "text-danger" })
-                        </div>
-                        <div class="col-md-3">
                             @Html.EditorFor(model => model._ZipCode, new { htmlAttributes = new { @class = "form-control" } })
                             <span class="text-danger">*&nbsp;</span><small>@Html.Label("ZIP", htmlAttributes: new { @class = "control-label" })</small>
                             @Html.ValidationMessageFor(model => model._ZipCode, "", new { @class = "text-danger" })
@@ -224,7 +226,8 @@
                                 <th>
                                     Effective End Date
                                 </th>
-
+                                <th>
+                                </th>
                             </tr>
                             @foreach (var item in Model._MemberAddresses as List<tb_MemberAddress>)
                             {
@@ -255,23 +258,26 @@
                                     <td>
                                         @if (item.IsPrimary)
                                         {
-                                            <b>Primary</b>
+                                            <span class="glyphicon glyphicon-star" style="color:darkgoldenrod" aria-hidden="true"></span>
                                         }
                                     </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.tb_AddressSource.SourceName)
                                     </td>
                                     <td>
-                                        @if (item.CreatedDateTime != null)
+                                        @if (item.StartDate != null)
                                         {
-                                            @Convert.ToDateTime(item.CreatedDateTime).ToString("MM/dd/yyyy")
+                                            @Convert.ToDateTime(item.StartDate).ToString("MM/dd/yyyy")
                                         }
                                     </td>
                                     <td>
-                                        @if (item.ModifiedDateTime != null)
+                                        @if (item.EndDate != null)
                                         {
-                                            @Convert.ToDateTime(item.ModifiedDateTime).ToString("MM/dd/yyyy")
+                                            @Convert.ToDateTime(item.EndDate).ToString("MM/dd/yyyy")
                                         }
+                                    </td>
+                                    <td>
+                                        <a href="@Url.Action("DeleteAddress", "Home", new { @MemberAddressID = item.MemberAddressID, MemberId = item.MemberID, CollegeID = ViewBag.CollegeID })" class="btn btn-xs"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
                                     </td>
                                 </tr>
                             }
@@ -373,23 +379,26 @@
                                     <td>
                                         @if (item.IsPrimary)
                                         {
-                                            <b>Primary</b>
+                                            <span class="glyphicon glyphicon-star" style="color:darkgoldenrod" aria-hidden="true"></span>
                                         }
                                     </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.Source)
                                     </td>
                                     <td>
-                                        @if (item.CreatedDateTime != null)
+                                        @if (item.StartDate != null)
                                         {
-                                            @Convert.ToDateTime(item.CreatedDateTime).ToString("MM/dd/yyyy")
+                                            @Convert.ToDateTime(item.StartDate).ToString("MM/dd/yyyy")
                                         }
                                     </td>
                                     <td>
-                                        @if (item.ModifiedDateTime != null)
+                                        @if (item.EndDate != null)
                                         {
-                                            @Convert.ToDateTime(item.ModifiedDateTime).ToString("MM/dd/yyyy")
+                                            @Convert.ToDateTime(item.EndDate).ToString("MM/dd/yyyy")
                                         }
+                                    </td>
+                                    <td>
+                                        <a href="@Url.Action("DeleteEmail", "Home", new { @EmailID = item.EmailID, MemberId = item.MemberID, CollegeID = ViewBag.CollegeID })" class="btn btn-xs"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
                                     </td>
                                 </tr>
                             }

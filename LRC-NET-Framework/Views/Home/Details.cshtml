@@ -9,7 +9,7 @@
 
 <hr />
 <ul class="list-inline">
-    <li role="button"><a href="@Url.Action("Create", "SemesterTaught", new { @id = Model._Member.MemberID })" class="btn btn-default">Schedules&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="@Url.Action("AddMemberSchedule", "SemesterTaught", new { @id = Model._Member.MemberID })" class="btn btn-default">Schedules&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
     <li role="button"><a href="@Url.Action("AddAssessment", "Assessment", new { @id = Model._Member.MemberID })" class="btn btn-default">Assessments&nbsp;&nbsp;<span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></li>
     <li role="button"><a href="@Url.Action("AddActivity", "Activities", new { @id = Model._Member.MemberID })" class="btn btn-default">Activities&nbsp;&nbsp;<span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></li>
     <li role="button"><a href="@Url.Action("ManageContactInfo", "Home", new { @id = Model._Member.MemberID })" class="btn btn-default">Contact Info&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
@@ -191,10 +191,10 @@
                 @Html.DisplayFor(modelItem => item.tb_WeekDay.WeekDayName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ClassStart)
+                @DateTime.Today.Add(item.ClassStart).ToString("hh:mm tt")
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ClassEnd)
+                @DateTime.Today.Add(item.ClassEnd).ToString("hh:mm tt")
             </td>
             <td class="danger">
                 ???

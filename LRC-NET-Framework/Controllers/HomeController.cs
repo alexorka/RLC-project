@@ -420,11 +420,12 @@ namespace LRC_NET_Framework.Controllers
             }
 
             ViewBag.CollegeID = CollegeID;
-
+            var FM = db.tb_MemberMaster.Find(id);
             MemberContactInfoModel model = new MemberContactInfoModel()
             {
-                //PHONE
                 _MemberID = id ?? 0,
+                _MemberName = FM.LastName + ", " + FM.FirstName,
+                //PHONE
                 //_PhoneNumber = String.Empty,
                 _IsPhonePrimary = true,
                 _PhoneTypeID = 1,
@@ -461,195 +462,62 @@ namespace LRC_NET_Framework.Controllers
         [Authorize(Roles = "admin, organizer")]
         public ActionResult ManageContactInfo(string submit, MemberContactInfoModel model, int? CollegeID)
         {
+            Error error = new Error();
+            error.errCode = ErrorDetail.Success;
+            List<string> errs = new List<string>();
             ViewBag.CollegeID = CollegeID;
-
+            var uName = HttpContext.GetOwinContext().Authentication.User.Identity.GetUserName();
+            bool isValid = true;
             switch (submit)
             {
-            case "Submit New Phone":
-                    if (!String.IsNullOrEmpty(model._PhoneNumber))
+                case "Submit New Phone":
+                    //Check 1st Html.BeginForm validation only. _PhoneNumber has attributes [Phone] and [Required] in the MemberContactInfoModel
+                    foreach (var modelState in ModelState)
                     {
-                        using (LRCEntities context = new LRCEntities())
+                        if (modelState.Key == "_PhoneNumber")
                         {
-                            bool isOnePrimaryExist = false;
-                            // Set _IsPhonePrimary = false for all member phones if this phone is primary
-                            var memberPhones = context.tb_MemberPhoneNumbers.Where(s => s.MemberID == model._MemberID);
-                            if (model._IsPhonePrimary)
-                            {
-                                foreach (var phoneNumber in context.tb_MemberPhoneNumbers) //removing primary for all others
-                                {
-                                    phoneNumber.IsPrimary = false;
-                                }
-                            }
-                            else //need at least one primary phone number so checking it
-                            {
-                                foreach (var phoneNumber in context.tb_MemberPhoneNumbers)
-                                {
-                                    if (phoneNumber.IsPrimary)
-                                        isOnePrimaryExist = true;
-                                }
-                            }
-
-                            if (!isOnePrimaryExist) // set primary for new if we havn't any other with primary status
-                                model._IsPhonePrimary = true;
-                            //Check dublicates
-                            memberPhones = context.tb_MemberPhoneNumbers.Where(s => s.PhoneNumber.ToUpper() == model._PhoneNumber.ToUpper());
-                            if (memberPhones.ToList().Count == 0) // add new phone
-                            {
-
-                                tb_MemberPhoneNumbers phoneNumber = new tb_MemberPhoneNumbers()
-                                {
-                                    MemberID = model._MemberID,
-                                    PhoneNumber = model._PhoneNumber,
-                                    IsPrimary = model._IsPhonePrimary,
-                                    PhoneTypeID = model._PhoneTypeID,
-                                    Source = "Some user",
-                                    CreatedDateTime = DateTime.Now,
-                                    //ModifiedDateTime = DateTime.Now
-                                };
-                                context.tb_MemberPhoneNumbers.Add(phoneNumber);
-                            }
-                            else // edit old phone
-                            {
-                                var phoneNumber = context.tb_MemberPhoneNumbers.Where(s => s.PhoneNumber.ToUpper() == model._PhoneNumber.ToUpper()).FirstOrDefault();
-                                phoneNumber.PhoneNumber = model._PhoneNumber;
-                                phoneNumber.IsPrimary = model._IsPhonePrimary;
-                                phoneNumber.PhoneTypeID = model._PhoneTypeID;
-                                phoneNumber.Source = "Some user";
-                                //phoneNumber.CreatedDateTime = DateTime.Now;
-                                //phoneNumber.ModifiedDateTime = DateTime.Now;
-                            }
-
-                            context.SaveChanges();
+                            if (modelState.Value.Errors.Count > 0)
+                                isValid = false;
                         }
+                        else
+                            modelState.Value.Errors.Clear();
                     }
+                    if (isValid)
+                        errs = CreateMemberModel.AssignPhoneNumber(model._PhoneNumber, model._PhoneTypeID, model._IsPhonePrimary, "Form", model._MemberID, uName);
                     break;
 
-            case "Submit New Address":
-                    using (LRCEntities context = new LRCEntities())
+                case "Submit New Address":
+                    //Check 2nd Html.BeginForm validation only. _HomeStreet1: [Required], _City: [Required], _ZipCode: [Required]
+                    foreach (var modelState in ModelState)
                     {
-                        bool isOnePrimaryExist = false;
-                        // Set _IsAdressPrimary = false for all member addresses if this address is primary
-                        var memberAddresses = context.tb_MemberAddress.Where(s => s.MemberID == model._MemberID);
-                        if (model._IsAdressPrimary)
+                        if (modelState.Key == "_HomeStreet1" || modelState.Key == "_City" || modelState.Key == "_ZipCode")
                         {
-                            foreach (var memberAdress in context.tb_MemberAddress)
-                            {
-                                memberAdress.IsPrimary = false;
-                            }
+                            if (modelState.Value.Errors.Count > 0)
+                                isValid = false;
                         }
-                        else //need at least one primary phone number so checking it
-                        {
-                            foreach (var memberAdress in context.tb_MemberAddress)
-                            {
-                                if (memberAdress.IsPrimary)
-                                    isOnePrimaryExist = true;
-                            }
-                        }
-
-                        if (!isOnePrimaryExist) // set primary for new if we havn't any other with primary status
-                            model._IsAdressPrimary = true;
-                        //Check dublicates
-                        memberAddresses = context.tb_MemberAddress.Where(s => s.HomeStreet1.ToUpper() == model._HomeStreet1.ToUpper()
-                            && s.HomeStreet2.ToUpper() == model._HomeStreet2.ToUpper()
-                            && s.ZipCode.ToUpper() == model._ZipCode.ToUpper()
-                           // >> check here
-                            && s.City == model._City);
-                        if (memberAddresses.ToList().Count == 0) // Add new
-                        {
-                            tb_MemberAddress memberAddress = new tb_MemberAddress()
-                            {
-                                MemberID = model._MemberID,
-                                HomeStreet1 = model._HomeStreet1,
-                                HomeStreet2 = model._HomeStreet2,
-                                // >>check here
-                                City = model._City,
-                                ZipCode = model._ZipCode,
-                                Country = "USA",
-                                CreatedDateTime = DateTime.Now,
-                                //ModifiedDateTime = DateTime.Now,
-                                IsPrimary = model._IsAdressPrimary,
-                                AddressTypeID = model._AddressTypeID,
-                                SourceID = model._SourceID,
-                                Source = "Some user"
-                            };
-                            context.tb_MemberAddress.Add(memberAddress);
-                        }
-                        else // Edit old
-                        {
-                            tb_MemberAddress memberAddress = memberAddresses.FirstOrDefault();
-                            memberAddress.MemberID = model._MemberID;
-                            memberAddress.HomeStreet1 = model._HomeStreet1;
-                            memberAddress.HomeStreet2 = model._HomeStreet2;
-                            // >>check here
-                            memberAddress.City = model._City;
-                            memberAddress.ZipCode = model._ZipCode;
-                            memberAddress.Country = "USA";
-                            //memberAddress.CreatedDateTime = DateTime.Now;
-                            //memberAddress.ModifiedDateTime = DateTime.Now;
-                            memberAddress.IsPrimary = model._IsAdressPrimary;
-                            memberAddress.AddressTypeID = model._AddressTypeID;
-                            memberAddress.SourceID = model._SourceID;
-                            memberAddress.Source = "Some user";
-                        }
-                        context.SaveChanges();
+                        else
+                            modelState.Value.Errors.Clear();
                     }
-                break;
+                    if (isValid)
+                        errs = CreateMemberModel.AssignAddress(model._HomeStreet1, model._HomeStreet2, model._City, model._StateID.ToString(), 
+                            model._ZipCode, model._AddressTypeID, model._IsAdressPrimary, "Form", model._SourceID, model._MemberID, uName);
+                    break;
                 case "Submit New Email":
-                    using (LRCEntities context = new LRCEntities())
+                    //Check 3rd Html.BeginForm validation only. _HomeStreet1: [Required], _City: [Required], _ZipCode: [Required]
+                    foreach (var modelState in ModelState)
                     {
-                        bool isOnePrimaryExist = false;
-                        // Set _IsEmailPrimary = false for all member phones if this phone is primary
-                        var memberEmails = context.tb_MemberEmail.Where(s => s.MemberID == model._MemberID);
-                        if (model._IsPhonePrimary)
+                        if (modelState.Key == "_EmailAddress")
                         {
-                            foreach (var memberEmail in context.tb_MemberEmail)
-                            {
-                                memberEmail.IsPrimary = false;
-                            }
+                            if (modelState.Value.Errors.Count > 0)
+                                isValid = false;
                         }
-                        else //need at least one primary phone number so checking it
-                        {
-                            foreach (var memberEmail in context.tb_MemberEmail)
-                            {
-                                if (memberEmail.IsPrimary)
-                                    isOnePrimaryExist = true;
-                            }
-                        }
-
-                        if (!isOnePrimaryExist) // set primary for new if we havn't any other with primary status
-                            model._IsEmailPrimary = true;
-
-                        //Check dublicates
-                        memberEmails = context.tb_MemberEmail.Where(s => s.EmailAddress.ToUpper() == model._EmailAddress.ToUpper());
-                        if (memberEmails.ToList().Count == 0) // Add new
-                        {
-                            tb_MemberEmail memberEmail = new tb_MemberEmail()
-                            {
-                                MemberID = model._MemberID,
-                                EmailAddress = model._EmailAddress,
-                                EmailTypeID = model._EmailTypeID,
-                                IsPrimary = model._IsEmailPrimary,
-                                CreatedDateTime = DateTime.Now,
-                                //ModifiedDateTime = DateTime.Now,
-                                Source = "Some user"
-                            };
-                            context.tb_MemberEmail.Add(memberEmail);
-                        }
-                        else // Edit old
-                        {
-                            tb_MemberEmail memberEmail = memberEmails.FirstOrDefault();
-                            memberEmail.EmailAddress = model._EmailAddress;
-                            memberEmail.EmailTypeID = model._EmailTypeID;
-                            memberEmail.IsPrimary = model._IsEmailPrimary;
-                            //memberEmail.CreatedDateTime = DateTime.Now;
-                            //memberEmail.ModifiedDateTime = DateTime.Now;
-                            memberEmail.Source = "Some user";
-                        }
-                        context.SaveChanges();
-                        break;
+                        else
+                            modelState.Value.Errors.Clear();
                     }
+                    if (isValid)
+                        errs = CreateMemberModel.AssignEmail(model._EmailAddress, model._EmailTypeID, model._IsEmailPrimary, "Form", model._MemberID, uName);
+                    break;
             }
-
             model._PhoneTypes = new SelectList(db.tb_PhoneType, "PhoneTypeID", "PhoneTypeName");
             model._MemberPhoneNumbers = db.tb_MemberPhoneNumbers.Where(t => t.MemberID == model._MemberID).ToList();
             // >> check here
@@ -1220,7 +1088,8 @@ namespace LRC_NET_Framework.Controllers
                             return View(model);
                         }
                         newMemberID = FM.MemberID;
-                        errs = CreateMemberModel.AssignAddress(model._HomeStreet1, model._HomeStreet2, model._City, model._StateID.ToString(), model._ZipCode, model._AddressTypeID, "Form", 1, FM.MemberID, uName);
+                        errs = CreateMemberModel.AssignAddress(model._HomeStreet1, model._HomeStreet2, model._City, model._StateID.ToString(), 
+                            model._ZipCode, model._AddressTypeID, true, "Form", 1, FM.MemberID, uName);
                         if (errs.Count > 0)
                         {
                             ViewData["ErrorList"] = errs;
@@ -1228,7 +1097,7 @@ namespace LRC_NET_Framework.Controllers
                             return View(model);
                         }
 
-                        errs = CreateMemberModel.AssignPhoneNumber(model._PhoneNumber, model._PhoneTypeID, "Form", FM.MemberID, uName);
+                        errs = CreateMemberModel.AssignPhoneNumber(model._PhoneNumber, model._PhoneTypeID, true, "Form", FM.MemberID, uName);
                         if (errs.Count > 0)
                         {
                             ViewData["ErrorList"] = errs;
@@ -1236,7 +1105,7 @@ namespace LRC_NET_Framework.Controllers
                             return View(model);
                         }
 
-                        errs = CreateMemberModel.AssignEmail(model._EmailAddress, model._EmailTypeID, "Form", FM.MemberID, uName);
+                        errs = CreateMemberModel.AssignEmail(model._EmailAddress, model._EmailTypeID, true, "Form", FM.MemberID, uName);
                         if (errs.Count > 0)
                         {
                             ViewData["ErrorList"] = errs;
@@ -1271,7 +1140,124 @@ namespace LRC_NET_Framework.Controllers
             ViewBag.Departments = new SelectList(tb_Departments, "DepartmentID", "DepartmentName");
             ViewBag.CollegeID = College;
             return PartialView(tb_Departments);
-        }        
+        }
+
+        // GET: DeletePhone/5
+        [Authorize(Roles = "admin, organizer")]
+        public ActionResult DeletePhone(int? PhoneRecID, int? MemberId, int? CollegeID)
+        {
+            Error error = new Error();
+            error.errCode = ErrorDetail.Success;
+            if (PhoneRecID == null )
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            using (LRCEntities context = new LRCEntities())
+            {
+                try
+                {
+                    tb_MemberPhoneNumbers phone = context.tb_MemberPhoneNumbers.Find(PhoneRecID);
+                    if (phone == null)
+                    {
+                        return HttpNotFound();
+                    }
+                    context.tb_MemberPhoneNumbers.Remove(phone);
+                    context.SaveChanges();
+                }
+                catch (DbEntityValidationException ex)
+                {
+                    error.errCode = ErrorDetail.DataImportError;
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode);
+                    foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
+                    {
+                        error.errMsg += ". Object: " + validationError.Entry.Entity.ToString();
+                        foreach (DbValidationError err in validationError.ValidationErrors)
+                        {
+                            error.errMsg += ". " + err.ErrorMessage;
+                        }
+                    }
+                }
+            }
+            return RedirectToAction("ManageContactInfo", new { @id = MemberId, CollegeID = CollegeID });
+        }
+
+        // GET: DeleteAddress/5
+        [Authorize(Roles = "admin, organizer")]
+        public ActionResult DeleteAddress(int? MemberAddressID, int? MemberId, int? CollegeID)
+        {
+            Error error = new Error();
+            error.errCode = ErrorDetail.Success;
+            if (MemberAddressID == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            using (LRCEntities context = new LRCEntities())
+            {
+                try
+                {
+                    tb_MemberAddress address = context.tb_MemberAddress.Find(MemberAddressID);
+                    if (address == null)
+                    {
+                        return HttpNotFound();
+                    }
+                    context.tb_MemberAddress.Remove(address);
+                    context.SaveChanges();
+                }
+                catch (DbEntityValidationException ex)
+                {
+                    error.errCode = ErrorDetail.DataImportError;
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode);
+                    foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
+                    {
+                        error.errMsg += ". Object: " + validationError.Entry.Entity.ToString();
+                        foreach (DbValidationError err in validationError.ValidationErrors)
+                        {
+                            error.errMsg += ". " + err.ErrorMessage;
+                        }
+                    }
+                }
+            }
+            return RedirectToAction("ManageContactInfo", new { @id = MemberId, CollegeID = CollegeID });
+        }
+
+        // GET: DeleteAddress/5
+        [Authorize(Roles = "admin, organizer")]
+        public ActionResult DeleteEmail(int? EmailID, int? MemberId, int? CollegeID)
+        {
+            Error error = new Error();
+            error.errCode = ErrorDetail.Success;
+            if (EmailID == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            using (LRCEntities context = new LRCEntities())
+            {
+                try
+                {
+                    tb_MemberEmail email = context.tb_MemberEmail.Find(EmailID);
+                    if (email == null)
+                    {
+                        return HttpNotFound();
+                    }
+                    context.tb_MemberEmail.Remove(email);
+                    context.SaveChanges();
+                }
+                catch (DbEntityValidationException ex)
+                {
+                    error.errCode = ErrorDetail.DataImportError;
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode);
+                    foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
+                    {
+                        error.errMsg += ". Object: " + validationError.Entry.Entity.ToString();
+                        foreach (DbValidationError err in validationError.ValidationErrors)
+                        {
+                            error.errMsg += ". " + err.ErrorMessage;
+                        }
+                    }
+                }
+            }
+            return RedirectToAction("ManageContactInfo", new { @id = MemberId, CollegeID = CollegeID });
+        }
 
         // GET: AddFilter
         [Authorize(Roles = "admin, organizer")]

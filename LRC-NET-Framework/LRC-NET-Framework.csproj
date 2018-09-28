@@ -589,6 +589,7 @@
     <Content Include="Views\Home\CreateNewMember.cshtml" />
     <Content Include="Views\Home\GetDepartments.cshtml" />
     <Content Include="Views\Errors\Index.cshtml" />
+    <Content Include="Views\SemesterTaught\AddMemberSchedule.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

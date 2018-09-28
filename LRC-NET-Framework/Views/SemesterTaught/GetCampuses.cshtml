@@ -1,0 +1,24 @@
+﻿@model IEnumerable<LRC_NET_Framework.tb_Campus>
+
+<div class="form-group">
+    <div class="col-md-2">
+        <p class="control-label"><span class="text-danger">*</span>  Campus</p>
+    </div>
+    <div class="col-md-10">
+        @Html.DropDownList("Campus", ViewBag.Campuses as SelectList, new { @class = "form-control", onchange = "CampusChanged(this)", style = "width: 300px" })
+    </div>
+</div>
+
+<div id="resultsCampus">
+    @Html.Hidden("Building", (int)ViewBag.BuildingID)
+
+    @*<---- particial View*@
+    <div class="form-group">
+        <div class="col-md-2">
+            <p class="control-label"><span class="text-danger">*</span>  Building</p>
+        </div>
+        <div class="col-md-10">
+            @Html.DropDownList("Building", ViewBag.Buildings as SelectList, new { @class = "form-control", style = "width: 300px" })
+        </div>
+    </div>
+</div>

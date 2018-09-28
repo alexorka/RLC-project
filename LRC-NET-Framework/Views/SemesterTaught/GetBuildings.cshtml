@@ -1,0 +1,9 @@
+﻿@model IEnumerable<LRC_NET_Framework.tb_Building>
+<div class="form-group">
+    <div class="col-md-2">
+        <p class="control-label"><span class="text-danger">*</span>  Building </p>
+    </div>
+    <div class="col-md-10">
+        @Html.DropDownList("Building", new SelectList(Model, "BuildingID", "BuildingName"), new { ClassWeekDayID = "statusDropdown", @class = "form-control", style = "width: 200px;" })
+    </div>
+</div>

@@ -8,58 +8,108 @@
 
 @using LRC_NET_Framework.Helpers
 @Html.CreateList(ViewData["ErrorList"] as List<string>)
+@Html.HiddenFor(model => model.MemberID)
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-    <div class="form-horizontal">
-
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.MemberID)
-
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+<div class="form-horizontal">
+    @using (Html.BeginForm("AddBackgroundStory", "Assessment", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
         <div class="form-group">
             <div class="col-md-11 col-md-offset-1" id="BackgroundStory">
-                @Html.Label("BackgroundStory", "Background/Story", htmlAttributes: new { @class = "control-label" })
-                @Html.TextAreaFor(model => model.BackgroundStory, new { @class = "form-control", @cols = "100", @rows = "5", @style = "width:100%;" })
+                <span class="text-danger">*</span>@Html.Label("BackgroundStory", "Background/Story", htmlAttributes: new { @class = "control-label" })
+                @Html.TextAreaFor(model => model.BackgroundStory, new { @class = "form-control", @required = "required", @cols = "100", @rows = "4", @style = "width:100%;" })
                 @Html.ValidationMessageFor(model => model.BackgroundStory, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Submit" class="btn btn-primary" />
+            </div>
+        </div>
+    }
+
+    @using (Html.BeginForm("AddFears", "Assessment", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-group">
             <div class="col-md-11 col-md-offset-1" id="Fears">
-                @Html.Label("Fears", "Fears", htmlAttributes: new { @class = "control-label" })
-                @Html.TextAreaFor(model => model.Fears, new { @class = "form-control", @cols = "100", @rows = "5", @style = "width:100%;" })
+                <span class="text-danger">*</span>@Html.Label("Fears", "Fears", htmlAttributes: new { @class = "control-label" })
+                @Html.TextAreaFor(model => model.Fears, new { @class = "form-control", @required = "required", @cols = "100", @rows = "4", @style = "width:100%;" })
                 @Html.ValidationMessageFor(model => model.Fears, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Submit" class="btn btn-primary" />
+            </div>
+        </div>
+    }
+
+    @using (Html.BeginForm("AddAttitudeTowardUnion", "Assessment", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-group">
             <div class="col-md-11 col-md-offset-1" id="AttitudeTowardUnion">
-                @Html.Label("AttitudeTowardUnion", "Attitude Toward Union", htmlAttributes: new { @class = "control-label" })
-                @Html.TextAreaFor(model => model.AttitudeTowardUnion, new { @class = "form-control", @cols = "100", @rows = "5", @style = "width:100%;" })
+                <span class="text-danger">*</span>@Html.Label("AttitudeTowardUnion", "Attitude Toward Union", htmlAttributes: new { @class = "control-label" })
+                @Html.TextAreaFor(model => model.AttitudeTowardUnion, new { @class = "form-control", @required = "required", @cols = "100", @rows = "4", @style = "width:100%;" })
                 @Html.ValidationMessageFor(model => model.AttitudeTowardUnion, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Submit" class="btn btn-primary" />
+            </div>
+        </div>
+    }
+
+    @using (Html.BeginForm("AddIDdLeaders", "Assessment", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-group">
             <div class="col-md-11 col-md-offset-1" id="IDdLeaders">
-                @Html.Label("IDdLeaders", "IDd Leaders", htmlAttributes: new { @class = "control-label" })
-                @Html.TextAreaFor(model => model.IDdLeaders, new { @class = "form-control", @cols = "100", @rows = "5", @style = "width:100%;" })
+                <span class="text-danger">*</span>@Html.Label("IDdLeaders", "IDd Leaders", htmlAttributes: new { @class = "control-label" })
+                @Html.TextAreaFor(model => model.IDdLeaders, new { @class = "form-control", @required = "required", @cols = "100", @rows = "4", @style = "width:100%;" })
                 @Html.ValidationMessageFor(model => model.IDdLeaders, "", new { @class = "text-danger" })
             </div>
         </div>
 
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Submit" class="btn btn-primary" />
+            </div>
+        </div>
+    }
+
+    @using (Html.BeginForm("AddFollowUp", "Assessment", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
         <div class="form-group">
             <div class="col-md-11 col-md-offset-1" id="FollowUp">
-                @Html.Label("FollowUp", "Follow Up", htmlAttributes: new { @class = "control-label" })
-                @Html.TextAreaFor(model => model.FollowUp, new { @class = "form-control", @cols = "100", @rows = "5", @style = "width:100%;" })
+                <span class="text-danger">*</span>@Html.Label("FollowUp", "Follow Up", htmlAttributes: new { @class = "control-label" })
+                @Html.TextAreaFor(model => model.FollowUp, new { @class = "form-control", @required = "required", @cols = "100", @rows = "4", @style = "width:100%;" })
                 @Html.ValidationMessageFor(model => model.FollowUp, "", new { @class = "text-danger" })
             </div>
         </div>
 
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Submit" class="btn btn-primary" />
+            </div>
+        </div>
+    }
+
+    @using (Html.BeginForm("AddAssessment", "Assessment", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
         <div class="form-group">
             <div class="col-md-11 col-md-offset-1" id="AssessmentNameID">
-                @Html.Label("AssessmentNameID", "Assessment", htmlAttributes: new { @class = "control-label" })
+                <span class="text-danger">*</span>@Html.Label("AssessmentNameID", "Assessment", htmlAttributes: new { @class = "control-label" })
                 @Html.DropDownList("AssessmentNameID", null, htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.AssessmentNameID, "", new { @class = "text-danger" })
             </div>
@@ -67,7 +117,7 @@
 
         <div class="form-group">
             <div class="col-md-11 col-md-offset-1" id="ValueID">
-                @Html.Label("ValueID", "Assessment Value", htmlAttributes: new { @class = "control-label" })
+                <span class="text-danger">*</span>@Html.Label("ValueID", "Assessment Value", htmlAttributes: new { @class = "control-label" })
                 @Html.DropDownList("ValueID", null, htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.ValueID, "", new { @class = "text-danger" })
             </div>
@@ -75,7 +125,7 @@
 
         <div class="form-group">
             <div class="col-md-11 col-md-offset-1" id="AssessmentDate">
-                @Html.Label("AssessmentDate", "Assessment Date", htmlAttributes: new { @class = "control-label" })
+                <span class="text-danger">*</span>@Html.Label("AssessmentDate", "Assessment Date", htmlAttributes: new { @class = "control-label" })
                 @Html.TextBoxFor(model => model.AssessmentDate, "{0:yyyy-MM-dd}", new { @class = "form-control datecontrol", type = "date", style = "width: 150px;" })
                 @Html.ValidationMessageFor(model => model.AssessmentDate, "", new { @class = "text-danger" })
             </div>
@@ -83,20 +133,21 @@
 
         <div class="form-group">
             <div class="col-md-11 col-md-offset-1" id="AssessedBy">
-                @Html.Label("AssessedBy", "Assessment By", htmlAttributes: new { @class = "control-label" })
-                @Html.EditorFor(model => model.AssessedBy, new { htmlAttributes = new { @class = "form-control" } })
+                <span class="text-danger">*</span>@Html.Label("AssessedBy", "Assessment By", htmlAttributes: new { @class = "control-label" })
+                @Html.DropDownList("AssessedBy", null, htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.AssessedBy, "", new { @class = "text-danger" })
+                @*@Html.EditorFor(model => model.AssessedBy, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.AssessedBy, "", new { @class = "text-danger" })*@
             </div>
         </div>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Submit" class="btn btn-primary" />
             </div>
         </div>
-    </div>
-}
-
+    }
+</div>
 <div>
     @Html.ActionLink("Back to List", "Index")
 </div>

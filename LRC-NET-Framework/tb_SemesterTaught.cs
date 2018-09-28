@@ -27,7 +27,7 @@ namespace LRC_NET_Framework
     
         public virtual tb_Building tb_Building { get; set; }
         public virtual tb_WeekDay tb_WeekDay { get; set; }
-        public virtual tb_MemberMaster tb_MemberMaster { get; set; }
         public virtual tb_Semesters tb_Semesters { get; set; }
+        public virtual tb_MemberMaster tb_MemberMaster { get; set; }
     }
 }

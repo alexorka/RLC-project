@@ -34,5 +34,8 @@ namespace LRC_NET_Framework
         public virtual tb_AssessmentName tb_AssessmentName { get; set; }
         public virtual tb_AssessmentValue tb_AssessmentValue { get; set; }
         public virtual tb_MemberMaster tb_MemberMaster { get; set; }
+        public virtual AspNetUsers AspNetUsers { get; set; }
+        public virtual AspNetUsers AspNetUsers1 { get; set; }
+        public virtual AspNetUsers AspNetUsers2 { get; set; }
     }
 }

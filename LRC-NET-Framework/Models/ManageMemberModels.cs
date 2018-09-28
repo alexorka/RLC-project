@@ -47,6 +47,7 @@ namespace LRC_NET_Framework.Models
         // EMAIL  (optional)
         [EmailAddress]
         [Display(Name = "Email Address")]
+        [Required(ErrorMessage = "required")]
         public string _EmailAddress { get; set; }
         public int _EmailTypeID { get; set; }
         public IEnumerable<SelectListItem> _EmailTypes { get; set; }
@@ -68,8 +69,12 @@ namespace LRC_NET_Framework.Models
         public string _Area { get; set; } //The subject matter of the course (e.g., NURSE, ENGRD). Assumptions: Aka Area from the district spreadsheet.User freeform entry. 
 
         //// MEMBER COLLEGE (optional)
-        //public Nullable<int> _CampusID { get; set; } //Valid values include: ARC, FLC, SCC, CRC, DO
-        //public IEnumerable<SelectListItem> _Campuses { get; set; }
+        public Nullable<int> _CampusID { get; set; } //Valid values include: ARC, FLC, SCC, CRC, DO
+        public IEnumerable<SelectListItem> _Campuses { get; set; }
+
+        //// MEMBER COLLEGE (optional)
+        public Nullable<int> _DivisionID { get; set; } //Valid values include: ARC, FLC, SCC, CRC, DO
+        public IEnumerable<SelectListItem> _Divisions { get; set; }
 
         //Check if current AreaName is present in tb_Area already and add it if not
         public static List<string> GetAreaID(string AreaName, out int areaID)
@@ -118,7 +123,8 @@ namespace LRC_NET_Framework.Models
 
         //Get tb_MemberAddress record for current Member
         //Assign MemberID for existing Member or return tb_MemberAddress.MemberID = 0 for new one
-        public static List<string> AssignAddress(string _HomeStreet1, string _HomeStreet2, string city, string st, string postal, int addressTypeID, string source, int sourceID, int mID, string uName)
+        public static List<string> AssignAddress(string _HomeStreet1, string _HomeStreet2, string city, string st, string postal, int addressTypeID, 
+            bool isAdressPrimary, string source, int sourceID, int mID, string uName)
         {
             Error error = new Error();
             error.errCode = ErrorDetail.Success;
@@ -136,13 +142,16 @@ namespace LRC_NET_Framework.Models
                     int recornNumber = 0;
                     foreach (var ma in memberAddresses)
                     {
-                        if (++recornNumber <= 2) //Leaving 2 records only and updating them
+                        if (++recornNumber <= MvcApplication.MaxRecordsInAddressHistory) //Leaving 5 records only and updating them
                         {
-                            ma.IsPrimary = false; //Set IsPrimary to false for all member addresses
-                            if (ma.EndDate == null) //EndDate == null means current Member Address is actual (isn't record for history)
-                                ma.EndDate = DateTime.UtcNow;
+                            if (isAdressPrimary)
+                            {
+                                ma.IsPrimary = false; //Set IsPrimary to false for all other member addresses from history
+                                if (ma.EndDate == null) //EndDate == null means current Member Address is actual (isn't record for history)
+                                    ma.EndDate = DateTime.UtcNow;
+                            }
                         }
-                        else //Remove the excess. In the history we leave only 3 entries
+                        else //Remove the excess. In the history we leave only MaxRecordsInAddressHistory = 5 entries
                         {
                             context.tb_MemberAddress.Remove(ma);
                         }
@@ -169,22 +178,46 @@ namespace LRC_NET_Framework.Models
                 }
 
                 //Assign new address to ac current Member
-                tb_MemberAddress maNew = new tb_MemberAddress();
-                maNew.MemberID = mID;
-                maNew.HomeStreet1 = _HomeStreet1;
-                maNew.HomeStreet2 = _HomeStreet2;
-                maNew.City = city;
-                maNew.ZipCode = postal;
-                maNew.StateID = 1; // "CA"
-                maNew.Country = "USA";
-                maNew.SourceID = sourceID; // 1 -Card/Form, 2 - Employer
-                maNew.Source = source;
-                maNew.IsPrimary = true;
-                maNew.AddressTypeID = addressTypeID; //1 = Mailing (from tb_AddressType table)
-                maNew.CreatedDateTime = DateTime.UtcNow;
-                maNew.StartDate = DateTime.UtcNow.AddDays(-1);
-                maNew.EndDate = null;
-                context.tb_MemberAddress.Add(maNew);
+                //Check dublicates
+                memberAddresses = memberAddresses.Where(s => s.MemberID == mID && s.HomeStreet1 == _HomeStreet1
+                    && s.City == city && s.ZipCode == postal).ToArray();
+                if (memberAddresses.Count() == 0) // add new address
+                {
+                    tb_MemberAddress address = new tb_MemberAddress()
+                    {
+                        MemberID = mID,
+                        HomeStreet1 = _HomeStreet1,
+                        HomeStreet2 = _HomeStreet2,
+                        City = city,
+                        ZipCode = postal,
+                        StateID = Int32.Parse(st),
+                        Country = "USA",
+                        SourceID = sourceID, // 1 -Card/Form, 2 - Employer
+                        Source = source,
+                        IsPrimary = isAdressPrimary,
+                        AddressTypeID = addressTypeID,
+                        CreatedDateTime = DateTime.Now,
+                        StartDate = DateTime.UtcNow.AddDays(-1),
+                        EndDate = null
+                    };
+                    context.tb_MemberAddress.Add(address);
+                }
+                else // edit old address
+                {
+                    var address = context.tb_MemberAddress.Where(s => s.MemberID == mID && s.HomeStreet1 == _HomeStreet1
+                    && s.City == city && s.ZipCode == postal).FirstOrDefault();
+                    address.HomeStreet2 = _HomeStreet2;
+                    address.StateID = Int32.Parse(st);
+                    address.Country = "USA";
+                    address.SourceID = sourceID;
+                    address.Source = source;
+                    address.IsPrimary = isAdressPrimary;
+                    address.AddressTypeID = addressTypeID;
+                    address.ModifiedDateTime = DateTime.Now;
+                    address.StartDate = DateTime.UtcNow.AddDays(-1);
+                    address.EndDate = null;
+                }
+
                 try
                 {
                     context.SaveChanges();
@@ -209,12 +242,13 @@ namespace LRC_NET_Framework.Models
         }
 
         //Assign tb_MemberPhoneNumbers record for current Member
-        public static List<string> AssignPhoneNumber(string phone, int phoneTypeID, string source, int mID, string uName)
+        public static List<string> AssignPhoneNumber(string phone, int phoneTypeID, bool isPhonePrimary, string source, int mID, string uName)
         {
             Error error = new Error();
             error.errCode = ErrorDetail.Success;
             error.errMsg = ErrorDetail.GetMsg(error.errCode);
             List<string> errs = new List<string>();
+
             using (LRCEntities context = new LRCEntities())
             {
                 // Check if phone(s) exist for current member
@@ -225,13 +259,16 @@ namespace LRC_NET_Framework.Models
                     int recornNumber = 0;
                     foreach (var mp in memberPhoneNumbers)
                     {
-                        if (++recornNumber <= 2) //Leaving 2 records only and updating them
+                        if (++recornNumber <= MvcApplication.MaxRecordsInPhoneHistory) //Leaving 10 records only and updating them
                         {
-                            mp.IsPrimary = false; //Set IsPrimary to false for all member phones
-                            if (mp.EndDate == null) //EndDate == null means current Member phone is actual (isn't record for history)
-                                mp.EndDate = DateTime.UtcNow;
+                            if (isPhonePrimary)
+                            {
+                                mp.IsPrimary = false; //Set IsPrimary to false for all other member phones from history
+                                if (mp.EndDate == null) //EndDate == null means current Member phone is actual (isn't record for history)
+                                    mp.EndDate = DateTime.UtcNow;
+                            }
                         }
-                        else //Remove the excess. In the history we leave only 3 entries
+                        else //Remove the excess. In the history we leave only MaxRecordsInPhoneHistory = 10 entries
                         {
                             context.tb_MemberPhoneNumbers.Remove(mp);
                         }
@@ -258,16 +295,35 @@ namespace LRC_NET_Framework.Models
                 }
 
                 //Assign new phone to a current Member
-                tb_MemberPhoneNumbers mpNew = new tb_MemberPhoneNumbers();
-                mpNew.MemberID = mID;
-                mpNew.PhoneNumber = phone;
-                mpNew.Source = source;
-                mpNew.IsPrimary = true;
-                mpNew.PhoneTypeID = phoneTypeID; // 1 - Mobile in the tb_PhoneType table
-                mpNew.CreatedDateTime = DateTime.UtcNow;
-                mpNew.StartDate = DateTime.UtcNow.AddDays(-1);
-                mpNew.EndDate = null;
-                context.tb_MemberPhoneNumbers.Add(mpNew);
+                //Check dublicates
+                memberPhoneNumbers = memberPhoneNumbers.Where(s => s.MemberID == mID && s.PhoneNumber == phone).ToArray();
+                if (memberPhoneNumbers.Count() == 0) // add new phone
+                {
+                    tb_MemberPhoneNumbers phoneNumber = new tb_MemberPhoneNumbers()
+                    {
+                        MemberID = mID,
+                        PhoneNumber = phone,
+                        IsPrimary = isPhonePrimary,
+                        PhoneTypeID = phoneTypeID,
+                        Source = source,
+                        CreatedDateTime = DateTime.Now,
+                        StartDate = DateTime.UtcNow.AddDays(-1),
+                        EndDate = null
+                    };
+                    context.tb_MemberPhoneNumbers.Add(phoneNumber);
+                }
+                else // edit old phone
+                {
+                    var phoneNumber = context.tb_MemberPhoneNumbers.Where(s => s.MemberID == mID && s.PhoneNumber == phone).FirstOrDefault();
+                    //phoneNumber.PhoneNumber = model._PhoneNumber;
+                    phoneNumber.IsPrimary = isPhonePrimary;
+                    phoneNumber.PhoneTypeID = phoneTypeID;
+                    phoneNumber.Source = source;
+                    phoneNumber.ModifiedDateTime = DateTime.Now;
+                    phoneNumber.StartDate = DateTime.UtcNow.AddDays(-1);
+                    phoneNumber.EndDate = null;
+                }
+
                 try
                 {
                     context.SaveChanges();
@@ -292,7 +348,7 @@ namespace LRC_NET_Framework.Models
         }
 
         //Assign tb_MemberEmail record for current Member
-        public static List<string> AssignEmail(string emailAddress, int emailTypeID, string source, int mID, string uName)
+        public static List<string> AssignEmail(string email, int emailTypeID, bool isEmailPrimary, string source, int mID, string uName)
         {
             Error error = new Error();
             error.errCode = ErrorDetail.Success;
@@ -300,21 +356,24 @@ namespace LRC_NET_Framework.Models
             List<string> errs = new List<string>();
             using (LRCEntities context = new LRCEntities())
             {
-                // Check if phone(s) exist for current member
+                // Check if email(s) exist for current member
                 var memberEmailAddresses = context.tb_MemberEmail.Where(s => s.MemberID == mID).OrderByDescending(s => s.CreatedDateTime).ToArray();
 
-                if (memberEmailAddresses.Count() > 0) //Current member has phone(s)
+                if (memberEmailAddresses.Count() > 0) //Current member has email(s)
                 {
                     int recornNumber = 0;
                     foreach (var me in memberEmailAddresses)
                     {
-                        if (++recornNumber <= 2) //Leaving 2 records only and updating them
+                        if (++recornNumber <= MvcApplication.MaxRecordsInEmailHistory) //Leaving 10 records only and updating them
                         {
-                            me.IsPrimary = false; //Set IsPrimary to false for all member emails
-                            if (me.EndDate == null) //EndDate == null means current Member email is actual (isn't record for history)
-                                me.EndDate = DateTime.UtcNow;
+                            if (isEmailPrimary)
+                            {
+                                me.IsPrimary = false; //Set IsPrimary to false for all other member email from history
+                                if (me.EndDate == null) //EndDate == null means current Member email is actual (isn't record for history)
+                                    me.EndDate = DateTime.UtcNow;
+                            }
                         }
-                        else //Remove the excess. In the history we leave only 3 entries
+                        else //Remove the excess. In the history we leave only MaxRecordsInEmailHistory = 10 entries
                         {
                             context.tb_MemberEmail.Remove(me);
                         }
@@ -341,16 +400,34 @@ namespace LRC_NET_Framework.Models
                 }
 
                 //Assign new email to a current Member
-                tb_MemberEmail meNew = new tb_MemberEmail();
-                meNew.MemberID = mID;
-                meNew.EmailAddress = emailAddress;
-                meNew.Source = source;
-                meNew.IsPrimary = true;
-                meNew.EmailTypeID = emailTypeID; // 1 - Mobile in the tb_PhoneType table
-                meNew.CreatedDateTime = DateTime.UtcNow;
-                meNew.StartDate = DateTime.UtcNow.AddDays(-1);
-                meNew.EndDate = null;
-                context.tb_MemberEmail.Add(meNew);
+                //Check dublicates
+                memberEmailAddresses = memberEmailAddresses.Where(s => s.MemberID == mID && s.EmailAddress == email).ToArray();
+                if (memberEmailAddresses.Count() == 0) // add new email
+                {
+                    tb_MemberEmail emailAddress = new tb_MemberEmail()
+                    {
+                        MemberID = mID,
+                        EmailAddress = email,
+                        IsPrimary = isEmailPrimary,
+                        EmailTypeID = emailTypeID,
+                        Source = source,
+                        CreatedDateTime = DateTime.Now,
+                        StartDate = DateTime.UtcNow.AddDays(-1),
+                        EndDate = null
+                    };
+                    context.tb_MemberEmail.Add(emailAddress);
+                }
+                else // edit old email
+                {
+                    var emailAddress = context.tb_MemberEmail.Where(s => s.MemberID == mID && s.EmailAddress == email).FirstOrDefault();
+                    emailAddress.IsPrimary = isEmailPrimary;
+                    emailAddress.EmailTypeID = emailTypeID;
+                    emailAddress.Source = source;
+                    emailAddress.ModifiedDateTime = DateTime.Now;
+                    emailAddress.StartDate = DateTime.UtcNow.AddDays(-1);
+                    emailAddress.EndDate = null;
+                }
+
                 try
                 {
                     context.SaveChanges();
@@ -397,7 +474,6 @@ namespace LRC_NET_Framework.Models
         public Nullable<int> _CategoryID { get; set; }
         public IEnumerable<SelectListItem> _Categories { get; set; }
         [DataType(DataType.Date)]
-        //[DisplayFormat(DataFormatString = "{0:MM'/'dd'/'yyyy}", ApplyFormatInEditMode = true)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime _HireDate { get; set; }
         public string _TwitterHandle { get; set; }
@@ -407,6 +483,7 @@ namespace LRC_NET_Framework.Models
     public partial class MemberContactInfoModel
     {
         public int _MemberID { get; set; }
+        public string _MemberName { get; set; }
 
         //PHONE
         [Phone]

@@ -19,7 +19,7 @@ namespace LRC_NET_Framework
         public string AttributeDesc { get; set; }
         public int AddedBy { get; set; }
         public System.DateTime AddedDateTime { get; set; }
-        public Nullable<int> ModifiedBy { get; set; }
+        public string ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedDateTime { get; set; }
     
         public virtual tb_MemberMaster tb_MemberMaster { get; set; }

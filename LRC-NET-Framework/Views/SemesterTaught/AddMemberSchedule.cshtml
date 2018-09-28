@@ -1,0 +1,198 @@
+﻿@model LRC_NET_Framework.Models.SemesterTaughtModel
+
+@{
+    ViewBag.Title = "Add Member Schedule";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="font-weight-bold" style="background-color: #357ebd; border-bottom-left-radius:7px; border-bottom-right-radius:7px; color:gainsboro; padding-top:5px; padding-bottom:5px; padding-left:30px;"><h4>Manage Schedule</h4></div>
+
+<div class="form-horizontal">
+    @using (Html.BeginForm("AddMemberSchedule", "SemesterTaught", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model._MemberID)
+        <div class="col-md-11 col-md-offset-1"><h4>Add Member Schedule Record</h4></div>
+        <hr />
+        @Html.ValidationSummary("", new { @class = "text-danger" })
+        @*College*@
+        <div class="form-group">
+            <div class="col-md-2">
+                <p class="control-label"><span class="text-danger">*</span>  Select College</p>
+            </div>
+            <div class="col-md-10">
+                @Html.DropDownList("college", ViewBag.Colleges as List<SelectListItem>, new { @class = "form-control", style = "width: 200px;" })
+            </div>
+        </div>
+
+        @*Campus*@
+        <div class="form-group">
+            <div class="col-md-2">
+                <p class="control-label"><span class="text-danger">*</span>  Select Campus</p>
+            </div>
+            <div class="col-md-10">
+                @Html.DropDownList("campus", new SelectList(string.Empty, "Value", "Text"), "--Select Campus--", new { @class = "form-control", style = "width:200px" })
+            </div>
+        </div>
+
+        @*Building*@
+        <div class="form-group">
+            <div class="col-md-2">
+                <p class="control-label"><span class="text-danger">*</span>  Select Building</p>
+            </div>
+            <div class="col-md-10">
+                @Html.DropDownList("building", new SelectList(string.Empty, "Value", "Text"), "--Select City--", new { @class = "form-control", style = "width:200px" })
+            </div>
+        </div>
+
+        @*Room*@
+        <div class="form-group">
+            <div class="col-md-2">
+                <p class="control-label">Room</p>
+            </div>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model._Room, new { htmlAttributes = new { @class = "form-control", style = "width: 150px;" } })
+                @Html.ValidationMessageFor(model => model._Room, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @*Class*@
+        <div class="form-group">
+            <div class="col-md-2">
+                <p class="control-label">Class</p>
+            </div>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model._Class, new { htmlAttributes = new { @class = "form-control", style = "width: 150px;" } })
+                @Html.ValidationMessageFor(model => model._Class, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @*Start Time*@
+        <div class="form-group">
+            <div class="col-md-2">
+                <p class="control-label">Start Time</p>
+            </div>
+            <div class="col-md-10">
+                <fieldset>
+                    <div class="editor-field">
+                        @Html.TextBoxFor(m => m._StartTime, new { @Value = Model._StartTime.ToString("hh\\:mm tt"), @class = "form-control", style = "width: 100px;" })
+                        @*@Html.TextBoxFor(m => m._StartTime, "{0:hh\\:mm}", new { @class = "form-control", type = "time", style = "width: 150px;" })*@
+                        @Html.ValidationMessageFor(model => model._StartTime)
+
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+
+        @*End Time*@
+        <div class="form-group">
+            <div class="col-md-2">
+                <p class="control-label">End Time</p>
+            </div>
+            <div class="col-md-10">
+                <fieldset>
+                    <div class="editor-field">
+                        @Html.TextBoxFor(m => m._EndTime, new { @Value = Model._EndTime.ToString("hh\\:mm tt"), @class = "form-control", style = "width: 100px;" })
+                        @*@Html.TextBoxFor(m => m._EndTime, "{0:hh\\:mm}", new { @class = "form-control", type = "time", style = "width: 100px;" })*@
+                        @Html.ValidationMessageFor(model => model._EndTime)
+
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+
+        @*Days of Week*@
+        <div class="form-group">
+            <div class="col-md-2">
+                <p class="control-label">Days of Week</p>
+            </div>
+            <div class="col-md-10">
+                @Html.DropDownListFor(m => m._ClassWeekDayID, new SelectList(Model._WeekDays, "ClassWeekDayID", "WeekDayName"), new { ClassWeekDayID = "statusDropdown", @class = "form-control", style = "width: 200px;" })
+                @Html.ValidationMessageFor(model => model._ClassWeekDayID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @*ScheduleStatus DDL*@
+        <div class="form-group">
+            <div class="col-md-2">
+                <p class="control-label"><span class="text-danger">*</span>  Schedule Status</p>
+            </div>
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model._ScheduleStatusID, Model._ScheduleStatuses, new { @class = "form-control", style = "width: 200px;" })
+                @Html.ValidationMessageFor(model => model._ScheduleStatusID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @*Location Note*@
+        <div class="form-group">
+            <div class="col-md-2">
+                <p class="control-label">Location Note   <span class="text-danger">???</span></p>
+            </div>
+            <div class="col-md-10">
+                <input type="text" name="name" value="" placeholder="  ---  " class="form-control" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-1 col-md-11">
+                <input type="submit" value="Submit" class="btn btn-primary" />
+            </div>
+        </div>
+    }
+</div>
+
+
+@section scripts{
+
+    <script src="~/Scripts/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $("#college").change(function () {
+            $("#campus").empty();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("getdllCampuses")',
+                dataType: 'json',
+                data: { id: $("#college").val() },
+                success: function (campuses) {
+                    $.each(campuses, function (i, campus) {
+                        $("#campus").append('<option value="' + campus.Value + '">' +
+                            campus.Text + '</option>');
+
+                    });
+                },
+                error: function (ex) {
+                    alert('Failed to retrieve campuses.' + ex);
+                }
+            });
+            return false;
+        })
+    });
+
+    </script>
+
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $("#campus").change(function () {
+            $("#building").empty();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("geddltBuildings")',
+                dataType: 'json',
+                data: { id: $("#campus").val() },
+                success: function (buildings) {
+                    $.each(buildings, function (i, building) {
+                        $("#building").append('<option value="'
+                            + building.Value + '">'
+                            + building.Text + '</option>');
+                    });
+                },
+                error: function (ex) {
+                    alert('Failed.' + ex);
+                }
+            });
+            return false;
+        })
+    });
+    </script>
+}

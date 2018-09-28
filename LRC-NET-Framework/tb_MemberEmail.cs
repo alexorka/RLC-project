@@ -20,7 +20,7 @@ namespace LRC_NET_Framework
         public int EmailTypeID { get; set; }
         public string Source { get; set; }
         public System.DateTime CreatedDateTime { get; set; }
-        public Nullable<int> ModifiedBy { get; set; }
+        public string ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedDateTime { get; set; }
         public int MemberID { get; set; }
         public Nullable<System.DateTime> StartDate { get; set; }

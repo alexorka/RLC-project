@@ -1,0 +1,170 @@
+﻿@model LRC_NET_Framework.Models.SemesterTaughtModel
+@{
+    ViewBag.Title = "Add Member Schedule Record";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="font-weight-bold" style="background-color: #357ebd; border-bottom-left-radius:7px; border-bottom-right-radius:7px; color:gainsboro; padding-top:5px; padding-bottom:5px; padding-left:30px;"><h4>Manage Schedule</h4></div>
+
+<div class="form-horizontal">
+    @using (Ajax.BeginForm("GetCampuses", null, new AjaxOptions { UpdateTargetId = "resultsCollege" }, new { id = "DDLCollege" }))
+    {
+        <div class="col-md-11 col-md-offset-1"><h4>Add Member Schedule Record</h4></div>
+        <hr />
+        <div class="form-group">
+            <div class="col-md-2">
+                <p class="control-label"><span class="text-danger">*</span>  School</p>
+            </div>
+            <div class="col-md-10">
+                @Html.DropDownList("College", ViewBag.Colleges as SelectList, new { @class = "form-control", onchange = "CollegeChanged(this)", style = "width: 300px" })
+                @Html.ValidationMessageFor(model => model._CollegeID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    }
+
+    @using (Ajax.BeginForm("GetBuildings", null, new AjaxOptions { UpdateTargetId = "resultsCampus" }, new { id = "DDLCampus" }))
+    {
+        <div id="resultsCollege">
+            @*<---- particial View*@
+            <div class="form-group">
+                <div class="col-md-2">
+                    <p class="control-label"><span class="text-danger">*</span>  Campus</p>
+                </div>
+                <div class="col-md-10">
+                    @Html.DropDownList("Campus", ViewBag.Campuses as SelectList, new { @class = "form-control", onchange = "CampusChanged(this)", style = "width: 300px" })
+                    @Html.ValidationMessageFor(model => model._CampusID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            @*Building DDL*@
+            <div id="resultsCampus">
+            </div>
+        </div>
+    }
+
+    @using (Html.BeginForm("AddSchedule", "SemesterTaught", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.Hidden("College", (int)ViewBag.CollegeID)
+        @*@Html.Hidden("Campus", (int)ViewBag.CampusID)
+            @Html.Hidden("Building", (int)ViewBag.BuildingID)*@
+        @Html.HiddenFor(model => model._MemberID)
+
+        @*@Html.Partial("GetBuildings", Model._Buildings)*@
+
+        @*Room*@
+        <div class="form-group">
+            <div class="col-md-2">
+                <p class="control-label">Room</p>
+            </div>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model._Room, new { htmlAttributes = new { @class = "form-control", style = "width: 150px;" } })
+                @Html.ValidationMessageFor(model => model._Room, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @*Class*@
+        <div class="form-group">
+            <div class="col-md-2">
+                <p class="control-label">Class</p>
+            </div>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model._Class, new { htmlAttributes = new { @class = "form-control", style = "width: 150px;" } })
+                @Html.ValidationMessageFor(model => model._Class, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @*Start Time*@
+        <div class="form-group">
+            <div class="col-md-2">
+                <p class="control-label">Start Time</p>
+            </div>
+            <div class="col-md-10">
+                <fieldset>
+                    <div class="editor-field">
+                        @Html.TextBoxFor(m => m._StartTime, "{0:hh\\:mm}", new { @class = "form-control", type = "time", style = "width: 100px;" })
+                        @Html.ValidationMessageFor(model => model._StartTime)
+
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+
+        @*End Time*@
+        <div class="form-group">
+            <div class="col-md-2">
+                <p class="control-label">End Time</p>
+            </div>
+            <div class="col-md-10">
+                <fieldset>
+                    <div class="editor-field">
+                        @Html.TextBoxFor(m => m._EndTime, "{0:hh\\:mm}", new { @class = "form-control", type = "time", style = "width: 100px;" })
+                        @Html.ValidationMessageFor(model => model._EndTime)
+
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+
+        @*Days of Week*@
+        <div class="form-group">
+            <div class="col-md-2">
+                <p class="control-label">Days of Week</p>
+            </div>
+            <div class="col-md-10">
+                @Html.DropDownListFor(m => m._ClassWeekDayID, new SelectList(Model._WeekDays, "ClassWeekDayID", "WeekDayName"), new { ClassWeekDayID = "statusDropdown", @class = "form-control", style = "width: 200px;" })
+                @Html.ValidationMessageFor(model => model._ClassWeekDayID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @*ScheduleStatus DDL*@
+        <div class="form-group">
+            <div class="col-md-2">
+                <p class="control-label"><span class="text-danger">*</span>  Schedule Status</p>
+            </div>
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model._ScheduleStatusID, Model._ScheduleStatuses, new { @class = "form-control", style = "width: 200px;" })
+                @Html.ValidationMessageFor(model => model._ScheduleStatusID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @*Location Note*@
+        <div class="form-group">
+            <div class="col-md-2">
+                <p class="control-label">Location Note   <span class="text-danger">???</span></p>
+            </div>
+            <div class="col-md-10">
+                <input type="text" name="name" value="" placeholder="  ---  " class="form-control" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-1 col-md-11">
+                <input type="submit" value="Submit" class="btn btn-primary" />
+            </div>
+        </div>
+    }
+</div>
+
+    @section scripts{
+
+
+
+
+
+
+
+
+        @Scripts.Render("~/scripts/jquery.unobtrusive-ajax.min.js")
+        <script>
+            function CollegeChanged() {
+                $("#DDLCollege").submit();
+            }
+        </script>
+
+        <script>
+            function CampusChanged() {
+                $("#DDLCampus").submit();
+            }
+        </script>
+    }

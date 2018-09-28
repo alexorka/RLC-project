@@ -5,12 +5,12 @@
 }
 
 <div class="font-weight-bold" style="background-color: #357ebd; border-bottom-left-radius:7px; border-bottom-right-radius:7px; color:gainsboro; padding-top:5px; padding-bottom:5px; padding-left:30px;"><h4>Building Department Management</h4></div>
+
 <div class="form-horizontal">
     @using (Ajax.BeginForm("GetCampuses", null, new AjaxOptions { UpdateTargetId = "resultsCollege" }, new { id = "DDLCollege" }))
     {
         <div class="col-md-11 col-md-offset-1"><h4>Add Building</h4></div>
         <hr />
-
         <div class="form-group">
             <div class="col-md-11 col-md-offset-1" id="School">
                 @Html.Label("School", "School", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
