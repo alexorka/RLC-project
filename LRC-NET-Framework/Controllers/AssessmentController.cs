@@ -286,10 +286,9 @@ namespace LRC_NET_Framework.Controllers
                         }
                         else
                         {
-                            oldMemberActivity.ActivityStatusID = ActivityStatusID;
-                            if (oldMemberActivity.ActivityStatusID == 1) // 1 - Committed
+                            if (ActivityStatusID == 1) // 1 - Committed
                             {
-                                oldMemberActivity.Membership = false;
+                                oldMemberActivity.Membership = true;
                                 oldMemberActivity.MembershipCommitment++;
                             }
                             else
@@ -298,6 +297,7 @@ namespace LRC_NET_Framework.Controllers
                                 if (oldMemberActivity.ActivityStatusID == 1 && oldMemberActivity.MembershipCommitment > 0) //commited before so reduce qty of commitments
                                     oldMemberActivity.MembershipCommitment--;
                             }
+                            oldMemberActivity.ActivityStatusID = ActivityStatusID;
                             db.Entry(oldMemberActivity).State = EntityState.Modified;
                         }
                         db.SaveChanges();
