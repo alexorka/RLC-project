@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="0440ca77908841ea9f47cfe419dc968d" Name="Diagram1" ZoomLevel="54" ShowGrid="false">
+      <Diagram DiagramId="0440ca77908841ea9f47cfe419dc968d" Name="Diagram1" ZoomLevel="62" ShowGrid="false">
         <EntityTypeShape EntityType="LRCModel.tb_Dues" Width="1.5" PointX="5.25" PointY="21.875" IsExpanded="true" />
         <EntityTypeShape EntityType="LRCModel.tb_Gender" Width="1.5" PointX="5.25" PointY="18" IsExpanded="true" />
         <EntityTypeShape EntityType="LRCModel.tb_AssessmentName" Width="1.5" PointX="11.75" PointY="21" />
@@ -45,8 +45,6 @@
         <AssociationConnector Association="LRCModel.FK_tb_SemesterTaught_tb_Building" />
         <EntityTypeShape EntityType="LRCModel.tb_WeekDay" Width="1.5" PointX="11.75" PointY="11" />
         <AssociationConnector Association="LRCModel.FK_tb_SemesterTaught_tb_WeekDay" />
-        <EntityTypeShape EntityType="LRCModel.tb_MemberPhoneNumbers" Width="1.5" PointX="7.25" PointY="28.875" />
-        <AssociationConnector Association="LRCModel.FK_tb_MemberPhoneNumbers_tb_PhoneType" />
         <EntityTypeShape EntityType="LRCModel.tb_Campus" Width="1.5" PointX="9.625" PointY="7.75" />
         <AssociationConnector Association="LRCModel.FK_tb_Building_tb_Campus" />
         <AssociationConnector Association="LRCModel.FK_tb_Campus_tb_College" />
@@ -57,10 +55,6 @@
         <EntityTypeShape EntityType="LRCModel.tb_States" Width="1.5" PointX="14" PointY="30.25" />
         <EntityTypeShape EntityType="LRCModel.tb_MembersImportMapping" Width="1.5" PointX="4.875" PointY="0.75" />
         <EntityTypeShape EntityType="LRCModel.tb_ScheduleImportMapping" Width="1.5" PointX="4.875" PointY="2.75" />
-        <EntityTypeShape EntityType="LRCModel.tb_MemberAddress" Width="1.5" PointX="11.75" PointY="26.5" />
-        <AssociationConnector Association="LRCModel.FK_tb_MemberAddress_tb_AddressSource" />
-        <AssociationConnector Association="LRCModel.FK_tb_MemberAddress_tb_AddressType" />
-        <AssociationConnector Association="LRCModel.FK_tb_MemberAddress_tb_States" />
         <EntityTypeShape EntityType="LRCModel.tb_MemberError" Width="1.5" PointX="0.75" PointY="0.75" />
         <EntityTypeShape EntityType="LRCModel.tb_Schedule_Error" Width="1.5" PointX="2.375" PointY="0.75" />
         <EntityTypeShape EntityType="LRCModel.tb_ActivityStatus" Width="1.5" PointX="13.875" PointY="24.375" />
@@ -78,15 +72,10 @@
         <AssociationConnector Association="LRCModel.FK_tb_MemberMaster_tb_JobStatus" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberMaster_tb_LatestUnionAssessment" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberActivity_tb_MemberMaster" />
-        <AssociationConnector Association="LRCModel.FK_tb_MemberAddress_tb_MemberMaster" />
-        <AssociationConnector Association="LRCModel.FK_tb_MemberPhoneNumbers_tb_MemberMaster" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberRoles_tb_MemberMaster" />
         <AssociationConnector Association="LRCModel.FK_tb_MembershipForms_tb_MemberMaster" />
         <AssociationConnector Association="LRCModel.FK_tb_SemesterTaught_tb_MemberMaster" />
-        <EntityTypeShape EntityType="LRCModel.tb_MemberEmail" Width="1.5" PointX="9.75" PointY="25.75" />
         <EntityTypeShape EntityType="LRCModel.tb_MemberNotes" Width="1.5" PointX="11.75" PointY="13" />
-        <AssociationConnector Association="LRCModel.FK_tb_MemberEmail_tb_EmailType" />
-        <AssociationConnector Association="LRCModel.FK_tb_MemberEmail_tb_MemberMaster" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberNotes_tb_MemberMaster" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberNotes_tb_NoteType" />
         <EntityTypeShape EntityType="LRCModel.tb_Attribute" Width="1.5" PointX="5.25" PointY="23.875" />
@@ -97,7 +86,9 @@
         <AssociationConnector Association="LRCModel.FK_tb_Assessment_tb_MemberMaster" />
         <EntityTypeShape EntityType="LRCModel.tb_Activity" Width="1.5" PointX="13.875" PointY="20.75" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberActivity_tb_Activity1" />
-        <EntityTypeShape EntityType="LRCModel.AspNetUsers" Width="1.5" PointX="5.125" PointY="34.875" />
+        <EntityTypeShape EntityType="LRCModel.AspNetUsers" Width="1.5" PointX="4.125" PointY="31.125" />
+        <EntityTypeShape EntityType="LRCModel.tb_MemberAddress" Width="1.5" PointX="11.75" PointY="26.25" />
+        <EntityTypeShape EntityType="LRCModel.tb_MemberPhoneNumbers" Width="1.5" PointX="7.25" PointY="28.375" />
         <AssociationConnector Association="LRCModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" />
         <AssociationConnector Association="LRCModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" />
         <AssociationConnector Association="LRCModel.FK_tb_Activity_AspNetUsers" />
@@ -105,6 +96,18 @@
         <AssociationConnector Association="LRCModel.FK_tb_Assessment_AspNetUsers" />
         <AssociationConnector Association="LRCModel.FK_tb_Assessment_AspNetUsers1" />
         <AssociationConnector Association="LRCModel.FK_tb_Assessment_AspNetUsers2" />
+        <AssociationConnector Association="LRCModel.FK_tb_MemberAddress_AspNetUsers" />
+        <AssociationConnector Association="LRCModel.FK_tb_MemberPhoneNumbers_AspNetUsers" />
+        <AssociationConnector Association="LRCModel.FK_tb_MemberAddress_tb_AddressSource" />
+        <AssociationConnector Association="LRCModel.FK_tb_MemberAddress_tb_AddressType" />
+        <AssociationConnector Association="LRCModel.FK_tb_MemberAddress_tb_MemberMaster" />
+        <AssociationConnector Association="LRCModel.FK_tb_MemberAddress_tb_States" />
+        <AssociationConnector Association="LRCModel.FK_tb_MemberPhoneNumbers_tb_MemberMaster" />
+        <AssociationConnector Association="LRCModel.FK_tb_MemberPhoneNumbers_tb_PhoneType" />
+        <EntityTypeShape EntityType="LRCModel.tb_MemberEmail" Width="1.5" PointX="9.75" PointY="25.75" />
+        <AssociationConnector Association="LRCModel.FK_tb_MemberEmail_AspNetUsers" />
+        <AssociationConnector Association="LRCModel.FK_tb_MemberEmail_tb_EmailType" />
+        <AssociationConnector Association="LRCModel.FK_tb_MemberEmail_tb_MemberMaster" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

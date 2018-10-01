@@ -34,9 +34,10 @@ namespace LRC_NET_Framework
         public Nullable<System.DateTime> StartDate { get; set; }
         public Nullable<System.DateTime> EndDate { get; set; }
     
+        public virtual AspNetUsers AspNetUsers { get; set; }
         public virtual tb_AddressSource tb_AddressSource { get; set; }
         public virtual tb_AddressType tb_AddressType { get; set; }
-        public virtual tb_States tb_States { get; set; }
         public virtual tb_MemberMaster tb_MemberMaster { get; set; }
+        public virtual tb_States tb_States { get; set; }
     }
 }

@@ -197,6 +197,7 @@ namespace LRC_NET_Framework.Models
                         IsPrimary = isAdressPrimary,
                         AddressTypeID = addressTypeID,
                         CreatedDateTime = DateTime.Now,
+                        ModifiedBy = uName,
                         StartDate = DateTime.UtcNow.AddDays(-1),
                         EndDate = null
                     };
@@ -213,6 +214,7 @@ namespace LRC_NET_Framework.Models
                     address.Source = source;
                     address.IsPrimary = isAdressPrimary;
                     address.AddressTypeID = addressTypeID;
+                    address.ModifiedBy = uName;
                     address.ModifiedDateTime = DateTime.Now;
                     address.StartDate = DateTime.UtcNow.AddDays(-1);
                     address.EndDate = null;
@@ -307,6 +309,7 @@ namespace LRC_NET_Framework.Models
                         PhoneTypeID = phoneTypeID,
                         Source = source,
                         CreatedDateTime = DateTime.Now,
+                        ModifiedBy = uName,
                         StartDate = DateTime.UtcNow.AddDays(-1),
                         EndDate = null
                     };
@@ -319,6 +322,7 @@ namespace LRC_NET_Framework.Models
                     phoneNumber.IsPrimary = isPhonePrimary;
                     phoneNumber.PhoneTypeID = phoneTypeID;
                     phoneNumber.Source = source;
+                    phoneNumber.ModifiedBy = uName;
                     phoneNumber.ModifiedDateTime = DateTime.Now;
                     phoneNumber.StartDate = DateTime.UtcNow.AddDays(-1);
                     phoneNumber.EndDate = null;
@@ -412,6 +416,7 @@ namespace LRC_NET_Framework.Models
                         EmailTypeID = emailTypeID,
                         Source = source,
                         CreatedDateTime = DateTime.Now,
+                        ModifiedBy = uName,
                         StartDate = DateTime.UtcNow.AddDays(-1),
                         EndDate = null
                     };
@@ -423,6 +428,7 @@ namespace LRC_NET_Framework.Models
                     emailAddress.IsPrimary = isEmailPrimary;
                     emailAddress.EmailTypeID = emailTypeID;
                     emailAddress.Source = source;
+                    emailAddress.ModifiedBy = uName;
                     emailAddress.ModifiedDateTime = DateTime.Now;
                     emailAddress.StartDate = DateTime.UtcNow.AddDays(-1);
                     emailAddress.EndDate = null;

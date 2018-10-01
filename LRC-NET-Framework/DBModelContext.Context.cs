@@ -57,23 +57,23 @@ namespace LRC_NET_Framework
         public virtual DbSet<tb_Area> tb_Area { get; set; }
         public virtual DbSet<tb_SemesterTaught> tb_SemesterTaught { get; set; }
         public virtual DbSet<tb_WeekDay> tb_WeekDay { get; set; }
-        public virtual DbSet<tb_MemberPhoneNumbers> tb_MemberPhoneNumbers { get; set; }
         public virtual DbSet<tb_Campus> tb_Campus { get; set; }
         public virtual DbSet<tb_CampusMapping> tb_CampusMapping { get; set; }
         public virtual DbSet<tb_Semesters> tb_Semesters { get; set; }
         public virtual DbSet<tb_States> tb_States { get; set; }
         public virtual DbSet<tb_MembersImportMapping> tb_MembersImportMapping { get; set; }
         public virtual DbSet<tb_ScheduleImportMapping> tb_ScheduleImportMapping { get; set; }
-        public virtual DbSet<tb_MemberAddress> tb_MemberAddress { get; set; }
         public virtual DbSet<tb_MemberError> tb_MemberError { get; set; }
         public virtual DbSet<tb_Schedule_Error> tb_Schedule_Error { get; set; }
         public virtual DbSet<tb_ActivityStatus> tb_ActivityStatus { get; set; }
         public virtual DbSet<tb_MemberMaster> tb_MemberMaster { get; set; }
-        public virtual DbSet<tb_MemberEmail> tb_MemberEmail { get; set; }
         public virtual DbSet<tb_MemberNotes> tb_MemberNotes { get; set; }
         public virtual DbSet<tb_Attribute> tb_Attribute { get; set; }
         public virtual DbSet<tb_Assessment> tb_Assessment { get; set; }
         public virtual DbSet<tb_Activity> tb_Activity { get; set; }
         public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
+        public virtual DbSet<tb_MemberAddress> tb_MemberAddress { get; set; }
+        public virtual DbSet<tb_MemberPhoneNumbers> tb_MemberPhoneNumbers { get; set; }
+        public virtual DbSet<tb_MemberEmail> tb_MemberEmail { get; set; }
     }
 }

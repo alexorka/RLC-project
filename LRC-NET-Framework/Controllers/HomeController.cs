@@ -466,7 +466,7 @@ namespace LRC_NET_Framework.Controllers
             error.errCode = ErrorDetail.Success;
             List<string> errs = new List<string>();
             ViewBag.CollegeID = CollegeID;
-            var uName = HttpContext.GetOwinContext().Authentication.User.Identity.GetUserName();
+            var uName = HttpContext.GetOwinContext().Authentication.User.Identity.GetUserId();
             bool isValid = true;
             switch (submit)
             {
@@ -518,6 +518,8 @@ namespace LRC_NET_Framework.Controllers
                         errs = CreateMemberModel.AssignEmail(model._EmailAddress, model._EmailTypeID, model._IsEmailPrimary, "Form", model._MemberID, uName);
                     break;
             }
+            var FM = db.tb_MemberMaster.Find(model._MemberID);
+            model._MemberName = FM.LastName + ", " + FM.FirstName;
             model._PhoneTypes = new SelectList(db.tb_PhoneType, "PhoneTypeID", "PhoneTypeName");
             model._MemberPhoneNumbers = db.tb_MemberPhoneNumbers.Where(t => t.MemberID == model._MemberID).ToList();
             // >> check here

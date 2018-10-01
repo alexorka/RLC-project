@@ -105,16 +105,16 @@ namespace LRC_NET_Framework.Controllers
             else
                 Assessment = tb_Assessment.FirstOrDefault();
 
-            SelectList FeePayerAssess = new SelectList(db.tb_AssessmentName, "AssessmentNameID", "AssessmentName", Assessment.AssessmentNameID /* selected value */);
+            SelectList FeePayerAssess = new SelectList(db.tb_AssessmentName.OrderBy(s => s.AssessmentName), "AssessmentNameID", "AssessmentName", Assessment.AssessmentNameID /* selected value */);
             ViewBag.AssessmentNameID = FeePayerAssess;
 
             SelectList AssessmentValue = new SelectList(db.tb_AssessmentValue, "ValueID", "ValueName", Assessment.ValueID /* selected value */);
             ViewBag.ValueID = AssessmentValue;
 
-            SelectList Activities = new SelectList(db.tb_Activity, "ActivityID", "ActivityName");
+            SelectList Activities = new SelectList(db.tb_Activity.OrderBy(s => s.ActivityName), "ActivityID", "ActivityName");
             ViewBag.ActivityID = Activities;
 
-            SelectList AspNetUsers = new SelectList(db.AspNetUsers, "Id", "LastFirstName");
+            SelectList AspNetUsers = new SelectList(db.AspNetUsers.OrderBy(s => s.LastFirstName), "Id", "LastFirstName");
             ViewBag.AssessedBy = AspNetUsers;
 
             List<tb_ActivityStatus> ActivityStatuses = new List<tb_ActivityStatus>();
@@ -159,16 +159,16 @@ namespace LRC_NET_Framework.Controllers
 
             ViewBag.CollegeID = CollegeID;
 
-            SelectList FeePayerAssess = new SelectList(db.tb_AssessmentName, "AssessmentNameID", "AssessmentName", AssessmentNameID /* selected value */);
+            SelectList FeePayerAssess = new SelectList(db.tb_AssessmentName.OrderBy(s => s.AssessmentName), "AssessmentNameID", "AssessmentName", AssessmentNameID /* selected value */);
             ViewBag.AssessmentNameID = FeePayerAssess;
 
             SelectList AssessmentValue = new SelectList(db.tb_AssessmentValue, "ValueID", "ValueName", ValueID /* selected value */);
             ViewBag.ValueID = AssessmentValue;
 
-            SelectList Activities = new SelectList(db.tb_Activity, "ActivityID", "ActivityName");
+            SelectList Activities = new SelectList(db.tb_Activity.OrderBy(s => s.ActivityName), "ActivityID", "ActivityName");
             ViewBag.ActivityID = Activities;
 
-            SelectList AspNetUsers = new SelectList(db.AspNetUsers, "Id", "LastFirstName");
+            SelectList AspNetUsers = new SelectList(db.AspNetUsers.OrderBy(s => s.LastFirstName), "Id", "LastFirstName");
             ViewBag.AssessedBy = AspNetUsers;
 
             List<tb_ActivityStatus> ActivityStatuses = new List<tb_ActivityStatus>();
