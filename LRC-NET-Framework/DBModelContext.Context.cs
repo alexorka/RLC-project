@@ -28,7 +28,6 @@ namespace LRC_NET_Framework
         public virtual DbSet<tb_Dues> tb_Dues { get; set; }
         public virtual DbSet<tb_Gender> tb_Gender { get; set; }
         public virtual DbSet<tb_AssessmentName> tb_AssessmentName { get; set; }
-        public virtual DbSet<tb_AssessmentValue> tb_AssessmentValue { get; set; }
         public virtual DbSet<tb_LatestUnionAssessment> tb_LatestUnionAssessment { get; set; }
         public virtual DbSet<tb_JobStatus> tb_JobStatus { get; set; }
         public virtual DbSet<tb_District> tb_District { get; set; }
@@ -69,11 +68,12 @@ namespace LRC_NET_Framework
         public virtual DbSet<tb_MemberMaster> tb_MemberMaster { get; set; }
         public virtual DbSet<tb_MemberNotes> tb_MemberNotes { get; set; }
         public virtual DbSet<tb_Attribute> tb_Attribute { get; set; }
-        public virtual DbSet<tb_Assessment> tb_Assessment { get; set; }
         public virtual DbSet<tb_Activity> tb_Activity { get; set; }
-        public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
         public virtual DbSet<tb_MemberAddress> tb_MemberAddress { get; set; }
         public virtual DbSet<tb_MemberPhoneNumbers> tb_MemberPhoneNumbers { get; set; }
         public virtual DbSet<tb_MemberEmail> tb_MemberEmail { get; set; }
+        public virtual DbSet<tb_AssessmentValue> tb_AssessmentValue { get; set; }
+        public virtual DbSet<tb_Assessment> tb_Assessment { get; set; }
+        public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
     }
 }

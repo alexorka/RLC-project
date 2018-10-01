@@ -25,17 +25,12 @@ namespace LRC_NET_Framework
         public System.DateTime AddedDateTime { get; set; }
         public string ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedDateTime { get; set; }
-        public string BackgroundStory { get; set; }
-        public string Fears { get; set; }
-        public string AttitudeTowardUnion { get; set; }
-        public string IDdLeaders { get; set; }
-        public string FollowUp { get; set; }
+        public string Evaluation { get; set; }
     
         public virtual tb_AssessmentName tb_AssessmentName { get; set; }
         public virtual tb_AssessmentValue tb_AssessmentValue { get; set; }
         public virtual tb_MemberMaster tb_MemberMaster { get; set; }
         public virtual AspNetUsers AspNetUsers { get; set; }
         public virtual AspNetUsers AspNetUsers1 { get; set; }
-        public virtual AspNetUsers AspNetUsers2 { get; set; }
     }
 }

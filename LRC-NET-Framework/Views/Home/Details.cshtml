@@ -146,215 +146,108 @@
 </div>
 <a href="@Url.Action("Edit", "Home", new { id = Model._Member.MemberID })" class="btn btn-link">&nbsp;&nbsp;Edit<span class="glyphicon glyphicon-edit pull-left" aria-hidden="true"></span></a>
 
-<p><a name="Schedules"></a></p>
-<h3 style="font-family:sans-serif">Schedule (Active)</h3>
-<table class="table h6">
-    <tr>
-        <th>School</th>
-        <th></th>
-        <th>Campus</th>
-        <th>Building</th>
-        <th>Room</th>
-        <th>Reason</th>
-        <th>Class</th>
-        <th>Days</th>
-        <th>Start</th>
-        <th>End</th>
-        <th>Note</th>
-        <th>Schedule Status</th>
-    </tr>
-    @foreach (var item in Model._Member.tb_SemesterTaught)
-    {
-        <tr style="color:dimgray;">
-            <td>
-                @Html.DisplayFor(modelItem => item.tb_Building.tb_Campus.tb_College.CollegeName)
-            </td>
-            <td>
-                <a href="#" class="btn btn-xs"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.tb_Building.tb_Campus.CampusName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.tb_Building.BuildingName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Room)
-            </td>
-            <td class="danger">
-                ???
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Class)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.tb_WeekDay.WeekDayName)
-            </td>
-            <td>
-                @DateTime.Today.Add(item.ClassStart).ToString("hh:mm tt")
-            </td>
-            <td>
-                @DateTime.Today.Add(item.ClassEnd).ToString("hh:mm tt")
-            </td>
-            <td class="danger">
-                ???
-            </td>
-            <td>
-                @if (item.ScheduleStatus)
-                {
-                    <span>Active</span>
-                }
-                else
-                {
-                    <span>Inactive</span>
-                }
-            </td>
+<div class="col-md-12" id="Schedule" style="background-color:lavender; border:solid; margin-top:10px; margin-bottom:10px; border-radius:5px; border-width:1px; border-color:gainsboro">
+    <div class="col-md-12"  style="background-color:gainsboro; padding-top:5px; padding-left:30px; border-bottom-left-radius:5px; border-bottom-right-radius:5px;">@Html.Label("Schedule", "Schedule (Active)", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })</div>
+    <table class="table h6">
+        <tr style="background:lavender">
+            <th>School</th>
+            <th></th>
+            <th>Campus</th>
+            <th>Building</th>
+            <th>Room</th>
+            <th>Reason</th>
+            <th>Class</th>
+            <th>Days</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Note</th>
+            <th>Schedule Status</th>
         </tr>
-    }
-</table>
-
-<p><a name="Activities"></a></p>
-<h3 style="font-family:sans-serif">Activities</h3>
-<table class="table h6">
-    <tr>
-        <th>
-            Activity
-        </th>
-        <th>
-            Date
-        </th>
-        <th>
-            Role
-        </th>
-        <th>
-            Note
-        </th>
-    </tr>
-
-    @foreach (var item in Model._Member.tb_MemberActivity.Where(t => t.MemberID == Model._Member.MemberID))
-    {
-        if (item != null)
+        @foreach (var item in Model._Member.tb_SemesterTaught)
         {
             <tr style="color:dimgray;">
                 <td>
-                    @Html.DisplayFor(modelItem => item.tb_Activity.ActivityName)
+                    @Html.DisplayFor(modelItem => item.tb_Building.tb_Campus.tb_College.CollegeName)
                 </td>
                 <td>
-                    @Convert.ToDateTime(item.tb_Activity.ActivityDate).ToString("MM/dd/yyyy")
+                    <a href="#" class="btn btn-xs"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.tb_MemberMaster.tb_MemberRoles.Where(t => t.MemberID == Model._Member.MemberID).LastOrDefault().tb_Roles.RoleName)
+                    @Html.DisplayFor(modelItem => item.tb_Building.tb_Campus.CampusName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.tb_Activity.ActivityNote)
-                </td>
-            </tr>
-        }
-        else
-        {
-            <tr style="color:dimgray;">
-                <td><span>No activities</span></td>
-            </tr>
-        }
-    }
-</table>
-
-<p><a name="Roles"></a></p>
-<h3 style="font-family:sans-serif">Roles (Current)</h3>
-<table class="table h6">
-    <tr>
-        <th>
-            Role
-        </th>
-        <th>
-            Body
-        </th>
-        <th>
-            Start
-        </th>
-        <th>
-            End
-        </th>
-    </tr>
-
-    @foreach (var item in Model._Member.tb_MemberRoles.Where(t => t.MemberID == Model._Member.MemberID))
-    {
-        if (item != null)
-        {
-            <tr style="color:dimgray;">
-                <td>
-                    @Html.DisplayFor(modelItem => item.tb_Roles.RoleName)
+                    @Html.DisplayFor(modelItem => item.tb_Building.BuildingName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.tb_Body.BodyName)
+                    @Html.DisplayFor(modelItem => item.Room)
+                </td>
+                <td class="danger">
+                    ???
                 </td>
                 <td>
-                    @if (item.StartDate != null)
+                    @Html.DisplayFor(modelItem => item.Class)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_WeekDay.WeekDayName)
+                </td>
+                <td>
+                    @DateTime.Today.Add(item.ClassStart).ToString("hh:mm tt")
+                </td>
+                <td>
+                    @DateTime.Today.Add(item.ClassEnd).ToString("hh:mm tt")
+                </td>
+                <td class="danger">
+                    ???
+                </td>
+                <td>
+                    @if (item.ScheduleStatus)
                     {
-                        @Convert.ToDateTime(item.StartDate).ToString("MM/dd/yyyy")
+                        <span>Active</span>
                     }
-                </td>
-                <td>
-                    @if (item.EndDate != null)
+                    else
                     {
-                        @Convert.ToDateTime(item.EndDate).ToString("MM/dd/yyyy")
+                        <span>Inactive</span>
                     }
                 </td>
             </tr>
         }
-        else
-        {
-            <tr style="color:dimgray;">
-                <td><span>No activities</span></td>
-            </tr>
-        }
-    }
+    </table>
+</div>
 
-</table>
-
-<h3 style="font-family:sans-serif">Assessments</h3>
-<table class="table h6">
-    <tr>
-        <th>
-
-        </th>
-        <th>
-            Date
-        </th>
-        <th>
-            Assessed By
-        </th>
-        <th>
-            Note
-        </th>
-    </tr>
-
-    @foreach (var item in Model._AssessmentName)
-    {
-        <tr>
-            <td colspan="4" style="background-color:lightgray">
-                @Html.DisplayFor(modelItem => item.AssessmentName)
-            </td>
+<div class="col-md-12" id="Activities" style="background-color:lavender; border:solid; margin-top:10px; margin-bottom:10px; border-radius:5px; border-width:1px; border-color:gainsboro">
+    <div style="background-color:gainsboro; padding-top:5px; padding-left:30px; border-bottom-left-radius:5px; border-bottom-right-radius:5px;">@Html.Label("Activities", "Activities", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })</div>
+    <table class="table h6">
+        <tr style="background:lavender">
+            <th>
+                Activity
+            </th>
+            <th>
+                Date
+            </th>
+            <th>
+                Role
+            </th>
+            <th>
+                Note
+            </th>
         </tr>
-        foreach (var assess in item.tb_Assessment.Where(t => t.MemberID == Model._Member.MemberID))
+
+        @foreach (var item in Model._Member.tb_MemberActivity.Where(t => t.MemberID == Model._Member.MemberID))
         {
             if (item != null)
             {
                 <tr style="color:dimgray;">
                     <td>
-                        @Html.DisplayFor(n => n._Member.CampaignVolunteer)
+                        @Html.DisplayFor(modelItem => item.tb_Activity.ActivityName)
                     </td>
                     <td>
-                        @if (assess.AssessmentDate != null)
-                        {
-                            @Convert.ToDateTime(assess.AssessmentDate).ToString("MM/dd/yyyy")
-                        }
+                        @Convert.ToDateTime(item.tb_Activity.ActivityDate).ToString("MM/dd/yyyy")
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => assess.AssessedBy)
+                        @Html.DisplayFor(modelItem => item.tb_MemberMaster.tb_MemberRoles.Where(t => t.MemberID == Model._Member.MemberID).LastOrDefault().tb_Roles.RoleName)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => assess.AssessmentDesc)
+                        @Html.DisplayFor(modelItem => item.tb_Activity.ActivityNote)
                     </td>
                 </tr>
             }
@@ -365,225 +258,343 @@
                 </tr>
             }
         }
-    }
+    </table>
+    </div>
 
-</table>
+<div class="col-md-12" id="Roles" style="background-color:lavender; border:solid; margin-top:10px; margin-bottom:10px; border-radius:5px; border-width:1px; border-color:gainsboro">
+    <div style="background-color:gainsboro; padding-top:5px; padding-left:30px; border-bottom-left-radius:5px; border-bottom-right-radius:5px;">@Html.Label("Roles", "Roles (Current)", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })</div>
+    <table class="table h6">
+        <tr style="background:lavender">
+            <th>
+                Role
+            </th>
+            <th>
+                Body
+            </th>
+            <th>
+                Start
+            </th>
+            <th>
+                End
+            </th>
+        </tr>
 
-<p><a name="Notes"></a></p>
-<h3 style="font-family:sans-serif">Notes</h3>
-<table class="table h6">
-    <tr>
-        <th>
-            Note
-        </th>
-        <th>
-            Date
-        </th>
-        <th>
-            Taken By
-        </th>
-    </tr>
-
-    @foreach (var item in Model._Member.tb_MemberNotes.Where(t => t.MemberID == Model._Member.MemberID))
-    {
-        if (item != null)
+        @foreach (var item in Model._Member.tb_MemberRoles.Where(t => t.MemberID == Model._Member.MemberID))
         {
-            <tr style="color:dimgray;">
-                <td>
-                    @Html.DisplayFor(modelItem => item.Notes)
-                </td>
-                <td>
-                    @if (item.NoteDate != null)
-                    {
-                        @Convert.ToDateTime(item.NoteDate).ToString("MM/dd/yyyy")
-                    }
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TakenBy)
-                </td>
-            </tr>
+            if (item != null)
+            {
+                <tr style="color:dimgray;">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.tb_Roles.RoleName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.tb_Body.BodyName)
+                    </td>
+                    <td>
+                        @if (item.StartDate != null)
+                        {
+                            @Convert.ToDateTime(item.StartDate).ToString("MM/dd/yyyy")
+                        }
+                    </td>
+                    <td>
+                        @if (item.EndDate != null)
+                        {
+                            @Convert.ToDateTime(item.EndDate).ToString("MM/dd/yyyy")
+                        }
+                    </td>
+                </tr>
+            }
+            else
+            {
+                <tr style="color:dimgray;">
+                    <td><span>No activities</span></td>
+                </tr>
+            }
         }
-        else
+
+    </table>
+    </div>
+
+<div class="col-md-12" id="Assessments" style="background-color:lavender; border:solid; margin-top:10px; margin-bottom:10px; border-radius:5px; border-width:1px; border-color:gainsboro">
+    <div style="background-color:gainsboro; padding-top:5px; padding-left:30px; border-bottom-left-radius:5px; border-bottom-right-radius:5px;">@Html.Label("Assessments", "Assessments", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })</div>
+    <table class="table h6">
+        <tr style="background:lavender">
+            <th>
+                Assessment Name
+            </th>
+            <th>
+                Date
+            </th>
+            <th>
+                Assessed By
+            </th>
+            <th>
+                Value
+            </th>
+            <th>
+                Evaluation
+            </th>
+        </tr>
+
+        @foreach (var item in Model._AssessmentName)
         {
-            <tr style="color:dimgray;">
-                <td><span>No data</span></td>
-            </tr>
+            foreach (var assess in item.tb_Assessment.Where(t => t.MemberID == Model._Member.MemberID))
+            {
+                if (item != null)
+                {
+                    <tr style="color:dimgray;">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AssessmentName)
+                        </td>
+                        <td>
+                            @if (assess.AssessmentDate != null)
+                            {
+                                @Convert.ToDateTime(assess.AssessmentDate).ToString("MM/dd/yyyy")
+                            }
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => assess.AspNetUsers1.LastFirstName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => assess.tb_AssessmentValue.ValueName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => assess.Evaluation)
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    <tr style="color:dimgray;">
+                        <td><span>No activities</span></td>
+                    </tr>
+                }
+            }
         }
-    }
+    </table>
+</div>
 
-</table>
+<div class="col-md-12" id="Notes" style="background-color:lavender; border:solid; margin-top:10px; margin-bottom:10px; border-radius:5px; border-width:1px; border-color:gainsboro">
+    <div style="background-color:gainsboro; padding-top:5px; padding-left:30px; border-bottom-left-radius:5px; border-bottom-right-radius:5px;">@Html.Label("Notes", "Notes", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })</div>
+    <table class="table h6">
+        <tr style="background:lavender">
+            <th>
+                Note
+            </th>
+            <th>
+                Date
+            </th>
+            <th>
+                Taken By
+            </th>
+        </tr>
 
-<p><a name="ContactInfo"></a></p>
-<h3 style="font-family:sans-serif">Phones</h3>
-<table class="table h6">
-    <tr>
-        <th>
-            Phone Number
-        </th>
-        <th>
-            Status
-        </th>
-        <th>
-            Type
-        </th>
-        <th>
-            Added
-        </th>
-    </tr>
-
-    @foreach (var item in Model._Member.tb_MemberPhoneNumbers.Where(t => t.MemberID == Model._Member.MemberID))
-    {
-        if (item != null)
+        @foreach (var item in Model._Member.tb_MemberNotes.Where(t => t.MemberID == Model._Member.MemberID))
         {
-            <tr style="color:dimgray;">
-                <td>
-                    @Html.DisplayFor(modelItem => item.PhoneNumber)
-                </td>
-                <td>
-                    @if (item.IsPrimary)
-                    {
-                        <span>Primary</span>
-                    }
-                    else
-                    {
-                        <span>Secondary</span>
-                    }
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.tb_PhoneType.PhoneTypeName)
-                </td>
-                <td>
-                    @if (item.CreatedDateTime != null)
-                    {
-                        @Convert.ToDateTime(item.CreatedDateTime).ToString("MM/dd/yyyy")
-                    }
-                </td>
-            </tr>
+            if (item != null)
+            {
+                <tr style="color:dimgray;">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Notes)
+                    </td>
+                    <td>
+                        @if (item.NoteDate != null)
+                        {
+                            @Convert.ToDateTime(item.NoteDate).ToString("MM/dd/yyyy")
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TakenBy)
+                    </td>
+                </tr>
+            }
+            else
+            {
+                <tr style="color:dimgray;">
+                    <td><span>No data</span></td>
+                </tr>
+            }
         }
-        else
+
+    </table>
+</div>
+
+<div class="col-md-12" id="Phones" style="background-color:lavender; border:solid; margin-top:10px; margin-bottom:10px; border-radius:5px; border-width:1px; border-color:gainsboro">
+    <div style="background-color:gainsboro; padding-top:5px; padding-left:30px; border-bottom-left-radius:5px; border-bottom-right-radius:5px;">@Html.Label("Phones", "Phones", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })</div>
+    <table class="table h6">
+        <tr style="background:lavender">
+            <th>
+                Phone Number
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                Type
+            </th>
+            <th>
+                Added
+            </th>
+        </tr>
+
+        @foreach (var item in Model._Member.tb_MemberPhoneNumbers.Where(t => t.MemberID == Model._Member.MemberID))
         {
-            <tr style="color:dimgray;">
-                <td><span>No data</span></td>
-            </tr>
+            if (item != null)
+            {
+                <tr style="color:dimgray;">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PhoneNumber)
+                    </td>
+                    <td>
+                        @if (item.IsPrimary)
+                        {
+                            <span>Primary</span>
+                        }
+                        else
+                        {
+                            <span>Secondary</span>
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.tb_PhoneType.PhoneTypeName)
+                    </td>
+                    <td>
+                        @if (item.CreatedDateTime != null)
+                        {
+                            @Convert.ToDateTime(item.CreatedDateTime).ToString("MM/dd/yyyy")
+                        }
+                    </td>
+                </tr>
+            }
+            else
+            {
+                <tr style="color:dimgray;">
+                    <td><span>No data</span></td>
+                </tr>
+            }
         }
-    }
 
-</table>
+    </table>
+</div>
 
-<h3 style="font-family:sans-serif">Emails</h3>
-<table class="table h6">
-    <tr>
-        <th>
-            Email Address
-        </th>
-        <th>
-            Type
-        </th>
-        <th>
-            Status
-        </th>
-        <th>
-            Added
-        </th>
+<div class="col-md-12" id="Emails" style="background-color:lavender; border:solid; margin-top:10px; margin-bottom:10px; border-radius:5px; border-width:1px; border-color:gainsboro">
+    <div style="background-color:gainsboro; padding-top:5px; padding-left:30px; border-bottom-left-radius:5px; border-bottom-right-radius:5px;">@Html.Label("Emails", "Emails", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })</div>
+    <table style="background:lavender" class="table h6">
+        <tr>
+            <th>
+                Email Address
+            </th>
+            <th>
+                Type
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                Added
+            </th>
 
-    </tr>
+        </tr>
 
-    @foreach (var item in Model._Member.tb_MemberEmail.Where(t => t.MemberID == Model._Member.MemberID))
-    {
-        if (item != null)
+        @foreach (var item in Model._Member.tb_MemberEmail.Where(t => t.MemberID == Model._Member.MemberID))
         {
-            <tr style="color:dimgray;">
-                <td>
-                    @Html.DisplayFor(modelItem => item.EmailAddress)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.tb_EmailType.EmailTypeName)
-                </td>
-                <td>
-                    @if (item.IsPrimary)
-                    {
-                        <span>Primary</span>
-                    }
-                    else
-                    {
-                        <span>Secondary</span>
-                    }
-                </td>
-                <td>
-                    @if (item.CreatedDateTime != null)
-                    {
-                        @Convert.ToDateTime(item.CreatedDateTime).ToString("MM/dd/yyyy")
-                    }
-                </td>
+            if (item != null)
+            {
+                <tr style="color:dimgray;">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EmailAddress)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.tb_EmailType.EmailTypeName)
+                    </td>
+                    <td>
+                        @if (item.IsPrimary)
+                        {
+                            <span>Primary</span>
+                        }
+                        else
+                        {
+                            <span>Secondary</span>
+                        }
+                    </td>
+                    <td>
+                        @if (item.CreatedDateTime != null)
+                        {
+                            @Convert.ToDateTime(item.CreatedDateTime).ToString("MM/dd/yyyy")
+                        }
+                    </td>
 
-            </tr>
+                </tr>
+            }
+            else
+            {
+                <tr style="color:dimgray;">
+                    <td><span>No data</span></td>
+                </tr>
+            }
         }
-        else
+
+    </table>
+</div>
+
+<div class="col-md-12" id="Addresses" style="background-color:lavender; border:solid; margin-top:10px; margin-bottom:10px; border-radius:5px; border-width:1px; border-color:gainsboro">
+    <div style="background-color:gainsboro; padding-top:5px; padding-left:30px; border-bottom-left-radius:5px; border-bottom-right-radius:5px;">@Html.Label("Addresses", "Addresses", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })</div>
+    <table class="table h6">
+        <tr style="background:lavender">
+            <th>
+                Address
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                Added
+            </th>
+            <th>
+                Source
+            </th>
+
+        </tr>
+
+        @foreach (var item in Model._Member.tb_MemberAddress.Where(t => t.MemberID == Model._Member.MemberID))
         {
-            <tr style="color:dimgray;">
-                <td><span>No data</span></td>
-            </tr>
+            if (item != null)
+            {
+                <tr style="color:dimgray;">
+                    <td>
+                        @ViewBag.MemberAddress
+                    </td>
+                    <td>
+                        @if (item.IsPrimary)
+                        {
+                            <span>Primary</span>
+                        }
+                        else
+                        {
+                            <span>Secondary</span>
+                        }
+                    </td>
+                    <td>
+                        @if (item.CreatedDateTime != null)
+                        {
+                            @Convert.ToDateTime(item.CreatedDateTime).ToString("MM/dd/yyyy")
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Source)
+                    </td>
+
+                </tr>
+            }
+            else
+            {
+                <tr style="color:dimgray;">
+                    <td><span>No data</span></td>
+                </tr>
+            }
         }
-    }
 
-</table>
-
-<h3 style="font-family:sans-serif">Addresses</h3>
-<table class="table h6">
-    <tr>
-        <th>
-            Address
-        </th>
-        <th>
-            Status
-        </th>
-        <th>
-            Added
-        </th>
-        <th>
-            Source
-        </th>
-
-    </tr>
-
-    @foreach (var item in Model._Member.tb_MemberAddress.Where(t => t.MemberID == Model._Member.MemberID))
-    {
-        if (item != null)
-        {
-            <tr style="color:dimgray;">
-                <td>
-                    @ViewBag.MemberAddress
-                </td>
-                <td>
-                    @if (item.IsPrimary)
-                    {
-                        <span>Primary</span>
-                    }
-                    else
-                    {
-                        <span>Secondary</span>
-                    }
-                </td>
-                <td>
-                    @if (item.CreatedDateTime != null)
-                    {
-                        @Convert.ToDateTime(item.CreatedDateTime).ToString("MM/dd/yyyy")
-                    }
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Source)
-                </td>
-
-            </tr>
-        }
-        else
-        {
-            <tr style="color:dimgray;">
-                <td><span>No data</span></td>
-            </tr>
-        }
-    }
-
-</table>
+    </table>
+</div>
 
 

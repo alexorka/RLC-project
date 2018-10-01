@@ -72,10 +72,10 @@
                 @Convert.ToDateTime(item.AssessmentDate).ToString("MM/dd/yyyy")
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.AssessedBy)
+                @Html.DisplayFor(modelItem => item.AspNetUsers1.LastFirstName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.AddedBy)
+                @Html.DisplayFor(modelItem => item.AspNetUsers.LastFirstName)
             </td>
         </tr>
     }

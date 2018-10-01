@@ -45,12 +45,12 @@ namespace LRC_NET_Framework.Controllers
                 //    tb_MemberMasters = tb_MemberMasters.OrderByDescending(s => s.HireDate);
                 //    break;
                 default:
-                    Assessments = Assessments.OrderBy(s => s.AssessmentDate);
+                    Assessments = Assessments.OrderByDescending(s => s.AssessmentDate);
                     break;
             }
 
             //Paging
-            int pageSize = 3;
+            int pageSize = 15;
             int pageNumber = (page ?? 1);
 
             ViewData["MemberQty"] = Assessments.Count();
@@ -430,8 +430,8 @@ namespace LRC_NET_Framework.Controllers
             tb_Assessment MA = new tb_Assessment { MemberID = id ?? 0, AssessmentDate = DateTime.UtcNow };
             ViewBag.AssessmentNameID = new SelectList(db.tb_AssessmentName, "AssessmentNameID", "AssessmentName"/*, tb_Assessment.AssessmentNameID*/);
             ViewBag.ValueID = new SelectList(db.tb_AssessmentValue, "ValueID", "ValueName"/*, tb_Assessment.ValueID*/ /* selected value */);
-            ViewBag.AssessedBy = new SelectList(db.AspNetUsers, "Id", "LastFirstName").OrderBy(s => s.Value);
-
+            ViewBag.AssessedBy = new SelectList(db.AspNetUsers.OrderBy(s => s.LastFirstName), "Id", "LastFirstName");
+            ViewBag.MemberAssessments = db.tb_Assessment.Where(f => f.tb_MemberMaster.MemberID == id).ToList();
             errs.Add("Empty");
             ViewData["ErrorList"] = errs;
 
@@ -444,7 +444,7 @@ namespace LRC_NET_Framework.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "admin, organizer")]
-        public ActionResult AddAssessment([Bind(Include = "AssessmentID,MemberID,AssessmentNameID,AssessmentDesc,ValueID,AssessmentDate,AssessedBy,BackgroundStory,Fears,AttitudeTowardUnion,IDdLeaders,FollowUp")] tb_Assessment model/*, string AssessedBy*/)
+        public ActionResult AddAssessment([Bind(Include = "AssessmentID,MemberID,AssessmentNameID,AssessmentDesc,ValueID,AssessmentDate,AssessedBy,Evaluation")] tb_Assessment model/*, string AssessedBy*/)
         {
             Error error = new Error();
             error.errCode = ErrorDetail.Success;
@@ -453,16 +453,37 @@ namespace LRC_NET_Framework.Controllers
             ViewBag.AssessmentNameID = new SelectList(db.tb_AssessmentName, "AssessmentNameID", "AssessmentName", model.AssessmentNameID);
             ViewBag.ValueID = new SelectList(db.tb_AssessmentValue, "ValueID", "ValueName", model.ValueID /* selected value */);
             ViewBag.MemberID = new SelectList(db.tb_MemberMaster, "MemberID", "LastName", model.MemberID);
-            ViewBag.AssessedBy = new SelectList(db.AspNetUsers, "Id", "LastFirstName", model.AssessedBy).OrderBy(s => s.Value);
+            ViewBag.AssessedBy = new SelectList(db.AspNetUsers.OrderBy(s => s.LastFirstName), "Id", "LastFirstName", model.AssessedBy);
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var uName = HttpContext.GetOwinContext().Authentication.User.Identity.GetUserName();
-                    model.AddedBy = uName;
+                    var userId = HttpContext.GetOwinContext().Authentication.User.Identity.GetUserId();
+                    model.AddedBy = userId;
                     model.AddedDateTime = DateTime.UtcNow;
                     db.tb_Assessment.Add(model);
+
+                    // Next commented block of code in case if we may have only 1 assessment fot a Member
+                    //var memberAssessment = db.tb_Assessment.Where(s => s.MemberID == model.MemberID).FirstOrDefault();
+                    //if (memberAssessment == null) //Add new member assessment
+                    //{
+                    //    model.AddedBy = userId;
+                    //    model.AddedDateTime = DateTime.UtcNow;
+                    //    db.tb_Assessment.Add(model);
+                    //}
+
+                    //else // Edit previous member assessment
+                    //{
+                    //    memberAssessment.ModifiedBy = userId;
+                    //    memberAssessment.AssessmentDate = model.AssessmentDate;
+                    //    memberAssessment.AssessedBy = model.AssessedBy;
+                    //    memberAssessment.AssessmentNameID = model.AssessmentNameID;
+                    //    memberAssessment.ValueID = model.ValueID;
+                    //    memberAssessment.Evaluation = model.Evaluation;
+                    //    db.Entry(memberAssessment).State = EntityState.Modified;
+                    //}
+
                     db.SaveChanges();
                 }
                 catch (DbEntityValidationException ex)
@@ -517,9 +538,9 @@ namespace LRC_NET_Framework.Controllers
             ViewBag.MemberID = new SelectList(db.tb_MemberMaster, "MemberID", "LastName", model.MemberID);
             ViewBag.AssessedBy = new SelectList(db.AspNetUsers, "Id", "LastFirstName", model.AssessedBy).OrderBy(s => s.Value);
 
-            if (String.IsNullOrEmpty(model.BackgroundStory))
+            if (String.IsNullOrEmpty(model.Evaluation))
             {
-                errs.Add("Required field!" + "Background/Story text area can not be empty");
+                errs.Add("Required field!" + "Evaluation text area can not be empty");
                 ViewData["ErrorList"] = errs; return View(model);
             }
 

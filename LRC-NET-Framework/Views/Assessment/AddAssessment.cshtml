@@ -8,149 +8,120 @@
 
 @using LRC_NET_Framework.Helpers
 @Html.CreateList(ViewData["ErrorList"] as List<string>)
-@Html.HiddenFor(model => model.MemberID)
 
 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 <div class="form-horizontal">
-    @using (Html.BeginForm("AddBackgroundStory", "Assessment", FormMethod.Post, new { enctype = "multipart/form-data" }))
-    {
-        @Html.AntiForgeryToken()
-        <div class="form-group">
-            <div class="col-md-11 col-md-offset-1" id="BackgroundStory">
-                <span class="text-danger">*</span>@Html.Label("BackgroundStory", "Background/Story", htmlAttributes: new { @class = "control-label" })
-                @Html.TextAreaFor(model => model.BackgroundStory, new { @class = "form-control", @required = "required", @cols = "100", @rows = "4", @style = "width:100%;" })
-                @Html.ValidationMessageFor(model => model.BackgroundStory, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Submit" class="btn btn-primary" />
-            </div>
-        </div>
-    }
-
-    @using (Html.BeginForm("AddFears", "Assessment", FormMethod.Post, new { enctype = "multipart/form-data" }))
-    {
-        @Html.AntiForgeryToken()
-        <div class="form-group">
-            <div class="col-md-11 col-md-offset-1" id="Fears">
-                <span class="text-danger">*</span>@Html.Label("Fears", "Fears", htmlAttributes: new { @class = "control-label" })
-                @Html.TextAreaFor(model => model.Fears, new { @class = "form-control", @required = "required", @cols = "100", @rows = "4", @style = "width:100%;" })
-                @Html.ValidationMessageFor(model => model.Fears, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Submit" class="btn btn-primary" />
-            </div>
-        </div>
-    }
-
-    @using (Html.BeginForm("AddAttitudeTowardUnion", "Assessment", FormMethod.Post, new { enctype = "multipart/form-data" }))
-    {
-        @Html.AntiForgeryToken()
-        <div class="form-group">
-            <div class="col-md-11 col-md-offset-1" id="AttitudeTowardUnion">
-                <span class="text-danger">*</span>@Html.Label("AttitudeTowardUnion", "Attitude Toward Union", htmlAttributes: new { @class = "control-label" })
-                @Html.TextAreaFor(model => model.AttitudeTowardUnion, new { @class = "form-control", @required = "required", @cols = "100", @rows = "4", @style = "width:100%;" })
-                @Html.ValidationMessageFor(model => model.AttitudeTowardUnion, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Submit" class="btn btn-primary" />
-            </div>
-        </div>
-    }
-
-    @using (Html.BeginForm("AddIDdLeaders", "Assessment", FormMethod.Post, new { enctype = "multipart/form-data" }))
-    {
-        @Html.AntiForgeryToken()
-        <div class="form-group">
-            <div class="col-md-11 col-md-offset-1" id="IDdLeaders">
-                <span class="text-danger">*</span>@Html.Label("IDdLeaders", "IDd Leaders", htmlAttributes: new { @class = "control-label" })
-                @Html.TextAreaFor(model => model.IDdLeaders, new { @class = "form-control", @required = "required", @cols = "100", @rows = "4", @style = "width:100%;" })
-                @Html.ValidationMessageFor(model => model.IDdLeaders, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Submit" class="btn btn-primary" />
-            </div>
-        </div>
-    }
-
-    @using (Html.BeginForm("AddFollowUp", "Assessment", FormMethod.Post, new { enctype = "multipart/form-data" }))
-    {
-        @Html.AntiForgeryToken()
-        <div class="form-group">
-            <div class="col-md-11 col-md-offset-1" id="FollowUp">
-                <span class="text-danger">*</span>@Html.Label("FollowUp", "Follow Up", htmlAttributes: new { @class = "control-label" })
-                @Html.TextAreaFor(model => model.FollowUp, new { @class = "form-control", @required = "required", @cols = "100", @rows = "4", @style = "width:100%;" })
-                @Html.ValidationMessageFor(model => model.FollowUp, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Submit" class="btn btn-primary" />
-            </div>
-        </div>
-    }
 
     @using (Html.BeginForm("AddAssessment", "Assessment", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.MemberID)
         <div class="form-group">
-            <div class="col-md-11 col-md-offset-1" id="AssessmentNameID">
-                <span class="text-danger">*</span>@Html.Label("AssessmentNameID", "Assessment", htmlAttributes: new { @class = "control-label" })
-                @Html.DropDownList("AssessmentNameID", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.AssessmentNameID, "", new { @class = "text-danger" })
+
+            <div class="col-md-5">
+
+                <div class="col-md-5 col-md-offset-1" id="AssessmentDate">
+                    <span class="text-danger">*</span>@Html.Label("AssessmentDate", "Assessment Date", htmlAttributes: new { @class = "control-label" })
+                    @Html.TextBoxFor(model => model.AssessmentDate, "{0:yyyy-MM-dd}", new { @class = "form-control datecontrol", type = "date", style = "width: 150px;" })
+                    @Html.ValidationMessageFor(model => model.AssessmentDate, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="col-md-6" id="AssessedBy">
+                    <span class="text-danger">*</span>@Html.Label("AssessedBy", "Assessment By", htmlAttributes: new { @class = "control-label" })
+                    @Html.DropDownList("AssessedBy", null, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.AssessedBy, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="col-md-6 col-md-offset-1" id="AssessmentNameID">
+                    <span class="text-danger">*</span>@Html.Label("AssessmentNameID", "Assessment", htmlAttributes: new { @class = "control-label" })
+                    @Html.DropDownList("AssessmentNameID", null, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.AssessmentNameID, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="col-md-4" id="ValueID">
+                    <span class="text-danger">*</span>@Html.Label("ValueID", "Assessment Value", htmlAttributes: new { @class = "control-label" })
+                    @Html.DropDownList("ValueID", null, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.ValueID, "", new { @class = "text-danger" })
+                </div>
+
             </div>
+
+            <div class="col-md-7">
+
+                <div class="col-md-12" id="Evaluation">
+                    <span class="text-danger">*</span>@Html.Label("Evaluation", "Evaluation", htmlAttributes: new { @class = "control-label" })
+                    @Html.TextAreaFor(model => model.Evaluation, new { @class = "form-control", @required = "required", @cols = "100", @rows = "4", @style = "width:100%;" })
+                    @Html.ValidationMessageFor(model => model.Evaluation, "", new { @class = "text-danger" })
+                </div>
+
+            </div>
+
         </div>
 
         <div class="form-group">
-            <div class="col-md-11 col-md-offset-1" id="ValueID">
-                <span class="text-danger">*</span>@Html.Label("ValueID", "Assessment Value", htmlAttributes: new { @class = "control-label" })
-                @Html.DropDownList("ValueID", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.ValueID, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-11 col-md-offset-1" id="AssessmentDate">
-                <span class="text-danger">*</span>@Html.Label("AssessmentDate", "Assessment Date", htmlAttributes: new { @class = "control-label" })
-                @Html.TextBoxFor(model => model.AssessmentDate, "{0:yyyy-MM-dd}", new { @class = "form-control datecontrol", type = "date", style = "width: 150px;" })
-                @Html.ValidationMessageFor(model => model.AssessmentDate, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-11 col-md-offset-1" id="AssessedBy">
-                <span class="text-danger">*</span>@Html.Label("AssessedBy", "Assessment By", htmlAttributes: new { @class = "control-label" })
-                @Html.DropDownList("AssessedBy", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.AssessedBy, "", new { @class = "text-danger" })
-                @*@Html.EditorFor(model => model.AssessedBy, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.AssessedBy, "", new { @class = "text-danger" })*@
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
+            <div class="col-md-offset-1 col-md-4">
                 <input type="submit" value="Submit" class="btn btn-primary" />
             </div>
         </div>
     }
 </div>
-<div>
-    @Html.ActionLink("Back to List", "Index")
+
+        @if (ViewBag.MemberAssessments.Count > 0)
+        {
+        <div class="col-md-12" id="Assessment" style="font-size:smaller; background-color:lavender; border:solid; margin-top:40px; margin-bottom:10px; border-radius:5px; border-width:1px; border-color:gainsboro">
+
+            <div style="background-color:gainsboro; padding-bottom:5px; padding-left:30px; border-bottom-left-radius:5px; border-bottom-right-radius:5px;">@Html.Label("Assessment", "Member Assessments", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })</div>
+
+            <table class="table">
+                <tr class="text-info">
+                    <th style="width:20%">
+                        Assessment
+                    </th>
+                    <th>
+                        Assessment Date
+                    </th>
+                    <th>
+                        Assessment Value
+                    </th>
+                    <th>
+                        Evaluation
+                    </th>
+                    <th>
+                        Assessed By
+                    </th>
+                    @*<th>
+                    </th>*@
+                </tr>
+                @foreach (var myVal in ViewBag.MemberAssessments as List<tb_Assessment>)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(m => myVal.tb_AssessmentName.AssessmentName)
+                        </td>
+                        <td>
+                            @Convert.ToDateTime(myVal.AssessmentDate).ToString("MM/dd/yyyy")
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => myVal.tb_AssessmentValue.ValueName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => myVal.Evaluation)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => myVal.AspNetUsers1.LastFirstName)
+                        </td>
+                        @*<td>
+                            <a href="@Url.Action("DeleteAssessment", "Assessment", new { @AssessmentID = myVal.AssessmentID, MemberId = myVal.MemberID, CollegeID = ViewBag.CollegeID })" class="btn btn-xs"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+                        </td>*@
+                    </tr>
+                }
+            </table>
+        </div>
+        }
+<div class="col-md-12">
+    @Html.ActionLink("Assessments List", "Index")
 </div>
+<hr />
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
