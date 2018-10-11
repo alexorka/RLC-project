@@ -49,7 +49,7 @@
                                                 @Html.ActionLink(item.LastName + ", " + item.FirstName, "Edit", "Home", new { id = item.MemberID, CollegeID = ViewBag.CollegeID }, new { @class = "text -info" })
                                             </div>
                                             <div style="float: left; margin-left:20px; padding-bottom:6px; padding-top:4px;">
-                                                <a href="@Url.Action("AddPersonAssessmentActivity", "Assessment", new { @id = item.MemberID })" class="btn-sm btn-link"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+                                                <a href="@Url.Action("AddPersonAssessmentActivity", "Assessment", new { @id = item.MemberID, CollegeID = ViewBag.CollegeID })" class="btn-sm btn-link"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
                                             </div>
                                             <div style="float: left; margin-left:20px; padding-bottom:4px; padding-top:4px;">
                                                 Phone:

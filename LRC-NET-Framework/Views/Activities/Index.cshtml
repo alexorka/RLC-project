@@ -1,5 +1,4 @@
-﻿@*@model IEnumerable<LRC_NET_Framework.tb_Activity>*@
-@model PagedList.IPagedList<LRC_NET_Framework.tb_Activity>
+﻿@model PagedList.IPagedList<LRC_NET_Framework.tb_Activity>
 @using PagedList.Mvc
 @{
     ViewBag.Title = "All Activities";
@@ -8,7 +7,8 @@
 
 <hr />
 <ul class="list-inline">
-    <li role="button"><a href="@Url.Action("NotSure", "Activities")" class="btn btn-info viewDialog", data-dialog-title="Question">&nbsp;Activity<span class="glyphicon glyphicon-plus pull-left" aria-hidden="true"></span></a></li>
+    @*<li role="button"><a href="@Url.Action("NotSure", "Activities")" class="btn btn-info viewDialog" , data-dialog-title="Question">&nbsp;Activity<span class="glyphicon glyphicon-plus pull-left" aria-hidden="true"></span></a></li>*@
+    <li role="button"><a href="@Url.Action("AddActivityByMember", "Activities")" class="btn btn-info">&nbsp;Activity<span class="glyphicon glyphicon-plus pull-left" aria-hidden="true"></span></a></li>
     <li role="button"><a href="#" class="btn btn-info">&nbsp;Reports<span class="glyphicon glyphicon-stats pull-left" aria-hidden="true"></span></a></li>
 </ul>
 
@@ -33,7 +33,7 @@
     <div class="col-md-3 align-text-top"></div>
     <div class="col-md-7"></div>
 </div>
-<table class="table">
+<table class="table"  style="font-size:smaller;">
     <tr>
         <th>
             @Html.ActionLink("Faculty Member", "Index", new { sortOrder = ViewBag.NameSortParm })

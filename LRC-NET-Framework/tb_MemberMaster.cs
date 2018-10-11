@@ -19,7 +19,6 @@ namespace LRC_NET_Framework
         {
             this.tb_AlsoWorksAt = new HashSet<tb_AlsoWorksAt>();
             this.tb_CopeForms = new HashSet<tb_CopeForms>();
-            this.tb_MemberActivity = new HashSet<tb_MemberActivity>();
             this.tb_MemberRoles = new HashSet<tb_MemberRoles>();
             this.tb_MembershipForms = new HashSet<tb_MembershipForms>();
             this.tb_SemesterTaught = new HashSet<tb_SemesterTaught>();
@@ -29,6 +28,7 @@ namespace LRC_NET_Framework
             this.tb_MemberPhoneNumbers = new HashSet<tb_MemberPhoneNumbers>();
             this.tb_MemberEmail = new HashSet<tb_MemberEmail>();
             this.tb_Assessment = new HashSet<tb_Assessment>();
+            this.tb_MemberActivity = new HashSet<tb_MemberActivity>();
         }
     
         public int MemberID { get; set; }
@@ -83,8 +83,6 @@ namespace LRC_NET_Framework
         public virtual tb_JobStatus tb_JobStatus { get; set; }
         public virtual tb_LatestUnionAssessment tb_LatestUnionAssessment { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tb_MemberActivity> tb_MemberActivity { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_MemberRoles> tb_MemberRoles { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_MembershipForms> tb_MembershipForms { get; set; }
@@ -102,5 +100,7 @@ namespace LRC_NET_Framework
         public virtual ICollection<tb_MemberEmail> tb_MemberEmail { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_Assessment> tb_Assessment { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tb_MemberActivity> tb_MemberActivity { get; set; }
     }
 }

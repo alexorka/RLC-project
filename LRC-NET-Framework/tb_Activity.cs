@@ -21,7 +21,6 @@ namespace LRC_NET_Framework
         }
     
         public int ActivityID { get; set; }
-        public int ActivityStatusID { get; set; }
         public System.DateTime ActivityDate { get; set; }
         public string ActivityName { get; set; }
         public string ActivityNote { get; set; }
@@ -30,9 +29,9 @@ namespace LRC_NET_Framework
         public string ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedDateTime { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tb_MemberActivity> tb_MemberActivity { get; set; }
         public virtual AspNetUsers AspNetUsers { get; set; }
         public virtual AspNetUsers AspNetUsers1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tb_MemberActivity> tb_MemberActivity { get; set; }
     }
 }

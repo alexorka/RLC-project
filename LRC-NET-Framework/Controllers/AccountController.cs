@@ -628,8 +628,10 @@ namespace LRC_NET_Framework.Controllers
             //semesters.Add(new SelectListItem() { Text = "-- Select One --", Value = "0" });
             foreach (var semester in tb_Semesters)
             {
+                bool result = Int32.TryParse(semester.SemesterYear, out int semesterYear);
+                if (semesterYear >= DateTime.UtcNow.Year)
                 semesters.Add(new SelectListItem() {
-                    Text = "Semester #" + semester.SemesterID.ToString() + ": " +
+                    Text = semester.SemesterName + " " + semester.SemesterYear + ": " +
                     Convert.ToDateTime(semester.SemesterStartDate).ToString("MM/dd/yyyy") + " - " + Convert.ToDateTime(semester.SemesterEndDate).ToString("MM/dd/yyyy"),
                     Value = semester.SemesterID.ToString() });
             }

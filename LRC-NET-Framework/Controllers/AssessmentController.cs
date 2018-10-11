@@ -76,9 +76,9 @@ namespace LRC_NET_Framework.Controllers
 
         // GET: Assessment/AddPersonAssessmentActivity
         [Authorize(Roles = "admin, organizer")]
-        public ActionResult AddPersonAssessmentActivity(int? id, int? CollegeID)
+        public ActionResult AddPersonAssessmentActivity(int? id, int CollegeID)
         {
-            ViewBag.CollegeID = CollegeID;
+            //ViewBag.CollegeID = CollegeID;
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -111,17 +111,24 @@ namespace LRC_NET_Framework.Controllers
             SelectList AssessmentValue = new SelectList(db.tb_AssessmentValue, "ValueID", "ValueName", Assessment.ValueID /* selected value */);
             ViewBag.ValueID = AssessmentValue;
 
-            SelectList Activities = new SelectList(db.tb_Activity.OrderBy(s => s.ActivityName), "ActivityID", "ActivityName");
-            ViewBag.ActivityID = Activities;
-
             SelectList AspNetUsers = new SelectList(db.AspNetUsers.OrderBy(s => s.LastFirstName), "Id", "LastFirstName");
             ViewBag.AssessedBy = AspNetUsers;
 
             List<tb_ActivityStatus> ActivityStatuses = new List<tb_ActivityStatus>();
-            ActivityStatuses = db.tb_ActivityStatus.ToList();
+
+            ViewBag.ActivityStatus = db.tb_ActivityStatus.ToList();
+            ViewBag.ActivityStatusAfter = new List<SelectListItem>
+                {
+                    new SelectListItem { Value = "0", Text = "Participated", Selected = false},
+                    new SelectListItem { Value = "1", Text = "Not Participated", Selected = false}
+                };
+
+            SelectList Activities = new SelectList(db.tb_Activity.OrderBy(s => s.ActivityName), "ActivityID", "ActivityName");
+            SelectListItem selListItem = new SelectListItem() { Value = "0", Text = " Select Activity " };
+            ViewBag.ActivityID = CommonFunctions.AddFirstItem(Activities, selListItem);
 
             List<tb_MemberActivity> MemberActivities = new List<tb_MemberActivity>();
-            MemberActivities = db.tb_MemberActivity.Where(s => s.MemberID == id).ToList();
+            MemberActivities = db.tb_MemberActivity.Where(a => a.MemberID == id).OrderBy(s => s.ActivityID).ToList();
 
             tb_MemberMaster fm = db.tb_MemberMaster.Find(id);
             ViewBag.MemberName = fm.LastName + ", " + fm.FirstName;
@@ -133,10 +140,10 @@ namespace LRC_NET_Framework.Controllers
                 _ActivityStatus = ActivityStatuses,
                 _MemberActivity = MemberActivities,
                 _MemberAssessments = tb_Assessment.ToList(),
+                _CollegeID = CollegeID
             };
 
             return View(model);
-            //return View(Assessment);
         }
 
         // POST: Assessment/AddPersonAssessmentActivity
@@ -145,19 +152,22 @@ namespace LRC_NET_Framework.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "admin, organizer")]
-        public ActionResult AddPersonAssessmentActivity(int? id, string submit, int AssessmentNameID, string AssessedBy, int ActivityID, int ActivityStatusID, int ValueID, AssessActivityModels model, int? CollegeID)
+        public ActionResult AddPersonAssessmentActivity(int id, string submit, int AssessmentNameID, string AssessedBy, int ActivityID, 
+            int ActivityStatusID, int ValueID, AssessActivityModels model, FormCollection formCollection)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
+            //if (id == null)
+            //{
+            //    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            //}
             Error error = new Error();
             error.errCode = ErrorDetail.Success;
             List<string> errs = new List<string>();
             string userId = HttpContext.GetOwinContext().Authentication.User.Identity.GetUserId();
             //string uLastFirstName = db.AspNetUsers.Where(s => s.Email == uName).FirstOrDefault().LastFirstName;
 
-            ViewBag.CollegeID = CollegeID;
+            //ViewBag.CollegeID = CollegeID;
+
+            #region Prepare Model (ASSESSMENT Part)
 
             SelectList FeePayerAssess = new SelectList(db.tb_AssessmentName.OrderBy(s => s.AssessmentName), "AssessmentNameID", "AssessmentName", AssessmentNameID /* selected value */);
             ViewBag.AssessmentNameID = FeePayerAssess;
@@ -165,28 +175,37 @@ namespace LRC_NET_Framework.Controllers
             SelectList AssessmentValue = new SelectList(db.tb_AssessmentValue, "ValueID", "ValueName", ValueID /* selected value */);
             ViewBag.ValueID = AssessmentValue;
 
-            SelectList Activities = new SelectList(db.tb_Activity.OrderBy(s => s.ActivityName), "ActivityID", "ActivityName");
-            ViewBag.ActivityID = Activities;
-
             SelectList AspNetUsers = new SelectList(db.AspNetUsers.OrderBy(s => s.LastFirstName), "Id", "LastFirstName");
             ViewBag.AssessedBy = AspNetUsers;
-
-            List<tb_ActivityStatus> ActivityStatuses = new List<tb_ActivityStatus>();
-            ActivityStatuses = db.tb_ActivityStatus.ToList();
-
-            List<tb_MemberActivity> MemberActivities = new List<tb_MemberActivity>();
-            MemberActivities = db.tb_MemberActivity.Where(s => s.MemberID == id).ToList();
-
-            tb_MemberMaster fm = db.tb_MemberMaster.Find(id);
-            ViewBag.MemberName = fm.LastName + ", " + fm.FirstName;
 
             model._Assessment.ValueID = ValueID;
             model._Assessment.AssessmentNameID = AssessmentNameID;
             model._Assessment.AssessedBy = AssessedBy;
             model._Assessment.AddedDateTime = DateTime.Now;
-            model._ActivityStatus = ActivityStatuses;
-            model._MemberActivity = MemberActivities;
             model._MemberAssessments = db.tb_Assessment.Where(f => f.tb_MemberMaster.MemberID == id).ToList();
+
+            #endregion
+
+            #region Prepare Model (ACTIVITY Part)
+
+            model._ActivityStatus = db.tb_ActivityStatus.ToList();
+
+            ViewBag.ActivityStatusAfter = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "0", Text = "Participated", Selected = false},
+                new SelectListItem { Value = "1", Text = "Not Participated", Selected = false}
+            };
+
+            SelectList Activities = new SelectList(db.tb_Activity.OrderBy(s => s.ActivityName), "ActivityID", "ActivityName");
+            SelectListItem selListItem = new SelectListItem() { Value = "0", Text = " Select Activity " };
+            ViewBag.ActivityID = CommonFunctions.AddFirstItem(Activities, selListItem);
+
+            model._MemberActivity = db.tb_MemberActivity.Where(s => s.MemberID == id).ToList();
+
+            tb_MemberMaster fm = db.tb_MemberMaster.Find(id);
+            ViewBag.MemberName = fm.LastName + ", " + fm.FirstName;
+
+            #endregion
 
             if (submit == "Submit") //Adding Assessment
             {
@@ -194,28 +213,8 @@ namespace LRC_NET_Framework.Controllers
                 {
                     try
                     {
-                        tb_Assessment oldAssessment = db.tb_Assessment.Where(s => s.MemberID == model._Assessment.MemberID).FirstOrDefault();
-                        var Assessments = db.tb_Assessment;
-                        if (oldAssessment == null)
-                        {
-                            model._Assessment.AddedBy = userId;
-                            db.tb_Assessment.Add(model._Assessment);
-                        }
-                        else
-                        {
-                            //oldAssessment.AssessmentID = Assessments.FirstOrDefault().AssessmentID;
-                            oldAssessment.AddedBy = userId;
-                            oldAssessment.AddedDateTime = model._Assessment.AddedDateTime;
-                            oldAssessment.AssessedBy = AssessedBy; //from ViewBag.AssessedBy
-                            oldAssessment.AssessmentDate = model._Assessment.AssessmentDate;
-                            oldAssessment.AssessmentNameID = AssessmentNameID; //from ViewBag.AssessmentNameID
-                            oldAssessment.ModifiedBy = model._Assessment.ModifiedBy;
-                            oldAssessment.ValueID = ValueID; // from ViewBag.ValueID
-                            oldAssessment.AssessmentDesc = model._Assessment.AssessmentDesc;
-                            db.Entry(oldAssessment).State = EntityState.Modified;
-
-                            model._Assessment = oldAssessment;
-                        }
+                        model._Assessment.AddedBy = userId;
+                        db.tb_Assessment.Add(model._Assessment);
                         db.SaveChanges();
                     }
                     catch (DbEntityValidationException ex)
@@ -259,67 +258,109 @@ namespace LRC_NET_Framework.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    try
-                    {
-                        tb_Activity activity = db.tb_Activity.Find(ActivityID);
-                        activity.ActivityDate = model._Activity.ActivityDate;
-                        activity.ActivityNote = model._Activity.ActivityNote;
-                        activity.ModifiedDateTime = DateTime.UtcNow;
-                        activity.ModifiedBy = userId;
 
-                        tb_MemberActivity oldMemberActivity = db.tb_MemberActivity.Where(p => p.ActivityID == ActivityID && p.MemberID == id).FirstOrDefault(); //id = AssessActivity._Assessment.MemberID (changed to id)
-                        if (oldMemberActivity == null) //Action isnt assigned for this member
-                        {
-                            tb_MemberActivity memberActivity = new tb_MemberActivity();
-                            memberActivity.MemberID = id ?? default(int); //id = AssessActivity._Assessment.MemberID (changed to id);
-                            memberActivity.ActivityID = ActivityID;
-                            memberActivity.ActivityStatusID = ActivityStatusID;
-                            if (ActivityStatusID == 1) // 1 - Committed
-                            {
-                                memberActivity.Membership = true;
-                                memberActivity.MembershipCommitment++;
-                            }
-                            else
-                                memberActivity.Membership = false;
+                    bool? isParticipated = null;
+                    if (formCollection["afterTheFact"] == "0")
+                        isParticipated = true;
+                    else if (formCollection["afterTheFact"] == "1")
+                        isParticipated = false;
 
-                            db.tb_MemberActivity.Add(memberActivity);
-                        }
-                        else
-                        {
-                            if (ActivityStatusID == 1) // 1 - Committed
-                            {
-                                oldMemberActivity.Membership = true;
-                                oldMemberActivity.MembershipCommitment++;
-                            }
-                            else
-                            {
-                                oldMemberActivity.Membership = false;
-                                if (oldMemberActivity.ActivityStatusID == 1 && oldMemberActivity.MembershipCommitment > 0) //commited before so reduce qty of commitments
-                                    oldMemberActivity.MembershipCommitment--;
-                            }
-                            oldMemberActivity.ActivityStatusID = ActivityStatusID;
-                            db.Entry(oldMemberActivity).State = EntityState.Modified;
-                        }
-                        db.SaveChanges();
-                        model._MemberActivity = db.tb_MemberActivity.Where(s => s.MemberID == id).ToList();
-                    }
-                    catch (DbEntityValidationException ex)
+                    ActivityByMemberModels activityCRUD = new ActivityByMemberModels();
+                    errs = activityCRUD.AddEditActivity(id, ActivityID, ActivityStatusID, isParticipated, model._Activity.ActivityDate, model._Activity.ActivityNote, userId);
+
+                    if (errs == null || errs.Count == 0)
+                        return RedirectToAction("MembersBySchool", "Home", new { @CollegeID = model._CollegeID });
+                    else
                     {
-                        error.errCode = ErrorDetail.DataImportError;
-                        error.errMsg = ErrorDetail.GetMsg(error.errCode);
-                        foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
-                        {
-                            error.errMsg += ". Object: " + validationError.Entry.Entity.ToString();
-                            foreach (DbValidationError err in validationError.ValidationErrors)
-                            {
-                                error.errMsg += ". " + err.ErrorMessage;
-                            }
-                        }
-                        errs.Add("Error #" + error.errCode.ToString() + "!" + error.errMsg);
-                        ViewData["ActivityErrorList"] = errs;
-                        return View(model);
+                        ViewData["ErrorList"] = errs;
+
+                        ActivityByMemberModels memberActivities = new ActivityByMemberModels();
+                        memberActivities.MemberCollection = memberActivities.GetFullListOfMembers();
+
+                        return View(memberActivities);
                     }
                 }
+                else
+                {
+                    error.errCode = ErrorDetail.DataImportError;
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode);
+                    foreach (var state in ModelState)
+                    {
+                        foreach (var err in state.Value.Errors)
+                        {
+                            error.errMsg += ". " + err.ErrorMessage;
+                        }
+                    }
+                    errs.Add("Error #" + error.errCode.ToString() + "!" + error.errMsg);
+                    ViewData["ErrorList"] = errs;
+
+                    ActivityByMemberModels memberActivities = new ActivityByMemberModels();
+                    memberActivities.MemberCollection = memberActivities.GetFullListOfMembers();
+
+                    return View(memberActivities);
+                }                //if (ModelState.IsValid)
+                //{
+                //    try
+                //    {
+                //        tb_Activity activity = db.tb_Activity.Find(ActivityID);
+                //        activity.ActivityDate = model._Activity.ActivityDate;
+                //        activity.ActivityNote = model._Activity.ActivityNote;
+                //        activity.ModifiedDateTime = DateTime.UtcNow;
+                //        activity.ModifiedBy = userId;
+
+                //        tb_MemberActivity oldMemberActivity = db.tb_MemberActivity.Where(p => p.ActivityID == ActivityID && p.MemberID == id).FirstOrDefault(); //id = AssessActivity._Assessment.MemberID (changed to id)
+                //        if (oldMemberActivity == null) //Action isnt assigned for this member
+                //        {
+                //            tb_MemberActivity memberActivity = new tb_MemberActivity();
+                //            memberActivity.MemberID = id ?? default(int); //id = AssessActivity._Assessment.MemberID (changed to id);
+                //            memberActivity.ActivityID = ActivityID;
+                //            memberActivity.ActivityStatusID = ActivityStatusID;
+                //            if (ActivityStatusID == 1) // 1 - Committed
+                //            {
+                //                memberActivity.Membership = true;
+                //                memberActivity.MembershipCommitment++;
+                //            }
+                //            else
+                //                memberActivity.Membership = false;
+
+                //            db.tb_MemberActivity.Add(memberActivity);
+                //        }
+                //        else
+                //        {
+                //            if (ActivityStatusID == 1) // 1 - Committed
+                //            {
+                //                oldMemberActivity.Membership = true;
+                //                oldMemberActivity.MembershipCommitment++;
+                //            }
+                //            else
+                //            {
+                //                oldMemberActivity.Membership = false;
+                //                if (oldMemberActivity.ActivityStatusID == 1 && oldMemberActivity.MembershipCommitment > 0) //commited before so reduce qty of commitments
+                //                    oldMemberActivity.MembershipCommitment--;
+                //            }
+                //            oldMemberActivity.ActivityStatusID = ActivityStatusID;
+                //            db.Entry(oldMemberActivity).State = EntityState.Modified;
+                //        }
+                //        db.SaveChanges();
+                //        model._MemberActivity = db.tb_MemberActivity.Where(s => s.MemberID == id).ToList();
+                //    }
+                //    catch (DbEntityValidationException ex)
+                //    {
+                //        error.errCode = ErrorDetail.DataImportError;
+                //        error.errMsg = ErrorDetail.GetMsg(error.errCode);
+                //        foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
+                //        {
+                //            error.errMsg += ". Object: " + validationError.Entry.Entity.ToString();
+                //            foreach (DbValidationError err in validationError.ValidationErrors)
+                //            {
+                //                error.errMsg += ". " + err.ErrorMessage;
+                //            }
+                //        }
+                //        errs.Add("Error #" + error.errCode.ToString() + "!" + error.errMsg);
+                //        ViewData["ActivityErrorList"] = errs;
+                //        return View(model);
+                //    }
+                //}
             }
             else
             {
