@@ -18,12 +18,14 @@ namespace LRC_NET_Framework
         public int MemberID { get; set; }
         public System.DateTime Signed { get; set; }
         public decimal MonthlyContribution { get; set; }
-        public Nullable<int> CollectedBy { get; set; }
+        public string CollectedBy { get; set; }
         public string FormImagePath { get; set; }
         public bool Processed { get; set; }
         public bool SentToEmployer { get; set; }
-        public Nullable<int> AddedBy { get; set; }
+        public string AddedBy { get; set; }
     
+        public virtual AspNetUsers AspNetUsers { get; set; }
+        public virtual AspNetUsers AspNetUsers1 { get; set; }
         public virtual tb_MemberMaster tb_MemberMaster { get; set; }
     }
 }

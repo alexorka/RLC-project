@@ -13,6 +13,10 @@ namespace LRC_NET_Framework
         public const int MaxRecordsInPhoneHistory = 10;
         public const int MaxRecordsInAddressHistory = 5;
         public const int MaxRecordsInEmailHistory = 10;
+        public const int MaxRecordsIn_MembershipFormsHistory = 5;
+        public const int MaxRecordsIn_CopeFormsHistory = 5;
+        public const string MembershipFormsFolder = "~/Content/MembershipForms/";
+        public const string CopeFormsFolder = "~/Content/CopeForms/";
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();

@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="0440ca77908841ea9f47cfe419dc968d" Name="Diagram1" ZoomLevel="68" ShowGrid="false">
+      <Diagram DiagramId="0440ca77908841ea9f47cfe419dc968d" Name="Diagram1" ZoomLevel="67" ShowGrid="false">
         <EntityTypeShape EntityType="LRCModel.tb_Dues" Width="1.5" PointX="5.25" PointY="21.875" IsExpanded="true" />
         <EntityTypeShape EntityType="LRCModel.tb_Gender" Width="1.5" PointX="5.25" PointY="18" IsExpanded="true" />
         <EntityTypeShape EntityType="LRCModel.tb_AssessmentName" Width="1.5" PointX="11.75" PointY="21" />
@@ -20,10 +20,8 @@
         <EntityTypeShape EntityType="LRCModel.tb_AddressSource" Width="1.5" PointX="13.875" PointY="26.375" />
         <EntityTypeShape EntityType="LRCModel.tb_EmailType" Width="1.5" PointX="9.75" PointY="29.625" />
         <EntityTypeShape EntityType="LRCModel.tb_NoteType" Width="1.5" PointX="14" PointY="13.25" />
-        <EntityTypeShape EntityType="LRCModel.tb_MembershipForms" Width="1.5" PointX="3.5" PointY="18.25" />
-        <EntityTypeShape EntityType="LRCModel.tb_CopeForms" Width="1.5" PointX="3.5" PointY="21.375" />
         <EntityTypeShape EntityType="LRCModel.tb_Body" Width="1.5" PointX="1.375" PointY="24" />
-        <EntityTypeShape EntityType="LRCModel.tb_MemberRoles" Width="1.5" PointX="3.5" PointY="24.625" />
+        <EntityTypeShape EntityType="LRCModel.tb_MemberRoles" Width="1.5" PointX="3.5" PointY="25.125" />
         <EntityTypeShape EntityType="LRCModel.tb_Roles" Width="1.5" PointX="1.375" PointY="26" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberRoles_tb_Body" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberRoles_tb_Roles" />
@@ -60,7 +58,6 @@
         <AssociationConnector Association="LRCModel.FK_tb_MemberMaster_tb_Area" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberMaster_tb_Campus" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberMaster_tb_Categories" />
-        <AssociationConnector Association="LRCModel.FK_tb_CopeForms_tb_MemberMaster" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberMaster_tb_Department" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberMaster_tb_Division" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberMaster_tb_Dues" />
@@ -68,7 +65,6 @@
         <AssociationConnector Association="LRCModel.FK_tb_MemberMaster_tb_JobStatus" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberMaster_tb_LatestUnionAssessment" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberRoles_tb_MemberMaster" />
-        <AssociationConnector Association="LRCModel.FK_tb_MembershipForms_tb_MemberMaster" />
         <AssociationConnector Association="LRCModel.FK_tb_SemesterTaught_tb_MemberMaster" />
         <EntityTypeShape EntityType="LRCModel.tb_MemberNotes" Width="1.5" PointX="11.75" PointY="13" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberNotes_tb_MemberMaster" />
@@ -91,22 +87,30 @@
         <AssociationConnector Association="LRCModel.FK_tb_Assessment_tb_AssessmentName" />
         <AssociationConnector Association="LRCModel.FK_tb_Assessment_tb_AssessmentValue" />
         <AssociationConnector Association="LRCModel.FK_tb_Assessment_tb_MemberMaster" />
-        <EntityTypeShape EntityType="LRCModel.AspNetUsers" Width="1.5" PointX="3" PointY="29" />
-        <AssociationConnector Association="LRCModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" />
-        <AssociationConnector Association="LRCModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" />
-        <AssociationConnector Association="LRCModel.FK_tb_Assessment_AddedBy" />
-        <AssociationConnector Association="LRCModel.FK_tb_Assessment_AssessedBy" />
-        <AssociationConnector Association="LRCModel.FK_tb_MemberAddress_AspNetUsers" />
-        <AssociationConnector Association="LRCModel.FK_tb_MemberEmail_AspNetUsers" />
-        <AssociationConnector Association="LRCModel.FK_tb_MemberPhoneNumbers_AspNetUsers" />
         <EntityTypeShape EntityType="LRCModel.tb_ActivityStatus" Width="1.5" PointX="9.75" PointY="18.375" />
         <EntityTypeShape EntityType="LRCModel.tb_Activity" Width="1.5" PointX="9.75" PointY="20.25" />
-        <AssociationConnector Association="LRCModel.FK_tb_Activity_AspNetUsers" />
-        <AssociationConnector Association="LRCModel.FK_tb_Activity_AspNetUsers1" />
         <EntityTypeShape EntityType="LRCModel.tb_MemberActivity" Width="1.5" PointX="11.75" PointY="22.75" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberActivity_tb_Activity1" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberActivity_tb_ActivityStatus" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberActivity_tb_MemberMaster" />
+        <EntityTypeShape EntityType="LRCModel.tb_MembershipForms" Width="1.5" PointX="3.5" PointY="18.25" />
+        <AssociationConnector Association="LRCModel.FK_tb_MembershipForms_tb_MemberMaster" />
+        <EntityTypeShape EntityType="LRCModel.AspNetUsers" Width="1.5" PointX="3.375" PointY="30.25" />
+        <EntityTypeShape EntityType="LRCModel.tb_CopeForms" Width="1.5" PointX="3.5" PointY="21.625" />
+        <AssociationConnector Association="LRCModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" />
+        <AssociationConnector Association="LRCModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" />
+        <AssociationConnector Association="LRCModel.FK_tb_Activity_AspNetUsers" />
+        <AssociationConnector Association="LRCModel.FK_tb_Activity_AspNetUsers1" />
+        <AssociationConnector Association="LRCModel.FK_tb_Assessment_AddedBy" />
+        <AssociationConnector Association="LRCModel.FK_tb_Assessment_AssessedBy" />
+        <AssociationConnector Association="LRCModel.FK_tb_CopeForms_AspNetUsersAddedBy" />
+        <AssociationConnector Association="LRCModel.FK_tb_CopeForms_AspNetUsersCollectedBy" />
+        <AssociationConnector Association="LRCModel.FK_tb_MemberAddress_AspNetUsers" />
+        <AssociationConnector Association="LRCModel.FK_tb_MemberEmail_AspNetUsers" />
+        <AssociationConnector Association="LRCModel.FK_tb_MemberPhoneNumbers_AspNetUsers" />
+        <AssociationConnector Association="LRCModel.FK_tb_MembershipForms_AspNetUsersAddedBy" />
+        <AssociationConnector Association="LRCModel.FK_tb_MembershipForms_AspNetUsersCollectedBy" />
+        <AssociationConnector Association="LRCModel.FK_tb_CopeForms_tb_MemberMaster" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

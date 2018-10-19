@@ -21,9 +21,11 @@ namespace LRC_NET_Framework
         public string FormImagePath { get; set; }
         public bool Processed { get; set; }
         public bool SentToEmployer { get; set; }
-        public Nullable<int> CollectedBy { get; set; }
-        public Nullable<int> AddedBy { get; set; }
+        public string CollectedBy { get; set; }
+        public string AddedBy { get; set; }
     
         public virtual tb_MemberMaster tb_MemberMaster { get; set; }
+        public virtual AspNetUsers AspNetUsers { get; set; }
+        public virtual AspNetUsers AspNetUsers1 { get; set; }
     }
 }

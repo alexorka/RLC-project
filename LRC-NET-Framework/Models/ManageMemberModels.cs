@@ -609,7 +609,7 @@ namespace LRC_NET_Framework.Models
         public DateTime _Signed { get; set; }
         public string _FormVersion { get; set; }
         public string _FormImagePath { get; set; }
-        public int _CollectedBy { get; set; }
+        public string _CollectedBy { get; set; }
         public IEnumerable<tb_MembershipForms> _MembershipForms { get; set; }
     }
 
@@ -621,9 +621,10 @@ namespace LRC_NET_Framework.Models
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime _Signed { get; set; }
+        [DisplayFormat(DataFormatString = "{0:C}", ApplyFormatInEditMode = true)]
         public decimal _MonthlyContribution { get; set; }
         public string _FormImagePath { get; set; }
-        public int _CollectedBy { get; set; }
+        public string _CollectedBy { get; set; }
         public IEnumerable<tb_CopeForms> _CopeForms { get; set; }
     }
 

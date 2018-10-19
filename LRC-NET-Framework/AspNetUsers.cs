@@ -19,13 +19,17 @@ namespace LRC_NET_Framework
         {
             this.AspNetUserClaims = new HashSet<AspNetUserClaims>();
             this.AspNetUserLogins = new HashSet<AspNetUserLogins>();
+            this.tb_Activity = new HashSet<tb_Activity>();
+            this.tb_Activity1 = new HashSet<tb_Activity>();
             this.tb_Assessment = new HashSet<tb_Assessment>();
             this.tb_Assessment1 = new HashSet<tb_Assessment>();
+            this.tb_CopeForms = new HashSet<tb_CopeForms>();
+            this.tb_CopeForms1 = new HashSet<tb_CopeForms>();
             this.tb_MemberAddress = new HashSet<tb_MemberAddress>();
             this.tb_MemberEmail = new HashSet<tb_MemberEmail>();
             this.tb_MemberPhoneNumbers = new HashSet<tb_MemberPhoneNumbers>();
-            this.tb_Activity = new HashSet<tb_Activity>();
-            this.tb_Activity1 = new HashSet<tb_Activity>();
+            this.tb_MembershipForms = new HashSet<tb_MembershipForms>();
+            this.tb_MembershipForms1 = new HashSet<tb_MembershipForms>();
         }
     
         public string Id { get; set; }
@@ -47,9 +51,17 @@ namespace LRC_NET_Framework
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AspNetUserLogins> AspNetUserLogins { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tb_Activity> tb_Activity { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tb_Activity> tb_Activity1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_Assessment> tb_Assessment { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_Assessment> tb_Assessment1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tb_CopeForms> tb_CopeForms { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tb_CopeForms> tb_CopeForms1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_MemberAddress> tb_MemberAddress { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -57,8 +69,8 @@ namespace LRC_NET_Framework
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_MemberPhoneNumbers> tb_MemberPhoneNumbers { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tb_Activity> tb_Activity { get; set; }
+        public virtual ICollection<tb_MembershipForms> tb_MembershipForms { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tb_Activity> tb_Activity1 { get; set; }
+        public virtual ICollection<tb_MembershipForms> tb_MembershipForms1 { get; set; }
     }
 }

@@ -178,7 +178,6 @@ namespace LRC_NET_Framework.Controllers
         [Authorize(Roles = "admin, organizer")]
         public ActionResult Details(int? id)
         {
-            //id = 1; // test REMOVE IT
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -297,7 +296,6 @@ namespace LRC_NET_Framework.Controllers
 
             return View();
         }
-
 
         // GET: ExportToTxt
         [Authorize(Roles = "admin, organizer")]
@@ -538,7 +536,6 @@ namespace LRC_NET_Framework.Controllers
         // GET: Home/AddMembershipForm
         public ActionResult AddMembershipForm(int? id)
         {
-            //id = 1; // test REMOVE IT
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -549,9 +546,12 @@ namespace LRC_NET_Framework.Controllers
                 _Signed = DateTime.Now,
                 _FormVersion = String.Empty,
                 _FormImagePath = "No file chosen",
-                _CollectedBy = 2,
-                _MembershipForms = db.tb_MembershipForms.Where(t => t.MemberID == id).ToList()
+                _MembershipForms = db.tb_MembershipForms.Where(t => t.MemberID == id).OrderByDescending(t => t.MembershipFormID).ToList()
             };
+            ViewBag._CollectedBy = new SelectList(db.AspNetUsers.OrderBy(s => s.LastFirstName), "Id", "LastFirstName");
+            tb_MemberMaster fm = db.tb_MemberMaster.Find(id);
+            ViewBag.MemberName = fm.LastName + ", " + fm.FirstName;
+
             return View(model);
 
         }
@@ -564,58 +564,106 @@ namespace LRC_NET_Framework.Controllers
         [Authorize(Roles = "admin, organizer")]
         public ActionResult AddMembershipForm(AddMembershipFormModel model, HttpPostedFileBase file)
         {
-            string imagesFolder = "~/Images/MembershipForms/";
+            Error error = new Error();
+            error.errCode = ErrorDetail.Success;
+            error.errMsg = ErrorDetail.GetMsg(error.errCode);
+            List<string> errs = new List<string>();
+
+            ViewBag._CollectedBy = new SelectList(db.AspNetUsers.OrderBy(s => s.LastFirstName), "Id", "LastFirstName");
+            tb_MemberMaster fm = db.tb_MemberMaster.Find(model._MemberID);
+            ViewBag.MemberName = fm.LastName + ", " + fm.FirstName;
+            model._MembershipForms = db.tb_MembershipForms.Where(t => t.MemberID == model._MemberID).OrderByDescending(t => t.MembershipFormID).ToList();
+
             if (file != null && file.ContentLength > 0)
                 try
                 {
-                    string path = Path.Combine(Server.MapPath(imagesFolder),
-                                               Path.GetFileName(file.FileName));
+                    string path = Path.Combine(Server.MapPath(MvcApplication.MembershipFormsFolder), file.FileName);
                     file.SaveAs(path);
                     ViewBag.Message = "File uploaded successfully";
                 }
                 catch (Exception ex)
                 {
                     ViewBag.Message = "ERROR:" + ex.Message.ToString();
+                    return View(model);
                 }
             else
             {
-                ViewBag.Message = "You have not specified a file.";
-                model._MembershipForms = db.tb_MembershipForms.Where(t => t.MemberID == model._MemberID).ToList();
+                ViewBag.Message = "You have not specified a file";
+                return View(model);
+            }
+            var extension = file.FileName.Split('.').Last().ToUpper();
+            if (extension != "PDF" && extension != "JPG")
+            {
+                ViewBag.Message = "Selected file type is not PDF or JPEG";
                 return View(model);
             }
 
-            var memberForms = db.tb_MembershipForms.Where(s => s.FormImagePath.ToUpper() == imagesFolder.ToUpper());
-            //Check dublicates
-            if (memberForms.ToList().Count == 0)
+            var userId = HttpContext.GetOwinContext().Authentication.User.Identity.GetUserId();
+            try
             {
-                tb_MembershipForms memberForm = new tb_MembershipForms()
+                //Check dublicates by FileName and MemberID
+                var mf = db.tb_MembershipForms.Where(s => s.FormImagePath.ToUpper() == file.FileName.ToUpper()
+                && s.MemberID == model._MemberID).FirstOrDefault();
+                if (mf == null) // Add new record
                 {
-                    MemberID = model._MemberID,
-                    Signed = model._Signed,
-                    FormVersion = model._FormVersion,
-                    FormImagePath = imagesFolder + Path.GetFileName(file.FileName),
-                    CollectedBy = model._CollectedBy
-                };
-                db.tb_MembershipForms.Add(memberForm);
+                    tb_MembershipForms memberForm = new tb_MembershipForms()
+                    {
+                        MemberID = model._MemberID,
+                        Signed = model._Signed,
+                        FormVersion = model._FormVersion,
+                        FormImagePath = file.FileName,
+                        CollectedBy = model._CollectedBy,
+                        AddedBy = userId
+                    };
+                    db.tb_MembershipForms.Add(memberForm);
+                }
+                else // Overwrite record with same PDF file name and MemberId to add new one later
+                {
+                    mf.Signed = model._Signed;
+                    mf.FormVersion = model._FormVersion;
+                    mf.FormImagePath = file.FileName;
+                    mf.CollectedBy = model._CollectedBy;
+                    mf.AddedBy = userId;
+                    //db.tb_MembershipForms.Attach(mf);
+                }
+
+                db.SaveChanges();
+
+                //Need to remove extra entries. Not more then MaxRecordsIn_MembershipFormsHistory
+                model._MembershipForms = db.tb_MembershipForms.Where(t => t.MemberID == model._MemberID).OrderByDescending(t => t.MembershipFormID).ToList();
+                int record = 0;
+                foreach (var item in model._MembershipForms)
+                {
+                    if (++record > MvcApplication.MaxRecordsIn_MembershipFormsHistory)
+                    {
+                        db.tb_MembershipForms.Remove(item);
+                    }
+                }
+                db.SaveChanges();
+                model._MembershipForms = db.tb_MembershipForms.Where(t => t.MemberID == model._MemberID).OrderByDescending(t => t.MembershipFormID).ToList();
             }
-            else
+            catch (DbEntityValidationException ex)
             {
-                tb_MembershipForms memberForm = memberForms.FirstOrDefault();
-                memberForm.Signed = model._Signed;
-                memberForm.FormVersion = model._FormVersion;
-                memberForm.FormImagePath = imagesFolder + Path.GetFileName(file.FileName);
-                memberForm.CollectedBy = 2;
-                db.tb_MembershipForms.Attach(memberForm);
+                error.errCode = ErrorDetail.DataImportError;
+                error.errMsg = ErrorDetail.GetMsg(error.errCode);
+                foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
+                {
+                    error.errMsg += ". Object: " + validationError.Entry.Entity.ToString();
+                    foreach (DbValidationError err in validationError.ValidationErrors)
+                    {
+                        error.errMsg += ". " + err.ErrorMessage;
+                    }
+                }
+                errs.Add("Error #" + error.errCode.ToString() + "!" + error.errMsg);
+                ViewData["ErrorList"] = errs;
+                return View(model);
             }
-            db.SaveChanges();
-            model._MembershipForms = db.tb_MembershipForms.Where(t => t.MemberID == model._MemberID).ToList();
             return View(model);
         }
 
         // GET: Home/AddCopeForm
         public ActionResult AddCopeForm(int? id)
         {
-            //id = 1; // test REMOVE IT
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -626,9 +674,12 @@ namespace LRC_NET_Framework.Controllers
                 _Signed = DateTime.Now,
                 _MonthlyContribution = 0m,
                 _FormImagePath = "No file chosen",
-                _CollectedBy = 2,
-                _CopeForms = db.tb_CopeForms.Where(t => t.MemberID == id).ToList()
+                _CopeForms = db.tb_CopeForms.Where(t => t.MemberID == id).OrderByDescending(t => t.CopeFormID).ToList()
             };
+            ViewBag._CollectedBy = new SelectList(db.AspNetUsers.OrderBy(s => s.LastFirstName), "Id", "LastFirstName");
+            tb_MemberMaster fm = db.tb_MemberMaster.Find(id);
+            ViewBag.MemberName = fm.LastName + ", " + fm.FirstName;
+
             return View(model);
 
         }
@@ -641,55 +692,127 @@ namespace LRC_NET_Framework.Controllers
         [Authorize(Roles = "admin, organizer")]
         public ActionResult AddCopeForm(AddCopeFormModel model, HttpPostedFileBase file)
         {
-            string imagesFolder = "~/Images/CopeForms/";
+            Error error = new Error();
+            error.errCode = ErrorDetail.Success;
+            error.errMsg = ErrorDetail.GetMsg(error.errCode);
+            List<string> errs = new List<string>();
+
+            ViewBag._CollectedBy = new SelectList(db.AspNetUsers.OrderBy(s => s.LastFirstName), "Id", "LastFirstName");
+            tb_MemberMaster fm = db.tb_MemberMaster.Find(model._MemberID);
+            ViewBag.MemberName = fm.LastName + ", " + fm.FirstName;
+            model._CopeForms = db.tb_CopeForms.Where(t => t.MemberID == model._MemberID).OrderByDescending(t => t.CopeFormID).ToList();
+
             if (file != null && file.ContentLength > 0)
                 try
                 {
-                    string path = Path.Combine(Server.MapPath(imagesFolder),
-                                               Path.GetFileName(file.FileName));
+                    string path = Path.Combine(Server.MapPath(MvcApplication.CopeFormsFolder), file.FileName);
                     file.SaveAs(path);
                     ViewBag.Message = "File uploaded successfully";
                 }
                 catch (Exception ex)
                 {
                     ViewBag.Message = "ERROR:" + ex.Message.ToString();
+                    return View(model);
                 }
             else
             {
-                ViewBag.Message = "You have not specified a file.";
-                model._CopeForms = db.tb_CopeForms.Where(t => t.MemberID == model._MemberID).ToList();
+                ViewBag.Message = "You have not specified a file";
+                return View(model);
+            }
+            var extension = file.FileName.Split('.').Last().ToUpper();
+            if (extension != "PDF" && extension != "JPG")
+            {
+                ViewBag.Message = "Selected file type is not PDF or JPEG";
                 return View(model);
             }
 
-            var copeForms = db.tb_CopeForms.Where(s => s.FormImagePath.ToUpper() == imagesFolder.ToUpper());
-            //Check dublicates
-            if (copeForms.ToList().Count == 0)
+            var userId = HttpContext.GetOwinContext().Authentication.User.Identity.GetUserId();
+            try
             {
-                tb_CopeForms copeForm = new tb_CopeForms()
+                //Check dublicates by FileName and MemberID
+                var mf = db.tb_CopeForms.Where(s => s.FormImagePath.ToUpper() == file.FileName.ToUpper()
+                && s.MemberID == model._MemberID).FirstOrDefault();
+                if (mf == null) // Add new record
                 {
-                    MemberID = model._MemberID,
-                    Signed = model._Signed,
-                    MonthlyContribution = model._MonthlyContribution,
-                    FormImagePath = imagesFolder + Path.GetFileName(file.FileName),
-                    CollectedBy = model._CollectedBy
-                };
-                db.tb_CopeForms.Add(copeForm);
+                    tb_CopeForms copeForm = new tb_CopeForms()
+                    {
+                        MemberID = model._MemberID,
+                        Signed = model._Signed,
+                        MonthlyContribution = model._MonthlyContribution,
+                        FormImagePath = file.FileName,
+                        CollectedBy = model._CollectedBy,
+                        AddedBy = userId
+                    };
+                    db.tb_CopeForms.Add(copeForm);
+                }
+                else // Overwrite record with same PDF file name and MemberId to add new one later
+                {
+                    mf.Signed = model._Signed;
+                    mf.MonthlyContribution = model._MonthlyContribution;
+                    mf.FormImagePath = file.FileName;
+                    mf.CollectedBy = model._CollectedBy;
+                    mf.AddedBy = userId;
+                }
+
+                db.SaveChanges();
+
+                //Need to remove extra entries. Not more then MaxRecordsIn_MembershipFormsHistory
+                model._CopeForms = db.tb_CopeForms.Where(t => t.MemberID == model._MemberID).OrderByDescending(t => t.CopeFormID).ToList();
+                int record = 0;
+                foreach (var item in model._CopeForms)
+                {
+                    if (++record > MvcApplication.MaxRecordsIn_CopeFormsHistory)
+                    {
+                        db.tb_CopeForms.Remove(item);
+                    }
+                }
+                db.SaveChanges();
+                model._CopeForms = db.tb_CopeForms.Where(t => t.MemberID == model._MemberID).OrderByDescending(t => t.CopeFormID).ToList();
             }
-            else
+            catch (DbEntityValidationException ex)
             {
-                tb_CopeForms copeForm = copeForms.FirstOrDefault();
-                copeForm.Signed = model._Signed;
-                copeForm.MonthlyContribution = model._MonthlyContribution;
-                copeForm.FormImagePath = imagesFolder + Path.GetFileName(file.FileName);
-                copeForm.CollectedBy = 2;
-                db.tb_CopeForms.Attach(copeForm);
+                error.errCode = ErrorDetail.DataImportError;
+                error.errMsg = ErrorDetail.GetMsg(error.errCode);
+                foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
+                {
+                    error.errMsg += ". Object: " + validationError.Entry.Entity.ToString();
+                    foreach (DbValidationError err in validationError.ValidationErrors)
+                    {
+                        error.errMsg += ". " + err.ErrorMessage;
+                    }
+                }
+                errs.Add("Error #" + error.errCode.ToString() + "!" + error.errMsg);
+                ViewData["ErrorList"] = errs;
+                return View(model);
             }
-            db.SaveChanges();
-            model._CopeForms = db.tb_CopeForms.Where(t => t.MemberID == model._MemberID).ToList();
+
             return View(model);
         }
 
+        public ActionResult GetPdfOrJpeg(string fileName, string form)
+        {
+            var extension = fileName.Split('.').Last().ToLower();
+            var contentType = String.Empty;
+            if (extension == "pdf")
+                contentType = "application/pdf";
+            else
+                contentType = "image/jpeg";
 
+            var formsFolder = String.Empty;
+            if (form == "MembershipForms")
+                formsFolder = MvcApplication.MembershipFormsFolder;
+            else if (form == "CopeForms")
+                formsFolder = MvcApplication.CopeFormsFolder;
+
+            var path = Server.MapPath(@formsFolder + fileName);
+            var fileStream = new FileStream(path,
+                                             FileMode.Open,
+                                             FileAccess.Read
+                                           );
+            var fsResult = new FileStreamResult(fileStream, contentType);
+            return fsResult;
+        }
+        
         // GET: Home/AlsoWorksAt/5
         [Authorize(Roles = "admin, organizer")]
         public ActionResult AlsoWorksAt(int? id)

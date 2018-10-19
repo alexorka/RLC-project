@@ -39,8 +39,6 @@ namespace LRC_NET_Framework
         public virtual DbSet<tb_AddressSource> tb_AddressSource { get; set; }
         public virtual DbSet<tb_EmailType> tb_EmailType { get; set; }
         public virtual DbSet<tb_NoteType> tb_NoteType { get; set; }
-        public virtual DbSet<tb_MembershipForms> tb_MembershipForms { get; set; }
-        public virtual DbSet<tb_CopeForms> tb_CopeForms { get; set; }
         public virtual DbSet<tb_Body> tb_Body { get; set; }
         public virtual DbSet<tb_MemberRoles> tb_MemberRoles { get; set; }
         public virtual DbSet<tb_Roles> tb_Roles { get; set; }
@@ -71,9 +69,11 @@ namespace LRC_NET_Framework
         public virtual DbSet<tb_MemberEmail> tb_MemberEmail { get; set; }
         public virtual DbSet<tb_AssessmentValue> tb_AssessmentValue { get; set; }
         public virtual DbSet<tb_Assessment> tb_Assessment { get; set; }
-        public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
         public virtual DbSet<tb_ActivityStatus> tb_ActivityStatus { get; set; }
         public virtual DbSet<tb_Activity> tb_Activity { get; set; }
         public virtual DbSet<tb_MemberActivity> tb_MemberActivity { get; set; }
+        public virtual DbSet<tb_MembershipForms> tb_MembershipForms { get; set; }
+        public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
+        public virtual DbSet<tb_CopeForms> tb_CopeForms { get; set; }
     }
 }
