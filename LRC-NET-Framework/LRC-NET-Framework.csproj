@@ -594,6 +594,7 @@
     <Content Include="Views\SemesterTaught\AddMemberSchedule.cshtml" />
     <Content Include="Views\Activities\AddActivityByMember.cshtml" />
     <Content Include="Views\Activities\AddActivity.cshtml" />
+    <Content Include="Views\Activities\CreateActivity.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

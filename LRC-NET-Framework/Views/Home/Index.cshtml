@@ -139,7 +139,12 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.tb_MemberRoles.Where(t => t.MemberID == item.MemberID).LastOrDefault().tb_Roles.RoleName)
                 </td>
-                <td></td>
+                <td align="center">
+                    @if (item.tb_CopeForms != null && item.tb_CopeForms.Count > 0)
+                    {
+                        <a href="@Url.Action("GetPdfOrJpeg", new { fileName = item.tb_CopeForms.Where(s => s.MemberID == item.MemberID).LastOrDefault().FormImagePath, form = "CopeForms" })" class="btn btn-xs" target="_blank"><span class="glyphicon glyphicon-camera" aria-hidden="true"></span></a>
+                    }
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.tb_Dues.DuesName)
                 </td>
@@ -147,7 +152,10 @@
                     @Html.DisplayFor(modelItem => item.tb_MemberActivity.Where(t => t.MemberID == item.MemberID).LastOrDefault().tb_ActivityStatus.ActivityStatusName)
                 </td>
                 <td align="center">
-                    <a href="#" class="btn btn-xs"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>
+                    @if (item.tb_MembershipForms != null && item.tb_MembershipForms.Count > 0)
+                    {
+                        <a href="@Url.Action("GetPdfOrJpeg", new { fileName = item.tb_MembershipForms.Where(s => s.MemberID == item.MemberID).LastOrDefault().FormImagePath, form = "MembershipForms" })" class="btn btn-xs" target="_blank"><span class="glyphicon glyphicon-camera" aria-hidden="true"></span></a>
+                    }
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.tb_Assessment.Where(t => t.MemberID == item.MemberID).LastOrDefault().tb_AssessmentName.AssessmentName)

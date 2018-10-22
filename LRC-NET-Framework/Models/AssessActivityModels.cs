@@ -127,4 +127,26 @@ namespace LRC_NET_Framework.Models
         public string ActivityStatusBeforeTheFact { get; set; }
         public string ActivityStatusAfterTheFact { get; set; }
     }
+
+    public class ActivityModels
+    {
+
+        [Required(ErrorMessage = "required")]
+        public string _ActivityName { get; set; }
+        [Required(ErrorMessage = "required")]
+        public string _ActivityDate { get; set; }
+        public string _ActivityNote { get; set; }
+        public string _AddedBy { get; set; }
+        public string _AddedDateTime { get; set; }
+        public string _ModifiedBy { get; set; }
+        public string _ModifiedDateTime { get; set; }
+        [Range(1, int.MaxValue, ErrorMessage = "required")]
+        public int _CollegeID { get; set; }
+        public IEnumerable<SelectListItem> _Colleges { get; set; }
+        [Required(ErrorMessage = "required")]
+        public int _CampusID { get; set; }
+        public IEnumerable<SelectListItem> _Campuses { get; set; }
+        public int _MemberId { get; set; }
+        public string _Callback { get; set; }
+    }
 }

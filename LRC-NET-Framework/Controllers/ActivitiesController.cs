@@ -59,20 +59,48 @@ namespace LRC_NET_Framework.Controllers
             return View(Activities.ToPagedList(pageNumber, pageSize));
         }
 
-        //// GET: Activities/Details/5
-        //public ActionResult Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-        //    tb_Activity tb_Activity = db.tb_Activity.Find(id);
-        //    if (tb_Activity == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-        //    return View(tb_Activity);
-        //}
+        // GET: Activities/Create
+        [Authorize(Roles = "admin, organizer")]
+        public ActionResult CreateActivity(string callback, int? memberId)
+        {
+            ActivityModels activityModel = new ActivityModels {
+                _Callback = callback,
+                _MemberId = memberId ?? 0,
+                //_Colleges = new SelectList(db.tb_College, "CollegeID", "CollegeName"),
+                _Campuses = new SelectList(db.tb_Campus.OrderBy(s => s.CampusName), "CampusID", "CampusName")
+            };
+            activityModel._Colleges = new List<SelectListItem>
+            { new SelectListItem() {Value = "0", Text = "-- Select One --" }}.Concat(db.tb_College.Select(x => new SelectListItem
+                { Value = x.CollegeID.ToString(), Text = x.CollegeName }));
+
+            return View(activityModel);
+        }
+
+        // POST: Activities/Create
+        [HttpPost]
+        [Authorize(Roles = "admin, organizer")]
+        public ActionResult CreateActivity([Bind(Include = "_ActivityName,_ActivityDate,_ActivityNote,_CollegeID,_CampusID,_Callback,_MemberId")] ActivityModels model, FormCollection formCollection)
+        {
+            model._Colleges = new List<SelectListItem>
+            { new SelectListItem() {Value = "0", Text = "-- Select One --" }}.Concat(db.tb_College.Select(x => new SelectListItem
+            { Value = x.CollegeID.ToString(), Text = x.CollegeName }));
+            model._Campuses = new SelectList(db.tb_Campus.Where(s => s.CollegeID == model._CollegeID).OrderBy(s => s.CampusName), "CampusID", "CampusName");
+
+            return View(model);
+        }
+
+        public JsonResult GetCampussesByCollegeId(int CollegeId)
+        {
+            List<tb_Activity> activities = new List<tb_Activity>();
+            string json = String.Empty;
+            using (LRCEntities context = new LRCEntities())
+            {
+                SelectList Campuses = new SelectList(context.tb_Campus.Where(s => s.CollegeID == CollegeId).OrderBy(s => s.CampusName), "CampusID", "CampusName");
+                json = JsonConvert.SerializeObject(Campuses, Formatting.Indented);
+            }
+            return Json(json, JsonRequestBehavior.AllowGet);
+        }
+
 
         // GET: Activities/Create
         [Authorize(Roles = "admin, organizer")]
@@ -350,63 +378,6 @@ namespace LRC_NET_Framework.Controllers
         {
             return PartialView("NotSure");
         }
-
-        //// GET: Activities/Edit/5
-        //public ActionResult Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-        //    tb_Activity tb_Activity = db.tb_Activity.Find(id);
-        //    if (tb_Activity == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-        //    return View(tb_Activity);
-        //}
-
-        //// POST: Activities/Edit/5
-        //// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        //// more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Edit([Bind(Include = "ActivityID,ActivityStatusID,ActivityDate,ActivityName,ActivityNote,AddedBy,AddedDateTime,ModifiedBy,ModifiedDateTime")] tb_Activity tb_Activity)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        db.Entry(tb_Activity).State = EntityState.Modified;
-        //        db.SaveChanges();
-        //        return RedirectToAction("Index");
-        //    }
-        //    return View(tb_Activity);
-        //}
-
-        //// GET: Activities/Delete/5
-        //public ActionResult Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-        //    tb_Activity tb_Activity = db.tb_Activity.Find(id);
-        //    if (tb_Activity == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-        //    return View(tb_Activity);
-        //}
-
-        //// POST: Activities/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult DeleteConfirmed(int id)
-        //{
-        //    tb_Activity tb_Activity = db.tb_Activity.Find(id);
-        //    db.tb_Activity.Remove(tb_Activity);
-        //    db.SaveChanges();
-        //    return RedirectToAction("Index");
-        //}
 
         protected override void Dispose(bool disposing)
         {
