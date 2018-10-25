@@ -20,6 +20,7 @@ namespace LRC_NET_Framework
             this.tb_Building = new HashSet<tb_Building>();
             this.tb_CampusMapping = new HashSet<tb_CampusMapping>();
             this.tb_MemberMaster = new HashSet<tb_MemberMaster>();
+            this.tb_Activity = new HashSet<tb_Activity>();
         }
     
         public int CampusID { get; set; }
@@ -35,5 +36,7 @@ namespace LRC_NET_Framework
         public virtual ICollection<tb_CampusMapping> tb_CampusMapping { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_MemberMaster> tb_MemberMaster { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tb_Activity> tb_Activity { get; set; }
     }
 }

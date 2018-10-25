@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="0440ca77908841ea9f47cfe419dc968d" Name="Diagram1" ZoomLevel="67" ShowGrid="false">
+      <Diagram DiagramId="0440ca77908841ea9f47cfe419dc968d" Name="Diagram1" ZoomLevel="77" ShowGrid="false">
         <EntityTypeShape EntityType="LRCModel.tb_Dues" Width="1.5" PointX="5.25" PointY="21.875" IsExpanded="true" />
         <EntityTypeShape EntityType="LRCModel.tb_Gender" Width="1.5" PointX="5.25" PointY="18" IsExpanded="true" />
         <EntityTypeShape EntityType="LRCModel.tb_AssessmentName" Width="1.5" PointX="11.75" PointY="21" />
@@ -111,6 +111,8 @@
         <AssociationConnector Association="LRCModel.FK_tb_MembershipForms_AspNetUsersAddedBy" />
         <AssociationConnector Association="LRCModel.FK_tb_MembershipForms_AspNetUsersCollectedBy" />
         <AssociationConnector Association="LRCModel.FK_tb_CopeForms_tb_MemberMaster" />
+        <AssociationConnector Association="LRCModel.FK_tb_Activity_tb_Campus" />
+        <AssociationConnector Association="LRCModel.FK_tb_MemberAddress_AspNetUsersSourse" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

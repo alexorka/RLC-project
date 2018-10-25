@@ -42,7 +42,6 @@
                 </span>
                 <div class="col-md-12" id="AssessmentValue">
                     @Html.DropDownList("ValueID", null, htmlAttributes: new { @class = "form-control", style = "width: 120px;" })
-                    @*@Html.DropDownListFor(model => model._Assessment.Value, Enumerable.Range(0, 6).Select(i => new SelectListItem { Text = i.ToString(), Value = i.ToString() }), new { @class = "form-control", style = "width: 70px;" })*@
                     @Html.ValidationMessageFor(model => model._Assessment.ValueID, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -157,9 +156,7 @@
                             @Html.ValidationMessageFor(model => model._Activity.ActivityID, "", new { @class = "text-danger" })
                         </div>
                         <div style="float: left; margin-left:10px">
-                            <button type="button" class="btn btn-secondary">
-                                <a href="@Url.Action("NotSure", "Activities")" class="glyphicon glyphicon-plus viewDialog" , data-dialog-title="Question"></a>
-                            </button>
+                            <a href="@Url.Action("CreateActivity", "Activities", new { callback = "AddPersonAssessmentActivity", memberId = Model._Assessment.MemberID, returnCollegeID = Model._CollegeID })" class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
                         </div>
                     </div>
                 </div>

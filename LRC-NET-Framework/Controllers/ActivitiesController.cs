@@ -33,10 +33,10 @@ namespace LRC_NET_Framework.Controllers
                 Activities = Activities.Where(s => s.ActivityName.ToUpper().Contains(searchString.ToUpper()));
             }
             //Sorting
-                switch (sortOrder)
+            switch (sortOrder)
             {
                 case "Name desc":
-                    //Activities = Activities.OrderByDescending(s => s.ActivityName);
+                    Activities = Activities.OrderByDescending(s => s.ActivityName);
                     break;
                 //case "Date":
                 //    tb_MemberMasters = tb_MemberMasters.OrderBy(s => s.HireDate);
@@ -61,13 +61,14 @@ namespace LRC_NET_Framework.Controllers
 
         // GET: Activities/Create
         [Authorize(Roles = "admin, organizer")]
-        public ActionResult CreateActivity(string callback, int? memberId)
+        public ActionResult CreateActivity(string callback, int? memberId, int? returnCollegeID)
         {
             ActivityModels activityModel = new ActivityModels {
                 _Callback = callback,
                 _MemberId = memberId ?? 0,
-                //_Colleges = new SelectList(db.tb_College, "CollegeID", "CollegeName"),
-                _Campuses = new SelectList(db.tb_Campus.OrderBy(s => s.CampusName), "CampusID", "CampusName")
+                _ReturnCollegeID = returnCollegeID ?? 0,
+                _Campuses = new SelectList(db.tb_Campus.OrderBy(s => s.CampusName), "CampusID", "CampusName"),
+                _ActivityDate = DateTime.UtcNow
             };
             activityModel._Colleges = new List<SelectListItem>
             { new SelectListItem() {Value = "0", Text = "-- Select One --" }}.Concat(db.tb_College.Select(x => new SelectListItem
@@ -79,13 +80,63 @@ namespace LRC_NET_Framework.Controllers
         // POST: Activities/Create
         [HttpPost]
         [Authorize(Roles = "admin, organizer")]
-        public ActionResult CreateActivity([Bind(Include = "_ActivityName,_ActivityDate,_ActivityNote,_CollegeID,_CampusID,_Callback,_MemberId")] ActivityModels model, FormCollection formCollection)
+        public ActionResult CreateActivity([Bind(Include = "_ActivityName,_ActivityDate,_ActivityNote,_CollegeID,_CampusID,_Callback,_MemberId,_ReturnCollegeID")] ActivityModels model, FormCollection formCollection)
         {
+            Error error = new Error();
+            error.errCode = ErrorDetail.Success;
+            error.errMsg = ErrorDetail.GetMsg(error.errCode);
+            List<string> errs = new List<string>();
+
             model._Colleges = new List<SelectListItem>
             { new SelectListItem() {Value = "0", Text = "-- Select One --" }}.Concat(db.tb_College.Select(x => new SelectListItem
             { Value = x.CollegeID.ToString(), Text = x.CollegeName }));
             model._Campuses = new SelectList(db.tb_Campus.Where(s => s.CollegeID == model._CollegeID).OrderBy(s => s.CampusName), "CampusID", "CampusName");
 
+            var userId = HttpContext.GetOwinContext().Authentication.User.Identity.GetUserId();
+            using (LRCEntities context = new LRCEntities())
+            {
+                tb_Activity tb_Activity = new tb_Activity
+                {
+                    ActivityName = model._ActivityName,
+                    ActivityDate = model._ActivityDate,
+                    CampusID = model._CampusID,
+                    ActivityNote = model._ActivityNote,
+                    AddedBy = userId,
+                    AddedDateTime = DateTime.UtcNow
+                };
+                context.tb_Activity.Add(tb_Activity);
+                try
+                {
+                    context.SaveChanges();
+                }
+                catch (DbEntityValidationException ex)
+                {
+                    error.errCode = ErrorDetail.DataImportError;
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode);
+                    foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
+                    {
+                        error.errMsg += ". Object: " + validationError.Entry.Entity.ToString();
+                        foreach (DbValidationError err in validationError.ValidationErrors)
+                        {
+                            error.errMsg += ". " + err.ErrorMessage;
+                        }
+                    }
+                    errs.Add("Error #" + error.errCode.ToString() + "!" + error.errMsg);
+                    ViewData["ErrorList"] = errs;
+                    return View(model);
+                }
+            }
+            switch (model._Callback)
+            {
+                case "AddActivityByMember":
+                    return RedirectToAction("AddActivityByMember");
+                case "AddActivity":
+                    return RedirectToAction("AddActivity", new { @id = model._MemberId });
+                case "AddPersonAssessmentActivity":
+                    return RedirectToAction("AddPersonAssessmentActivity", "Assessment", new { @id = model._MemberId, CollegeID = model._ReturnCollegeID });
+                default:
+                    break;
+            }
             return View(model);
         }
 

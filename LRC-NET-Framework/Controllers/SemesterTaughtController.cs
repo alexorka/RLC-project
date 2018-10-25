@@ -414,12 +414,6 @@ namespace LRC_NET_Framework.Controllers
                 ViewBag.Colleges = li;
             }
 
-            //var campuses = db.tb_Campus.Where(c => c.CollegeID == collegeID).OrderBy(o => o.CampusName);
-            //int campusID = campuses.FirstOrDefault().CampusID;
-            //ViewBag.Campuses = new SelectList(campuses, "CampusID", "CampusName");
-            //ViewBag.CampusID = campusID;
-            //ViewBag.BuildingID = db.tb_Building.Where(c => c.CampusID == campusID).OrderBy(o => o.BuildingName).FirstOrDefault().BuildingID;
-
             return View(model);
         }
 
@@ -429,6 +423,11 @@ namespace LRC_NET_Framework.Controllers
         [Authorize(Roles = "admin, organizer")]
         public ActionResult AddMemberSchedule(SemesterTaughtModel model, int? building/*, FormCollection formCollection*/)
         {
+            Error error = new Error();
+            error.errCode = ErrorDetail.Success;
+            error.errMsg = ErrorDetail.GetMsg(error.errCode);
+            List<string> errs = new List<string>();
+
             List<tb_WeekDay> DaysOfWeek = new List<tb_WeekDay>();
             DaysOfWeek = db.tb_WeekDay.ToList();
             model._WeekDays = DaysOfWeek;
@@ -447,6 +446,12 @@ namespace LRC_NET_Framework.Controllers
                 li.Add(new SelectListItem { Text = m.CollegeName, Value = m.CollegeID.ToString(), Selected = true });
             }
             ViewBag.Colleges = li;
+
+            if (model._StartTime.TimeOfDay >= model._EndTime.TimeOfDay)
+            {
+                ModelState.AddModelError("Error", "Enter an End Time that is later than Start time");
+                return View(model);
+            }
 
             if (building == null || building <= 0)
             {

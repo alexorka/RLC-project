@@ -177,7 +177,7 @@ namespace LRC_NET_Framework.Models
                     }
                 }
 
-                //Assign new address to ac current Member
+                //Assign new address to the current Member
                 //Check dublicates
                 memberAddresses = memberAddresses.Where(s => s.MemberID == mID && s.HomeStreet1 == _HomeStreet1
                     && s.City == city && s.ZipCode == postal).ToArray();

@@ -33,82 +33,74 @@
     <div class="col-md-3 align-text-top"></div>
     <div class="col-md-7"></div>
 </div>
-<table class="table"  style="font-size:smaller;">
-    <tr>
-        <th>
-            @Html.ActionLink("Faculty Member", "Index", new { sortOrder = ViewBag.NameSortParm })
-        </th>
-        <th>
-            Phone
-        </th>
-        <th>
-            Email
-        </th>
-        <th>
-            Status
-        </th>
-        <th>
-            Note
-        </th>
-        <th>
-            Membership
-        </th>
-        <th>
-            COPE Status
-        </th>
-        <th>
-            Fee Payer Assess
-        </th>
-        <th>
-            Membership Commitment
-        </th>
-    </tr>
-
-    @foreach (var action in Model)
-    {
-        <tr>
-            <td colspan="9" style="background-color:lightgray">
-                @Html.DisplayFor(modelItem => action.ActivityName)
-            </td>
+<div class="col-md-12" id="Activities" style="background-color:lavender; border:solid; margin-top:10px; margin-bottom:10px; border-radius:5px; border-width:1px; border-color:gainsboro">
+    <table class="table" style="font-size:smaller;">
+        <tr style="background:gainsboro;">
+            <th>
+                Faculty Member
+            </th>
+            <th>
+                Phone
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                @Html.ActionLink("Activity Name", "Index", new { sortOrder = ViewBag.NameSortParm })
+            </th>
+            <th>
+                Activity Date
+            </th>
+            <th>
+                College
+            </th>
+            <th>
+                Campus
+            </th>
+            <th>
+                Note
+            </th>
         </tr>
-        foreach (var item in action.tb_MemberActivity)
+        @foreach (var action in Model)
         {
-            <tr>
-                <td>
-                    @Html.ActionLink(item.tb_MemberMaster.LastName + ", " + item.tb_MemberMaster.FirstName, "Details", "Home", new { id = item.tb_MemberMaster.MemberID }, new { @class = "text -info" })
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.tb_MemberMaster.tb_MemberPhoneNumbers.Where(t => t.tb_MemberMaster.MemberID == item.tb_MemberMaster.MemberID).FirstOrDefault().PhoneNumber)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.tb_MemberMaster.tb_MemberEmail.Where(t => t.tb_MemberMaster.MemberID == item.tb_MemberMaster.MemberID).FirstOrDefault().EmailAddress)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.tb_ActivityStatus.ActivityStatusName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.tb_Activity.ActivityNote)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Membership)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.tb_MemberMaster.CopeStatus)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.tb_MemberMaster.tb_Assessment.Where(t => t.tb_MemberMaster.MemberID == item.tb_MemberMaster.MemberID).FirstOrDefault().tb_AssessmentValue.ValueName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.MembershipCommitment)
-                </td>
-            </tr>
+            foreach (var item in action.tb_MemberActivity)
+            {
+                <tr style="color:dimgray; background:lavender;">
+                    <td>
+                        @Html.ActionLink(item.tb_MemberMaster.LastName + ", " + item.tb_MemberMaster.FirstName, "Details", "Home", new { id = item.tb_MemberMaster.MemberID }, new { @class = "text -info" })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.tb_MemberMaster.tb_MemberPhoneNumbers.Where(t => t.tb_MemberMaster.MemberID == item.tb_MemberMaster.MemberID).FirstOrDefault().PhoneNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.tb_MemberMaster.tb_MemberEmail.Where(t => t.tb_MemberMaster.MemberID == item.tb_MemberMaster.MemberID).FirstOrDefault().EmailAddress)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.tb_ActivityStatus.ActivityStatusName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => action.ActivityName)
+                    </td>
+                    <td>
+                        @Convert.ToDateTime(action.ActivityDate).ToString("MM/dd/yyyy")
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => action.tb_Campus.tb_College.CollegeName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => action.tb_Campus.CampusName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => action.ActivityNote)
+                    </td>
+                </tr>
+            }
         }
-    }
-    @*@Html.ActionLink("Edit", "Edit", new { id = item.ActivityID }) |
-        @Html.ActionLink("Details", "Details", new { id = item.ActivityID }) |
-        @Html.ActionLink("Delete", "Delete", new { id = item.ActivityID })*@
-
-</table>
+    </table>
+</div>
 <br />
     Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) from @Model.PageCount
 

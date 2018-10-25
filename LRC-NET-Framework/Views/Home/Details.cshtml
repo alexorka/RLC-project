@@ -219,13 +219,16 @@
     <table class="table h6">
         <tr style="background:lavender">
             <th>
-                Activity
+                Activity Name
             </th>
             <th>
-                Date
+                Activity Date
             </th>
             <th>
-                Role
+                College
+            </th>
+            <th>
+                Campus
             </th>
             <th>
                 Note
@@ -236,20 +239,23 @@
         {
             if (item != null)
             {
-                <tr style="color:dimgray;">
-                    <td>
-                        @Html.DisplayFor(modelItem => item.tb_Activity.ActivityName)
-                    </td>
-                    <td>
-                        @Convert.ToDateTime(item.tb_Activity.ActivityDate).ToString("MM/dd/yyyy")
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.tb_MemberMaster.tb_MemberRoles.Where(t => t.MemberID == Model._Member.MemberID).LastOrDefault().tb_Roles.RoleName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.tb_Activity.ActivityNote)
-                    </td>
-                </tr>
+        <tr style="color:dimgray;">
+            <td>
+                @Html.DisplayFor(modelItem => item.tb_Activity.ActivityName)
+            </td>
+            <td>
+                @Convert.ToDateTime(item.tb_Activity.ActivityDate).ToString("MM/dd/yyyy")
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.tb_Activity.tb_Campus.tb_College.CollegeName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.tb_Activity.tb_Campus.CampusName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.tb_Activity.ActivityNote)
+            </td>
+        </tr>
             }
             else
             {
@@ -433,11 +439,11 @@
                 Type
             </th>
             <th>
-                Added
+                Effective Start Date
             </th>
         </tr>
 
-        @foreach (var item in Model._Member.tb_MemberPhoneNumbers.Where(t => t.MemberID == Model._Member.MemberID))
+        @foreach (var item in Model._Member.tb_MemberPhoneNumbers.Where(t => t.MemberID == Model._Member.MemberID).OrderBy(s => s.CreatedDateTime))
         {
             if (item != null)
             {
@@ -449,10 +455,6 @@
                         @if (item.IsPrimary)
                         {
                             <span>Primary</span>
-                        }
-                        else
-                        {
-                            <span>Secondary</span>
                         }
                     </td>
                     <td>
@@ -491,12 +493,12 @@
                 Status
             </th>
             <th>
-                Added
+                Effective Start Date
             </th>
 
         </tr>
 
-        @foreach (var item in Model._Member.tb_MemberEmail.Where(t => t.MemberID == Model._Member.MemberID))
+        @foreach (var item in Model._Member.tb_MemberEmail.Where(t => t.MemberID == Model._Member.MemberID).OrderBy(s => s.CreatedDateTime))
         {
             if (item != null)
             {
@@ -511,10 +513,6 @@
                         @if (item.IsPrimary)
                         {
                             <span>Primary</span>
-                        }
-                        else
-                        {
-                            <span>Secondary</span>
                         }
                     </td>
                     <td>
@@ -548,7 +546,7 @@
                 Status
             </th>
             <th>
-                Added
+                Effective Start Date
             </th>
             <th>
                 Source
@@ -556,22 +554,26 @@
 
         </tr>
 
-        @foreach (var item in Model._Member.tb_MemberAddress.Where(t => t.MemberID == Model._Member.MemberID))
+        @foreach (var item in Model._Member.tb_MemberAddress.Where(t => t.MemberID == Model._Member.MemberID).OrderBy(s => s.CreatedDateTime))
         {
             if (item != null)
             {
                 <tr style="color:dimgray;">
                     <td>
-                        @ViewBag.MemberAddress
+                        @{
+                            var space = String.Empty;
+                            if (!String.IsNullOrEmpty(@item.HomeStreet2))
+                            {
+                                space = " ";
+                            }
+                            var result = @item.HomeStreet1 + space + @item.HomeStreet2 + ", " + @item.City + ", " + @item.tb_States.StateCode + ", " + @item.ZipCode;
+                        }
+                        <span>@result</span>
                     </td>
                     <td>
                         @if (item.IsPrimary)
                         {
                             <span>Primary</span>
-                        }
-                        else
-                        {
-                            <span>Secondary</span>
                         }
                     </td>
                     <td>
@@ -581,7 +583,14 @@
                         }
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Source)
+                        @if (item.SourceID == 3) //session user name was saved
+                        {
+                            @Html.DisplayFor(modelItem => item.AspNetUsers1.LastFirstName)
+                        }
+                        else
+                        {
+                            @Html.DisplayFor(modelItem => item.tb_AddressSource.SourceName)
+                        }
                     </td>
 
                 </tr>

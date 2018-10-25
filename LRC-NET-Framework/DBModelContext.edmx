@@ -61,6 +61,7 @@
           <Property Name="AddedDateTime" Type="datetime" />
           <Property Name="ModifiedBy" Type="nvarchar" MaxLength="128" />
           <Property Name="ModifiedDateTime" Type="datetime" />
+          <Property Name="CampusID" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="tb_ActivityStatus">
           <Key>
@@ -307,7 +308,7 @@
           <Property Name="IsPrimary" Type="bit" Nullable="false" />
           <Property Name="AddressTypeID" Type="int" Nullable="false" />
           <Property Name="SourceID" Type="int" Nullable="false" />
-          <Property Name="Source" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Source" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="CreatedDateTime" Type="datetime" Nullable="false" />
           <Property Name="ModifiedBy" Type="nvarchar" MaxLength="128" />
           <Property Name="ModifiedDateTime" Type="datetime" />
@@ -608,6 +609,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_tb_Activity_tb_Campus">
+          <End Role="tb_Campus" Type="Self.tb_Campus" Multiplicity="1" />
+          <End Role="tb_Activity" Type="Self.tb_Activity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_Campus">
+              <PropertyRef Name="CampusID" />
+            </Principal>
+            <Dependent Role="tb_Activity">
+              <PropertyRef Name="CampusID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_tb_AlsoWorksAt_tb_Employers">
           <End Role="tb_Employers" Type="Self.tb_Employers" Multiplicity="1" />
           <End Role="tb_AlsoWorksAt" Type="Self.tb_AlsoWorksAt" Multiplicity="*" />
@@ -845,6 +858,18 @@
             </Principal>
             <Dependent Role="tb_MemberAddress">
               <PropertyRef Name="ModifiedBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tb_MemberAddress_AspNetUsersSourse">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="tb_MemberAddress" Type="Self.tb_MemberAddress" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="tb_MemberAddress">
+              <PropertyRef Name="Source" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1287,6 +1312,10 @@
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="tb_Activity" EntitySet="tb_Activity" />
           </AssociationSet>
+          <AssociationSet Name="FK_tb_Activity_tb_Campus" Association="Self.FK_tb_Activity_tb_Campus">
+            <End Role="tb_Campus" EntitySet="tb_Campus" />
+            <End Role="tb_Activity" EntitySet="tb_Activity" />
+          </AssociationSet>
           <AssociationSet Name="FK_tb_AlsoWorksAt_tb_Employers" Association="Self.FK_tb_AlsoWorksAt_tb_Employers">
             <End Role="tb_Employers" EntitySet="tb_Employers" />
             <End Role="tb_AlsoWorksAt" EntitySet="tb_AlsoWorksAt" />
@@ -1364,6 +1393,10 @@
             <End Role="tb_MemberActivity" EntitySet="tb_MemberActivity" />
           </AssociationSet>
           <AssociationSet Name="FK_tb_MemberAddress_AspNetUsers" Association="Self.FK_tb_MemberAddress_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="tb_MemberAddress" EntitySet="tb_MemberAddress" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tb_MemberAddress_AspNetUsersSourse" Association="Self.FK_tb_MemberAddress_AspNetUsersSourse">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="tb_MemberAddress" EntitySet="tb_MemberAddress" />
           </AssociationSet>
@@ -1784,6 +1817,14 @@
             <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
             <End Role="tb_CopeForms" EntitySet="tb_CopeForms" />
           </AssociationSet>
+          <AssociationSet Name="FK_tb_Activity_tb_Campus" Association="LRCModel.FK_tb_Activity_tb_Campus">
+            <End Role="tb_Campus" EntitySet="tb_Campus" />
+            <End Role="tb_Activity" EntitySet="tb_Activity" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tb_MemberAddress_AspNetUsersSourse" Association="LRCModel.FK_tb_MemberAddress_AspNetUsersSourse">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="tb_MemberAddress" EntitySet="tb_MemberAddress" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="tb_AssessmentName">
           <Key>
@@ -2128,6 +2169,7 @@
           <NavigationProperty Name="tb_College" Relationship="LRCModel.FK_tb_Campus_tb_College" FromRole="tb_Campus" ToRole="tb_College" />
           <NavigationProperty Name="tb_CampusMapping" Relationship="LRCModel.FK_tb_CampusMapping_tb_Campus" FromRole="tb_Campus" ToRole="tb_CampusMapping" />
           <NavigationProperty Name="tb_MemberMaster" Relationship="LRCModel.FK_tb_MemberMaster_tb_Campus" FromRole="tb_Campus" ToRole="tb_MemberMaster" />
+          <NavigationProperty Name="tb_Activity" Relationship="LRCModel.FK_tb_Activity_tb_Campus" FromRole="tb_Campus" ToRole="tb_Activity" />
         </EntityType>
         <Association Name="FK_tb_Building_tb_Campus">
           <End Type="LRCModel.tb_Campus" Role="tb_Campus" Multiplicity="1" />
@@ -2555,7 +2597,7 @@
           <Property Name="IsPrimary" Type="Boolean" Nullable="false" />
           <Property Name="AddressTypeID" Type="Int32" Nullable="false" />
           <Property Name="SourceID" Type="Int32" Nullable="false" />
-          <Property Name="Source" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Source" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDateTime" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="ModifiedDateTime" Type="DateTime" Precision="3" />
@@ -2566,6 +2608,7 @@
           <NavigationProperty Name="tb_MemberMaster" Relationship="LRCModel.FK_tb_MemberAddress_tb_MemberMaster" FromRole="tb_MemberAddress" ToRole="tb_MemberMaster" />
           <NavigationProperty Name="tb_States" Relationship="LRCModel.FK_tb_MemberAddress_tb_States" FromRole="tb_MemberAddress" ToRole="tb_States" />
           <NavigationProperty Name="AspNetUsers" Relationship="LRCModel.FK_tb_MemberAddress_AspNetUsers" FromRole="tb_MemberAddress" ToRole="AspNetUsers" />
+          <NavigationProperty Name="AspNetUsers1" Relationship="LRCModel.FK_tb_MemberAddress_AspNetUsersSourse" FromRole="tb_MemberAddress" ToRole="AspNetUsers" />
         </EntityType>
         <EntityType Name="tb_MemberPhoneNumbers">
           <Key>
@@ -2790,6 +2833,8 @@
           <NavigationProperty Name="tb_MemberActivity" Relationship="LRCModel.FK_tb_MemberActivity_tb_Activity1" FromRole="tb_Activity" ToRole="tb_MemberActivity" />
           <NavigationProperty Name="AspNetUsers" Relationship="LRCModel.FK_tb_Activity_AspNetUsers" FromRole="tb_Activity" ToRole="AspNetUsers" />
           <NavigationProperty Name="AspNetUsers1" Relationship="LRCModel.FK_tb_Activity_AspNetUsers1" FromRole="tb_Activity" ToRole="AspNetUsers" />
+          <Property Name="CampusID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="tb_Campus" Relationship="LRCModel.FK_tb_Activity_tb_Campus" FromRole="tb_Activity" ToRole="tb_Campus" />
         </EntityType>
         <EntityType Name="tb_MemberActivity">
           <Key>
@@ -2903,6 +2948,7 @@
           <NavigationProperty Name="tb_MemberPhoneNumbers" Relationship="LRCModel.FK_tb_MemberPhoneNumbers_AspNetUsers" FromRole="AspNetUsers" ToRole="tb_MemberPhoneNumbers" />
           <NavigationProperty Name="tb_MembershipForms" Relationship="LRCModel.FK_tb_MembershipForms_AspNetUsersAddedBy" FromRole="AspNetUsers" ToRole="tb_MembershipForms" />
           <NavigationProperty Name="tb_MembershipForms1" Relationship="LRCModel.FK_tb_MembershipForms_AspNetUsersCollectedBy" FromRole="AspNetUsers" ToRole="tb_MembershipForms" />
+          <NavigationProperty Name="tb_MemberAddress1" Relationship="LRCModel.FK_tb_MemberAddress_AspNetUsersSourse" FromRole="AspNetUsers" ToRole="tb_MemberAddress" />
         </EntityType>
         <EntityType Name="tb_CopeForms">
           <Key>
@@ -3090,6 +3136,30 @@
             </Principal>
             <Dependent Role="tb_CopeForms">
               <PropertyRef Name="MemberID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tb_Activity_tb_Campus">
+          <End Type="LRCModel.tb_Campus" Role="tb_Campus" Multiplicity="1" />
+          <End Type="LRCModel.tb_Activity" Role="tb_Activity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_Campus">
+              <PropertyRef Name="CampusID" />
+            </Principal>
+            <Dependent Role="tb_Activity">
+              <PropertyRef Name="CampusID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tb_MemberAddress_AspNetUsersSourse">
+          <End Type="LRCModel.AspNetUsers" Role="AspNetUsers" Multiplicity="1" />
+          <End Type="LRCModel.tb_MemberAddress" Role="tb_MemberAddress" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="tb_MemberAddress">
+              <PropertyRef Name="Source" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3623,6 +3693,7 @@
           <EntitySetMapping Name="tb_Activity">
             <EntityTypeMapping TypeName="LRCModel.tb_Activity">
               <MappingFragment StoreEntitySet="tb_Activity">
+                <ScalarProperty Name="CampusID" ColumnName="CampusID" />
                 <ScalarProperty Name="ModifiedDateTime" ColumnName="ModifiedDateTime" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="AddedDateTime" ColumnName="AddedDateTime" />

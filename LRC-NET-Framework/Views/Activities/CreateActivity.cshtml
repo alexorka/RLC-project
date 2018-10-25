@@ -6,11 +6,16 @@
 }
 <div class="font-weight-bold" style="background-color: #357ebd; border-bottom-left-radius:7px; border-bottom-right-radius:7px; color:gainsboro; padding-top:5px; padding-bottom:5px; padding-left:30px;"><h4>Create New Activity</h4></div>
 
+@using LRC_NET_Framework.Helpers
+@Html.CreateList(ViewData["ErrorList"] as List<string>)
+
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(model => model._MemberId)
     @Html.HiddenFor(model => model._Callback)
+    @Html.HiddenFor(model => model._ReturnCollegeID)
+
     <div class="form-horizontal">
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 

@@ -29,9 +29,17 @@
     <div class="form-group">
         <div class="col-md-11 col-md-offset-1" id="ActID">
             @Html.Label("ActID", "Activity", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
-            @Html.DropDownList("ActivityID", null, htmlAttributes: new { @class = "form-control ddlControl" })
-            @Html.ValidationMessageFor(model => model.ActivityID, "", new { @class = "text-danger" })
+            <div style="width: 100%;">
+                <div style="float: left;">
+                    @Html.DropDownList("ActivityID", null, htmlAttributes: new { @class = "form-control ddlControl" })
+                    @Html.ValidationMessageFor(model => model.ActivityID, "", new { @class = "text-danger" })
+                </div>
+                <div style="float: left; margin-left:10px">
+                    <a href="@Url.Action("CreateActivity", new { callback = "AddActivityByMember" })" class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+                </div>
+            </div>
         </div>
+
     </div>
 
     <div id="HiddenBlock" hidden="hidden">

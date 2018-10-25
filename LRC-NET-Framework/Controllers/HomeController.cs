@@ -187,19 +187,7 @@ namespace LRC_NET_Framework.Controllers
             {
                 return HttpNotFound();
             }
-            tb_MemberAddress ma = db.tb_MemberAddress.Where(t => t.MemberID == id).Where(t => t.IsPrimary == true).FirstOrDefault();
-            if (ma != null)
-            {
-                var space = String.Empty;
-                if (!String.IsNullOrEmpty(ma.HomeStreet2))
-                    space = " ";
-                ViewBag.MemberAddress = ma.HomeStreet1 + space + ma.HomeStreet2 + ", " + ma.City + ", " + ma.tb_States.StateCode + ", " + ma.ZipCode;
-            }
-            else
-                ViewBag.MemberAddress = "Primary Address is not present";
 
-            //tb_AssessmentName assessmentName = new tb_AssessmentName();
-            //assessmentName = db.tb_AssessmentName;
             List<tb_AssessmentName> AssessmentNames = new List<tb_AssessmentName>();
             AssessmentNames = db.tb_AssessmentName.ToList();
 
@@ -428,7 +416,7 @@ namespace LRC_NET_Framework.Controllers
                 _IsPhonePrimary = true,
                 _PhoneTypeID = 1,
                 _PhoneTypes = new SelectList(db.tb_PhoneType, "PhoneTypeID", "PhoneTypeName"),
-                _MemberPhoneNumbers = db.tb_MemberPhoneNumbers.Where(t => t.MemberID == id).ToList(),
+                _MemberPhoneNumbers = db.tb_MemberPhoneNumbers.Where(t => t.MemberID == id).OrderBy(s => s.CreatedDateTime).ToList(),
                 // ADDRESS >>check here
                 _StateCode = db.tb_States.Where(r => r.StateID == db.tb_MemberAddress.Where(t => t.MemberID == id).FirstOrDefault().StateID).FirstOrDefault().StateCode,
                 //_CreatedAdressBy = 2,
@@ -442,12 +430,12 @@ namespace LRC_NET_Framework.Controllers
                 _City = String.Empty,
                 // >>check here
                 _States = new SelectList(db.tb_States.ToList(), "StateID", "StateCode"),
-                _MemberAddresses = db.tb_MemberAddress.Where(t => t.MemberID == id).ToList(),
+                _MemberAddresses = db.tb_MemberAddress.Where(t => t.MemberID == id).OrderBy(s => s.CreatedDateTime).ToList(),
                 //EMAIL
                 _EmailTypeID = 1,
                 _IsEmailPrimary = true,
                 _EmailTypes = new SelectList(db.tb_EmailType.ToList(), "EmailTypeID", "EmailTypeName"),
-                _MemberEmails = db.tb_MemberEmail.Where(t => t.MemberID == id).ToList()
+                _MemberEmails = db.tb_MemberEmail.Where(t => t.MemberID == id).OrderBy(s => s.CreatedDateTime).ToList()
             };
             return View(model);
         }
@@ -497,8 +485,14 @@ namespace LRC_NET_Framework.Controllers
                             modelState.Value.Errors.Clear();
                     }
                     if (isValid)
-                        errs = CreateMemberModel.AssignAddress(model._HomeStreet1, model._HomeStreet2, model._City, model._StateID.ToString(), 
-                            model._ZipCode, model._AddressTypeID, model._IsAdressPrimary, "Form", model._SourceID, model._MemberID, uName);
+                    {
+                        string source = String.Empty;
+                        //LZ requirement: Add "Current User" as once of the options and if selected, insert the session user name as the source.
+                        if (model._SourceID == 3) //Current User (Fill out Source field in tb_MemberAddress)
+                            source = uName;
+                        errs = CreateMemberModel.AssignAddress(model._HomeStreet1, model._HomeStreet2, model._City, model._StateID.ToString(),
+                            model._ZipCode, model._AddressTypeID, model._IsAdressPrimary, source, model._SourceID, model._MemberID, uName);
+                    }
                     break;
                 case "Submit New Email":
                     //Check 3rd Html.BeginForm validation only. _HomeStreet1: [Required], _City: [Required], _ZipCode: [Required]
