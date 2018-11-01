@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="font-weight-bold" style="background-color: #357ebd; border-bottom-left-radius:7px; border-bottom-right-radius:7px; color:gainsboro; padding-top:5px; padding-bottom:5px; padding-left:30px;"><h4>Manage Notes</h4></div>
+<div class="font-weight-bold" style="background-color: #357ebd; border-bottom-left-radius:7px; border-bottom-right-radius:7px; color:gainsboro; padding-top:5px; padding-bottom:5px; padding-left:30px;"><h4>Manage Notes (@ViewBag.MemberName)</h4></div>
 
 @using (Html.BeginForm())
 {
@@ -14,7 +14,6 @@
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
     @Html.HiddenFor(model => model._MemberID)
     <div class="col-md-11 col-md-offset-1"><h4>Add Note</h4></div>
-    <hr />
     <div class="form-horizontal">
         <fieldset>
 
@@ -35,8 +34,8 @@
             </div>
 
             <div class="form-group">
-                <div class="col-md-11 col-md-offset-1" id="NoteTypeID" style="padding-bottom:15px;">
-                    @Html.Label("NoteTypeID", "Note Type", htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-11 col-md-offset-1" id="NoteTypeID"">
+                    @Html.Label("NoteTypeID", "Note Type", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
                     @Html.DropDownListFor(model => model._NoteTypeID, Model._NoteTypes, new { @class = "form-control", style = "width: 250px;" })
                     <small><i style="color:gray;">Note types allow you to categorize the kind of note it is</i></small>
                     @Html.ValidationMessageFor(model => model._NoteTypeID, "", new { @class = "text-danger" })
@@ -44,9 +43,9 @@
             </div>
 
             <div class="form-group">
-                <div class="col-md-11 col-md-offset-1" id="TakenBy" style="padding-bottom:15px;">
-                    @Html.Label("TakenBy", "Taken By", htmlAttributes: new { @class = "control-label" })
-                    @Html.TextBoxFor(model => model._TakenBy, "", new { @class = "form-control", disabled = "disabled", style = "width: 150px;" })
+                <div class="col-md-11 col-md-offset-1" id="TakenBy"">
+                    @Html.Label("TakenBy", "Taken By", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
+                    @Html.DropDownList("_TakenBy", null, htmlAttributes: new { @class = "form-control" })
                     <small><i style="color:gray;">The person who actually took the note. The system is keeping track of the person entering the note (you)</i></small>
                     @Html.ValidationMessageFor(model => model._TakenBy, "", new { @class = "text-danger" })
                 </div>
@@ -58,31 +57,32 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <div class="col-md-11 col-md-offset-1" id="Notes">
-                    @Html.Label("Notes", "Notes", htmlAttributes: new { @class = "control-label" })
-                    <table class="table">
-                        <tr class="text-info">
-                            <th width="50%">
-                                Note
-                            </th>
-                            <th>
-                                Note&nbsp;Type
-                            </th>
-                            <th>
-                                Date&nbsp;of&nbsp;Note
-                            </th>
-                            <th>
-                                Taken&nbsp;By
-                            </th>
-                            <th>
-                                Added
-                            </th>
-                            <th>
-                                Entered&nbsp;By
-                            </th>
-                        </tr>
-                        @foreach (var item in Model._MemberNotes as List<tb_MemberNotes>)
+        @using LRC_NET_Framework.Helpers
+        @Html.CreateList(ViewData["ErrorList"] as List<string>)
+
+        @if (Model._MemberNotes.Count() > 0)
+        {
+        <div class="col-md-12" id="Notes" style="font-size:smaller; background-color:lavender; border:solid; margin-top:40px; margin-bottom:10px; border-radius:5px; border-width:1px; border-color:gainsboro">
+
+            <div style="background-color:gainsboro; padding-bottom:5px; padding-left:30px; border-bottom-left-radius:5px; border-bottom-right-radius:5px;">@Html.Label("Notes", "Notes", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })</div>
+
+            <table class="table">
+                <tr class="text-info">
+                    <th @*width="50%"*@>
+                        Note
+                    </th>
+                    <th>
+                        Note&nbsp;Type
+                    </th>
+                    <th>
+                        Date&nbsp;of&nbsp;Note
+                    </th>
+                    <th>
+                        Taken&nbsp;By
+                    </th>
+
+                </tr>
+                @foreach (var item in Model._MemberNotes as List<tb_MemberNotes>)
                 {
                     <tr>
                         <td>
@@ -92,23 +92,17 @@
                             @Html.DisplayFor(modelItem => item.tb_NoteType.NoteType)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.NoteDate, "{0:yyyy-MM-dd}", new { @class = "form-control datecontrol", type = "date", style = "width: 150px;" })
+                            @Convert.ToDateTime(item.NoteDate).ToString("MM/dd/yyyy")
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.TakenBy)
+                            @Html.DisplayFor(m => item.AspNetUsers.LastFirstName)
                         </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.AddedBy)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.ModifiedBy)
-                        </td>
-                    </tr>
-        }
-                    </table>
-                </div>
-            </div>
 
+                    </tr>
+                }
+            </table>
+        </div>
+        }
         </fieldset>
     </div>
 }

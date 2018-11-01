@@ -527,6 +527,42 @@ namespace LRC_NET_Framework.Controllers
             return View(model);
         }
 
+        // GET: Notes
+        [Authorize(Roles = "admin, organizer")]
+        public ActionResult MembershipFormsList(string sortOrder, string searchString, int? page)
+        {
+            var MembershipForms = db.tb_MembershipForms.Include(t => t.tb_MemberMaster);
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Date" : "";
+            //Searching @ Filtering
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                MembershipForms = MembershipForms.Where(s => s.tb_MemberMaster.LastName.ToUpper().Contains(searchString.ToUpper())
+                                       || s.tb_MemberMaster.FirstName.ToUpper().Contains(searchString.ToUpper()));
+            }
+            //Sorting
+            switch (sortOrder)
+            {
+                case "Name desc":
+                    break;
+                case "Date":
+                    MembershipForms = MembershipForms.OrderByDescending(s => s.Signed);
+                    break;
+                default:
+                    MembershipForms = MembershipForms.OrderBy(s => s.Signed);
+                    break;
+            }
+
+            //Paging
+            int pageSize = 20;
+            int pageNumber = (page ?? 1);
+
+            ViewData["MemberQty"] = MembershipForms.Count();
+
+
+            return View(MembershipForms.ToPagedList(pageNumber, pageSize));
+            //return View(MemberNotes.ToList());
+        }
+
         // GET: Home/AddMembershipForm
         public ActionResult AddMembershipForm(int? id)
         {
@@ -571,6 +607,13 @@ namespace LRC_NET_Framework.Controllers
             if (file != null && file.ContentLength > 0)
                 try
                 {
+                    var extension = file.FileName.Split('.').Last().ToUpper();
+                    if (extension != "PDF" && extension != "JPG")
+                    {
+                        ViewBag.Message = "Selected file type is not PDF or JPEG";
+                        return View(model);
+                    }
+
                     string path = Path.Combine(Server.MapPath(MvcApplication.MembershipFormsFolder), file.FileName);
                     file.SaveAs(path);
                     ViewBag.Message = "File uploaded successfully";
@@ -583,12 +626,6 @@ namespace LRC_NET_Framework.Controllers
             else
             {
                 ViewBag.Message = "You have not specified a file";
-                return View(model);
-            }
-            var extension = file.FileName.Split('.').Last().ToUpper();
-            if (extension != "PDF" && extension != "JPG")
-            {
-                ViewBag.Message = "Selected file type is not PDF or JPEG";
                 return View(model);
             }
 
@@ -699,6 +736,13 @@ namespace LRC_NET_Framework.Controllers
             if (file != null && file.ContentLength > 0)
                 try
                 {
+                    var extension = file.FileName.Split('.').Last().ToUpper();
+                    if (extension != "PDF" && extension != "JPG")
+                    {
+                        ViewBag.Message = "Selected file type is not PDF or JPEG";
+                        return View(model);
+                    }
+
                     string path = Path.Combine(Server.MapPath(MvcApplication.CopeFormsFolder), file.FileName);
                     file.SaveAs(path);
                     ViewBag.Message = "File uploaded successfully";
@@ -713,12 +757,7 @@ namespace LRC_NET_Framework.Controllers
                 ViewBag.Message = "You have not specified a file";
                 return View(model);
             }
-            var extension = file.FileName.Split('.').Last().ToUpper();
-            if (extension != "PDF" && extension != "JPG")
-            {
-                ViewBag.Message = "Selected file type is not PDF or JPEG";
-                return View(model);
-            }
+
 
             var userId = HttpContext.GetOwinContext().Authentication.User.Identity.GetUserId();
             try
@@ -793,10 +832,17 @@ namespace LRC_NET_Framework.Controllers
                 contentType = "image/jpeg";
 
             var formsFolder = String.Empty;
-            if (form == "MembershipForms")
-                formsFolder = MvcApplication.MembershipFormsFolder;
-            else if (form == "CopeForms")
-                formsFolder = MvcApplication.CopeFormsFolder;
+            switch (form)
+            {
+                case "MembershipForms":
+                    formsFolder = MvcApplication.MembershipFormsFolder; break;
+                case "CopeForms":
+                    formsFolder = MvcApplication.CopeFormsFolder; break;
+                case "Building":
+                    formsFolder = MvcApplication.BuildingsFolder; break;
+                default:
+                    break;
+            }
 
             var path = Server.MapPath(@formsFolder + fileName);
             var fileStream = new FileStream(path,
@@ -872,6 +918,13 @@ namespace LRC_NET_Framework.Controllers
             return PartialView("NotSure");
         }
 
+        // GET: Assessment/NotSure
+        [Authorize(Roles = "admin, organizer")]
+        public ActionResult NotSureMembershipForms()
+        {
+            return PartialView("NotSureMembershipForms");
+        }
+        
         // GET: Home/AddDepartment
         [Authorize(Roles = "admin, organizer")]
         public ActionResult AddDepartment(string sortOrder, string searchString, int? page, int? id)
@@ -963,10 +1016,16 @@ namespace LRC_NET_Framework.Controllers
         // GET: Home/AddBuilding
         public ActionResult AddBuilding()
         {
-            var colleges = new SelectList(db.tb_College, "CollegeID", "CollegeName");
-            ViewBag.Colleges = colleges;
-            ViewBag.CollegeID = 0;
-            return View(db.tb_College.ToList());
+            AddBuildingModel buildingModel = new AddBuildingModel
+            {
+                _Campuses = new SelectList(db.tb_Campus.OrderBy(s => s.CampusName), "CampusID", "CampusName"),
+                _tb_College = db.tb_College
+            };
+            buildingModel._Colleges = new List<SelectListItem>
+            { new SelectListItem() {Value = "0", Text = "-- Select One --" }}.Concat(db.tb_College.Select(x => new SelectListItem
+            { Value = x.CollegeID.ToString(), Text = x.CollegeName }));
+
+            return View(buildingModel);
         }
 
         // POST: Home/AddBuilding
@@ -975,15 +1034,30 @@ namespace LRC_NET_Framework.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "admin, organizer")]
-        public ActionResult AddBuilding(HttpPostedFileBase file, int Campus, int College, string BuildingName, FormCollection formCollection)
+        public ActionResult AddBuilding(HttpPostedFileBase file, [Bind(Include = "_CollegeID,_CampusID,_BuildingName")] AddBuildingModel model)
         {
-            //FormCollection formCollection
-            string imagesFolder = "~/Images/Buildings/";
+            Error error = new Error();
+            error.errCode = ErrorDetail.Success;
+            error.errMsg = ErrorDetail.GetMsg(error.errCode);
+            List<string> errs = new List<string>();
+            
+            model._Colleges = new List<SelectListItem>
+            { new SelectListItem() {Value = "0", Text = "-- Select One --" }}.Concat(db.tb_College.Select(x => new SelectListItem
+            { Value = x.CollegeID.ToString(), Text = x.CollegeName }));
+            model._Campuses = new SelectList(db.tb_Campus.OrderBy(s => s.CampusName), "CampusID", "CampusName", model._CampusID);
+            model._tb_College = db.tb_College;
+
             if (file != null && file.ContentLength > 0)
                 try
                 {
-                    string path = Path.Combine(Server.MapPath(imagesFolder),
-                    Path.GetFileName(file.FileName));
+                    var extension = file.FileName.Split('.').Last().ToUpper();
+                    if (extension != "PDF" && extension != "JPG")
+                    {
+                        ViewBag.Message = "Selected file type is not PDF or JPEG";
+                        return View(model);
+                    }
+
+                    string path = Path.Combine(Server.MapPath(MvcApplication.BuildingsFolder), file.FileName);
                     file.SaveAs(path);
                     ViewBag.Message = "File uploaded successfully";
                 }
@@ -994,34 +1068,45 @@ namespace LRC_NET_Framework.Controllers
             else
             {
                 ViewBag.Message = "You have not specified a file.";
-                ViewBag.Colleges = new SelectList(db.tb_College, "CollegeID", "CollegeName", College);
-                return View();
+
+                return View(model);
             }
 
-            var buildings = db.tb_Building.Where(s => s.BuildingName.ToUpper() == BuildingName.ToUpper());
+            var buildings = db.tb_Building.Where(s => s.BuildingName.ToUpper() == model._BuildingName.ToUpper());
             //Check dublicates
             if (buildings.ToList().Count == 0)
             {
                 tb_Building building = new tb_Building()
                 {
-                    CampusID = Campus,
-                    BuildingName = BuildingName,
-                    ImagePath = imagesFolder + Path.GetFileName(file.FileName)
+                    CampusID = model._CampusID,
+                    BuildingName = model._BuildingName,
+                    ImagePath = file.FileName
                 };
                 db.tb_Building.Add(building);
             }
             else
             {
                 tb_Building building = buildings.FirstOrDefault();
-                building.CampusID = Campus;
-                building.BuildingName = BuildingName;
-                building.ImagePath = imagesFolder + Path.GetFileName(file.FileName);
+                building.CampusID = model._CampusID;
+                building.BuildingName = model._BuildingName;
+                building.ImagePath = file.FileName;
                 db.tb_Building.Attach(building);
             }
-            db.SaveChanges();
-            ViewBag.Colleges = new SelectList(db.tb_College, "CollegeID", "CollegeName");
-            ViewBag.CollegeID = 0;
-            return View(db.tb_College.ToList());
+            try
+            { 
+                db.SaveChanges();
+                model._tb_College = db.tb_College;
+            }
+            catch (Exception ex)
+            {
+                error.errCode = ErrorDetail.DataImportError;
+                error.errMsg = ErrorDetail.GetMsg(error.errCode);
+                errs.Add("Error #" + error.errCode.ToString() + "!" + error.errMsg + ". " + ex.Message);
+                ViewData["ErrorList"] = errs;
+                return View(model);
+            }
+            model._tb_College = db.tb_College;
+            return View(model);
         }
 
         [HttpPost]

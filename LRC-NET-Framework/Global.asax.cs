@@ -17,6 +17,7 @@ namespace LRC_NET_Framework
         public const int MaxRecordsIn_CopeFormsHistory = 5;
         public const string MembershipFormsFolder = "~/Content/MembershipForms/";
         public const string CopeFormsFolder = "~/Content/CopeForms/";
+        public const string BuildingsFolder = "~/Content/BuildingForms/";
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();

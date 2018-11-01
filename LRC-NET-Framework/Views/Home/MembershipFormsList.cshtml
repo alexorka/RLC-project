@@ -1,5 +1,4 @@
-﻿@*@model IEnumerable<LRC_NET_Framework.tb_MemberNotes>*@
-@model PagedList.IPagedList<LRC_NET_Framework.tb_MemberNotes>
+﻿@model PagedList.IPagedList<LRC_NET_Framework.tb_MembershipForms>
 @using PagedList.Mvc
 @{
     /**/
@@ -10,14 +9,10 @@
 
 <hr />
 <ul class="list-inline">
-    <li role="button"><a href="@Url.Action("NotSure", "Notes")" class="btn btn-info viewDialog" , data-dialog-title="Question">Note&nbsp;<span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></li>
+    <li role="button"><a href="@Url.Action("NotSureMembershipForms")" class="btn btn-info viewDialog" , data-dialog-title="Question">Add Membership Form&nbsp;<span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></li>
 </ul>
 
-<h2>Notes</h2>
-
-@*<p>
-        @Html.ActionLink("Create New", "Create")
-    </p>*@
+<h2>Uploaded Membership Forms</h2>
 
 @using (Html.BeginForm("Index", "Notes", FormMethod.Post, new { @class = "margin-right: 0" }))
 {
@@ -46,48 +41,61 @@
                 Faculty Member
             </th>
             <th @*style="width:400px"*@>
-                Note
+                @Html.ActionLink("Signed", "MembershipFormsList", new { sortOrder = ViewBag.NameSortParm })
             </th>
             <th>
-                Note Type
+                Form Image
             </th>
             <th>
-                @Html.ActionLink("Note Date", "Index", new { sortOrder = ViewBag.NameSortParm })
+                Form Version
             </th>
             <th>
-                Taken By
+                Processed
             </th>
             <th>
-                Added
+                Sent To Employer
             </th>
+            <th>
+                Collected By
+            </th>
+            <th>
+                Added By
+            </th>
+
         </tr>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.ActionLink(item.tb_MemberMaster.LastName + ", " + item.tb_MemberMaster.FirstName, "Details", "Home", new { id = item.tb_MemberMaster.MemberID }, new { @class = "text -info" })
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Notes)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.tb_NoteType.NoteType)
-                </td>
-                <td>
-                    @Convert.ToDateTime(item.NoteDate).ToString("MM/dd/yyyy")
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.AspNetUsers.LastFirstName)
-                </td>
-                <td>
-                    @Convert.ToDateTime(item.AddedDateTime).ToString("MM/dd/yyyy")
-                </td>
-                @*<td>
-                        @Html.ActionLink("Edit", "Edit", new { id = item.MemberNotesID }) |
-                        @Html.ActionLink("Details", "Details", new { id = item.MemberNotesID }) |
-                        @Html.ActionLink("Delete", "Delete", new { id = item.MemberNotesID })
-                    </td>*@
-            </tr>
+        <tr>
+            <td>
+                @Html.ActionLink(item.tb_MemberMaster.LastName + ", " + item.tb_MemberMaster.FirstName, "Details", "Home", new { id = item.tb_MemberMaster.MemberID }, new { @class = "text -info" })
+            </td>
+            <td>
+                @Convert.ToDateTime(item.Signed).ToString("MM/dd/yyyy")
+            </td>
+            <td>
+                <p>@Html.ActionLink(item.FormImagePath, "GetPdfOrJpeg", new { fileName = item.FormImagePath, form = "MembershipForms" }, new { target = "_blank" })</p>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FormVersion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Processed)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SentToEmployer)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AspNetUsers1.LastFirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AspNetUsers.LastFirstName)
+            </td>
+            @*<td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.MemberNotesID }) |
+                @Html.ActionLink("Details", "Details", new { id = item.MemberNotesID }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.MemberNotesID })
+            </td>*@
+        </tr>
         }
     </table>
 </div>

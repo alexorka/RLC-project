@@ -388,6 +388,9 @@
                 Note
             </th>
             <th>
+                Note Type
+            </th>
+            <th>
                 Date
             </th>
             <th>
@@ -404,13 +407,16 @@
                         @Html.DisplayFor(modelItem => item.Notes)
                     </td>
                     <td>
+                        @Html.DisplayFor(modelItem => item.tb_NoteType.NoteType)
+                    </td>
+                    <td>
                         @if (item.NoteDate != null)
                         {
                             @Convert.ToDateTime(item.NoteDate).ToString("MM/dd/yyyy")
                         }
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.TakenBy)
+                        @Html.DisplayFor(modelItem => item.AspNetUsers.LastFirstName)
                     </td>
                 </tr>
             }

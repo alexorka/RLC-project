@@ -62,7 +62,6 @@ namespace LRC_NET_Framework
         public virtual DbSet<tb_MemberError> tb_MemberError { get; set; }
         public virtual DbSet<tb_Schedule_Error> tb_Schedule_Error { get; set; }
         public virtual DbSet<tb_MemberMaster> tb_MemberMaster { get; set; }
-        public virtual DbSet<tb_MemberNotes> tb_MemberNotes { get; set; }
         public virtual DbSet<tb_Attribute> tb_Attribute { get; set; }
         public virtual DbSet<tb_MemberAddress> tb_MemberAddress { get; set; }
         public virtual DbSet<tb_MemberPhoneNumbers> tb_MemberPhoneNumbers { get; set; }
@@ -75,5 +74,6 @@ namespace LRC_NET_Framework
         public virtual DbSet<tb_MembershipForms> tb_MembershipForms { get; set; }
         public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
         public virtual DbSet<tb_CopeForms> tb_CopeForms { get; set; }
+        public virtual DbSet<tb_MemberNotes> tb_MemberNotes { get; set; }
     }
 }

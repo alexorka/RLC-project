@@ -258,6 +258,7 @@
     <Compile Include="Helpers\ErrorHelper.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AssessActivityModels.cs" />
+    <Compile Include="Models\BuildingModels.cs" />
     <Compile Include="Models\CommonFunctions.cs" />
     <Compile Include="Models\Error.cs" />
     <Compile Include="Models\ExcelImport.cs" />
@@ -595,6 +596,8 @@
     <Content Include="Views\Activities\AddActivityByMember.cshtml" />
     <Content Include="Views\Activities\AddActivity.cshtml" />
     <Content Include="Views\Activities\CreateActivity.cshtml" />
+    <Content Include="Views\Home\MembershipFormsList.cshtml" />
+    <Content Include="Views\Home\NotSureMembershipForms.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

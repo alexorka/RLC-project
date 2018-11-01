@@ -587,15 +587,16 @@ namespace LRC_NET_Framework.Models
     public partial class AddNoteModel
     {
         public int _MemberID { get; set; }
-
+        [Required(ErrorMessage = "required")]
         public string _Note { get; set; }
-        [Required(ErrorMessage = "Add Date is required")]
+        [Required(ErrorMessage = "required")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime _NoteDate { get; set; }
         public int _NoteTypeID { get; set; }
         public IEnumerable<SelectListItem> _NoteTypes { get; set; }
-        public int _TakenBy { get; set; }
+        [Required(ErrorMessage = "required")]
+        public string _TakenBy { get; set; }
         public IEnumerable<tb_MemberNotes> _MemberNotes { get; set; }
     }
 

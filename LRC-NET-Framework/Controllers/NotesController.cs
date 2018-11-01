@@ -10,6 +10,7 @@ using LRC_NET_Framework;
 using PagedList;
 using PagedList.Mvc;
 using LRC_NET_Framework.Models;
+using System.Data.Entity.Validation;
 
 namespace LRC_NET_Framework.Controllers
 {
@@ -90,6 +91,10 @@ namespace LRC_NET_Framework.Controllers
                 _NoteTypes = new SelectList(db.tb_NoteType, "NoteTypeID", "NoteType"),
                 _MemberNotes = db.tb_MemberNotes.Where(t => t.MemberID == id).ToList()
             };
+            ViewBag._TakenBy = new SelectList(db.AspNetUsers.OrderBy(s => s.LastFirstName), "Id", "LastFirstName");
+            tb_MemberMaster fm = db.tb_MemberMaster.Find(id);
+            ViewBag.MemberName = fm.LastName + ", " + fm.FirstName;
+
             return View(model);
 
         }
@@ -100,11 +105,13 @@ namespace LRC_NET_Framework.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "admin, organizer")]
-        public ActionResult AddNote(AddNoteModel model)
+        public ActionResult AddNote([Bind(Include = "_MemberID,_Note,_NoteDate,_NoteTypeID,_TakenBy")]AddNoteModel model)
         {
-            var memberNotes = db.tb_MemberNotes.Where(s => s.Notes.ToUpper() == model._Note.ToUpper());
-            //Check dublicates
-            if (memberNotes.ToList().Count == 0)
+            Error error = new Error();
+            error.errCode = ErrorDetail.Success;
+            error.errMsg = ErrorDetail.GetMsg(error.errCode);
+            List<string> errs = new List<string>();
+            try
             {
                 tb_MemberNotes memberNote = new tb_MemberNotes()
                 {
@@ -112,22 +119,28 @@ namespace LRC_NET_Framework.Controllers
                     Notes = model._Note,
                     NoteDate = model._NoteDate,
                     NoteTypeID = model._NoteTypeID,
-                    TakenBy = model._TakenBy
+                    TakenBy = model._TakenBy,
+                    AddedDateTime = DateTime.UtcNow
                 };
                 db.tb_MemberNotes.Add(memberNote);
+
+                model._NoteTypes = new SelectList(db.tb_NoteType, "NoteTypeID", "NoteType");
+                ViewBag._TakenBy = new SelectList(db.AspNetUsers.OrderBy(s => s.LastFirstName), "Id", "LastFirstName");
+                tb_MemberMaster fm = db.tb_MemberMaster.Find(model._MemberID);
+                ViewBag.MemberName = fm.LastName + ", " + fm.FirstName;
+                model._MemberNotes = db.tb_MemberNotes.Where(t => t.MemberID == model._MemberID).ToList(); //before
+                db.SaveChanges();
+                model._MemberNotes = db.tb_MemberNotes.Where(t => t.MemberID == model._MemberID).ToList(); //after
             }
-            else
+            catch (Exception ex)
             {
-                tb_MemberNotes memberNote = memberNotes.FirstOrDefault();
-                memberNote.Notes = model._Note;
-                memberNote.NoteDate = model._NoteDate;
-                memberNote.NoteTypeID = model._NoteTypeID;
-                memberNote.TakenBy = 2;
-                db.tb_MemberNotes.Attach(memberNote);
+                error.errCode = ErrorDetail.DataImportError;
+                error.errMsg = ErrorDetail.GetMsg(error.errCode);
+                errs.Add("Error #" + error.errCode.ToString() + "!" + error.errMsg + ". " + ex.Message);
+                ViewData["ErrorList"] = errs;
+                return View(model);
             }
-            db.SaveChanges();
-            model._NoteTypes = new SelectList(db.tb_NoteType, "NoteTypeID", "NoteType");
-            model._MemberNotes = db.tb_MemberNotes.Where(t => t.MemberID == model._MemberID).ToList();
+
             return View(model);
         }
 

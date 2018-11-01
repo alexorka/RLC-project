@@ -401,11 +401,8 @@
           <Property Name="Notes" Type="nvarchar(max)" Nullable="false" />
           <Property Name="NoteTypeID" Type="int" Nullable="false" />
           <Property Name="NoteDate" Type="datetime" Nullable="false" />
-          <Property Name="TakenBy" Type="int" />
-          <Property Name="AddedBy" Type="int" />
-          <Property Name="AddedDateTime" Type="datetime" />
-          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="128" />
-          <Property Name="ModifiedDateTime" Type="datetime" />
+          <Property Name="TakenBy" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="AddedDateTime" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="tb_MemberPhoneNumbers">
           <Key>
@@ -1065,6 +1062,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_tb_MemberNotes_AspNetUsersTakenBy">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="tb_MemberNotes" Type="Self.tb_MemberNotes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="tb_MemberNotes">
+              <PropertyRef Name="TakenBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_tb_MemberNotes_tb_MemberMaster">
           <End Role="tb_MemberMaster" Type="Self.tb_MemberMaster" Multiplicity="1" />
           <End Role="tb_MemberNotes" Type="Self.tb_MemberNotes" Multiplicity="*" />
@@ -1464,6 +1473,10 @@
             <End Role="tb_LatestUnionAssessment" EntitySet="tb_LatestUnionAssessment" />
             <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
           </AssociationSet>
+          <AssociationSet Name="FK_tb_MemberNotes_AspNetUsersTakenBy" Association="Self.FK_tb_MemberNotes_AspNetUsersTakenBy">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="tb_MemberNotes" EntitySet="tb_MemberNotes" />
+          </AssociationSet>
           <AssociationSet Name="FK_tb_MemberNotes_tb_MemberMaster" Association="Self.FK_tb_MemberNotes_tb_MemberMaster">
             <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
             <End Role="tb_MemberNotes" EntitySet="tb_MemberNotes" />
@@ -1676,15 +1689,6 @@
             <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
             <End Role="tb_SemesterTaught" EntitySet="tb_SemesterTaught" />
           </AssociationSet>
-          <EntitySet Name="tb_MemberNotes" EntityType="LRCModel.tb_MemberNotes" />
-          <AssociationSet Name="FK_tb_MemberNotes_tb_MemberMaster" Association="LRCModel.FK_tb_MemberNotes_tb_MemberMaster">
-            <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
-            <End Role="tb_MemberNotes" EntitySet="tb_MemberNotes" />
-          </AssociationSet>
-          <AssociationSet Name="FK_tb_MemberNotes_tb_NoteType" Association="LRCModel.FK_tb_MemberNotes_tb_NoteType">
-            <End Role="tb_NoteType" EntitySet="tb_NoteType" />
-            <End Role="tb_MemberNotes" EntitySet="tb_MemberNotes" />
-          </AssociationSet>
           <EntitySet Name="tb_Attribute" EntityType="LRCModel.tb_Attribute" />
           <AssociationSet Name="FK_tb_Attribute_tb_MemberMaster" Association="LRCModel.FK_tb_Attribute_tb_MemberMaster">
             <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
@@ -1824,6 +1828,19 @@
           <AssociationSet Name="FK_tb_MemberAddress_AspNetUsersSourse" Association="LRCModel.FK_tb_MemberAddress_AspNetUsersSourse">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="tb_MemberAddress" EntitySet="tb_MemberAddress" />
+          </AssociationSet>
+          <EntitySet Name="tb_MemberNotes" EntityType="LRCModel.tb_MemberNotes" />
+          <AssociationSet Name="FK_tb_MemberNotes_AspNetUsersTakenBy" Association="LRCModel.FK_tb_MemberNotes_AspNetUsersTakenBy">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="tb_MemberNotes" EntitySet="tb_MemberNotes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tb_MemberNotes_tb_MemberMaster" Association="LRCModel.FK_tb_MemberNotes_tb_MemberMaster">
+            <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
+            <End Role="tb_MemberNotes" EntitySet="tb_MemberNotes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tb_MemberNotes_tb_NoteType" Association="LRCModel.FK_tb_MemberNotes_tb_NoteType">
+            <End Role="tb_NoteType" EntitySet="tb_NoteType" />
+            <End Role="tb_MemberNotes" EntitySet="tb_MemberNotes" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="tb_AssessmentName">
@@ -2360,7 +2377,6 @@
           <NavigationProperty Name="tb_LatestUnionAssessment" Relationship="LRCModel.FK_tb_MemberMaster_tb_LatestUnionAssessment" FromRole="tb_MemberMaster" ToRole="tb_LatestUnionAssessment" />
           <NavigationProperty Name="tb_MemberRoles" Relationship="LRCModel.FK_tb_MemberRoles_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_MemberRoles" />
           <NavigationProperty Name="tb_SemesterTaught" Relationship="LRCModel.FK_tb_SemesterTaught_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_SemesterTaught" />
-          <NavigationProperty Name="tb_MemberNotes" Relationship="LRCModel.FK_tb_MemberNotes_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_MemberNotes" />
           <NavigationProperty Name="tb_Attribute" Relationship="LRCModel.FK_tb_Attribute_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_Attribute" />
           <NavigationProperty Name="tb_MemberAddress" Relationship="LRCModel.FK_tb_MemberAddress_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_MemberAddress" />
           <NavigationProperty Name="tb_MemberPhoneNumbers" Relationship="LRCModel.FK_tb_MemberPhoneNumbers_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_MemberPhoneNumbers" />
@@ -2369,6 +2385,7 @@
           <NavigationProperty Name="tb_MemberActivity" Relationship="LRCModel.FK_tb_MemberActivity_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_MemberActivity" />
           <NavigationProperty Name="tb_MembershipForms" Relationship="LRCModel.FK_tb_MembershipForms_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_MembershipForms" />
           <NavigationProperty Name="tb_CopeForms" Relationship="LRCModel.FK_tb_CopeForms_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_CopeForms" />
+          <NavigationProperty Name="tb_MemberNotes" Relationship="LRCModel.FK_tb_MemberNotes_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_MemberNotes" />
         </EntityType>
         <Association Name="FK_tb_AlsoWorksAt_tb_MemberMaster">
           <End Type="LRCModel.tb_MemberMaster" Role="tb_MemberMaster" Multiplicity="1" />
@@ -2511,47 +2528,6 @@
             </Principal>
             <Dependent Role="tb_SemesterTaught">
               <PropertyRef Name="MemberID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="tb_MemberNotes">
-          <Key>
-            <PropertyRef Name="MemberNotesID" />
-          </Key>
-          <Property Name="MemberNotesID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MemberID" Type="Int32" Nullable="false" />
-          <Property Name="Notes" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="NoteTypeID" Type="Int32" Nullable="false" />
-          <Property Name="NoteDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="TakenBy" Type="Int32" />
-          <Property Name="AddedBy" Type="Int32" />
-          <Property Name="AddedDateTime" Type="DateTime" Precision="3" />
-          <Property Name="ModifiedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="ModifiedDateTime" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="tb_MemberMaster" Relationship="LRCModel.FK_tb_MemberNotes_tb_MemberMaster" FromRole="tb_MemberNotes" ToRole="tb_MemberMaster" />
-          <NavigationProperty Name="tb_NoteType" Relationship="LRCModel.FK_tb_MemberNotes_tb_NoteType" FromRole="tb_MemberNotes" ToRole="tb_NoteType" />
-        </EntityType>
-        <Association Name="FK_tb_MemberNotes_tb_MemberMaster">
-          <End Type="LRCModel.tb_MemberMaster" Role="tb_MemberMaster" Multiplicity="1" />
-          <End Type="LRCModel.tb_MemberNotes" Role="tb_MemberNotes" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tb_MemberMaster">
-              <PropertyRef Name="MemberID" />
-            </Principal>
-            <Dependent Role="tb_MemberNotes">
-              <PropertyRef Name="MemberID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_tb_MemberNotes_tb_NoteType">
-          <End Type="LRCModel.tb_NoteType" Role="tb_NoteType" Multiplicity="1" />
-          <End Type="LRCModel.tb_MemberNotes" Role="tb_MemberNotes" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tb_NoteType">
-              <PropertyRef Name="NoteTypeID" />
-            </Principal>
-            <Dependent Role="tb_MemberNotes">
-              <PropertyRef Name="NoteTypeID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2949,6 +2925,7 @@
           <NavigationProperty Name="tb_MembershipForms" Relationship="LRCModel.FK_tb_MembershipForms_AspNetUsersAddedBy" FromRole="AspNetUsers" ToRole="tb_MembershipForms" />
           <NavigationProperty Name="tb_MembershipForms1" Relationship="LRCModel.FK_tb_MembershipForms_AspNetUsersCollectedBy" FromRole="AspNetUsers" ToRole="tb_MembershipForms" />
           <NavigationProperty Name="tb_MemberAddress1" Relationship="LRCModel.FK_tb_MemberAddress_AspNetUsersSourse" FromRole="AspNetUsers" ToRole="tb_MemberAddress" />
+          <NavigationProperty Name="tb_MemberNotes" Relationship="LRCModel.FK_tb_MemberNotes_AspNetUsersTakenBy" FromRole="AspNetUsers" ToRole="tb_MemberNotes" />
         </EntityType>
         <EntityType Name="tb_CopeForms">
           <Key>
@@ -3160,6 +3137,57 @@
             </Principal>
             <Dependent Role="tb_MemberAddress">
               <PropertyRef Name="Source" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="tb_MemberNotes">
+          <Key>
+            <PropertyRef Name="MemberNotesID" />
+          </Key>
+          <Property Name="MemberNotesID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MemberID" Type="Int32" Nullable="false" />
+          <Property Name="Notes" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="NoteTypeID" Type="Int32" Nullable="false" />
+          <Property Name="NoteDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="TakenBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AspNetUsers" Relationship="LRCModel.FK_tb_MemberNotes_AspNetUsersTakenBy" FromRole="tb_MemberNotes" ToRole="AspNetUsers" />
+          <NavigationProperty Name="tb_MemberMaster" Relationship="LRCModel.FK_tb_MemberNotes_tb_MemberMaster" FromRole="tb_MemberNotes" ToRole="tb_MemberMaster" />
+          <NavigationProperty Name="tb_NoteType" Relationship="LRCModel.FK_tb_MemberNotes_tb_NoteType" FromRole="tb_MemberNotes" ToRole="tb_NoteType" />
+          <Property Name="AddedDateTime" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <Association Name="FK_tb_MemberNotes_AspNetUsersTakenBy">
+          <End Type="LRCModel.AspNetUsers" Role="AspNetUsers" Multiplicity="1" />
+          <End Type="LRCModel.tb_MemberNotes" Role="tb_MemberNotes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="tb_MemberNotes">
+              <PropertyRef Name="TakenBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tb_MemberNotes_tb_MemberMaster">
+          <End Type="LRCModel.tb_MemberMaster" Role="tb_MemberMaster" Multiplicity="1" />
+          <End Type="LRCModel.tb_MemberNotes" Role="tb_MemberNotes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_MemberMaster">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="tb_MemberNotes">
+              <PropertyRef Name="MemberID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tb_MemberNotes_tb_NoteType">
+          <End Type="LRCModel.tb_NoteType" Role="tb_NoteType" Multiplicity="1" />
+          <End Type="LRCModel.tb_MemberNotes" Role="tb_MemberNotes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_NoteType">
+              <PropertyRef Name="NoteTypeID" />
+            </Principal>
+            <Dependent Role="tb_MemberNotes">
+              <PropertyRef Name="NoteTypeID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3568,22 +3596,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="tb_MemberNotes">
-            <EntityTypeMapping TypeName="LRCModel.tb_MemberNotes">
-              <MappingFragment StoreEntitySet="tb_MemberNotes">
-                <ScalarProperty Name="ModifiedDateTime" ColumnName="ModifiedDateTime" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="AddedDateTime" ColumnName="AddedDateTime" />
-                <ScalarProperty Name="AddedBy" ColumnName="AddedBy" />
-                <ScalarProperty Name="TakenBy" ColumnName="TakenBy" />
-                <ScalarProperty Name="NoteDate" ColumnName="NoteDate" />
-                <ScalarProperty Name="NoteTypeID" ColumnName="NoteTypeID" />
-                <ScalarProperty Name="Notes" ColumnName="Notes" />
-                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
-                <ScalarProperty Name="MemberNotesID" ColumnName="MemberNotesID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="tb_Attribute">
             <EntityTypeMapping TypeName="LRCModel.tb_Attribute">
               <MappingFragment StoreEntitySet="tb_Attribute">
@@ -3766,6 +3778,19 @@
                 <ScalarProperty Name="Signed" ColumnName="Signed" />
                 <ScalarProperty Name="MemberID" ColumnName="MemberID" />
                 <ScalarProperty Name="CopeFormID" ColumnName="CopeFormID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tb_MemberNotes">
+            <EntityTypeMapping TypeName="LRCModel.tb_MemberNotes">
+              <MappingFragment StoreEntitySet="tb_MemberNotes">
+                <ScalarProperty Name="AddedDateTime" ColumnName="AddedDateTime" />
+                <ScalarProperty Name="TakenBy" ColumnName="TakenBy" />
+                <ScalarProperty Name="NoteDate" ColumnName="NoteDate" />
+                <ScalarProperty Name="NoteTypeID" ColumnName="NoteTypeID" />
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
+                <ScalarProperty Name="MemberNotesID" ColumnName="MemberNotesID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
