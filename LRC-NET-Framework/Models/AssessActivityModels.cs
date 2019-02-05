@@ -106,7 +106,7 @@ namespace LRC_NET_Framework.Models
                 {
                     members.Add(new SelectListItem()
                     {
-                        Text = member.LastName + ", " + member.FirstName,
+                        Text = member.FirstName + " " + member.LastName,
                         Value = member.MemberID.ToString()
                         //Selected = member.MemberID == mId ? true : false
                     });

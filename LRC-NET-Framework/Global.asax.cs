@@ -10,6 +10,9 @@ namespace LRC_NET_Framework
 {
     public class MvcApplication : System.Web.HttpApplication
     {
+        public const int PageSize_Home = 40;
+        public const int PageSize_MembersBySchool = 10;
+        public const int PageSize_Default = 20;
         public const int MaxRecordsInPhoneHistory = 10;
         public const int MaxRecordsInAddressHistory = 5;
         public const int MaxRecordsInEmailHistory = 10;

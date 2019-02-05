@@ -131,7 +131,7 @@ namespace LRC_NET_Framework.Controllers
             MemberActivities = db.tb_MemberActivity.Where(a => a.MemberID == id).OrderBy(s => s.ActivityID).ToList();
 
             tb_MemberMaster fm = db.tb_MemberMaster.Find(id);
-            ViewBag.MemberName = fm.LastName + ", " + fm.FirstName;
+            ViewBag.MemberName = fm.FirstName + " " + fm.LastName;
 
             var model = new AssessActivityModels()
             {
@@ -203,7 +203,7 @@ namespace LRC_NET_Framework.Controllers
             model._MemberActivity = db.tb_MemberActivity.Where(s => s.MemberID == id).ToList();
 
             tb_MemberMaster fm = db.tb_MemberMaster.Find(id);
-            ViewBag.MemberName = fm.LastName + ", " + fm.FirstName;
+            ViewBag.MemberName = fm.FirstName + " " + fm.LastName;
 
             #endregion
 

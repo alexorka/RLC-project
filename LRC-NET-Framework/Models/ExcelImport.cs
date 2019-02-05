@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using System.Linq;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using System.Collections;
-using System.Data.Entity.Validation;
+using LRC_NET_Framework;
 using LRC_NET_Framework.Models;
+using Newtonsoft.Json;
+
 using LinqToExcel;
 using LinqToExcel.Query;
-using LRC_NET_Framework;
 using System.Globalization;
 using Microsoft.Owin;
-
+using System.Collections;
 using Microsoft.AspNet.Identity;
 
 namespace ExcelImport.Models
@@ -53,7 +55,7 @@ namespace ExcelImport.Models
 
         #region Facility Member Import
 
-        public List<string> MembersImport(string pathToExcelFile, string sheetName, int semesterRecID, string uName)
+        public List<string> MembersImport(string pathToExcelFile, string sheetName, int semesterRecID, string userId)
         {
             Error error = new Error();
             error.errCode = ErrorDetail.Success;
@@ -77,7 +79,7 @@ namespace ExcelImport.Models
             factory.AddMapping<ExcelMembers>(x => x.State, MapTable["State"].ToString());
             factory.AddMapping<ExcelMembers>(x => x.Zip, MapTable["Zip"].ToString());
             factory.AddMapping<ExcelMembers>(x => x.Phone, MapTable["Phone"].ToString());
-            //factory.AddMapping<ExcelMembers>(x => x.Status, MapTable["Status"].ToString());
+            factory.AddMapping<ExcelMembers>(x => x.Status, MapTable["Status"].ToString());
             factory.AddMapping<ExcelMembers>(x => x.EmployeeID, MapTable["EmployeeID"].ToString());
 
             factory.StrictMapping = StrictMappingType.ClassStrict;
@@ -91,7 +93,8 @@ namespace ExcelImport.Models
             catch (Exception ex)
             {
                 error.errCode = ErrorDetail.Failed;
-                error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!" + ex.Message;
+                //error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!" + ex.Message;
+                error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!'" + sheetName + "' worksheet name was not found in the loaded file. Acceptable worksheet names are 'Full time', 'Adjunct', 'REG-Schedule', 'ADJ-Schedule'.";// ex.Message;
                 errs.Add(error.errMsg);
                 return errs;
             }
@@ -114,51 +117,62 @@ namespace ExcelImport.Models
                 }
 
                 //Check is Facility Member exist in DB. Returned FM = NULL means new member
-                errs = IsMemberExistInDB(lastName, firstName, middleName, out tb_MemberMaster FM);
-                if (errs.Count > 0)
-                    return errs;
-                bool isNewMember = false;
-                if (FM == null) // new member
+                //errs = CreateMemberModel.IsMemberExistInDB(excelRec.EmployeeID, out tb_MemberMaster FM);
+                try
                 {
-                    isNewMember = true;
-                    FM = new tb_MemberMaster();
-                    //CBU.Name
-                    FM.LastName = lastName;
-                    FM.FirstName = firstName;
-                    FM.MiddleName = middleName;
-                    FM.LastSeenDate = DateTime.MinValue;
-                }
-                if (sheetName == "Full time")
-                {
-                    //Adjunct or Full-Time
-                    FM.JobStatusID = 2; //2 = Full-Time
-                                        //Status
-                    FM.DuesID = 5; // 5 = ‘Unknown - Full-time’ in tb_Dues table
-                }
-                else
-                {
-                    //Adjunct or Full-Time
-                    FM.JobStatusID = 1; //2 = Adjunct
-                                        //Status
-                    FM.DuesID = 4; // 5 = ‘Unknown - Adjunct’ in tb_Dues table
-                }
-
-                errs = UpdateMember(excelRec, FM, semesterRecID, record, isNewMember, out warning, uName);
-                if (errs.Count > 0 || !String.IsNullOrEmpty(warning))
-                {
-                    Error errToSQL = FillOutMemberErrorsTable(excelRec, errs, warning, record);
-                    if (errToSQL.errCode != ErrorDetail.Success)
+                    var FM = db.tb_MemberMaster.Where(s => s.MemberIDNumber.ToUpper() == excelRec.EmployeeID.ToUpper()).FirstOrDefault();
+                    //if (errs.Count > 0)
+                    //    return errs;
+                    bool isNewMember = false;
+                    if (FM == null) // new member
                     {
-                        error.errCode = ErrorDetail.DataImportError;
-                        error.errMsg = "SQL transaction failed!Row #" + record + " " + errToSQL.errMsg;
-                        errs.Add("SQL transaction failed! " + errToSQL.errMsg);
+                        isNewMember = true;
+                        FM = new tb_MemberMaster();
+                        FM.LastSeenDate = DateTime.MinValue;
+                    }
+                    FM.LastName = lastName.Trim();
+                    FM.FirstName = firstName.Trim();
+                    FM.MiddleName = middleName.Trim();
+
+                    if (sheetName == "Full time")
+                    {
+                        //Adjunct or Full-Time
+                        FM.JobStatusID = 2; //2 = Full-Time
+                                            //Status
+                        FM.DuesID = 5; // 5 = ‘Unknown - Full-time’ in tb_Dues table
+                    }
+                    else
+                    {
+                        //Adjunct or Full-Time
+                        FM.JobStatusID = 1; //2 = Adjunct
+                                            //Status
+                        FM.DuesID = 4; // 5 = ‘Unknown - Adjunct’ in tb_Dues table
                     }
 
-                    if(errs.Count > 0)
-                        return errs;
+                    errs = UpdateMember(excelRec, FM, semesterRecID, record, isNewMember, out warning, userId);
+                    if (errs.Count > 0 || !String.IsNullOrEmpty(warning))
+                    {
+                        Error errToSQL = FillOutMemberErrorsTable(excelRec, errs, warning, record);
+                        if (errToSQL.errCode != ErrorDetail.Success)
+                        {
+                            error.errCode = ErrorDetail.DataImportError;
+                            error.errMsg = "SQL transaction failed!Row #" + record + " " + errToSQL.errMsg;
+                            errs.Add("SQL transaction failed! " + errToSQL.errMsg);
+                        }
+
+                        if(errs.Count > 0)
+                            return errs;
+                    }
+                    if (!String.IsNullOrEmpty(warning))
+                        warnings.Add(warning);
                 }
-                if (!String.IsNullOrEmpty(warning))
-                    warnings.Add(warning);
+                catch (Exception ex)
+                {
+                    error.errCode = ErrorDetail.UnknownError;
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Unhandled error: " + ex.Message + ";";
+                    errs.Add(error.errMsg);
+                    return errs;
+                }
             }
 
             //deleting excel file from folder  
@@ -254,7 +268,7 @@ namespace ExcelImport.Models
             return error;
         }
 
-        private List<string> UpdateMember(ExcelMembers excelRec, tb_MemberMaster FM, int semesterRecID, int record, bool isNewMember, out string warning, string uName)
+        private List<string> UpdateMember(ExcelMembers excelRec, tb_MemberMaster FM, int semesterRecID, int record, bool isNewMember, out string warning, string userId)
         {
             Error error = new Error();
             error.errCode = ErrorDetail.Success;
@@ -267,8 +281,8 @@ namespace ExcelImport.Models
                 var semesterStartDate = db.tb_Semesters.Find(semesterRecID).SemesterStartDate;
                 if (FM.LastSeenDate > semesterStartDate)
                 {
-                    warning = "Warning!Row #" + record.ToString() + " Facility member data has not been updated. Last Seen Date content (" + 
-                        FM.LastSeenDate + ") is > Semester Start Date (" + semesterStartDate + ")";
+                    warning = "Warning!Excel row #" + record.ToString() + ". EmployeeID=" + excelRec.EmployeeID + ". Facility member data has not been updated. 'Last Seen Date' (" + 
+                        FM.LastSeenDate.ToShortDateString() + ") is more then 'Semester Start Date' (" + semesterStartDate.ToShortDateString() + "). Or probably member in the both tables.";
                     return errs;
                 }
             }
@@ -309,18 +323,18 @@ namespace ExcelImport.Models
             //DivisionID (Required field. Need to be filled)
             FM.DivisionID = 108; //108 = 'Unknown' from tb_Division table
                                  //CategoryID (Required field. Need to be filled)
-            FM.CategoryID = 4; //4 = 'Unknown' from tb_Categories table
+            FM.CategoryID = db.tb_Categories.Where(c => c.CategoryName.ToUpper() == excelRec.Status.ToUpper()).FirstOrDefault()?.CategoryID ?? 4; //4 = 'Unknown' from tb_Categories table
             FM.LastSeenDate = DateTime.UtcNow;
 
             if (FM.MemberID == 0) // New Facility Member
             {
-                FM.AddedBy = uName;
+                FM.AddedBy = userId;
                 FM.AddedDateTime = DateTime.UtcNow;
                 db.tb_MemberMaster.Add(FM);
             }
             else
             {
-                FM.ModifiedBy = uName;
+                FM.ModifiedBy = userId;
                 FM.ModifiedDateTime = DateTime.UtcNow;
             }
 
@@ -344,10 +358,10 @@ namespace ExcelImport.Models
                 return errs;
             }
 
-            errs = CreateMemberModel.AssignAddress(excelRec.Address, null, excelRec.City, excelRec.State, excelRec.Zip, 1, true, "CBU", 2, FM.MemberID, uName);
+            errs = CreateMemberModel.AssignAddress(excelRec.Address, null, excelRec.City, excelRec.State, excelRec.Zip, 1, true, "CBU", 2, FM.MemberID, userId);
             if (errs.Count > 0)
                 return errs;
-            errs = CreateMemberModel.AssignPhoneNumber(excelRec.Phone, 1, true, "CBU", FM.MemberID, uName);
+            errs = CreateMemberModel.AssignPhoneNumber(excelRec.Phone, 1, true, "CBU", FM.MemberID, userId);
             if (errs.Count > 0)
                 return errs;
 
@@ -363,12 +377,12 @@ namespace ExcelImport.Models
             // Wrong column name or format error handling.
             // Checking here all values in columns. If all of them are NULL for checked columns return error 
             Hashtable errColumnNames = MapTable;
-            foreach (var _item in members)
+            foreach (var _item in members) // remove field from columns error list if found even one not NULL value
             {
                 if (!String.IsNullOrEmpty(_item.Location))
                     errColumnNames.Remove("Location");
                 if (!String.IsNullOrEmpty(_item.FullName))
-                    errColumnNames.Remove("FullName"); // remove field from columns error list if found even one not NULL value
+                    errColumnNames.Remove("FullName"); 
                 if (!String.IsNullOrEmpty(_item.Description))
                     errColumnNames.Remove("Description");
                 if (!String.IsNullOrEmpty(_item.Address))
@@ -383,6 +397,8 @@ namespace ExcelImport.Models
                     errColumnNames.Remove("Phone");
                 if (!String.IsNullOrEmpty(_item.EmployeeID))
                     errColumnNames.Remove("EmployeeID");
+                if (!String.IsNullOrEmpty(_item.Status))
+                    errColumnNames.Remove("Status");
 
                 if (errColumnNames.Count <= 0)
                     break;
@@ -393,8 +409,8 @@ namespace ExcelImport.Models
                 foreach (var item in errColumnNames)
                 {
                     error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Column name: '" + ((System.Collections.DictionaryEntry)item).Value +
-                        "' has wrong contents or formats in the loaded file. Correct column name or change mapping ('Member Fields Mapping' button)" +
-                        ". Tip: If column name of loaded file looks right but you got this error message you have to clear cells to remove the cell contents (formulas and data), formats and any attached comments. Select cell and 'Clear content' from context menu. The cleared cells remain as blank or unformatted cells on the worksheet. Insert or type correct column name to cleared cell and save file.";
+                        "' has wrong contents or formats in the loaded file. Correct column name or change mapping ('Member Fields Mapping' button). </br>" +
+                        "Tip: If column name of loaded file looks right but you got this error message you have to clear <b>header cell</b> (column name) to remove the cell contents (formulas and data), formats and any attached comments. Select cell and 'Clear content' from context menu. The cleared cells remain as blank or unformatted cells on the worksheet. Insert or type correct column name to cleared cell and save file.";
                     errs.Add(error.errMsg);
                 }
                 Error errToSQL = FillOutMemberErrorsTable(null, errs, null, 0);
@@ -490,6 +506,13 @@ namespace ExcelImport.Models
                     errs.Add(error.errMsg);
                     errsToSQL.Add(error.errMsg);
                 }
+                if (String.IsNullOrEmpty(excelRec.Status))
+                {
+                    error.errCode = ErrorDetail.DataImportError;
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Column 'Status': Is empty";
+                    errs.Add(error.errMsg);
+                    errsToSQL.Add(error.errMsg);
+                }
                 if (error.errCode != ErrorDetail.Success)
                 {
                     Error errToSQL = FillOutMemberErrorsTable(excelRec, errsToSQL, null, record);
@@ -557,11 +580,21 @@ namespace ExcelImport.Models
                 var namesSpace = namesComma[1].Trim().Split(' ');
                 if (namesSpace.Length == 1)
                     _firstName = namesSpace[0].Trim();
-                else if (namesSpace.Length == 2)
+                else if (namesSpace.Length > 1 && namesSpace[namesSpace.Length - 1].Replace(".", "").Length == 1)
+                {
+                    _middleName = namesSpace[namesSpace.Length - 1].Replace(".", "").Trim();
+                    for (var i = 0; i < namesSpace.Length - 1; i++ )
+                    {
+                        _firstName += " " + namesSpace[i].Trim();
+                    }
+                }
+
+                else if (namesSpace.Length == 2 && namesSpace[1].Replace(".", "").Length == 1)
                 {
                     _firstName = namesSpace[0].Trim();
-                    _middleName = namesSpace[1].Replace(".", "").Trim();
                 }
+                else
+                    _firstName = namesComma[1].Trim(); // e.g. FullName = "Molander,Melody Ann Heather"
             }
             return error;
         }
@@ -813,47 +846,6 @@ namespace ExcelImport.Models
             return errs;
         }
 
-        ////Check if current City is present in tb_CityState and add it if not
-        //private int GetCityID(string city)
-        //{
-        //    tb_States tb_satates = new tb_CityState();
-
-        //    if (db.tb_CityState.Where(t => t.CityName.ToUpper() == city.ToUpper()).Count() == 0)
-        //    {
-        //        tb_city.CityName = city;
-        //        tb_city.StateCodeID = 1; //we have only 1 record for now
-        //        db.tb_CityState.Add(tb_city);
-        //        db.SaveChanges();
-        //    }
-        //    return db.tb_CityState.Where(t => t.CityName.ToUpper() == city.ToUpper()).FirstOrDefault().CityID;
-        //}
-
-        //Find memberID by CBU Full Name. Return memberID = 0 if not found
-        public List<string> IsMemberExistInDB(string lastname, string firstname, string middlename, out tb_MemberMaster fm)
-        {
-            Error error = new Error();
-            error.errCode = ErrorDetail.Success;
-            error.errMsg = ErrorDetail.GetMsg(error.errCode);
-            List<string> errs = new List<string>();
-            fm = new tb_MemberMaster();
-            //1. Find memberID by Full Name
-            try
-            {
-                var fms = db.tb_MemberMaster.Where(s => s.LastName.ToUpper() == lastname.ToUpper() &&
-                s.FirstName.ToUpper() == firstname.ToUpper() &&
-                s.MiddleName.ToUpper() == middlename.ToUpper());
-                fm = fms.FirstOrDefault();
-            }
-            catch (Exception ex)
-            {
-                error.errCode = ErrorDetail.UnknownError;
-                error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!IsMemberExistInDB(...) function failed." + ex.Message + ";";
-                errs.Add(error.errMsg);
-                return errs;
-            }
-            return errs;
-        }
-
         //Set Member Address IsPrimary to false from true
         public Error SetAdressesPrimaryFalse(int mID)
         {
@@ -978,7 +970,7 @@ namespace ExcelImport.Models
         /// Fill Out Schedule from Excel file
         /// </summary>       
         /// <returns>Status code</returns>
-        public List<string> ScheduleImport(string pathToExcelFile, string sheetName, int semesterRecID, string uName)
+        public List<string> ScheduleImport(string pathToExcelFile, string sheetName, int semesterRecID, string userId)
         {
             Error error = new Error();
             error.errCode = ErrorDetail.Success;
@@ -1021,10 +1013,36 @@ namespace ExcelImport.Models
             catch (Exception ex)
             {
                 error.errCode = ErrorDetail.Failed;
-                error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!" + ex.Message;
+                error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!'" + sheetName + "' worksheet name was not found in the loaded file. Acceptable worksheet names are 'Full time', 'Adjunct', 'REG-Schedule', 'ADJ-Schedule'.";// ex.Message;
                 errs.Add(error.errMsg);
                 return errs;
             }
+            //remove empty string if exist
+            List<ExcelSchedules> emptyRecs = new List<ExcelSchedules>();
+            foreach (var _item in schedules)
+            {
+                if (String.IsNullOrEmpty(_item.BeginTime) && String.IsNullOrEmpty(_item.Building) && String.IsNullOrEmpty(_item.Campus) && String.IsNullOrEmpty(_item.ClassEndDate) && String.IsNullOrEmpty(_item.ClassNumber)
+                    && String.IsNullOrEmpty(_item.Days) && String.IsNullOrEmpty(_item.EmployeeID) && String.IsNullOrEmpty(_item.EndTime) && String.IsNullOrEmpty(_item.Instructor) && String.IsNullOrEmpty(_item.Location) && String.IsNullOrEmpty(_item.Room))
+                {
+                    emptyRecs.Add(_item);
+                }
+                // Field 'ROOM' can be empty for 'BUILDING' = 'Online' only. Set room = "ONLINE"
+                if (String.IsNullOrEmpty(_item.Room) && !String.IsNullOrEmpty(_item.Building))
+                {
+                    if (_item.Building.ToUpper() != "ONLINE")
+                    {
+                        _item.Room = "ONLINE";
+                        //error.errCode = ErrorDetail.DataImportError;
+                        //error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record + ". Field 'ROOM' can be empty for 'BUILDING' = 'Online' only;";
+                        //errs.Add(error.errMsg);
+                    }
+                }
+            }
+            foreach (var _item in emptyRecs)
+            {
+                schedules.Remove(_item);
+            }
+            
             //Common Fields Check before
             errs = CheckScheduleFields(schedules, semesterRecID);
             if (errs.Count > 0)
@@ -1043,35 +1061,44 @@ namespace ExcelImport.Models
                 }
 
                 //Check is Facility Member exist in DB. Returned FM = NULL means doesnt exist
-                errs = IsMemberExistInDB(excelRec.EmployeeID, out tb_MemberMaster FM);
-                if (errs.Count > 0)
-                    return errs;
-                if (FM == null) // Member wasn't found
+                try
                 {
-                    error.errCode = ErrorDetail.Failed;
-                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record.ToString() + ". Instructor name: " + excelRec.Instructor + " with ID: " + excelRec.EmployeeID + " wasn't found in the DataBase. Loading was not completed. Tip: Correct Id or remove records of this Member from loading file.";
+                    var FM = db.tb_MemberMaster.Where(s => s.MemberIDNumber.ToUpper() == excelRec.EmployeeID.ToUpper()).FirstOrDefault();
+                    //if (errs.Count > 0)
+                    //    return errs;
+                    if (FM == null) // Member wasn't found
+                    {
+                        error.errCode = ErrorDetail.Failed;
+                        error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record.ToString() + ". Instructor name: " + excelRec.Instructor + " with ID: " + excelRec.EmployeeID + " wasn't found in the DataBase. Loading was not completed. Tip: Correct Id or remove records of this Member from loading file.";
+                        errs.Add(error.errMsg);
+                        return errs;
+                    }
+
+                    ST.MemberID = FM.MemberID;
+
+                    errs = UpdateSchedule(excelRec, ST, semesterRecID, FM.LastSeenDate, record, out warning/*, userId*/);
+                    if (errs.Count > 0 || !String.IsNullOrEmpty(warning))
+                    {
+                        Error errToSQL = FillOutScheduleErrorsTable(excelRec, errs, warning, record);
+                        if (errToSQL.errCode != ErrorDetail.Success)
+                        {
+                            error.errCode = ErrorDetail.DataImportError;
+                            error.errMsg = "SQL transaction failed!Row #" + record + " " + errToSQL.errMsg;
+                            errs.Add("SQL transaction failed! " + errToSQL.errMsg);
+                        }
+                        if (errs.Count > 0)
+                            return errs;
+                    }
+                    if (!String.IsNullOrEmpty(warning))
+                        warnings.Add(warning);
+                }
+                catch (Exception ex)
+                {
+                    error.errCode = ErrorDetail.UnknownError;
+                    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Unhandled error: " + ex.Message + ";";
                     errs.Add(error.errMsg);
                     return errs;
                 }
-
-                ST.MemberID = FM.MemberID;
-
-                errs = UpdateSchedule(excelRec, ST, semesterRecID, FM.LastSeenDate, record, out warning, uName);
-                if (errs.Count > 0 || !String.IsNullOrEmpty(warning))
-                {
-                    Error errToSQL = FillOutScheduleErrorsTable(excelRec, errs, warning, record);
-                    if (errToSQL.errCode != ErrorDetail.Success)
-                    {
-                        error.errCode = ErrorDetail.DataImportError;
-                        error.errMsg = "SQL transaction failed!Row #" + record + " " + errToSQL.errMsg;
-                        errs.Add("SQL transaction failed! " + errToSQL.errMsg);
-                    }
-                    if (errs.Count > 0)
-                        return errs;
-                }
-                if (!String.IsNullOrEmpty(warning))
-                    warnings.Add(warning);
-
             }
             //deleting excel file from folder  
             if ((System.IO.File.Exists(pathToExcelFile)))
@@ -1079,45 +1106,6 @@ namespace ExcelImport.Models
                 System.IO.File.Delete(pathToExcelFile);
             }
 
-            return errs;
-        }
-
-        ////Check if current City is present in tb_CityState and add it if not
-        //private int GetCityID(string city)
-        //{
-        //    tb_States tb_satates = new tb_CityState();
-
-        //    if (db.tb_CityState.Where(t => t.CityName.ToUpper() == city.ToUpper()).Count() == 0)
-        //    {
-        //        tb_city.CityName = city;
-        //        tb_city.StateCodeID = 1; //we have only 1 record for now
-        //        db.tb_CityState.Add(tb_city);
-        //        db.SaveChanges();
-        //    }
-        //    return db.tb_CityState.Where(t => t.CityName.ToUpper() == city.ToUpper()).FirstOrDefault().CityID;
-        ///}
-
-        //Find memberID by EmployeeID
-        public List<string> IsMemberExistInDB(string employeeID, out tb_MemberMaster fm)
-        {
-            Error error = new Error();
-            error.errCode = ErrorDetail.Success;
-            error.errMsg = ErrorDetail.GetMsg(error.errCode);
-            List<string> errs = new List<string>();
-            fm = new tb_MemberMaster();
-            //1. Find memberID by Full Name
-            try
-            {
-                var fms = db.tb_MemberMaster.Where(s => s.MemberIDNumber.ToUpper() == employeeID.ToUpper());
-                fm = fms.FirstOrDefault();
-            }
-            catch (Exception ex)
-            {
-                error.errCode = ErrorDetail.UnknownError;
-                error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!IsMemberExistInDB(...) function failed." + ex.Message + ";";
-                errs.Add(error.errMsg);
-                return errs;
-            }
             return errs;
         }
 
@@ -1199,30 +1187,12 @@ namespace ExcelImport.Models
             return error;
         }
 
-        private List<string> UpdateSchedule(ExcelSchedules excelRec, tb_SemesterTaught ST, int semesterRecID, DateTime lastSeenDate, int record, out string warning, string uName)
+        private List<string> UpdateSchedule(ExcelSchedules excelRec, tb_SemesterTaught ST, int semesterRecID, DateTime lastSeenDate, int record, out string warning/*, string userId*/)
         {
             Error error = new Error();
             error.errCode = ErrorDetail.Success;
             List<string> errs = new List<string>();
             warning = String.Empty;
-
-            //// Check semester Date From
-            //try
-            //{
-            //    var semesterStartDate = db.tb_Semesters.Find(semesterRecID).DateFrom;
-            //    if (lastSeenDate > semesterStartDate)
-            //    {
-            //        warning = "Warning!Row #" + record.ToString() + " Schedule data for current Facility Member has not been updated. Last Seen Date content is > Semester Start Date";
-            //        return errs;
-            //    }
-            //}
-            //catch (Exception)
-            //{
-            //    error.errCode = ErrorDetail.UnknownError;
-            //    error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!db.tb_Semesters.Find(semesterRecID)";
-            //    errs.Add(error.errMsg);
-            //    return errs;
-            //}
 
             errs = GetSemesterRecID(excelRec.ClassEndDate.Trim(), record, semesterRecID, out bool scheduleStatus);
             if (errs.Count > 0)
@@ -1267,7 +1237,7 @@ namespace ExcelImport.Models
             if (tb_CampusMapping.Count() <= 0)
             {
                 error.errCode = ErrorDetail.DataImportError;
-                error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record.ToString() + " Check College Mapping.";
+                error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + record.ToString() + " Check Campuses Mapping for Schedule Import.";
                 errs.Add(error.errMsg);
                 return errs;
             }
@@ -1394,8 +1364,22 @@ namespace ExcelImport.Models
             foreach (var _item in schedules)
             {
                 record++;
+                if (String.IsNullOrEmpty(_item.ClassEndDate))
+                {
+                    error.errCode = ErrorDetail.DataImportError;
+                    errs.Add("SQL transaction failed!Row # " + record.ToString() + ". Class End Date can not be empty");
+                }
+
                 List<string> classEndDateErr = new List<string>();
-                classEndDateErr = GetSemesterRecID(_item.ClassEndDate.Trim(), record, semesterRecID, out bool scheduleStatus);
+                try
+                {
+                    classEndDateErr = GetSemesterRecID(_item.ClassEndDate.Trim(), record, semesterRecID, out bool scheduleStatus);
+                }
+                catch ( Exception ex )
+                {
+                    error.errCode = ErrorDetail.DataImportError;
+                    errs.Add("SQL transaction failed!Row # " + record.ToString() + ". " + ex.Message);
+                }
                 if (classEndDateErr.Count > 0)
                 {
                     foreach (var e in classEndDateErr)
@@ -1637,7 +1621,7 @@ namespace ExcelImport.Models
             catch (Exception ex)
             {
                 error.errCode = ErrorDetail.Failed;
-                error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + rec.ToString() + ". Field 'DAYS' not matching any record in the tb_WeekDay table." + ex.Message;
+                error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + rec.ToString() + ". Field 'DAYS' not matching any record in the tb_WeekDay table. Add it with 'Days of Week' feature. " + ex.Message;
                 errs.Add(error.errMsg);
                 return errs;
             }
@@ -1645,7 +1629,7 @@ namespace ExcelImport.Models
             if (classWeekDayID <= 0)
             {
                 error.errCode = ErrorDetail.Failed;
-                error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + rec.ToString() + ". Field 'DAYS' not matching any record in the tb_WeekDay table.";
+                error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + rec.ToString() + ". Field 'DAYS' not matching any record in the tb_WeekDay table. Add it with 'Days of Week' feature.";
                 errs.Add(error.errMsg);
                 return errs;
             }

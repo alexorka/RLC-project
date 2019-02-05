@@ -1,4 +1,6 @@
 ﻿@{
+    /**/
+
     Layout = null;
 }
 
@@ -6,11 +8,11 @@
 {
     <div style="font-size:smaller">
         <div class="row" style="margin: 7px">
-            @Html.DropDownList("DepartmentID", ViewBag.Departments as SelectList, "-- Select One --", new { @class = "form-control", style = "width: 300px" })
+            @Html.DropDownList("CollegeID", ViewBag.Colleges as SelectList, new { @class = "form-control", style = "width: 300px" })
         </div>
 
         <div class="row" style="margin: 7px">
-            @Html.DropDownList("CollegeID", ViewBag.Colleges as SelectList, "-- Select One --", new { @class = "form-control", style = "width: 300px" })
+            @Html.DropDownList("DepartmentID", null, htmlAttributes: new { @class = "form-control" })
         </div>
 
         <div style="text-align:center;">
@@ -20,6 +22,6 @@
         </div>
     </div>
 }
-    @section scripts{
+@section Scripts {
 
-    }
+}

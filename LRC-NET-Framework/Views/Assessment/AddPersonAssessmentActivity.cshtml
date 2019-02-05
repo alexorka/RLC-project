@@ -19,14 +19,13 @@
     @Html.CreateList(ViewData["AssessmentErrorList"] as List<string>)
 
     <div style="font-size:smaller; padding: 0px 10px 5px 10px; margin-bottom:20px; border:solid; border-radius:5px; border-width:1px; border-color:gainsboro">
-        <div class="col-md-11 h4" style="padding-bottom:10px;">
-            <div class="col-md-5" style="background-color:gainsboro;padding-top:5px;  padding-bottom:5px; padding-left:30px; border-bottom-left-radius:7px; border-bottom-right-radius:7px;">Add Assessment</div>
-        </div>
+        <div class="h4" style="background-color:gainsboro;padding: 5px 10px 5px 30px; border-bottom-left-radius:7px; border-bottom-right-radius:7px;">Add Assessment</div>
+
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model._Assessment.MemberID)
         @Html.HiddenFor(model => model._CollegeID)
         <fieldset>
-            <div class="row" style="padding-bottom:3px; padding-top:3px;">
+            <div class="row" style="padding-bottom:3px; padding-top:10px;">
                 <span style="padding-left:30px">
                     @Html.Label("Assessment", "Assessment")<span class="text-danger">&nbsp;&nbsp;*</span>
                 </span>
@@ -82,7 +81,7 @@
                 </div>
             </div>
             @if (Model._MemberAssessments.Count() > 0)
-        {
+            {
             <div class="col-md-10" id="Assessment" style="background-color:lavender; border:solid; margin-top:10px; margin-bottom:10px; border-radius:5px; border-width:1px; border-color:gainsboro">
 
                 <div style="background-color:gainsboro; padding-bottom:5px; padding-left:30px; border-bottom-left-radius:5px; border-bottom-right-radius:5px;">@Html.Label("Assessment", "Member Assessments", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })</div>
@@ -108,7 +107,7 @@
                         </th>
                     </tr>
                     @foreach (var myVal in Model._MemberAssessments)
-                {
+                    {
                     <tr>
                         <td>
                             @Html.DisplayFor(m => myVal.tb_AssessmentName.AssessmentName)
@@ -129,10 +128,10 @@
                             <a href="@Url.Action("DeleteAssessment", "Assessment", new { @AssessmentID = myVal.AssessmentID, MemberId = myVal.MemberID, CollegeID = ViewBag.CollegeID })" class="btn btn-xs"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
                         </td>
                     </tr>
-            }
+                    }
                 </table>
             </div>
-    }
+            }
         </fieldset>
     </div>
 
@@ -141,11 +140,9 @@
     @Html.CreateList(ViewData["ActivityErrorList"] as List<string>)
 
     <div style="font-size:smaller; padding: 0px 10px 20px 10px; border:solid; border-radius:5px; border-width:1px; border-color:gainsboro">
-        <div class="col-md-11 h4" style="padding-bottom:10px;">
-            <div class="col-md-5" style="background-color:gainsboro;padding-top:5px;  padding-bottom:5px; padding-left:30px; border-bottom-left-radius:7px; border-bottom-right-radius:7px;">Add Activity</div>
-        </div>
+        <div class="h4" style="background-color:gainsboro;padding: 5px 10px 5px 30px; border-bottom-left-radius:7px; border-bottom-right-radius:7px;">Add Activity</div>
         <fieldset>
-            <div class="row" style="padding-bottom:3px; padding-top:3px;">
+            <div class="row" style="padding-bottom:3px; padding-top:10px;">
                 <span style="padding-left:30px">
                     @Html.Label("Activity", "Activity")<span class="text-danger">&nbsp;&nbsp;*</span>
                 </span>
@@ -162,7 +159,7 @@
                 </div>
             </div>
 
-            <div id="HiddenBlock" hidden="hidden"  style="padding-top:12px;">
+            <div id="HiddenBlock" hidden="hidden" style="padding-top:12px;">
 
                 <div class="form-group">
                     <div class="col-md-12">
@@ -170,23 +167,23 @@
                         <div class="col-md-3" id="ActivityStatusBefore" style="border-color:lightgrey; border-style:solid; border-width:1px; border-radius:5px; padding-bottom:10px;">
                             @Html.Label("ActivityStatusBefore", "Before The Fact", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
                             @foreach (var myValue in ViewBag.ActivityStatus as List<tb_ActivityStatus>)
-                            {
-                                <div class="checkbox">
-                                    @Html.RadioButton("ActivityStatusID", myValue.ActivityStatusID, false, new { id = myValue.ActivityStatusName, disabled = "disabled" })
-                                    @Html.Label(myValue.ActivityStatusName, myValue.ActivityStatusName)
-                                </div>
-                            }
+                        {
+                            <div class="checkbox">
+                                @Html.RadioButton("ActivityStatusID", myValue.ActivityStatusID, false, new { id = myValue.ActivityStatusName, disabled = "disabled" })
+                                @Html.Label(myValue.ActivityStatusName, myValue.ActivityStatusName)
+                            </div>
+                    }
                         </div>
 
                         <div class="col-md-3" id="ActivityStatusAfter" style="border-color:lightgrey; border-style:solid; border-width:1px; border-radius:5px; padding-bottom:10px; margin-left:10px;">
                             @Html.Label("ActivityStatusAfter", "After The Fact", htmlAttributes: new { @class = "control-label" })
                             @foreach (var myValue in ViewBag.ActivityStatusAfter as List<SelectListItem>)
-                            {
-                                <div class="checkbox">
-                                    @Html.RadioButton("AfterTheFact", myValue.Value, new { id = myValue.Text, disabled = "disabled", @class = "radioSettings" })
-                                    @Html.Label(myValue.Text, new { disabled = "disabled" })
-                                </div>
-                            }
+                        {
+                            <div class="checkbox">
+                                @Html.RadioButton("AfterTheFact", myValue.Value, new { id = myValue.Text, disabled = "disabled", @class = "radioSettings" })
+                                @Html.Label(myValue.Text, new { disabled = "disabled" })
+                            </div>
+                    }
                         </div>
                     </div>
                 </div>
@@ -248,41 +245,45 @@
                         @*<th></th>*@
                     </tr>
                     @foreach (var myVal in Model._MemberActivity)
-                    {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(m => myVal.tb_Activity.ActivityName)
-                            </td>
-                            <td>
-                                @Convert.ToDateTime(myVal.tb_Activity.ActivityDate).ToString("MM/dd/yyyy")
-                            </td>
-                            <td>
-                                @Html.DisplayFor(m => myVal.tb_ActivityStatus.ActivityStatusName)
-                            </td>
-                            <td>
-                                @if(myVal.Participated.HasValue) {
-                                    if (myVal.Participated.GetValueOrDefault()) {<span>Participated</span>}
-                                    else {<span>Not Participated</span>}
-                                }
-                                else {<span>Not Defined</span>}
-                            </td>
-                            <td>
-                                @Html.DisplayFor(m => myVal.tb_Activity.ActivityNote)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(m => myVal.tb_Activity.AspNetUsers.LastFirstName)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(m => myVal.tb_Activity.AspNetUsers1.LastFirstName)
-                            </td>
-                            <td>
-                                @Convert.ToDateTime(myVal.tb_Activity.ModifiedDateTime).ToString("MM/dd/yyyy")
-                            </td>
-                            @*<td>
-                                    <a href="@Url.Action("DeleteActivity", "Assessment", new { @ActivityID = myVal.ActivityID, MemberId = myVal.MemberID, CollegeID = ViewBag.CollegeID })" class="btn btn-xs"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
-                                </td>*@
-                        </tr>
-                    }
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(m => myVal.tb_Activity.ActivityName)
+                        </td>
+                        <td>
+                            @Convert.ToDateTime(myVal.tb_Activity.ActivityDate).ToString("MM/dd/yyyy")
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => myVal.tb_ActivityStatus.ActivityStatusName)
+                        </td>
+                        <td>
+                            @if (myVal.Participated.HasValue)
+                        {
+                            if (myVal.Participated.GetValueOrDefault())
+                            {<span>Participated</span>}
+                        else
+                        {<span>Not Participated</span>}
+                }
+                else
+                {<span>Not Defined</span>}
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => myVal.tb_Activity.ActivityNote)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => myVal.tb_Activity.AspNetUsers.LastFirstName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => myVal.tb_Activity.AspNetUsers1.LastFirstName)
+                        </td>
+                        <td>
+                            @Convert.ToDateTime(myVal.tb_Activity.ModifiedDateTime).ToString("MM/dd/yyyy")
+                        </td>
+                        @*<td>
+                            <a href="@Url.Action("DeleteActivity", "Assessment", new { @ActivityID = myVal.ActivityID, MemberId = myVal.MemberID, CollegeID = ViewBag.CollegeID })" class="btn btn-xs"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+                        </td>*@
+                    </tr>
+            }
                 </table>
             </div>
         </fieldset>

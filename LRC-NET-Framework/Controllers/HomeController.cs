@@ -14,7 +14,7 @@ using System.Data.Entity.Validation;
 using System.IO;
 using System.Text;
 using Microsoft.AspNet.Identity;
-
+using Newtonsoft.Json;
 
 namespace LRC_NET_Framework.Controllers
 {
@@ -22,156 +22,232 @@ namespace LRC_NET_Framework.Controllers
     {
         private LRCEntities db = new LRCEntities();
 
-        private string GetExportString(string searchString, int CollegeID)
-        {
-
-            List<tb_Department> deps = new List<tb_Department>();
-            deps = db.tb_Department.Where(c => c.CollegeID == CollegeID).ToList();
-            List<tb_MemberMaster> members = new List<tb_MemberMaster>();
-
-
-            foreach (var dep in deps)
-            {
-                List<tb_MemberMaster> membersInDep = db.tb_MemberMaster.Where(t => t.DepartmentID == dep.DepartmentID).ToList();
-                if (membersInDep.Count > 0)
-                {
-                    foreach (var item in membersInDep)
-                    {
-                        if (String.IsNullOrEmpty(searchString))
-                        {
-                            members.Add(item);
-                        }
-                        //Searching @ Filtering
-                        else if (item.LastName.ToUpper().Contains(searchString.ToUpper())
-                            || item.FirstName.ToUpper().Contains(searchString.ToUpper()))
-                        {
-                            members.Add(item);
-                        }
-                    }
-                }
-            }
-
-            //if (members == null)
-            //{
-            //    return HttpNotFound();
-            //}
-
-            var sb = new StringBuilder();
-            sb.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18}",
-                "ID",
-                "INSTRCTR",
-                "CAMPUS",
-                "LOCATION",
-                "BUILDING",
-                "ROOM",
-                "DIV",
-                "CLASS#",
-                "SECT",
-                "SUBJCD",
-                "CATBR",
-                "LEC LAB",
-                "SBTM",
-                "ATT TP",
-                "BEGTIME",
-                "ENDTIME",
-                "DAYS",
-                "CLASSEND DT",
-                Environment.NewLine);
-
-            foreach (var item in members)
-            {
-                List<tb_SemesterTaught> semesterTaught = db.tb_SemesterTaught.Where(t => t.MemberID == item.MemberID).ToList();
-                foreach (var taught in semesterTaught)
-                {
-                    sb.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18}",
-                    item.MemberIDNumber ?? String.Empty, //ID
-                    item.FirstName + " " + item.LastName + " " + item.MiddleName, //INSTRCTR
-                    taught.tb_Building.tb_Campus.CollegeCode ?? String.Empty, //CAMPUS
-                    taught.tb_Building.tb_Campus.CollegeCode + " MAIN", //LOCATION
-                    taught.tb_Building.BuildingName ?? String.Empty, //BUILDING
-                    taught.Room ?? String.Empty, //ROOM
-                    item.tb_Division.DivisionName ?? String.Empty, //DIV
-                    taught.Class ?? String.Empty, //CLASS#
-                    "?", //SECT
-                    "?", //SUBJCD
-                    "?", //CATBR
-                    "?", //LEC LAB
-                    "?", //SBTM
-                    "?", //ATT TP
-                    taught.ClassStart.ToString(@"hh\:mm"), //BEGTIME
-                    taught.ClassEnd.ToString(@"hh\:mm"), //ENDTIME
-                    taught.tb_WeekDay.WeekDayName, //DAYS
-                    "?", //CLASSEND DT
-                    Environment.NewLine);
-                }
-            }
-            return sb.ToString();
-        }
 
         // GET: tb_MemberMaster
         [Authorize(Roles = "admin, organizer")]
-        public ActionResult Index(string sortOrder, string searchString, int? page, int? CollegeID, int? DepartmentID)
+        public ActionResult Index(string sortOrder, string searchString, int? page, int? CollegeID, int? DepartmentID, bool? IsActiveMembers, FormCollection formCollection)
         {
-            //Error error = new Error();
-            //ExcelImport.Models.ExcelMembers excelMembers= new ExcelImport.Models.ExcelMembers();
-            //error = excelMembers.SetPhonePrimaryFalse(1);
-
-            //var uName = HttpContext.GetOwinContext().Authentication.User.Identity.GetUserId();
-
-            var tb_MemberMasters = db.tb_MemberMaster.Include(t => t.tb_Area).Include(t => t.tb_Department).Include(t => t.tb_Dues).Include(t => t.tb_LatestUnionAssessment).Include(t => t.tb_CopeForms);
-
-            tb_MemberMasters.Select(t => t.tb_Department.tb_College);
-            ViewData["MemberQty"] = tb_MemberMasters.Count();
-
-            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Name desc" : "";
-
-            //Searching @ Filtering
             if (!String.IsNullOrEmpty(searchString))
-            {
-                tb_MemberMasters = tb_MemberMasters.Where(s => s.LastName.ToUpper().Contains(searchString.ToUpper())
-                                       || s.FirstName.ToUpper().Contains(searchString.ToUpper()));
-            }
-            if (CollegeID != null && CollegeID != 0)
-            {
-                tb_MemberMasters = tb_MemberMasters.Where(f => f.tb_Department.CollegeID == CollegeID);
-            }
-            if (DepartmentID != null && DepartmentID != 0)
-            {
-                tb_MemberMasters = tb_MemberMasters.Where(f => f.DepartmentID == DepartmentID);
-            }
-            List<tb_College> colleges = db.tb_College.ToList();
-            ViewBag.Colleges = new SelectList(colleges, "CollegeID", "CollegeName");
-            List<tb_Department> departments = db.tb_Department.ToList();
-            tb_MemberMaster tb_MemberMaster = db.tb_MemberMaster.Find(1);
-            SelectList Departments = new SelectList(db.tb_Department, "DepartmentID", "DepartmentName", tb_MemberMaster.DepartmentID);
-            SelectListItem selListItem = new SelectListItem() { Value = "0", Text = " + Filter by Department " };
-            ViewBag.DepartmentID = CommonFunctions.AddFirstItem(Departments, selListItem);
-            SelectList Colleges = new SelectList(db.tb_College, "CollegeID", "CollegeName", tb_MemberMaster.tb_Department.CollegeID);
-            selListItem = new SelectListItem() { Value = "0", Text = " + Filter by College " };
-            ViewBag.CollegeID = CommonFunctions.AddFirstItem(Colleges, selListItem);
+                searchString = searchString.Trim();
+
+            // Check if it PostBack from Add Filter button
+            if (Int32.TryParse(formCollection["Departments"], out int depId))
+                DepartmentID = depId;
+            if (Int32.TryParse(formCollection["Colleges"], out int colId))
+                CollegeID = colId;
+            if (Boolean.TryParse(formCollection["IsActiveMembers"], out bool IsActive))
+                IsActiveMembers = IsActive;
+
+            CollegeID = CollegeID ?? 0;
+            DepartmentID = DepartmentID ?? 0;
+            if (String.IsNullOrEmpty(searchString))
+                searchString = " ";
+
+            ViewBag._CollegeID = CollegeID;
+            ViewBag._DepartmentID = DepartmentID;
+            ViewBag._searchString = searchString;
+            
+            //Fill out DDLs (Filter)
+            SelectListItem selListItem = new SelectListItem() { Value = "0", Text = " ALL DEPARTMENTS " };
+            ViewBag.Departments = CommonFunctions.GetDepartments(CollegeID ?? 0, DepartmentID ?? 0, true, selListItem);
+
+            var colleges = new SelectList(db.tb_College, "CollegeID", "CollegeName", CollegeID).ToList();
+            colleges.Insert(0, new SelectListItem() { Value = "0", Text = " ALL COLLEGES " });
+            ViewBag.Colleges = colleges;
+
+            ViewBag.searchString = searchString;
+
+            // Return filtered Facility Members 
+            IQueryable<tb_MemberMaster> fms = db.tb_MemberMaster.Include(p => p.tb_Department).Include(p => p.tb_Department.tb_College);
+            if (CollegeID != null && CollegeID > 0)
+                fms = fms.Where(x => x.tb_Department.tb_College.CollegeID == CollegeID);
+            if (DepartmentID != null && DepartmentID > 0)
+                fms = fms.Where(x => x.DepartmentID == DepartmentID);
+            if (!String.IsNullOrWhiteSpace(searchString))
+                fms = fms.Where(x => x.FirstName.ToUpper().Contains(searchString.Trim().ToUpper()) || x.LastName.ToUpper().Contains(searchString.Trim().ToUpper()));
+
+            List<tb_MemberMaster> members = fms.ToList();
+
+            ViewData["MemberQty"] = members.Count();
 
             //Sorting
+            var membersOrdered = members.OrderBy(s => s.LastName);
             switch (sortOrder)
             {
                 case "Name desc":
-                    tb_MemberMasters = tb_MemberMasters.OrderByDescending(s => s.LastName);
-                    break;
-                //case "Date":
-                //    tb_MemberMasters = tb_MemberMasters.OrderBy(s => s.HireDate);
-                //    break;
-                //case "Date desc":
-                //    tb_MemberMasters = tb_MemberMasters.OrderByDescending(s => s.HireDate);
-                //    break;
-                default:
-                    tb_MemberMasters = tb_MemberMasters.OrderBy(s => s.LastName);
+                    membersOrdered = members.OrderByDescending(s => s.LastName);
                     break;
             }
-
             //Paging
-            int pageSize = 20;
             int pageNumber = (page ?? 1);
+            return View(membersOrdered.ToPagedList(pageNumber, MvcApplication.PageSize_Home));
 
-            return View(tb_MemberMasters.ToPagedList(pageNumber, pageSize));
+        }
+
+
+        //// GET: Assessment/Filter
+        //[Authorize(Roles = "admin, organizer")]
+        //public ActionResult Filter()
+        //{
+        //    string searchString = (string)System.Web.HttpContext.Current.Profile.GetPropertyValue("SearchString");
+        //    int  departmentID = (int)System.Web.HttpContext.Current.Profile.GetPropertyValue("DepartmentID");
+        //    int collegeID = (int)System.Web.HttpContext.Current.Profile.GetPropertyValue("CollegeID");
+
+        //    List<tb_Department> departments = db.tb_Department.ToList();
+        //    SelectList Departments = new SelectList(db.tb_Department, "DepartmentID", "DepartmentName");
+        //    SelectListItem selListItem = new SelectListItem() { Value = "0", Text = " + Filter by Department " };
+        //    ViewBag.DepartmentID = CommonFunctions.AddFirstItem(Departments, selListItem);
+
+        //    var colleges = new SelectList(db.tb_College, "CollegeID", "CollegeName", collegeID);
+        //    ViewBag.Colleges = colleges;
+
+        //    return PartialView("FilterDialogBox");
+        //}
+
+        // GET: AddFilter
+        [Authorize(Roles = "admin, organizer")]
+        public ActionResult AddFilter(int CollegeID, int DepartmentID)
+        {
+            List<tb_Department> departments = db.tb_Department.ToList();
+            SelectList Departments = new SelectList(db.tb_Department/*.Where(x => x.CollegeID == CollegeID)*/, "DepartmentID", "DepartmentName");
+
+            SelectListItem selListItem = new SelectListItem() { Value = "0", Text = " ALL DEPARTMENTS " };
+            ViewBag.DepartmentID = CommonFunctions.AddFirstItem(Departments, selListItem);
+
+            var colleges = new SelectList(db.tb_College, "CollegeID", "CollegeName", CollegeID);
+            ViewBag.Colleges = colleges;
+
+            return PartialView("AddFilter");
+        }
+
+        public JsonResult GetDepartmentsByCollegeId(int CollegeID)
+        {
+            string json = String.Empty;
+            using (LRCEntities context = new LRCEntities())
+            {
+                SelectListItem selListItem = new SelectListItem() { Value = "0", Text = " ALL DEPARTMENTS " };
+                SelectList Departments = CommonFunctions.GetDepartments(CollegeID, 0, true, selListItem);
+                json = JsonConvert.SerializeObject(Departments, Formatting.Indented);
+            }
+            return Json(json, JsonRequestBehavior.AllowGet);
+        }
+
+        // GET: MembersBySchool
+        [Authorize(Roles = "admin, organizer")]
+        public ActionResult MembersBySchool(string sortOrder, string searchString, int? page, int? CollegeID, int? DepartmentID, FormCollection formCollection)
+        {
+            if (!String.IsNullOrEmpty(searchString))
+                searchString = searchString.Trim();
+
+            // Check if it PostBack from Add Filter button
+            if (Int32.TryParse(formCollection["Colleges"], out int colId))
+                CollegeID = colId;
+            if (Int32.TryParse(formCollection["Departments"], out int depId))
+                DepartmentID = depId;
+
+            //// User session properties. Set or get values 
+            //if (DepartmentID == null)
+            //    DepartmentID = (int)System.Web.HttpContext.Current.Profile.GetPropertyValue("DepartmentID");
+            //else
+            //    System.Web.HttpContext.Current.Profile.SetPropertyValue("DepartmentID", DepartmentID);
+
+            //if (searchString == null)
+            //    searchString = (string)System.Web.HttpContext.Current.Profile.GetPropertyValue("SearchString");
+            //else
+            //   System.Web.HttpContext.Current.Profile.SetPropertyValue("SearchString", searchString);
+
+            //if (CollegeID == null)
+            //    CollegeID = (int)System.Web.HttpContext.Current.Profile.GetPropertyValue("CollegeID");
+            //else
+            //    System.Web.HttpContext.Current.Profile.SetPropertyValue("CollegeID", CollegeID);
+
+            CollegeID = CollegeID ?? 0;
+            DepartmentID = DepartmentID ?? 0;
+            if (String.IsNullOrEmpty(searchString))
+                searchString = " ";
+
+            ViewBag._CollegeID = CollegeID;
+            ViewBag._DepartmentID = DepartmentID;
+            ViewBag._searchString = searchString;
+
+            //Fill out DDLs (Filter)
+            SelectListItem selListItem = new SelectListItem() { Value = "0", Text = " ALL DEPARTMENTS " };
+            ViewBag.Departments = CommonFunctions.GetDepartments(CollegeID ?? 0, DepartmentID ?? 0, true, selListItem);
+
+            var colleges = new SelectList(db.tb_College, "CollegeID", "CollegeName", CollegeID);
+            ViewBag.Colleges = colleges;
+
+            // Return filtered Facility Members 
+            IQueryable<tb_MemberMaster> fms = db.tb_MemberMaster.Include(p => p.tb_Department).Include(p => p.tb_Department.tb_College);
+            if (CollegeID != null && CollegeID > 0)
+                fms = fms.Where(x => x.tb_Department.tb_College.CollegeID == CollegeID);
+            if (DepartmentID != null && DepartmentID > 0)
+                fms = fms.Where(x => x.DepartmentID == DepartmentID);
+            if (!String.IsNullOrWhiteSpace(searchString))
+                fms = fms.Where(x => x.FirstName.ToUpper().Contains(searchString.ToUpper()) || x.LastName.ToUpper().Contains(searchString.ToUpper()));
+
+            List < tb_MemberMaster> members = fms.ToList();
+
+            ViewData["MemberQty"] = members.Count();
+
+            //Sorting
+            var membersOrdered = members.OrderBy(s => s.LastName);
+            switch (sortOrder)
+            {
+                case "Name desc":
+                    membersOrdered = members.OrderByDescending(s => s.LastName);
+                    break;
+            }           
+            //Paging
+            int pageNumber = (page ?? 1);
+            return View(membersOrdered.ToPagedList(pageNumber, MvcApplication.PageSize_MembersBySchool));
+        }
+
+        // GET: ExportData
+        [Authorize(Roles = "admin, organizer")]
+        public ActionResult ExportData(int CollegeID, int DepartmentID, string searchString)
+        {
+            ViewBag.CollegeID = CollegeID;
+            ViewBag.DepartmentID = DepartmentID;
+            ViewBag.searchString = searchString;
+
+            return PartialView("ExportData");
+        }
+        
+        // GET: ExportToCsv
+        [Authorize(Roles = "admin, organizer")]
+        public ActionResult ExportToCsv(int CollegeID, int DepartmentID, string searchString)
+        {
+            //Get Current Response  
+            var response = System.Web.HttpContext.Current.Response;
+            response.BufferOutput = true;
+            response.Clear();
+            response.ClearHeaders();
+            response.ContentEncoding = Encoding.Unicode;
+            response.AddHeader("content-disposition", "attachment;filename=MembersBySchool.CSV ");
+            response.ContentType = "text/plain";
+            response.Write(CommonFunctions.GetExportString(CollegeID, DepartmentID, searchString));
+            response.End();
+
+            return View();
+        }
+
+        // GET: ExportToTxt
+        [Authorize(Roles = "admin, organizer")]
+        public ActionResult ExportToTxt(int CollegeID, int DepartmentID, string searchString)
+        {
+            //Get Current Response  
+            var response = System.Web.HttpContext.Current.Response;
+            response.BufferOutput = true;
+            response.Clear();
+            response.ClearHeaders();
+            response.ContentEncoding = Encoding.Unicode;
+            response.AddHeader("content-disposition", "attachment;filename=MembersBySchool.TXT ");
+            response.ContentType = "text/plain";
+            response.Write(CommonFunctions.GetExportString(CollegeID, DepartmentID, searchString));
+            response.End();
+
+            return View();
         }
 
         // GET: Details
@@ -196,115 +272,16 @@ namespace LRC_NET_Framework.Controllers
                 _Member = Worker,
                 _AssessmentName = AssessmentNames
             };
+
+            var address = Worker.tb_MemberAddress.Where(t => t.IsPrimary == true).FirstOrDefault();
+            var space = String.Empty;
+            if (!String.IsNullOrEmpty(address.HomeStreet2))
+                space = " ";
+            ViewBag.MemberAddress = address.HomeStreet1 + space + address.HomeStreet2 + ", " + address.City + ", " + address.tb_States.StateCode + ", " + address.ZipCode;
+
             return View(model);
         }
-
-        // GET: MembersBySchool
-        [Authorize(Roles = "admin, organizer")]
-        public ActionResult MembersBySchool(string sortOrder, string searchString, int? page, int? CollegeID, int? DepartmentID, FormCollection formCollection)
-        {
-            CollegeID = CollegeID ?? int.Parse(formCollection["CollegeID"]);
-            if (CollegeID == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            ViewBag.CollegeID = CollegeID;
-            ViewBag.Search = searchString;
-            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Name desc" : "";
-
-            List<tb_Department> deps = new List<tb_Department>();
-            deps = db.tb_Department.Where(c => c.CollegeID == CollegeID).ToList();
-            List<tb_MemberMaster> members = new List<tb_MemberMaster>();
-
-
-            foreach (var dep in deps)
-            {
-                List<tb_MemberMaster> membersInDep = db.tb_MemberMaster.Where(t => t.DepartmentID == dep.DepartmentID).ToList();
-                if (membersInDep.Count > 0)
-                {
-                    foreach (var item in membersInDep)
-                    {
-                        if (String.IsNullOrEmpty(searchString))
-                        {
-                            members.Add(item);
-                        }
-                        //Searching @ Filtering
-                        else if (item.LastName.ToUpper().Contains(searchString.ToUpper())
-                            || item.FirstName.ToUpper().Contains(searchString.ToUpper()))
-                        {
-                            members.Add(item);
-                        }
-                    }
-                }
-            }
-
-            if (members == null)
-            {
-                return HttpNotFound();
-            }
-
-            ViewData["MemberQty"] = members.Count();
-
-            //Sorting
-            var membersOrdered = members.OrderBy(s => s.LastName);
-            switch (sortOrder)
-            {
-                case "Name desc":
-                    membersOrdered = members.OrderByDescending(s => s.LastName);
-                    break;
-            }           
-            //Paging
-            int pageSize = 20;
-            int pageNumber = (page ?? 1);
-            return View(membersOrdered.ToPagedList(pageNumber, pageSize));
-        }
-
-        // GET: ExportData
-        [Authorize(Roles = "admin, organizer")]
-        public ActionResult ExportData(int CollegeID)
-        {
-            ViewBag.CollegeID = CollegeID;
-            return PartialView("ExportData");
-        }
         
-        // GET: ExportToCsv
-        [Authorize(Roles = "admin, organizer")]
-        public ActionResult ExportToCsv(string searchString, int CollegeID)
-        {
-            //Get Current Response  
-            var response = System.Web.HttpContext.Current.Response;
-            response.BufferOutput = true;
-            response.Clear();
-            response.ClearHeaders();
-            response.ContentEncoding = Encoding.Unicode;
-            response.AddHeader("content-disposition", "attachment;filename=MembersBySchool.CSV ");
-            response.ContentType = "text/plain";
-            response.Write(GetExportString(searchString, CollegeID));
-            response.End();
-
-            return View();
-        }
-
-        // GET: ExportToTxt
-        [Authorize(Roles = "admin, organizer")]
-        public ActionResult ExportToTxt(string searchString, int CollegeID)
-        {
-            //Get Current Response  
-            var response = System.Web.HttpContext.Current.Response;
-            response.BufferOutput = true;
-            response.Clear();
-            response.ClearHeaders();
-            response.ContentEncoding = Encoding.Unicode;
-            response.AddHeader("content-disposition", "attachment;filename=MembersBySchool.TXT ");
-            response.ContentType = "text/plain";
-            response.Write(GetExportString(searchString, CollegeID));
-            response.End();
-
-            //File(new UTF8Encoding().GetBytes(sb.ToString()), "text/csv", "MembersBySchool.txt");
-
-            return View();
-        }
-
         // GET: tb_MemberMaster/Edit/5
         [Authorize(Roles = "admin, organizer")]
         public ActionResult Edit(int? id, int? CollegeID)
@@ -332,7 +309,7 @@ namespace LRC_NET_Framework.Controllers
             MemberEditModel model = new MemberEditModel()
             {
                 _MemberID = tb_MemberMaster.MemberID,
-                _MemberFullName = tb_MemberMaster.LastName + ", " + tb_MemberMaster.FirstName,
+                _MemberFullName = tb_MemberMaster.FirstName + " " + tb_MemberMaster.LastName,
                 _CollegeID = tb_MemberMaster.tb_Department.CollegeID,
                 _Colleges = new SelectList(db.tb_College.OrderBy(s => s.CollegeName), "CollegeID", "CollegeName", tb_MemberMaster.tb_Department.CollegeID),
                 _JobStatusID = tb_MemberMaster.JobStatusID,
@@ -368,8 +345,12 @@ namespace LRC_NET_Framework.Controllers
                 worker.DepartmentID = model._DepartmentID;
                 worker.CategoryID = model._CategoryID;
                 worker.HireDate = model._HireDate;
-                worker.tb_MemberActivity.Where(t => t.MemberID == model._MemberID).LastOrDefault().TwitterHandle = model._TwitterHandle;
-                worker.tb_MemberActivity.Where(t => t.MemberID == model._MemberID).LastOrDefault().FacebookID = model._FaceBookID;
+                var activities = worker.tb_MemberActivity.Any(t => t.MemberID == model._MemberID);
+                if (activities)
+                {
+                    worker.tb_MemberActivity.Where(t => t.MemberID == model._MemberID).LastOrDefault().TwitterHandle = model._TwitterHandle ?? String.Empty;
+                    worker.tb_MemberActivity.Where(t => t.MemberID == model._MemberID).LastOrDefault().FacebookID = model._FaceBookID ?? String.Empty;
+                }
 
                 //db.tb_MemberMaster.Attach(worker);
                 var entry = db.Entry(worker);
@@ -410,13 +391,13 @@ namespace LRC_NET_Framework.Controllers
             MemberContactInfoModel model = new MemberContactInfoModel()
             {
                 _MemberID = id ?? 0,
-                _MemberName = FM.LastName + ", " + FM.FirstName,
+                _MemberName = FM.FirstName + " " + FM.LastName,
                 //PHONE
                 //_PhoneNumber = String.Empty,
                 _IsPhonePrimary = true,
                 _PhoneTypeID = 1,
                 _PhoneTypes = new SelectList(db.tb_PhoneType, "PhoneTypeID", "PhoneTypeName"),
-                _MemberPhoneNumbers = db.tb_MemberPhoneNumbers.Where(t => t.MemberID == id).OrderBy(s => s.CreatedDateTime).ToList(),
+                _MemberPhoneNumbers = db.tb_MemberPhoneNumbers.Where(t => t.MemberID == id).OrderByDescending(s => s.StartDate).ThenByDescending(c => c.CreatedDateTime).ToList(),
                 // ADDRESS >>check here
                 _StateCode = db.tb_States.Where(r => r.StateID == db.tb_MemberAddress.Where(t => t.MemberID == id).FirstOrDefault().StateID).FirstOrDefault().StateCode,
                 //_CreatedAdressBy = 2,
@@ -430,12 +411,12 @@ namespace LRC_NET_Framework.Controllers
                 _City = String.Empty,
                 // >>check here
                 _States = new SelectList(db.tb_States.ToList(), "StateID", "StateCode"),
-                _MemberAddresses = db.tb_MemberAddress.Where(t => t.MemberID == id).OrderBy(s => s.CreatedDateTime).ToList(),
+                _MemberAddresses = db.tb_MemberAddress.Where(t => t.MemberID == id).OrderByDescending(s => s.StartDate).ThenByDescending(c => c.CreatedDateTime).ToList(),
                 //EMAIL
                 _EmailTypeID = 1,
                 _IsEmailPrimary = true,
                 _EmailTypes = new SelectList(db.tb_EmailType.ToList(), "EmailTypeID", "EmailTypeName"),
-                _MemberEmails = db.tb_MemberEmail.Where(t => t.MemberID == id).OrderBy(s => s.CreatedDateTime).ToList()
+                _MemberEmails = db.tb_MemberEmail.Where(t => t.MemberID == id).OrderByDescending(s => s.StartDate).ThenByDescending(c => c.CreatedDateTime).ToList()
             };
             return View(model);
         }
@@ -452,7 +433,7 @@ namespace LRC_NET_Framework.Controllers
             error.errCode = ErrorDetail.Success;
             List<string> errs = new List<string>();
             ViewBag.CollegeID = CollegeID;
-            var uName = HttpContext.GetOwinContext().Authentication.User.Identity.GetUserId();
+            var userId = HttpContext.GetOwinContext().Authentication.User.Identity.GetUserId();
             bool isValid = true;
             switch (submit)
             {
@@ -469,7 +450,7 @@ namespace LRC_NET_Framework.Controllers
                             modelState.Value.Errors.Clear();
                     }
                     if (isValid)
-                        errs = CreateMemberModel.AssignPhoneNumber(model._PhoneNumber, model._PhoneTypeID, model._IsPhonePrimary, "Form", model._MemberID, uName);
+                        errs = CreateMemberModel.AssignPhoneNumber(model._PhoneNumber, model._PhoneTypeID, model._IsPhonePrimary, "Form", model._MemberID, userId);
                     break;
 
                 case "Submit New Address":
@@ -489,9 +470,9 @@ namespace LRC_NET_Framework.Controllers
                         string source = String.Empty;
                         //LZ requirement: Add "Current User" as once of the options and if selected, insert the session user name as the source.
                         if (model._SourceID == 3) //Current User (Fill out Source field in tb_MemberAddress)
-                            source = uName;
+                            source = userId;
                         errs = CreateMemberModel.AssignAddress(model._HomeStreet1, model._HomeStreet2, model._City, model._StateID.ToString(),
-                            model._ZipCode, model._AddressTypeID, model._IsAdressPrimary, source, model._SourceID, model._MemberID, uName);
+                            model._ZipCode, model._AddressTypeID, model._IsAdressPrimary, source, model._SourceID, model._MemberID, userId);
                     }
                     break;
                 case "Submit New Email":
@@ -507,23 +488,40 @@ namespace LRC_NET_Framework.Controllers
                             modelState.Value.Errors.Clear();
                     }
                     if (isValid)
-                        errs = CreateMemberModel.AssignEmail(model._EmailAddress, model._EmailTypeID, model._IsEmailPrimary, "Form", model._MemberID, uName);
+                        errs = CreateMemberModel.AssignEmail(model._EmailAddress, model._EmailTypeID, model._IsEmailPrimary, "Form", model._MemberID, userId);
                     break;
             }
             var FM = db.tb_MemberMaster.Find(model._MemberID);
-            model._MemberName = FM.LastName + ", " + FM.FirstName;
+            model._MemberName = FM.FirstName + " " + FM.LastName;
             model._PhoneTypes = new SelectList(db.tb_PhoneType, "PhoneTypeID", "PhoneTypeName");
-            model._MemberPhoneNumbers = db.tb_MemberPhoneNumbers.Where(t => t.MemberID == model._MemberID).ToList();
+            model._MemberPhoneNumbers = db.tb_MemberPhoneNumbers.Where(t => t.MemberID == model._MemberID).OrderByDescending(s => s.StartDate).ThenByDescending(c => c.CreatedDateTime).ToList();
             // >> check here
             model._StateCode = db.tb_States.Where(p => p.StateID == db.tb_MemberAddress.Where(t => t.MemberID == model._MemberID).FirstOrDefault().StateID).FirstOrDefault().StateCode;
             model._AddressSources = new SelectList(db.tb_AddressSource, "SourceID", "SourceName");
             // >> check here
             model._States = new SelectList(db.tb_States.ToList(), "StateID", "StateName");
             model._AddressTypes = new SelectList(db.tb_AddressType, "AddressTypeID", "AddressTypeName");
-            model._MemberAddresses = db.tb_MemberAddress.Where(t => t.MemberID == model._MemberID).ToList();
+            model._MemberAddresses = db.tb_MemberAddress.Where(t => t.MemberID == model._MemberID).OrderByDescending(s => s.StartDate).ThenByDescending(c => c.CreatedDateTime).ToList();
             model._EmailTypes = new SelectList(db.tb_EmailType.ToList(), "EmailTypeID", "EmailTypeName");
-            model._MemberEmails = db.tb_MemberEmail.Where(t => t.MemberID == model._MemberID).ToList();
+            model._MemberEmails = db.tb_MemberEmail.Where(t => t.MemberID == model._MemberID).OrderByDescending(s => s.StartDate).ThenByDescending(c => c.CreatedDateTime).ToList();
 
+            FM.LastSeenDate = DateTime.UtcNow; 
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (DbEntityValidationException ex)
+            {
+                foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
+                {
+                    Response.Write("Object: " + validationError.Entry.Entity.ToString());
+                    Response.Write("");
+                    foreach (DbValidationError err in validationError.ValidationErrors)
+                    {
+                        Response.Write(err.ErrorMessage + "");
+                    }
+                }
+            }
             return View(model);
         }
 
@@ -553,13 +551,12 @@ namespace LRC_NET_Framework.Controllers
             }
 
             //Paging
-            int pageSize = 20;
             int pageNumber = (page ?? 1);
 
             ViewData["MemberQty"] = MembershipForms.Count();
 
 
-            return View(MembershipForms.ToPagedList(pageNumber, pageSize));
+            return View(MembershipForms.ToPagedList(pageNumber, MvcApplication.PageSize_Default));
             //return View(MemberNotes.ToList());
         }
 
@@ -580,7 +577,7 @@ namespace LRC_NET_Framework.Controllers
             };
             ViewBag._CollectedBy = new SelectList(db.AspNetUsers.OrderBy(s => s.LastFirstName), "Id", "LastFirstName");
             tb_MemberMaster fm = db.tb_MemberMaster.Find(id);
-            ViewBag.MemberName = fm.LastName + ", " + fm.FirstName;
+            ViewBag.MemberName = fm.FirstName + ", " + fm.LastName;
 
             return View(model);
 
@@ -601,7 +598,7 @@ namespace LRC_NET_Framework.Controllers
 
             ViewBag._CollectedBy = new SelectList(db.AspNetUsers.OrderBy(s => s.LastFirstName), "Id", "LastFirstName");
             tb_MemberMaster fm = db.tb_MemberMaster.Find(model._MemberID);
-            ViewBag.MemberName = fm.LastName + ", " + fm.FirstName;
+            ViewBag.MemberName = fm.FirstName + " " + fm.LastName;
             model._MembershipForms = db.tb_MembershipForms.Where(t => t.MemberID == model._MemberID).OrderByDescending(t => t.MembershipFormID).ToList();
 
             if (file != null && file.ContentLength > 0)
@@ -709,7 +706,7 @@ namespace LRC_NET_Framework.Controllers
             };
             ViewBag._CollectedBy = new SelectList(db.AspNetUsers.OrderBy(s => s.LastFirstName), "Id", "LastFirstName");
             tb_MemberMaster fm = db.tb_MemberMaster.Find(id);
-            ViewBag.MemberName = fm.LastName + ", " + fm.FirstName;
+            ViewBag.MemberName = fm.FirstName + " " + fm.LastName;
 
             return View(model);
 
@@ -730,7 +727,7 @@ namespace LRC_NET_Framework.Controllers
 
             ViewBag._CollectedBy = new SelectList(db.AspNetUsers.OrderBy(s => s.LastFirstName), "Id", "LastFirstName");
             tb_MemberMaster fm = db.tb_MemberMaster.Find(model._MemberID);
-            ViewBag.MemberName = fm.LastName + ", " + fm.FirstName;
+            ViewBag.MemberName = fm.FirstName + " " + fm.LastName;
             model._CopeForms = db.tb_CopeForms.Where(t => t.MemberID == model._MemberID).OrderByDescending(t => t.CopeFormID).ToList();
 
             if (file != null && file.ContentLength > 0)
@@ -935,7 +932,6 @@ namespace LRC_NET_Framework.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             //Paging
-            int pageSize = 20;
             int pageNumber = (page ?? 1);
             var _Departments = db.tb_Department.Include(t => t.tb_College);
             ViewData["MemberQty"] = _Departments.Count();
@@ -959,7 +955,7 @@ namespace LRC_NET_Framework.Controllers
                     break;
             }
 
-            return View(_Departments.ToPagedList(pageNumber, pageSize));
+            return View(_Departments.ToPagedList(pageNumber, MvcApplication.PageSize_Default));
         }
 
         // POST: Home/AddDepartment
@@ -987,7 +983,6 @@ namespace LRC_NET_Framework.Controllers
 
             _Departments = db.tb_Department.Include(t => t.tb_College);
             //Paging
-            int pageSize = 20;
             int pageNumber = (page ?? 1);
             ViewData["MemberQty"] = _Departments.Count();
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Name desc" : "";
@@ -1010,103 +1005,7 @@ namespace LRC_NET_Framework.Controllers
                     break;
             }
 
-            return View(_Departments.ToPagedList(pageNumber, pageSize));
-        }
-
-        // GET: Home/AddBuilding
-        public ActionResult AddBuilding()
-        {
-            AddBuildingModel buildingModel = new AddBuildingModel
-            {
-                _Campuses = new SelectList(db.tb_Campus.OrderBy(s => s.CampusName), "CampusID", "CampusName"),
-                _tb_College = db.tb_College
-            };
-            buildingModel._Colleges = new List<SelectListItem>
-            { new SelectListItem() {Value = "0", Text = "-- Select One --" }}.Concat(db.tb_College.Select(x => new SelectListItem
-            { Value = x.CollegeID.ToString(), Text = x.CollegeName }));
-
-            return View(buildingModel);
-        }
-
-        // POST: Home/AddBuilding
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "admin, organizer")]
-        public ActionResult AddBuilding(HttpPostedFileBase file, [Bind(Include = "_CollegeID,_CampusID,_BuildingName")] AddBuildingModel model)
-        {
-            Error error = new Error();
-            error.errCode = ErrorDetail.Success;
-            error.errMsg = ErrorDetail.GetMsg(error.errCode);
-            List<string> errs = new List<string>();
-            
-            model._Colleges = new List<SelectListItem>
-            { new SelectListItem() {Value = "0", Text = "-- Select One --" }}.Concat(db.tb_College.Select(x => new SelectListItem
-            { Value = x.CollegeID.ToString(), Text = x.CollegeName }));
-            model._Campuses = new SelectList(db.tb_Campus.OrderBy(s => s.CampusName), "CampusID", "CampusName", model._CampusID);
-            model._tb_College = db.tb_College;
-
-            if (file != null && file.ContentLength > 0)
-                try
-                {
-                    var extension = file.FileName.Split('.').Last().ToUpper();
-                    if (extension != "PDF" && extension != "JPG")
-                    {
-                        ViewBag.Message = "Selected file type is not PDF or JPEG";
-                        return View(model);
-                    }
-
-                    string path = Path.Combine(Server.MapPath(MvcApplication.BuildingsFolder), file.FileName);
-                    file.SaveAs(path);
-                    ViewBag.Message = "File uploaded successfully";
-                }
-                catch (Exception ex)
-                {
-                    ViewBag.Message = "ERROR:" + ex.Message.ToString();
-                }
-            else
-            {
-                ViewBag.Message = "You have not specified a file.";
-
-                return View(model);
-            }
-
-            var buildings = db.tb_Building.Where(s => s.BuildingName.ToUpper() == model._BuildingName.ToUpper());
-            //Check dublicates
-            if (buildings.ToList().Count == 0)
-            {
-                tb_Building building = new tb_Building()
-                {
-                    CampusID = model._CampusID,
-                    BuildingName = model._BuildingName,
-                    ImagePath = file.FileName
-                };
-                db.tb_Building.Add(building);
-            }
-            else
-            {
-                tb_Building building = buildings.FirstOrDefault();
-                building.CampusID = model._CampusID;
-                building.BuildingName = model._BuildingName;
-                building.ImagePath = file.FileName;
-                db.tb_Building.Attach(building);
-            }
-            try
-            { 
-                db.SaveChanges();
-                model._tb_College = db.tb_College;
-            }
-            catch (Exception ex)
-            {
-                error.errCode = ErrorDetail.DataImportError;
-                error.errMsg = ErrorDetail.GetMsg(error.errCode);
-                errs.Add("Error #" + error.errCode.ToString() + "!" + error.errMsg + ". " + ex.Message);
-                ViewData["ErrorList"] = errs;
-                return View(model);
-            }
-            model._tb_College = db.tb_College;
-            return View(model);
+            return View(_Departments.ToPagedList(pageNumber, MvcApplication.PageSize_Default));
         }
 
         [HttpPost]
@@ -1204,7 +1103,7 @@ namespace LRC_NET_Framework.Controllers
             if (model._DepartmentID == null)
                 model._DepartmentID = Department;
 
-            var uName = HttpContext.GetOwinContext().Authentication.User.Identity.GetUserName();
+            var userId = HttpContext.GetOwinContext().Authentication.User.Identity.GetUserId();
 
             using (LRCEntities context = new LRCEntities())
             {
@@ -1219,7 +1118,7 @@ namespace LRC_NET_Framework.Controllers
                             var fm = tb_MemberMasters.FirstOrDefault();
                             error.errCode = ErrorDetail.Failed;
                             error.errMsg = ErrorDetail.GetMsg(error.errCode) + "! EmployeeID = " + fm.MemberIDNumber + " (MemberIDNumber in tb_MemberMaster table) already exist for Member: " +
-                                fm.LastName + ", " + fm.FirstName + " " + fm.MiddleName;
+                                fm.FirstName + " " + fm.MiddleName + " " + fm.LastName;
                             errs.Add(error.errMsg);
                             ViewData["ErrorList"] = errs;
                             return View(model);
@@ -1233,7 +1132,7 @@ namespace LRC_NET_Framework.Controllers
                         {
                             var fm = tb_MemberMasters.FirstOrDefault();
                             error.errCode = ErrorDetail.Failed;
-                            error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Member with name " + fm.LastName + ", " + fm.FirstName + " " + fm.MiddleName + " already exist in the tb_MemberMaster table";
+                            error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Member with name " + fm.FirstName + " " + fm.MiddleName + " " + fm.LastName + " already exist in the tb_MemberMaster table";
                             errs.Add(error.errMsg);
                             ViewData["ErrorList"] = errs;
                             return View(model);
@@ -1264,7 +1163,7 @@ namespace LRC_NET_Framework.Controllers
                             DepartmentID = model._DepartmentID, //from AJAX particial view
                             CampusID = College, //selecting MAIN campuses from tb_Campus only - its a College Name (from AJAX particial view)
                             LastSeenDate = DateTime.UtcNow,
-                            AddedBy = uName,
+                            AddedBy = userId,
                             AddedDateTime = DateTime.UtcNow
                         };
                         if (areaID > 0)
@@ -1293,7 +1192,7 @@ namespace LRC_NET_Framework.Controllers
                         }
                         newMemberID = FM.MemberID;
                         errs = CreateMemberModel.AssignAddress(model._HomeStreet1, model._HomeStreet2, model._City, model._StateID.ToString(), 
-                            model._ZipCode, model._AddressTypeID, true, "Form", 1, FM.MemberID, uName);
+                            model._ZipCode, model._AddressTypeID, true, "Form", 1, FM.MemberID, userId);
                         if (errs.Count > 0)
                         {
                             ViewData["ErrorList"] = errs;
@@ -1301,7 +1200,7 @@ namespace LRC_NET_Framework.Controllers
                             return View(model);
                         }
 
-                        errs = CreateMemberModel.AssignPhoneNumber(model._PhoneNumber, model._PhoneTypeID, true, "Form", FM.MemberID, uName);
+                        errs = CreateMemberModel.AssignPhoneNumber(model._PhoneNumber, model._PhoneTypeID, true, "Form", FM.MemberID, userId);
                         if (errs.Count > 0)
                         {
                             ViewData["ErrorList"] = errs;
@@ -1309,7 +1208,7 @@ namespace LRC_NET_Framework.Controllers
                             return View(model);
                         }
 
-                        errs = CreateMemberModel.AssignEmail(model._EmailAddress, model._EmailTypeID, true, "Form", FM.MemberID, uName);
+                        errs = CreateMemberModel.AssignEmail(model._EmailAddress, model._EmailTypeID, true, "Form", FM.MemberID, userId);
                         if (errs.Count > 0)
                         {
                             ViewData["ErrorList"] = errs;
@@ -1436,48 +1335,12 @@ namespace LRC_NET_Framework.Controllers
             }
             using (LRCEntities context = new LRCEntities())
             {
-                try
-                {
-                    tb_MemberEmail email = context.tb_MemberEmail.Find(EmailID);
-                    if (email == null)
-                    {
-                        return HttpNotFound();
-                    }
-                    context.tb_MemberEmail.Remove(email);
-                    context.SaveChanges();
-                }
-                catch (DbEntityValidationException ex)
-                {
-                    error.errCode = ErrorDetail.DataImportError;
-                    error.errMsg = ErrorDetail.GetMsg(error.errCode);
-                    foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
-                    {
-                        error.errMsg += ". Object: " + validationError.Entry.Entity.ToString();
-                        foreach (DbValidationError err in validationError.ValidationErrors)
-                        {
-                            error.errMsg += ". " + err.ErrorMessage;
-                        }
-                    }
-                }
+                    var buildings = context.tb_Building.OrderBy(b=>b.BuildingName).ToList();
+
+                return View(buildings);
             }
-            return RedirectToAction("ManageContactInfo", new { @id = MemberId, CollegeID = CollegeID });
         }
 
-        // GET: AddFilter
-        [Authorize(Roles = "admin, organizer")]
-        public ActionResult AddFilter(int CollegeID, int DepartmentID)
-        {
-            ViewBag.CollegeID = CollegeID;
-            if (DepartmentID == 0)
-                DepartmentID = 3;
-            var departments = new SelectList(db.tb_Department, "DepartmentID", "DepartmentName", DepartmentID);
-            ViewBag.Departments = departments;
-
-            var colleges = new SelectList(db.tb_College, "CollegeID", "CollegeName", CollegeID);
-            ViewBag.Colleges = colleges;
-
-            return PartialView("AddFilter");
-        }
         public ActionResult About()
         {
             ViewBag.Message = "This application manages current and historical data regarding Local 2279 union members working for the Los Rios Community College District (hereafter referred to as the District) colleges and campuses. The application supports administrative efforts to track and support membership and organizer efforts to support and increase participation of members.";

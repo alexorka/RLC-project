@@ -1,0 +1,63 @@
+﻿@model IEnumerable<LRC_NET_Framework.tb_Building>
+
+@{
+    ViewBag.Title = "Building to Campus Matching";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+    <div class="row" style="padding-bottom:10px; padding-top:10px; margin:2px;">
+        <div class="col-md-6 col-md-offset-3" id="BuildingMatching" style="background-color:lavender; border:solid; border-radius:5px; border-width:1px; border-color:gainsboro">
+            <div style="background-color:lightsteelblue; padding:10px 0 10px 30px; border-bottom-left-radius:5px; border-bottom-right-radius:5px;">
+                @Html.Label("BuildingMatching", "Building to Campus Matching", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })
+                <span style="padding-left:40px; border-radius:5px;">
+                    <a href="@Url.Action("AddBuilding")" class="btn btn-sm btn-warning">Building&nbsp;<span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+                </span>
+            </div>
+
+
+        <table class="table-hover col-md-12">
+            <tr>
+                <th>
+                    Building Name
+                </th>
+                <th>
+                    Image
+                </th>
+                <th>
+                    College Code
+                </th>
+                <th>
+                    Campus Name
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BuildingName)
+                    </td>
+                    <td align="center">
+                        @if (item.ImagePath != null)
+                        {
+                            <a href="@Url.Action("GetPdfOrJpeg", "Home", new { fileName = item.ImagePath, form = "Building" })" class="btn btn-xs" target="_blank"><span class="glyphicon glyphicon-camera" aria-hidden="true"></span></a>
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.tb_Campus.CollegeCode)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.tb_Campus.CampusName)
+                    </td>
+                    <td style="padding:5px 2px 3px 2px;">
+                        <a href="@Url.Action("Edit", new { id = item.BuildingID })" class="btn btn-sm btn-primary">Edit&nbsp;<span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+                        @*<a href="@Url.Action("Details", new { id = item.BuildingID })" class="btn btn-xs btn-default">Details&nbsp;<span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>*@
+                        &nbsp;
+                        <a href="@Url.Action("Delete", new { id = item.BuildingID })" class="btn btn-sm btn-danger">Delete&nbsp;<span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>

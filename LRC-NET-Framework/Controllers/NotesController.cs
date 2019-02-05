@@ -93,7 +93,7 @@ namespace LRC_NET_Framework.Controllers
             };
             ViewBag._TakenBy = new SelectList(db.AspNetUsers.OrderBy(s => s.LastFirstName), "Id", "LastFirstName");
             tb_MemberMaster fm = db.tb_MemberMaster.Find(id);
-            ViewBag.MemberName = fm.LastName + ", " + fm.FirstName;
+            ViewBag.MemberName = fm.FirstName + " " + fm.LastName;
 
             return View(model);
 
@@ -127,7 +127,7 @@ namespace LRC_NET_Framework.Controllers
                 model._NoteTypes = new SelectList(db.tb_NoteType, "NoteTypeID", "NoteType");
                 ViewBag._TakenBy = new SelectList(db.AspNetUsers.OrderBy(s => s.LastFirstName), "Id", "LastFirstName");
                 tb_MemberMaster fm = db.tb_MemberMaster.Find(model._MemberID);
-                ViewBag.MemberName = fm.LastName + ", " + fm.FirstName;
+                ViewBag.MemberName = fm.FirstName + " " + fm.LastName;
                 model._MemberNotes = db.tb_MemberNotes.Where(t => t.MemberID == model._MemberID).ToList(); //before
                 db.SaveChanges();
                 model._MemberNotes = db.tb_MemberNotes.Where(t => t.MemberID == model._MemberID).ToList(); //after

@@ -62,7 +62,7 @@
                 Category
             </div>
             <div class="col-md-7 text-muted">
-                @Html.DisplayFor(n => n._Member.tb_Categories.CategoryName)
+
             </div>
         </div>
         <div class="row" style="padding-bottom:5px">
@@ -98,22 +98,8 @@
                 Member Status
             </div>
             <div class="col-md-5 text-muted">
-                @Html.DisplayFor(n => n._Member.tb_MemberActivity.Where(t => t.MemberID == Model._Member.MemberID).LastOrDefault().tb_ActivityStatus.ActivityStatusName)
-            </div>
-        </div>
-        <div class="row" style="padding-bottom:5px">
-            <div class="col-md-7" style="font-weight:bold; text-align:right">
-                Fee Payer Assess
-            </div>
-            <div class="col-md-5 text-muted">
-                @if (Model._Member.LatestUnionAssessmentID != null)
-                {
-                    @Html.DisplayFor(n => n._Member.tb_LatestUnionAssessment.LatestUnionAssessmentDesc)
-                }
-                else
-                {
-                    <span>0</span>
-                }
+                @Html.DisplayFor(n => n._Member.tb_Categories.CategoryName)
+                @*@Html.DisplayFor(n => n._Member.tb_MemberActivity.Where(t => t.MemberID == Model._Member.MemberID).LastOrDefault().tb_ActivityStatus.ActivityStatusName)*@
             </div>
         </div>
         <div class="row" style="padding-bottom:5px">
@@ -121,7 +107,7 @@
                 Membership&nbsp;Commitment
             </div>
             <div class="col-md-5 text-muted">
-                @Html.DisplayFor(n => n._Member.tb_MemberActivity.Where(t => t.MemberID == Model._Member.MemberID).LastOrDefault().MembershipCommitment)
+                @Html.DisplayFor(n => n._Member.tb_Assessment.Where(t => t.MemberID == Model._Member.MemberID).LastOrDefault().ValueID)
             </div>
         </div>
     </div>
@@ -162,6 +148,7 @@
             <th>End</th>
             <th>Note</th>
             <th>Schedule Status</th>
+            <th>Semester</th>
         </tr>
         @foreach (var item in Model._Member.tb_SemesterTaught)
         {
@@ -208,6 +195,9 @@
                     {
                         <span>Inactive</span>
                     }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tb_Semesters.SemesterName) @Html.DisplayFor(modelItem => item.tb_Semesters.SemesterYear)
                 </td>
             </tr>
         }
@@ -449,7 +439,7 @@
             </th>
         </tr>
 
-        @foreach (var item in Model._Member.tb_MemberPhoneNumbers.Where(t => t.MemberID == Model._Member.MemberID).OrderBy(s => s.CreatedDateTime))
+        @foreach (var item in Model._Member.tb_MemberPhoneNumbers.Where(t => t.MemberID == Model._Member.MemberID).OrderByDescending(s => s.StartDate).ThenByDescending(c => c.CreatedDateTime))
         {
             if (item != null)
             {
@@ -504,7 +494,7 @@
 
         </tr>
 
-        @foreach (var item in Model._Member.tb_MemberEmail.Where(t => t.MemberID == Model._Member.MemberID).OrderBy(s => s.CreatedDateTime))
+        @foreach (var item in Model._Member.tb_MemberEmail.Where(t => t.MemberID == Model._Member.MemberID).OrderByDescending(s => s.StartDate).ThenByDescending(c => c.CreatedDateTime))
         {
             if (item != null)
             {
@@ -560,7 +550,7 @@
 
         </tr>
 
-        @foreach (var item in Model._Member.tb_MemberAddress.Where(t => t.MemberID == Model._Member.MemberID).OrderBy(s => s.CreatedDateTime))
+        @foreach (var item in Model._Member.tb_MemberAddress.Where(t => t.MemberID == Model._Member.MemberID).OrderByDescending(s => s.StartDate).ThenByDescending(c => c.CreatedDateTime))
         {
             if (item != null)
             {
@@ -643,7 +633,10 @@
                         @Html.DisplayFor(modelItem => item.AspNetUsers1.LastFirstName)
                     </td>
                     <td>
-                        <p>@Html.ActionLink(item.FormImagePath, "GetPdfOrJpeg", new { fileName = item.FormImagePath, form = "MembershipForms" }, new { target = "_blank" })</p>
+                        @if (item.FormImagePath != null)
+                        {
+                            <a href="@Url.Action("GetPdfOrJpeg", new { fileName = item.FormImagePath, form = "MembershipForms" })" class="btn btn-xs" target="_blank"><span class="glyphicon glyphicon-camera" aria-hidden="true"></span></a>
+                        }
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.AspNetUsers.LastFirstName)
@@ -699,7 +692,10 @@
                 @Html.DisplayFor(modelItem => item.AspNetUsers1.LastFirstName)
             </td>
             <td>
-                <p>@Html.ActionLink(item.FormImagePath, "GetPdfOrJpeg", new { fileName = item.FormImagePath, form = "CopeForms" }, new { target = "_blank" })</p>
+                @if (item.FormImagePath != null)
+                {
+                    <a href="@Url.Action("GetPdfOrJpeg", new { fileName = item.FormImagePath, form = "CopeForms" })" class="btn btn-xs" target="_blank"><span class="glyphicon glyphicon-camera" aria-hidden="true"></span></a>
+                }
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.AspNetUsers.LastFirstName)

@@ -8,7 +8,7 @@
 
 <div style="text-align:center;">
     <ul class="list-inline">
-        <li role="button"><a href="@Url.Action("ExportToCsv", "Home", new { CollegeID = (int)ViewBag.CollegeID })" class="btn btn-default">(.CSV)&nbsp;<span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a></li>
-        <li role="button"><a href="@Url.Action("ExportToTxt", "Home", new { CollegeID = (int)ViewBag.CollegeID })" class="btn btn-default">(.TXT)&nbsp;<span class="glyphicon glyphicon-font" aria-hidden="true"></span></a></li>
+        <li role="button"><a href="@Url.Action("ExportToCsv", "Home", new { CollegeID = (int)ViewBag.CollegeID, DepartmentID = (int)ViewBag.DepartmentID, searchString = (string)ViewBag.searchString })" class="btn btn-default">(.CSV)&nbsp;<span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a></li>
+        <li role="button"><a href="@Url.Action("ExportToTxt", "Home", new { CollegeID = (int)ViewBag.CollegeID, DepartmentID = (int)ViewBag.DepartmentID, searchString = (string)ViewBag.searchString })" class="btn btn-default">(.TXT)&nbsp;<span class="glyphicon glyphicon-font" aria-hidden="true"></span></a></li>
     </ul>
 </div>

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
+    using System.Data;
+using System.Linq;
 using System.Data.Entity;
 using System.Data.Entity.Validation;
-using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
@@ -177,7 +177,7 @@ namespace LRC_NET_Framework.Controllers
             memberActivities.MemberID = id;
             ViewBag.MemberActivities = db.tb_MemberActivity.Where(a => a.MemberID == id).OrderBy(s => s.ActivityID).ToList();
             tb_MemberMaster fm = db.tb_MemberMaster.Find(id);
-            ViewBag.MemberName = fm.LastName + ", " + fm.FirstName;
+            ViewBag.MemberName = fm.FirstName + " " + fm.LastName;
             return View(memberActivities);
         }
 
@@ -268,7 +268,7 @@ namespace LRC_NET_Framework.Controllers
                 {
                     members.Add(new SelectListItem()
                     {
-                        Text = member.LastName + ", " + member.FirstName,
+                        Text = member.FirstName + " " + member.LastName,
                         Value = member.MemberID.ToString()
                     });
                     memberActivities.MemberCollection = members.OrderBy(s => s.Text).ToList();

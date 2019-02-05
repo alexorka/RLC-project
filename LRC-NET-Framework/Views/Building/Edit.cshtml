@@ -1,0 +1,59 @@
+﻿@model LRC_NET_Framework.tb_Building
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row" style="padding-bottom:10px; padding-top:10px; margin:2px;">
+    <div class="col-md-6 col-md-offset-3" id="BuildingMatching" style="background-color:lavender; border:solid; border-radius:5px; border-width:1px; border-color:gainsboro">
+        <div style="background-color:lightsteelblue; padding-bottom:5px; padding-top:10px; padding-left:30px; border-bottom-left-radius:5px; border-bottom-right-radius:5px;">
+            @Html.Label("BuildingMatching", "Building to Campus Matching", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })
+        </div>
+
+        @using (Html.BeginForm("Edit", "Building", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.BuildingID)
+
+                <div class="form-group">
+                    <div class="col-md-11 col-md-offset-1" style="padding-top:15px;" id="BuildingName">
+                        @Html.Label("Building Name", "BuildingName", htmlAttributes: new { @class = "control-label" })<span class="text-danger">&nbsp;&nbsp;*</span>
+                        @Html.EditorFor(model => model.BuildingName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.BuildingName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-11 col-md-offset-1" id="CampusID">
+                        @Html.Label("Campus", "CampusID", htmlAttributes: new { @class = "control-label" })
+                        @Html.DropDownList("CampusID", null, htmlAttributes: new { @class = "form-control" })
+                        @*@Html.DropDownList("CampusId", ViewBag.CampusId as SelectList, new { @class = "form-control", style = "width: 250px" })*@
+                        @Html.ValidationMessageFor(model => model.CampusID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-11 col-md-offset-1" id="BuildingPicture" style="padding-bottom:15px;">
+                        @Html.Label("BuildingPicture", "Picture of Building", htmlAttributes: new { @class = "control-label" })
+                        <input class="btn btn-info" type="file" name="file" id="file" />
+                        <span class="text-danger">@ViewBag.Message</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Save" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div>
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    </div>
+</div>

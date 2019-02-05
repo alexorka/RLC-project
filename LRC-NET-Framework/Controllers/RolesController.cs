@@ -84,7 +84,7 @@ namespace LRC_NET_Framework.Controllers
                 memberList.Add(new
                 {
                     Id = member.MemberID,
-                    Name = member.LastName + ", " + member.FirstName
+                    Name = member.FirstName + " " + member.LastName
                 });
 
             CreateRoleModel model = new CreateRoleModel()

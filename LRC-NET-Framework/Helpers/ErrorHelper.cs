@@ -11,8 +11,13 @@ namespace LRC_NET_Framework.Helpers
         public static MvcHtmlString CreateList(this HtmlHelper html, List<string> errList)
         {
             var divMain = new TagBuilder("div");
-            divMain.AddCssClass("col-md-12 alert-warning");
-            divMain.Attributes.Add("style", "padding-left:30px; padding-top:0px;");
+            divMain.AddCssClass("col-md-12");
+            divMain.Attributes.Add("style", "padding:5px 30px 5px 30px;");
+
+            var divLeft = new TagBuilder("div");
+            divLeft.AddCssClass("col-md-1 alert-warning");
+            var divRight = new TagBuilder("div");
+            divRight.AddCssClass("col-md-11 alert-warning");
 
             if (errList != null && errList[0] != "Empty")
             {
@@ -41,9 +46,11 @@ namespace LRC_NET_Framework.Helpers
                     ul.InnerHtml += li.ToString();
                 }
 
-                divMain.InnerHtml += img.ToString(TagRenderMode.Normal);
-                divMain.InnerHtml += strong1.ToString(TagRenderMode.Normal);
-                divMain.InnerHtml += ul.ToString(TagRenderMode.Normal);
+                divLeft.InnerHtml += img.ToString(TagRenderMode.Normal);
+                divRight.InnerHtml += strong1.ToString(TagRenderMode.Normal);
+                divRight.InnerHtml += ul.ToString(TagRenderMode.Normal);
+                divMain.InnerHtml += divLeft.ToString(TagRenderMode.Normal);
+                divMain.InnerHtml += divRight.ToString(TagRenderMode.Normal);
                 return new MvcHtmlString(divMain.ToString());
             }
             return new MvcHtmlString(String.Empty);

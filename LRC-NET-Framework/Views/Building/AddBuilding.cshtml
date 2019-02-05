@@ -1,14 +1,15 @@
 ﻿@model LRC_NET_Framework.Models.AddBuildingModel
 @{
-    ViewBag.Title = "Manage Notes";
+    ViewBag.Title = "Building Department Management";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="font-weight-bold" style="background-color: #357ebd; border-bottom-left-radius:7px; border-bottom-right-radius:7px; color:gainsboro; padding-top:5px; padding-bottom:5px; padding-left:30px;"><h4>Building Department Management</h4></div>
+<div class="font-weight-bold" style="background-color: #357ebd; border-bottom-left-radius:7px; border-bottom-right-radius:7px; color:gainsboro; padding-top:5px; padding-bottom:5px; 
+padding-left:30px;"><h4>Building Department Management</h4></div>
 
 
 
-@using (Html.BeginForm("AddBuilding", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+@using (Html.BeginForm("AddBuilding", "Building", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -88,14 +89,14 @@
                         <td class="text-left" style="color:slategrey;padding:5px; margin:5px; ">
                             @foreach (var building in campus.tb_Building)
                             {
-                                if (building.ImagePath != null)
+                                <span style="white-space:nowrap; background-color:gainsboro; padding: 3px 7px 3px 7px; border:solid; border-width:1px; border-color:lightgray; border-radius:3px; line-height: 2"><a href="@Url.Action("Edit", new { id = building.BuildingID })" class="btn btn-sm btn-link">@building.BuildingName</a></span>
+                                @*if (building.ImagePath != null)
                                 {
-                                    <span style="white-space:nowrap; background-color:gainsboro; padding: 3px 7px 3px 7px; border:solid; border-width:1px; border-color:lightgray; border-radius:3px; line-height: 2">@Html.ActionLink(building.BuildingName, "GetPdfOrJpeg", new { fileName = building.ImagePath, form = "Building" }, new { target = "_blank" })</span>
                                 }
                                 else
                                 {
                                     <span style="white-space:nowrap; background-color:gainsboro; padding: 3px 7px 3px 7px; border:solid; border-width:1px; border-color:lightgray; border-radius:3px; line-height: 2">@building.BuildingName</span>
-                                }
+                                }*@
                             }
                         </td>
                     </tr>

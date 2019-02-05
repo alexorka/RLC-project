@@ -89,11 +89,14 @@
         @*Class Category DDL*@
         <div class="row" style="padding-bottom:3px; padding-top:3px;">
             <div class="col-md-3">
-                <p class="control-label">Class Category</p>
+                <p class="control-label text-danger">Class Category</p>
             </div>
             <div class="col-md-9">
-                @Html.DropDownListFor(x => x._CategoryID, Model._Categories, new { @class = "form-control", style = "width: 200px;" })
-                @Html.ValidationMessageFor(model => model._CategoryID, "", new { @class = "text-danger" })
+                <select class="form-control" id="sel1">
+                    <option> - ??? - </option>
+                    <option>Y</option>
+                    <option>N</option>
+                </select>
             </div>
         </div>
 
@@ -107,7 +110,6 @@
                     <div class="editor-field">
                         @Html.TextBoxFor(m => m._HireDate, "{0:yyyy-MM-dd}", new { @class = "form-control datecontrol", type = "date", style = "width: 150px;" })
                         @Html.ValidationMessageFor(model => model._HireDate)
-
                     </div>
                 </fieldset>
             </div>
@@ -145,14 +147,11 @@
 
         <div class="row" style="padding-bottom:3px; padding-top:3px;">
             <div class="col-md-3">
-                <p class="control-label text-danger">Active Status</p>
+                <p class="control-label">Active Status</p>
             </div>
             <div class="col-md-9">
-                <select class="form-control" id="sel1">
-                    <option> - ??? - </option>
-                    <option>Y</option>
-                    <option>N</option>
-                </select>
+                @Html.DropDownListFor(x => x._CategoryID, Model._Categories, new { @class = "form-control", style = "width: 200px;" })
+                @Html.ValidationMessageFor(model => model._CategoryID, "", new { @class = "text-danger" })
             </div>
         </div>
 

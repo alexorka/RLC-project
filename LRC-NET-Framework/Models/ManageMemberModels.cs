@@ -124,7 +124,7 @@ namespace LRC_NET_Framework.Models
         //Get tb_MemberAddress record for current Member
         //Assign MemberID for existing Member or return tb_MemberAddress.MemberID = 0 for new one
         public static List<string> AssignAddress(string _HomeStreet1, string _HomeStreet2, string city, string st, string postal, int addressTypeID, 
-            bool isAdressPrimary, string source, int sourceID, int mID, string uName)
+            bool isAdressPrimary, string source, int sourceID, int mID, string userId)
         {
             Error error = new Error();
             error.errCode = ErrorDetail.Success;
@@ -136,6 +136,15 @@ namespace LRC_NET_Framework.Models
             {
                 // Check if address(es) exist for current member
                 var memberAddresses = context.tb_MemberAddress.Where(s => s.MemberID == mID).OrderByDescending(s => s.CreatedDateTime).ToArray();
+                var stateNo = 1;
+                try
+                {
+                    stateNo = context.tb_States.Where(x => x.StateCode.ToUpper() == st.ToUpper()).FirstOrDefault().StateID;
+                }
+                catch
+                {
+                    stateNo = 1;
+                }
 
                 if (memberAddresses.Count() > 0) //Current member has address(es)
                 {
@@ -146,7 +155,7 @@ namespace LRC_NET_Framework.Models
                         {
                             if (isAdressPrimary)
                             {
-                                ma.IsPrimary = false; //Set IsPrimary to false for all other member addresses from history
+                                ma.IsPrimary = false; //Set IsPrimary to false for all of addresses of current member.
                                 if (ma.EndDate == null) //EndDate == null means current Member Address is actual (isn't record for history)
                                     ma.EndDate = DateTime.UtcNow;
                             }
@@ -190,17 +199,20 @@ namespace LRC_NET_Framework.Models
                         HomeStreet2 = _HomeStreet2,
                         City = city,
                         ZipCode = postal,
-                        StateID = Int32.Parse(st),
+                        StateID = stateNo,
                         Country = "USA",
                         SourceID = sourceID, // 1 -Card/Form, 2 - Employer
-                        Source = source,
+                        Source = userId,
                         IsPrimary = isAdressPrimary,
                         AddressTypeID = addressTypeID,
                         CreatedDateTime = DateTime.Now,
-                        ModifiedBy = uName,
-                        StartDate = DateTime.UtcNow.AddDays(-1),
+                        ModifiedBy = userId,
+                        StartDate = DateTime.UtcNow,
                         EndDate = null
                     };
+                    if (!isAdressPrimary)
+                        address.EndDate = DateTime.UtcNow;
+
                     context.tb_MemberAddress.Add(address);
                 }
                 else // edit old address
@@ -208,16 +220,18 @@ namespace LRC_NET_Framework.Models
                     var address = context.tb_MemberAddress.Where(s => s.MemberID == mID && s.HomeStreet1 == _HomeStreet1
                     && s.City == city && s.ZipCode == postal).FirstOrDefault();
                     address.HomeStreet2 = _HomeStreet2;
-                    address.StateID = Int32.Parse(st);
+                    address.StateID = stateNo;
                     address.Country = "USA";
                     address.SourceID = sourceID;
-                    address.Source = source;
+                    address.Source = userId;
                     address.IsPrimary = isAdressPrimary;
                     address.AddressTypeID = addressTypeID;
-                    address.ModifiedBy = uName;
+                    address.ModifiedBy = userId;
                     address.ModifiedDateTime = DateTime.Now;
-                    address.StartDate = DateTime.UtcNow.AddDays(-1);
+                    address.StartDate = DateTime.UtcNow;
                     address.EndDate = null;
+                    if (!isAdressPrimary)
+                        address.EndDate = DateTime.UtcNow;
                 }
 
                 try
@@ -244,7 +258,7 @@ namespace LRC_NET_Framework.Models
         }
 
         //Assign tb_MemberPhoneNumbers record for current Member
-        public static List<string> AssignPhoneNumber(string phone, int phoneTypeID, bool isPhonePrimary, string source, int mID, string uName)
+        public static List<string> AssignPhoneNumber(string phone, int phoneTypeID, bool isPhonePrimary, string source, int mID, string userId)
         {
             Error error = new Error();
             error.errCode = ErrorDetail.Success;
@@ -307,12 +321,14 @@ namespace LRC_NET_Framework.Models
                         PhoneNumber = phone,
                         IsPrimary = isPhonePrimary,
                         PhoneTypeID = phoneTypeID,
-                        Source = source,
+                        Source = userId,
                         CreatedDateTime = DateTime.Now,
-                        ModifiedBy = uName,
-                        StartDate = DateTime.UtcNow.AddDays(-1),
+                        ModifiedBy = userId,
+                        StartDate = DateTime.UtcNow,
                         EndDate = null
                     };
+                    if (!isPhonePrimary)
+                        phoneNumber.EndDate = DateTime.UtcNow;
                     context.tb_MemberPhoneNumbers.Add(phoneNumber);
                 }
                 else // edit old phone
@@ -321,13 +337,14 @@ namespace LRC_NET_Framework.Models
                     //phoneNumber.PhoneNumber = model._PhoneNumber;
                     phoneNumber.IsPrimary = isPhonePrimary;
                     phoneNumber.PhoneTypeID = phoneTypeID;
-                    phoneNumber.Source = source;
-                    phoneNumber.ModifiedBy = uName;
+                    phoneNumber.Source = userId;
+                    phoneNumber.ModifiedBy = userId;
                     phoneNumber.ModifiedDateTime = DateTime.Now;
-                    phoneNumber.StartDate = DateTime.UtcNow.AddDays(-1);
+                    phoneNumber.StartDate = DateTime.UtcNow;
                     phoneNumber.EndDate = null;
+                    if (!isPhonePrimary)
+                        phoneNumber.EndDate = DateTime.UtcNow;
                 }
-
                 try
                 {
                     context.SaveChanges();
@@ -352,7 +369,7 @@ namespace LRC_NET_Framework.Models
         }
 
         //Assign tb_MemberEmail record for current Member
-        public static List<string> AssignEmail(string email, int emailTypeID, bool isEmailPrimary, string source, int mID, string uName)
+        public static List<string> AssignEmail(string email, int emailTypeID, bool isEmailPrimary, string source, int mID, string userId)
         {
             Error error = new Error();
             error.errCode = ErrorDetail.Success;
@@ -416,10 +433,12 @@ namespace LRC_NET_Framework.Models
                         EmailTypeID = emailTypeID,
                         Source = source,
                         CreatedDateTime = DateTime.Now,
-                        ModifiedBy = uName,
-                        StartDate = DateTime.UtcNow.AddDays(-1),
+                        ModifiedBy = userId,
+                        StartDate = DateTime.UtcNow,
                         EndDate = null
                     };
+                    if (!isEmailPrimary)
+                        emailAddress.EndDate = DateTime.UtcNow;
                     context.tb_MemberEmail.Add(emailAddress);
                 }
                 else // edit old email
@@ -428,10 +447,12 @@ namespace LRC_NET_Framework.Models
                     emailAddress.IsPrimary = isEmailPrimary;
                     emailAddress.EmailTypeID = emailTypeID;
                     emailAddress.Source = source;
-                    emailAddress.ModifiedBy = uName;
+                    emailAddress.ModifiedBy = userId;
                     emailAddress.ModifiedDateTime = DateTime.Now;
-                    emailAddress.StartDate = DateTime.UtcNow.AddDays(-1);
+                    emailAddress.StartDate = DateTime.UtcNow;
                     emailAddress.EndDate = null;
+                    if (!isEmailPrimary)
+                        emailAddress.EndDate = DateTime.UtcNow;
                 }
 
                 try
@@ -456,6 +477,59 @@ namespace LRC_NET_Framework.Models
                 return errs;
             }
         }
+
+        ////Find memberID by EmployeeID
+        //public static List<string> IsMemberExistInDB(string employeeID, out tb_MemberMaster fm)
+        //{
+        //    Error error = new Error();
+        //    error.errCode = ErrorDetail.Success;
+        //    error.errMsg = ErrorDetail.GetMsg(error.errCode);
+        //    List<string> errs = new List<string>();
+        //    using (LRCEntities context = new LRCEntities())
+        //    {
+        //        fm = new tb_MemberMaster();
+        //        //1. Find memberID by Full Name
+        //        try
+        //        {
+        //            var fms = context.tb_MemberMaster.Where(s => s.MemberIDNumber.ToUpper() == employeeID.ToUpper());
+        //            fm = fms.FirstOrDefault();
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            error.errCode = ErrorDetail.UnknownError;
+        //            error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!IsMemberExistInDB(...) function failed." + ex.Message + ";";
+        //            errs.Add(error.errMsg);
+        //            return errs;
+        //        }
+        //    }
+        //    return errs;
+        //}
+
+        ////Find memberID by CBU Full Name. Return memberID = 0 if not found
+        //public static List<string> IsMemberExistInDB(string lastname, string firstname, string memberIdNumber, out tb_MemberMaster fm)
+        //{
+        //    Error error = new Error();
+        //    error.errCode = ErrorDetail.Success;
+        //    error.errMsg = ErrorDetail.GetMsg(error.errCode);
+        //    List<string> errs = new List<string>();
+        //    fm = new tb_MemberMaster();
+        //    //1. Find memberID by Full Name
+        //    try
+        //    {
+        //        var fms = db.tb_MemberMaster.Where(s => s.LastName.ToUpper() == lastname.ToUpper() &&
+        //        s.FirstName.ToUpper() == firstname.ToUpper() &&
+        //        s.MemberIDNumber.ToUpper() == memberIdNumber.ToUpper());
+        //        fm = fms.FirstOrDefault();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        error.errCode = ErrorDetail.UnknownError;
+        //        error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!IsMemberExistInDB(...) function failed." + ex.Message + ";";
+        //        errs.Add(error.errMsg);
+        //        return errs;
+        //    }
+        //    return errs;
+        //}
     }
 
     public class MemberDetailsModel
@@ -491,10 +565,13 @@ namespace LRC_NET_Framework.Models
         public int _MemberID { get; set; }
         public string _MemberName { get; set; }
 
-        //PHONE
         [Phone]
+        //[Display(Name = "Phone Number")]
+        //[Required(ErrorMessage = "required")]
+        [Required(ErrorMessage = "Phone Number is needed.")]
         [Display(Name = "Phone Number")]
-        [Required(ErrorMessage = "required")]
+        [DataType(DataType.PhoneNumber)]
+        [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Invalid Phone number")]
         public string _PhoneNumber { get; set; }
         public bool _IsPhonePrimary { get; set; }
         //public int _CollegeID { get; set; } //Back to Member List by School

@@ -229,13 +229,13 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ActivitiesController.cs" />
     <Compile Include="Controllers\AssessmentController.cs" />
+    <Compile Include="Controllers\BuildingController.cs" />
     <Compile Include="Controllers\ErrorsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ImportController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\NotesController.cs" />
     <Compile Include="Controllers\RolesController.cs" />
-    <Compile Include="Controllers\SchoolListController.cs" />
     <Compile Include="Controllers\SemesterTaughtController.cs" />
     <Compile Include="DBModelContext.Context.cs">
       <AutoGen>True</AutoGen>
@@ -538,7 +538,6 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\SchoolList\Index.cshtml" />
     <Content Include="Views\Assessment\AddPersonAssessmentActivity.cshtml" />
     <Content Include="Views\Assessment\Delete.cshtml" />
     <Content Include="Views\Assessment\Details.cshtml" />
@@ -569,7 +568,7 @@
     <Content Include="Views\Home\AddCopeForm.cshtml" />
     <Content Include="Views\Roles\AddRole.cshtml" />
     <Content Include="Views\Home\AlsoWorksAt.cshtml" />
-    <Content Include="Views\Home\AddBuilding.cshtml" />
+    <Content Include="Views\Building\AddBuilding.cshtml" />
     <Content Include="Views\Home\GetCampuses.cshtml" />
     <Content Include="Views\Activities\NotSure.cshtml" />
     <Content Include="Views\Assessment\NotSure.cshtml" />
@@ -598,9 +597,17 @@
     <Content Include="Views\Activities\CreateActivity.cshtml" />
     <Content Include="Views\Home\MembershipFormsList.cshtml" />
     <Content Include="Views\Home\NotSureMembershipForms.cshtml" />
+    <Content Include="Views\Home\FilterDialogBox.cshtml" />
+    <Content Include="Views\Import\BuildingsMapping.cshtml" />
+    <Content Include="Views\Building\Create.cshtml" />
+    <Content Include="Views\Building\Delete.cshtml" />
+    <Content Include="Views\Building\Details.cshtml" />
+    <Content Include="Views\Building\Edit.cshtml" />
+    <Content Include="Views\Building\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\SchoolList\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

@@ -629,12 +629,14 @@ namespace LRC_NET_Framework.Controllers
             foreach (var semester in tb_Semesters)
             {
                 bool result = Int32.TryParse(semester.SemesterYear, out int semesterYear);
+                semesterYear++; //Current and previous years semesters only
                 if (semesterYear >= DateTime.UtcNow.Year)
                 semesters.Add(new SelectListItem() {
                     Text = semester.SemesterName + " " + semester.SemesterYear + ": " +
                     Convert.ToDateTime(semester.SemesterStartDate).ToString("MM/dd/yyyy") + " - " + Convert.ToDateTime(semester.SemesterEndDate).ToString("MM/dd/yyyy"),
                     Value = semester.SemesterID.ToString() });
             }
+
             ViewBag.Semesters = semesters;
             ViewBag.CollegeID = 0;
 
@@ -819,13 +821,15 @@ namespace LRC_NET_Framework.Controllers
             string sheetName = String.Empty;
             ExcelMembers excelMembers = new ExcelMembers();
             ExcelSchedules excelSchedules = new ExcelSchedules();
-            var uName = HttpContext.GetOwinContext().Authentication.User.Identity.GetUserName();
+            //var uName = HttpContext.GetOwinContext().Authentication.User.Identity.GetUserName();
+            var userId = HttpContext.GetOwinContext().Authentication.User.Identity.GetUserId();
+
             switch (ImportType)
             {
-                case 1: errs = excelMembers.MembersImport(pathToExcelFile, "Full time", semesterRecID, uName); break;
-                case 2: errs = excelMembers.MembersImport(pathToExcelFile, "Adjunct", semesterRecID, uName); break;
-                case 3: errs = excelSchedules.ScheduleImport(pathToExcelFile, "REG-Schedule", semesterRecID, uName); break;
-                case 4: errs = excelSchedules.ScheduleImport(pathToExcelFile, "ADJ-Schedule", semesterRecID, uName); break;
+                case 1: errs = excelMembers.MembersImport(pathToExcelFile, "Full time", semesterRecID, userId); break;
+                case 2: errs = excelMembers.MembersImport(pathToExcelFile, "Adjunct", semesterRecID, userId); break;
+                case 3: errs = excelSchedules.ScheduleImport(pathToExcelFile, "REG-Schedule", semesterRecID, userId); break;
+                case 4: errs = excelSchedules.ScheduleImport(pathToExcelFile, "ADJ-Schedule", semesterRecID, userId); break;
                 default: return RedirectToAction("AdminTasks"/*, new { fileTypeSelectResult = "Select appropriate file type" }*/);
             }
             if (errs == null || errs.Count == 0)

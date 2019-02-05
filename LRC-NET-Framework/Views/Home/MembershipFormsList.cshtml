@@ -67,7 +67,7 @@
         {
         <tr>
             <td>
-                @Html.ActionLink(item.tb_MemberMaster.LastName + ", " + item.tb_MemberMaster.FirstName, "Details", "Home", new { id = item.tb_MemberMaster.MemberID }, new { @class = "text -info" })
+                @Html.ActionLink(item.tb_MemberMaster.FirstName + " " + item.tb_MemberMaster.LastName, "Details", "Home", new { id = item.tb_MemberMaster.MemberID }, new { @class = "text -info" })
             </td>
             <td>
                 @Convert.ToDateTime(item.Signed).ToString("MM/dd/yyyy")
