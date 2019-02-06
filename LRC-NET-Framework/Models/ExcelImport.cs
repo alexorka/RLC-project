@@ -1570,6 +1570,8 @@ namespace ExcelImport.Models
                 errs.Add(error.errMsg);
                 return errs;
             }
+
+            tb_Semesters selectedSemester = new tb_Semesters();
             try
             {
                 var semesters = db.tb_Semesters.Where(t => t.SemesterYear == endDate.Year.ToString())
@@ -1577,7 +1579,7 @@ namespace ExcelImport.Models
                     .Where(t => t.SemesterEndDate >= endDate);
                 if (semesters.Count() <= 0 || semesters.FirstOrDefault().SemesterID != semesterId)
                 {
-                    var selectedSemester = db.tb_Semesters.Find(semesterId);
+                    selectedSemester = db.tb_Semesters.Find(semesterId);
                     error.errCode = ErrorDetail.Failed;
                     error.errMsg = ErrorDetail.GetMsg(error.errCode) + "!Row #" + rec.ToString() + ". 'Class End Date' = " + Convert.ToDateTime(classEndDate).ToString("MM-dd-yyyy") + " outside the date range of the selected semester " +
                         Convert.ToDateTime(selectedSemester.SemesterStartDate).ToString("MM-dd-yyyy") + " - " + Convert.ToDateTime(selectedSemester.SemesterEndDate).ToString("MM-dd-yyyy");
@@ -1600,9 +1602,10 @@ namespace ExcelImport.Models
                 errs.Add("Error #" + error.errCode.ToString() + "!" + error.errMsg);
                 return errs;
             }
-            if (endDate >= DateTime.UtcNow)
+            //if (endDate >= DateTime.UtcNow)
+            //    scheduleStatus = true;
+            if (endDate > selectedSemester.SemesterStartDate && endDate <= selectedSemester.SemesterEndDate)
                 scheduleStatus = true;
-
             return errs;
         }
 

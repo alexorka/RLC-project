@@ -274,7 +274,7 @@ namespace LRC_NET_Framework.Controllers
                }
             }
 
-            return RedirectToAction("AdminTasks", "Account", null);
+            return RedirectToAction("AdminImportCBU", "Account", null);
             //return View(WeekDay);
         }
 

@@ -64,7 +64,9 @@ namespace LRC_NET_Framework.Controllers
             if (DepartmentID != null && DepartmentID > 0)
                 fms = fms.Where(x => x.DepartmentID == DepartmentID);
             if (!String.IsNullOrWhiteSpace(searchString))
-                fms = fms.Where(x => x.FirstName.ToUpper().Contains(searchString.Trim().ToUpper()) || x.LastName.ToUpper().Contains(searchString.Trim().ToUpper()));
+                fms = fms.Where(x => x.FirstName.ToUpper().Contains(searchString.Trim().ToUpper()) || 
+                x.LastName.ToUpper().Contains(searchString.Trim().ToUpper()) ||
+                x.MemberIDNumber.ToUpper().Contains(searchString.Trim().ToUpper()));
 
             List<tb_MemberMaster> members = fms.ToList();
 

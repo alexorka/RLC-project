@@ -230,6 +230,7 @@
     <Compile Include="Controllers\ActivitiesController.cs" />
     <Compile Include="Controllers\AssessmentController.cs" />
     <Compile Include="Controllers\BuildingController.cs" />
+    <Compile Include="Controllers\CategoriesController.cs" />
     <Compile Include="Controllers\ErrorsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ImportController.cs" />
@@ -575,7 +576,7 @@
     <Content Include="Views\Home\NotSure.cshtml" />
     <Content Include="Views\Home\MembersBySchool.cshtml" />
     <Content Include="Views\Home\AddDepartment.cshtml" />
-    <Content Include="Views\Account\AdminTasks.cshtml" />
+    <Content Include="Views\Account\ConfirmRegistration.cshtml" />
     <Content Include="Views\Account\RegistrationRequestSentToAdmin.cshtml" />
     <Content Include="Views\Home\ExportData.cshtml" />
     <Content Include="Views\Home\AddFilter.cshtml" />
@@ -599,11 +600,14 @@
     <Content Include="Views\Home\NotSureMembershipForms.cshtml" />
     <Content Include="Views\Home\FilterDialogBox.cshtml" />
     <Content Include="Views\Import\BuildingsMapping.cshtml" />
-    <Content Include="Views\Building\Create.cshtml" />
     <Content Include="Views\Building\Delete.cshtml" />
-    <Content Include="Views\Building\Details.cshtml" />
     <Content Include="Views\Building\Edit.cshtml" />
     <Content Include="Views\Building\Index.cshtml" />
+    <Content Include="Views\Categories\Create.cshtml" />
+    <Content Include="Views\Categories\Delete.cshtml" />
+    <Content Include="Views\Categories\Edit.cshtml" />
+    <Content Include="Views\Categories\Index.cshtml" />
+    <Content Include="Views\Import\AdminImportCBU.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

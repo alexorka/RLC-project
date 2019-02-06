@@ -62,10 +62,10 @@
                         <td style="padding-bottom:0px;">
                             <div class="row col-md-12" style="padding-bottom:0px;">
                                 <div class="row">
-                                    <div class="col-md-2" style="border-bottom-left-radius:10px; border-top-left-radius:10px; font-weight:bold; height:25px; padding-right:0; padding-bottom:4px; padding-top:4px; text-align:right; background:lavender;">
+                                    <div class="col-md-2" style="border-bottom-left-radius:15px; border-top-left-radius:15px; font-weight:bold; height:25px; padding-right:0; padding-bottom:4px; padding-top:4px; text-align:right; background:lavender;">
                                         Faculty&nbsp;Member:
                                     </div>
-                                    <div class="col-md-5 text-muted" style="overflow:hidden; padding-left:3px; height:25px; font-weight:bold; background:lavender">
+                                    <div class="col-md-5 text-muted" style="border-bottom-right-radius:15px; border-top-right-radius:15px; overflow:hidden; padding-left:3px; height:25px; font-weight:bold; background:lavender">
                                         <div style="width: 100%;">
                                             <div style="float: left; padding-bottom:4px; padding-top:4px;">
                                                 @Html.ActionLink(item.FirstName + " " + item.LastName, "Edit", "Home", new { id = item.MemberID, CollegeID = (int)ViewBag._CollegeID }, new { @class = "text -info" })
@@ -112,10 +112,10 @@
 
                                 <div class="col-md-2 row" style="padding-bottom:5px">
                                     <div class="col-md-5" style="font-weight:bold; text-align:right; padding-right:0;">
-                                        Category:
+                                        Class&nbsp;Category:
                                     </div>
                                     <div class="col-md-7 text-muted" style="padding-left:5px;">
-                                        @Html.DisplayFor(modelItem => item.tb_Categories.CategoryName)
+                                        @Html.DisplayFor(modelItem => item.tb_JobStatus.JobStatusName)
                                     </div>
                                 </div>
 
@@ -163,9 +163,6 @@
                                         <i>Room</i>
                                     </th>
                                     <th style="background-color:gainsboro;">
-                                        <i>Note</i>
-                                    </th>
-                                    <th style="background-color:gainsboro;">
                                         <i>Class</i>
                                     </th>
 
@@ -194,7 +191,6 @@
                                         <td>
                                             @Html.DisplayFor(modelItem => record.Room)
                                         </td>
-                                        <td>???</td>
                                         <td>
                                             @Html.DisplayFor(modelItem => record.Class)
                                         </td>

@@ -20,7 +20,10 @@
     <li role="button"><a href="@Url.Action("AlsoWorksAt", "Home", new { @id = Model._Member.MemberID })" class="btn btn-default">Also Works At&nbsp;&nbsp;<span class="glyphicon" aria-hidden="true"></span></a></li>
 </ul>
 
-<h2 style="font-family:sans-serif">@Html.DisplayFor(n => n._Member.LastName), @Html.DisplayFor(n => n._Member.FirstName)</h2>
+<div class="row ex1 h2" style="font-family:sans-serif; padding-left:30px;">
+    @Html.DisplayFor(n => n._Member.LastName), @Html.DisplayFor(n => n._Member.FirstName)
+    <a href="@Url.Action("Edit", "Home", new { id = Model._Member.MemberID })" class="btn btn-link">&nbsp;&nbsp;Edit<span class="glyphicon glyphicon-edit pull-left" aria-hidden="true"></span></a>
+</div>
 <div class="row ex1 h6">
     <div class="col-md-3">
         <div class="row" style="padding-bottom:5px">
@@ -59,10 +62,10 @@
     <div class="col-md-3">
         <div class="row" style="padding-bottom:5px">
             <div class="col-md-5" style="font-weight:bold; text-align:right">
-                Category
+                Class&nbsp;Category
             </div>
             <div class="col-md-7 text-muted">
-
+                @Html.DisplayFor(n => n._Member.tb_JobStatus.JobStatusName)
             </div>
         </div>
         <div class="row" style="padding-bottom:5px">
@@ -130,10 +133,9 @@
         </div>
     </div>
 </div>
-<a href="@Url.Action("Edit", "Home", new { id = Model._Member.MemberID })" class="btn btn-link">&nbsp;&nbsp;Edit<span class="glyphicon glyphicon-edit pull-left" aria-hidden="true"></span></a>
 
 <div class="col-md-12" id="Schedule" style="background-color:lavender; border:solid; margin-top:10px; margin-bottom:10px; border-radius:5px; border-width:1px; border-color:gainsboro">
-    <div class="col-md-12"  style="background-color:gainsboro; padding-top:5px; padding-left:30px; border-bottom-left-radius:5px; border-bottom-right-radius:5px;">@Html.Label("Schedule", "Schedule (Active)", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })</div>
+    <div class="col-md-12" style="background-color:gainsboro; padding-top:5px; padding-left:30px; border-bottom-left-radius:5px; border-bottom-right-radius:5px;">@Html.Label("Schedule", "Schedule (Active)", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })</div>
     <table class="table h6">
         <tr style="background:lavender">
             <th>School</th>
@@ -141,12 +143,10 @@
             <th>Campus</th>
             <th>Building</th>
             <th>Room</th>
-            <th>Reason</th>
             <th>Class</th>
             <th>Days</th>
             <th>Start</th>
             <th>End</th>
-            <th>Note</th>
             <th>Schedule Status</th>
             <th>Semester</th>
         </tr>
@@ -168,9 +168,6 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Room)
                 </td>
-                <td class="danger">
-                    ???
-                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Class)
                 </td>
@@ -182,9 +179,6 @@
                 </td>
                 <td>
                     @DateTime.Today.Add(item.ClassEnd).ToString("hh:mm tt")
-                </td>
-                <td class="danger">
-                    ???
                 </td>
                 <td>
                     @if (item.ScheduleStatus)
@@ -229,23 +223,23 @@
         {
             if (item != null)
             {
-        <tr style="color:dimgray;">
-            <td>
-                @Html.DisplayFor(modelItem => item.tb_Activity.ActivityName)
-            </td>
-            <td>
-                @Convert.ToDateTime(item.tb_Activity.ActivityDate).ToString("MM/dd/yyyy")
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.tb_Activity.tb_Campus.tb_College.CollegeName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.tb_Activity.tb_Campus.CampusName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.tb_Activity.ActivityNote)
-            </td>
-        </tr>
+                <tr style="color:dimgray;">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.tb_Activity.ActivityName)
+                    </td>
+                    <td>
+                        @Convert.ToDateTime(item.tb_Activity.ActivityDate).ToString("MM/dd/yyyy")
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.tb_Activity.tb_Campus.tb_College.CollegeName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.tb_Activity.tb_Campus.CampusName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.tb_Activity.ActivityNote)
+                    </td>
+                </tr>
             }
             else
             {
@@ -255,7 +249,7 @@
             }
         }
     </table>
-    </div>
+</div>
 
 <div class="col-md-12" id="Roles" style="background-color:lavender; border:solid; margin-top:10px; margin-bottom:10px; border-radius:5px; border-width:1px; border-color:gainsboro">
     <div style="background-color:gainsboro; padding-top:5px; padding-left:30px; border-bottom-left-radius:5px; border-bottom-right-radius:5px;">@Html.Label("Roles", "Roles (Current)", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })</div>
@@ -309,7 +303,7 @@
         }
 
     </table>
-    </div>
+</div>
 
 <div class="col-md-12" id="Assessments" style="background-color:lavender; border:solid; margin-top:10px; margin-bottom:10px; border-radius:5px; border-width:1px; border-color:gainsboro">
     <div style="background-color:gainsboro; padding-top:5px; padding-left:30px; border-bottom-left-radius:5px; border-bottom-right-radius:5px;">@Html.Label("Assessments", "Assessments", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })</div>
@@ -681,27 +675,27 @@
         {
             if (item != null)
             {
-        <tr style="color:dimgray;">
-            <td>
-                @Convert.ToDateTime(item.Signed).ToString("MM/dd/yyyy")
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MonthlyContribution)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AspNetUsers1.LastFirstName)
-            </td>
-            <td>
-                @if (item.FormImagePath != null)
-                {
-                    <a href="@Url.Action("GetPdfOrJpeg", new { fileName = item.FormImagePath, form = "CopeForms" })" class="btn btn-xs" target="_blank"><span class="glyphicon glyphicon-camera" aria-hidden="true"></span></a>
-                }
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AspNetUsers.LastFirstName)
-            </td>
+                <tr style="color:dimgray;">
+                    <td>
+                        @Convert.ToDateTime(item.Signed).ToString("MM/dd/yyyy")
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MonthlyContribution)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AspNetUsers1.LastFirstName)
+                    </td>
+                    <td>
+                        @if (item.FormImagePath != null)
+                        {
+                            <a href="@Url.Action("GetPdfOrJpeg", new { fileName = item.FormImagePath, form = "CopeForms" })" class="btn btn-xs" target="_blank"><span class="glyphicon glyphicon-camera" aria-hidden="true"></span></a>
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AspNetUsers.LastFirstName)
+                    </td>
 
-        </tr>
+                </tr>
             }
             else
             {

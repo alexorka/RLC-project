@@ -7,17 +7,33 @@
     {
         @Html.AntiForgeryToken()
         ClaimsIdentity identity = (ClaimsIdentity)User.Identity; string rr = " (" + identity.Claims.LastOrDefault().Value + ") " ?? "";
-        <ul class="nav navbar-nav navbar-right">
-            if (rr == "admin")
-            {
-                <li style="font-weight:bold">@Html.ActionLink("Admin", "AdminTasks", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
-            }
-            <li>@Html.ActionLink("Request Application Access", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
-            <li>
-                @Html.ActionLink("Hello " + User.Identity.GetUserName() + "! " + rr, "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
-            </li>
-            <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
-        </ul>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                if (rr == "admin")
+                {
+                <li class="nav-item dropdown" style="font-weight:bold">
+                    <a href="#" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink"  style="padding:7px;">
+                        <div class="col-md-12" style="padding:3px;">
+                            @Html.ActionLink("Confirm Registration", "ConfirmRegistration", "Account", routeValues: null, htmlAttributes: new { @class = "dropdown-item btn btn-info", id = "registerLink" })
+                        </div>
+                        <div class="col-md-12" style="padding:3px;">
+                            @Html.ActionLink("CBU Import", "AdminImportCBU", "Import", routeValues: null, htmlAttributes: new { @class = "dropdown-item btn btn-info", id = "registerLink" })
+                        </div>
+                        <div class="col-md-12" style="padding:3px;">
+                            @Html.ActionLink("Settings", "AdminImportCBU", "Import", routeValues: null, htmlAttributes: new { @class = "dropdown-item btn btn-info", id = "registerLink" })
+                        </div>
+                    </div>
+
+                </li>
+                }
+                <li>@Html.ActionLink("Request Application Access", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+                <li>
+                    @Html.ActionLink("Hello " + User.Identity.GetUserName() + "! " + rr, "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
+                </li>
+                <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+            </ul>
+        </div>
     }
 }
 else

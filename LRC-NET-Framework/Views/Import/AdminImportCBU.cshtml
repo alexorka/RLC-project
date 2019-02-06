@@ -1,59 +1,6 @@
 ﻿@{
-    ViewBag.Title = "Administrator Tasks";
+    ViewBag.Title = "Import Certified Bargaining Unit (CBU)";
 }
-
-
-<div style="font-size:smaller; margin: 10px 0 5px 0; padding-bottom:5px; border:solid; border-radius:7px; border-width:1px; border-color:gainsboro">
-    <div class="font-weight-bold" style="background-color: #357ebd; border-radius:7px 7px 0 0; color:gainsboro; padding:5px 30px 5px 30px;">
-        <h4>
-            Confirm Registration
-        </h4>
-    </div>
-    
-    <fieldset>
-
-        <div class="row" style="padding-bottom:3px; padding-left:30px; padding-top:10px;">
-            <div class="col-md-6 col-md-offset-1" id="Users" style="background-color:lavender; border:solid; border-radius:5px; border-width:1px; border-color:gainsboro">
-                <div style="background-color:gainsboro; padding:5px 30px 0 30px; border-bottom-left-radius:5px; border-bottom-right-radius:5px;">@Html.Label("Users", "Registered Users", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })</div>
-                <table class="table">
-                    <tr class="text-info">
-                        <th>
-                            User Name
-                        </th>
-                        <th>
-                            Role
-                        </th>
-                    </tr>
-                    @foreach (var item in ViewBag.UsersAndRoles as List<SelectListItem>)
-                    {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Text)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Value)
-                            </td>
-                            <td>
-                                @if (String.IsNullOrEmpty(item.Value))
-                                {
-                                    @Html.ActionLink("Confirm", "ApplyRegistrationRequest", new { userName = item.Text })
-                                    @*<span>&nbsp;|&nbsp;</span>
-                                        @Html.ActionLink("Reject", "RejectRegistrationRequest", new { userName = item.Text })*@
-                                }
-                                else
-                                {
-                                    @Html.ActionLink("Reject", "RejectRegistrationRequest", new { userName = item.Text })
-                                }
-                            </td>
-                        </tr>
-                    }
-                </table>
-            </div>
-        </div>
-
-    </fieldset>
-</div>
-
 
 <div style="font-size:smaller; padding-bottom:5px; margin: 20px 0 5px 0; border:solid; border-radius:7px; border-width:1px; border-color:gainsboro">
     <div class="font-weight-bold" style="background-color: #357ebd; border-radius: 7px 7px 0 0; color:gainsboro; padding-top:5px; padding-bottom:5px; padding-left:30px;">
@@ -65,16 +12,17 @@
     <div style="margin: 0 30px 0 30px;">
         <div style="background-color:gainsboro; padding:10px 20px 5px 20px; border-radius: 0 0 7px 7px;">
             <ul class="list-inline">
-                <li role="button"><a href="@Url.Action("AddWeekDays", "SemesterTaught")" class="btn-sm btn-info viewDialog", data-dialog-title="Add Days of Week">Days of Week&nbsp;&nbsp;<span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></li>
+                <li role="button"><a href="@Url.Action("AddWeekDays", "SemesterTaught")" class="btn-sm btn-info viewDialog" , data-dialog-title="Add Days of Week">Days of Week&nbsp;&nbsp;<span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></li>
                 <li role="button"><a href="@Url.Action("MemberImportErrors", "Import")" class="btn-sm btn-info">Members Import Errors&nbsp;&nbsp;<span class="glyphicon glyphicon-list" aria-hidden="true"></span></a></li>
                 <li role="button"><a href="@Url.Action("ScheduleImportErrors", "Import")" class="btn-sm btn-info">Schedules Import Errors&nbsp;&nbsp;<span class="glyphicon glyphicon-list" aria-hidden="true"></span></a></li>
                 <li role="button"><a href="@Url.Action("CollegesMapping", "Import")" class="btn-sm btn-info">Colleges Mapping&nbsp;&nbsp;<span class="glyphicon glyphicon-transfer" aria-hidden="true"></span></a></li>
                 <li role="button"><a href="@Url.Action("CampusesMapping", "Import")" class="btn-sm btn-info">Campuses Mapping&nbsp;&nbsp;<span class="glyphicon glyphicon-transfer" aria-hidden="true"></span></a></li>
                 <li role="button"><a href="@Url.Action("MembersMapping", "Import")" class="btn-sm btn-info">Member Fields Mapping&nbsp;&nbsp;<span class="glyphicon glyphicon-transfer" aria-hidden="true"></span></a></li>
                 <li role="button"><a href="@Url.Action("ScheduleMapping", "Import")" class="btn-sm btn-info">Schedule Fields Mapping&nbsp;&nbsp;<span class="glyphicon glyphicon-transfer" aria-hidden="true"></span></a></li>
+                <li role="button"><a href="@Url.Action("Index", "Categories")" class="btn-sm btn-info">Manage Categories&nbsp;&nbsp;<span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></li>
             </ul>
         </div>
-        @using (Html.BeginForm("UploadExcel", "Account", FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return myFunction()", id = "myform" }))
+        @using (Html.BeginForm("UploadExcel", "Import", FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return myFunction()", id = "myform" }))
         {
             <div class="form-horizontal" style="margin-top:10px;">
                 <div class="form-group">

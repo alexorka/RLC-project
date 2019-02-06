@@ -87,7 +87,7 @@
         </div>
 
         @*Class Category DDL*@
-        <div class="row" style="padding-bottom:3px; padding-top:3px;">
+        @*<div class="row" style="padding-bottom:3px; padding-top:3px;">
             <div class="col-md-3">
                 <p class="control-label text-danger">Class Category</p>
             </div>
@@ -98,7 +98,7 @@
                     <option>N</option>
                 </select>
             </div>
-        </div>
+        </div>*@
 
         @*Hire Date*@
         <div class="row" style="padding-bottom:3px; padding-top:3px;">
@@ -147,7 +147,7 @@
 
         <div class="row" style="padding-bottom:3px; padding-top:3px;">
             <div class="col-md-3">
-                <p class="control-label">Active Status</p>
+                <p class="control-label">Status</p>
             </div>
             <div class="col-md-9">
                 @Html.DropDownListFor(x => x._CategoryID, Model._Categories, new { @class = "form-control", style = "width: 200px;" })

@@ -1,0 +1,40 @@
+﻿@model LRC_NET_Framework.tb_Categories
+
+@{
+    ViewBag.Title = "Delete Category";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="row" style="padding:10px 0 10px 0; margin:2px;">
+    <div class="col-md-6 col-md-offset-3" id="Delete" style="background-color:lavender; border:solid; border-radius:5px; border-width:1px; border-color:gainsboro">
+        <div style="background-color:lightsteelblue; padding-bottom:5px; padding-top:10px; padding-left:30px; border-bottom-left-radius:5px; border-bottom-right-radius:5px;">
+            @Html.Label("Delete", "Are you sure you want to delete this?", htmlAttributes: new { @class = "control-label", style = "font-size:larger;" })
+        </div>
+        @using LRC_NET_Framework.Helpers
+        @Html.CreateList(ViewData["ErrorList"] as List<string>)
+        <div style="padding:0 0 10px 0;">
+            <div>
+                <hr />
+                <dl class="dl-horizontal">
+                    <dt>
+                        @Html.Label("Category Name:", htmlAttributes: new { @class = "control-label" })
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.CategoryName)
+                    </dd>
+
+                </dl>
+
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-actions no-color">
+                        <input type="submit" value="Delete" class="btn btn-default" /> |
+                        @Html.ActionLink("Back to List", "Index")
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
