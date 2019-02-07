@@ -185,7 +185,7 @@
           <Key>
             <PropertyRef Name="CategoryID" />
           </Key>
-          <Property Name="CategoryID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="CategoryID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="CategoryName" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="tb_College">
@@ -210,6 +210,17 @@
           <Property Name="Processed" Type="bit" Nullable="false" />
           <Property Name="SentToEmployer" Type="bit" Nullable="false" />
           <Property Name="AddedBy" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tb_Course">
+          <Key>
+            <PropertyRef Name="CourseID" />
+          </Key>
+          <Property Name="CourseID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="CourseName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CampusID" Type="int" Nullable="false" />
+          <Property Name="BuildingID" Type="int" Nullable="false" />
+          <Property Name="Room" Type="nvarchar" MaxLength="10" />
+          <Property Name="Note" Type="nvarchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="tb_Department">
           <Key>
@@ -431,6 +442,23 @@
           <Property Name="StartDate" Type="date" />
           <Property Name="EndDate" Type="date" />
           <Property Name="Expired" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tb_MemberSemester">
+          <Key>
+            <PropertyRef Name="MemberSemesterID" />
+          </Key>
+          <Property Name="MemberSemesterID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="MemberId" Type="int" Nullable="false" />
+          <Property Name="SemesterId" Type="int" Nullable="false" />
+          <Property Name="CollegeId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tb_MemberSemesterCourse">
+          <Key>
+            <PropertyRef Name="MemberSemesterCourseID" />
+          </Key>
+          <Property Name="MemberSemesterCourseID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="MemberSemesterID" Type="int" Nullable="false" />
+          <Property Name="CourseID" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="tb_MembershipForms">
           <Key>
@@ -1170,6 +1198,54 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_tb_MemberSemester_tb_College">
+          <End Role="tb_College" Type="Self.tb_College" Multiplicity="1" />
+          <End Role="tb_MemberSemester" Type="Self.tb_MemberSemester" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_College">
+              <PropertyRef Name="CollegeID" />
+            </Principal>
+            <Dependent Role="tb_MemberSemester">
+              <PropertyRef Name="CollegeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tb_MemberSemester_tb_MemberMaster">
+          <End Role="tb_MemberMaster" Type="Self.tb_MemberMaster" Multiplicity="1" />
+          <End Role="tb_MemberSemester" Type="Self.tb_MemberSemester" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_MemberMaster">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="tb_MemberSemester">
+              <PropertyRef Name="MemberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tb_MemberSemesterCourse_tb_Course">
+          <End Role="tb_Course" Type="Self.tb_Course" Multiplicity="1" />
+          <End Role="tb_MemberSemesterCourse" Type="Self.tb_MemberSemesterCourse" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_Course">
+              <PropertyRef Name="CourseID" />
+            </Principal>
+            <Dependent Role="tb_MemberSemesterCourse">
+              <PropertyRef Name="CourseID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tb_MemberSemesterCourse_tb_MemberSemester">
+          <End Role="tb_MemberSemester" Type="Self.tb_MemberSemester" Multiplicity="1" />
+          <End Role="tb_MemberSemesterCourse" Type="Self.tb_MemberSemesterCourse" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_MemberSemester">
+              <PropertyRef Name="MemberSemesterID" />
+            </Principal>
+            <Dependent Role="tb_MemberSemesterCourse">
+              <PropertyRef Name="MemberSemesterID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_tb_MembershipForms_AspNetUsersAddedBy">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
           <End Role="tb_MembershipForms" Type="Self.tb_MembershipForms" Multiplicity="*" />
@@ -1276,6 +1352,7 @@
           <EntitySet Name="tb_Categories" EntityType="Self.tb_Categories" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_College" EntityType="Self.tb_College" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_CopeForms" EntityType="Self.tb_CopeForms" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tb_Course" EntityType="Self.tb_Course" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_Department" EntityType="Self.tb_Department" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_District" EntityType="Self.tb_District" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_Division" EntityType="Self.tb_Division" Schema="dbo" store:Type="Tables" />
@@ -1293,6 +1370,8 @@
           <EntitySet Name="tb_MemberNotes" EntityType="Self.tb_MemberNotes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_MemberPhoneNumbers" EntityType="Self.tb_MemberPhoneNumbers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_MemberRoles" EntityType="Self.tb_MemberRoles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tb_MemberSemester" EntityType="Self.tb_MemberSemester" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tb_MemberSemesterCourse" EntityType="Self.tb_MemberSemesterCourse" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_MembershipForms" EntityType="Self.tb_MembershipForms" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_MembersImportMapping" EntityType="Self.tb_MembersImportMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tb_NoteType" EntityType="Self.tb_NoteType" Schema="dbo" store:Type="Tables" />
@@ -1508,6 +1587,22 @@
           <AssociationSet Name="FK_tb_MemberRoles_tb_Roles" Association="Self.FK_tb_MemberRoles_tb_Roles">
             <End Role="tb_Roles" EntitySet="tb_Roles" />
             <End Role="tb_MemberRoles" EntitySet="tb_MemberRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tb_MemberSemester_tb_College" Association="Self.FK_tb_MemberSemester_tb_College">
+            <End Role="tb_College" EntitySet="tb_College" />
+            <End Role="tb_MemberSemester" EntitySet="tb_MemberSemester" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tb_MemberSemester_tb_MemberMaster" Association="Self.FK_tb_MemberSemester_tb_MemberMaster">
+            <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
+            <End Role="tb_MemberSemester" EntitySet="tb_MemberSemester" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tb_MemberSemesterCourse_tb_Course" Association="Self.FK_tb_MemberSemesterCourse_tb_Course">
+            <End Role="tb_Course" EntitySet="tb_Course" />
+            <End Role="tb_MemberSemesterCourse" EntitySet="tb_MemberSemesterCourse" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tb_MemberSemesterCourse_tb_MemberSemester" Association="Self.FK_tb_MemberSemesterCourse_tb_MemberSemester">
+            <End Role="tb_MemberSemester" EntitySet="tb_MemberSemester" />
+            <End Role="tb_MemberSemesterCourse" EntitySet="tb_MemberSemesterCourse" />
           </AssociationSet>
           <AssociationSet Name="FK_tb_MembershipForms_AspNetUsersAddedBy" Association="Self.FK_tb_MembershipForms_AspNetUsersAddedBy">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
@@ -1842,6 +1937,25 @@
             <End Role="tb_NoteType" EntitySet="tb_NoteType" />
             <End Role="tb_MemberNotes" EntitySet="tb_MemberNotes" />
           </AssociationSet>
+          <EntitySet Name="tb_Course" EntityType="LRCModel.tb_Course" />
+          <EntitySet Name="tb_MemberSemester" EntityType="LRCModel.tb_MemberSemester" />
+          <EntitySet Name="tb_MemberSemesterCourse" EntityType="LRCModel.tb_MemberSemesterCourse" />
+          <AssociationSet Name="FK_tb_MemberSemester_tb_College" Association="LRCModel.FK_tb_MemberSemester_tb_College">
+            <End Role="tb_College" EntitySet="tb_College" />
+            <End Role="tb_MemberSemester" EntitySet="tb_MemberSemester" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tb_MemberSemesterCourse_tb_Course" Association="LRCModel.FK_tb_MemberSemesterCourse_tb_Course">
+            <End Role="tb_Course" EntitySet="tb_Course" />
+            <End Role="tb_MemberSemesterCourse" EntitySet="tb_MemberSemesterCourse" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tb_MemberSemester_tb_MemberMaster" Association="LRCModel.FK_tb_MemberSemester_tb_MemberMaster">
+            <End Role="tb_MemberMaster" EntitySet="tb_MemberMaster" />
+            <End Role="tb_MemberSemester" EntitySet="tb_MemberSemester" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tb_MemberSemesterCourse_tb_MemberSemester" Association="LRCModel.FK_tb_MemberSemesterCourse_tb_MemberSemester">
+            <End Role="tb_MemberSemester" EntitySet="tb_MemberSemester" />
+            <End Role="tb_MemberSemesterCourse" EntitySet="tb_MemberSemesterCourse" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="tb_AssessmentName">
           <Key>
@@ -1909,6 +2023,7 @@
           <NavigationProperty Name="tb_District" Relationship="LRCModel.FK_tb_College_tb_District" FromRole="tb_College" ToRole="tb_District" />
           <NavigationProperty Name="tb_Department" Relationship="LRCModel.FK_tb_Department_tb_College" FromRole="tb_College" ToRole="tb_Department" />
           <NavigationProperty Name="tb_Campus" Relationship="LRCModel.FK_tb_Campus_tb_College" FromRole="tb_College" ToRole="tb_Campus" />
+          <NavigationProperty Name="tb_MemberSemester" Relationship="LRCModel.FK_tb_MemberSemester_tb_College" FromRole="tb_College" ToRole="tb_MemberSemester" />
         </EntityType>
         <Association Name="FK_tb_College_tb_District">
           <End Type="LRCModel.tb_District" Role="tb_District" Multiplicity="1" />
@@ -2386,6 +2501,7 @@
           <NavigationProperty Name="tb_MembershipForms" Relationship="LRCModel.FK_tb_MembershipForms_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_MembershipForms" />
           <NavigationProperty Name="tb_CopeForms" Relationship="LRCModel.FK_tb_CopeForms_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_CopeForms" />
           <NavigationProperty Name="tb_MemberNotes" Relationship="LRCModel.FK_tb_MemberNotes_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_MemberNotes" />
+          <NavigationProperty Name="tb_MemberSemester" Relationship="LRCModel.FK_tb_MemberSemester_tb_MemberMaster" FromRole="tb_MemberMaster" ToRole="tb_MemberSemester" />
         </EntityType>
         <Association Name="FK_tb_AlsoWorksAt_tb_MemberMaster">
           <End Type="LRCModel.tb_MemberMaster" Role="tb_MemberMaster" Multiplicity="1" />
@@ -3191,6 +3307,88 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="tb_Course">
+          <Key>
+            <PropertyRef Name="CourseID" />
+          </Key>
+          <Property Name="CourseID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CourseName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CampusID" Type="Int32" Nullable="false" />
+          <Property Name="BuildingID" Type="Int32" Nullable="false" />
+          <Property Name="Room" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Note" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="tb_MemberSemesterCourse" Relationship="LRCModel.FK_tb_MemberSemesterCourse_tb_Course" FromRole="tb_Course" ToRole="tb_MemberSemesterCourse" />
+        </EntityType>
+        <EntityType Name="tb_MemberSemester">
+          <Key>
+            <PropertyRef Name="MemberSemesterID" />
+          </Key>
+          <Property Name="MemberSemesterID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MemberId" Type="Int32" Nullable="false" />
+          <Property Name="SemesterId" Type="Int32" Nullable="false" />
+          <Property Name="CollegeId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="tb_College" Relationship="LRCModel.FK_tb_MemberSemester_tb_College" FromRole="tb_MemberSemester" ToRole="tb_College" />
+          <NavigationProperty Name="tb_MemberMaster" Relationship="LRCModel.FK_tb_MemberSemester_tb_MemberMaster" FromRole="tb_MemberSemester" ToRole="tb_MemberMaster" />
+          <NavigationProperty Name="tb_MemberSemesterCourse" Relationship="LRCModel.FK_tb_MemberSemesterCourse_tb_MemberSemester" FromRole="tb_MemberSemester" ToRole="tb_MemberSemesterCourse" />
+        </EntityType>
+        <EntityType Name="tb_MemberSemesterCourse">
+          <Key>
+            <PropertyRef Name="MemberSemesterCourseID" />
+          </Key>
+          <Property Name="MemberSemesterCourseID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MemberSemesterID" Type="Int32" Nullable="false" />
+          <Property Name="CourseID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="tb_Course" Relationship="LRCModel.FK_tb_MemberSemesterCourse_tb_Course" FromRole="tb_MemberSemesterCourse" ToRole="tb_Course" />
+          <NavigationProperty Name="tb_MemberSemester" Relationship="LRCModel.FK_tb_MemberSemesterCourse_tb_MemberSemester" FromRole="tb_MemberSemesterCourse" ToRole="tb_MemberSemester" />
+        </EntityType>
+        <Association Name="FK_tb_MemberSemester_tb_College">
+          <End Type="LRCModel.tb_College" Role="tb_College" Multiplicity="1" />
+          <End Type="LRCModel.tb_MemberSemester" Role="tb_MemberSemester" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_College">
+              <PropertyRef Name="CollegeID" />
+            </Principal>
+            <Dependent Role="tb_MemberSemester">
+              <PropertyRef Name="CollegeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tb_MemberSemesterCourse_tb_Course">
+          <End Type="LRCModel.tb_Course" Role="tb_Course" Multiplicity="1" />
+          <End Type="LRCModel.tb_MemberSemesterCourse" Role="tb_MemberSemesterCourse" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_Course">
+              <PropertyRef Name="CourseID" />
+            </Principal>
+            <Dependent Role="tb_MemberSemesterCourse">
+              <PropertyRef Name="CourseID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tb_MemberSemester_tb_MemberMaster">
+          <End Type="LRCModel.tb_MemberMaster" Role="tb_MemberMaster" Multiplicity="1" />
+          <End Type="LRCModel.tb_MemberSemester" Role="tb_MemberSemester" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_MemberMaster">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="tb_MemberSemester">
+              <PropertyRef Name="MemberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tb_MemberSemesterCourse_tb_MemberSemester">
+          <End Type="LRCModel.tb_MemberSemester" Role="tb_MemberSemester" Multiplicity="1" />
+          <End Type="LRCModel.tb_MemberSemesterCourse" Role="tb_MemberSemesterCourse" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tb_MemberSemester">
+              <PropertyRef Name="MemberSemesterID" />
+            </Principal>
+            <Dependent Role="tb_MemberSemesterCourse">
+              <PropertyRef Name="MemberSemesterID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -3791,6 +3989,37 @@
                 <ScalarProperty Name="Notes" ColumnName="Notes" />
                 <ScalarProperty Name="MemberID" ColumnName="MemberID" />
                 <ScalarProperty Name="MemberNotesID" ColumnName="MemberNotesID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tb_Course">
+            <EntityTypeMapping TypeName="LRCModel.tb_Course">
+              <MappingFragment StoreEntitySet="tb_Course">
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="Room" ColumnName="Room" />
+                <ScalarProperty Name="BuildingID" ColumnName="BuildingID" />
+                <ScalarProperty Name="CampusID" ColumnName="CampusID" />
+                <ScalarProperty Name="CourseName" ColumnName="CourseName" />
+                <ScalarProperty Name="CourseID" ColumnName="CourseID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tb_MemberSemester">
+            <EntityTypeMapping TypeName="LRCModel.tb_MemberSemester">
+              <MappingFragment StoreEntitySet="tb_MemberSemester">
+                <ScalarProperty Name="CollegeId" ColumnName="CollegeId" />
+                <ScalarProperty Name="SemesterId" ColumnName="SemesterId" />
+                <ScalarProperty Name="MemberId" ColumnName="MemberId" />
+                <ScalarProperty Name="MemberSemesterID" ColumnName="MemberSemesterID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tb_MemberSemesterCourse">
+            <EntityTypeMapping TypeName="LRCModel.tb_MemberSemesterCourse">
+              <MappingFragment StoreEntitySet="tb_MemberSemesterCourse">
+                <ScalarProperty Name="CourseID" ColumnName="CourseID" />
+                <ScalarProperty Name="MemberSemesterID" ColumnName="MemberSemesterID" />
+                <ScalarProperty Name="MemberSemesterCourseID" ColumnName="MemberSemesterCourseID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

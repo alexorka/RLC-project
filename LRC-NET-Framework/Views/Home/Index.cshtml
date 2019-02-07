@@ -7,7 +7,7 @@
 }
 <div class="col-md-12" style="margin-top:5px;">
     <ul class="list-inline">
-        <li role="button">
+        <li role="button" style="padding-bottom:10px;">
             <div class="btn-group">
                 <button type="button" class="btn btn-sm btn-info dropdown-toggle" data-toggle="dropdown">
                     School&nbsp;&nbsp;&nbsp;<span class="caret"></span>
@@ -20,16 +20,16 @@
                 </ul>
             </div>
         </li>
-        <li role="button"><a href="@Url.Action("CreateNewMember", "Home")" class="btn btn-sm btn-info">Member&nbsp;<span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></li>
-        <li role="button"><a href="@Url.Action("Index", "Activities")" class="btn btn-sm btn-info">Activities&nbsp;<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
-        <li role="button"><a href="@Url.Action("Index", "Assessment")" class="btn btn-sm btn-info">Assessments&nbsp;<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
-        <li role="button"><a href="#" class="btn btn-sm btn-info">Attributes&nbsp;<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
-        <li role="button"><a href="@Url.Action("Index", "Notes")" class="btn btn-sm btn-info">Notes&nbsp;<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
-        <li role="button"><a href="@Url.Action("Index", "Roles")" class="btn btn-sm btn-info">Roles&nbsp;<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
-        <li role="button"><a href="@Url.Action("Index", "Building")" class="btn btn-sm btn-info">Bldgs & Depts&nbsp;<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
-        <li role="button"><a href="@Url.Action("MembershipFormsList", "Home")" class="btn btn-sm btn-info">Membership Forms&nbsp;<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
-        <li role="button"><a href="#" class="btn btn-sm btn-info">COPE Forms&nbsp;<span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span></a></li>
-        <li role="button"><a href="#" class="btn btn-sm btn-info">Local&nbsp;<span class="glyphicon glyphicon-stats" aria-hidden="true"></span></a></li>
+        <li role="button" style="padding-bottom:10px;"><a href="@Url.Action("CreateNewMember", "Home")" class="btn btn-sm btn-info">Member&nbsp;<span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></li>
+        <li role="button" style="padding-bottom:10px;"><a href="@Url.Action("Index", "Activities")" class="btn btn-sm btn-info">Activities&nbsp;<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
+        <li role="button" style="padding-bottom:10px;"><a href="@Url.Action("Index", "Assessment")" class="btn btn-sm btn-info">Assessments&nbsp;<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
+        <li role="button" style="padding-bottom:10px;"><a href="#" class="btn btn-sm btn-info">Attributes&nbsp;<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
+        <li role="button" style="padding-bottom:10px;"><a href="@Url.Action("Index", "Notes")" class="btn btn-sm btn-info">Notes&nbsp;<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
+        <li role="button" style="padding-bottom:10px;"><a href="@Url.Action("Index", "Roles")" class="btn btn-sm btn-info">Roles&nbsp;<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
+        <li role="button" style="padding-bottom:10px;"><a href="@Url.Action("Index", "Building")" class="btn btn-sm btn-info">Bldgs & Depts&nbsp;<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
+        <li role="button" style="padding-bottom:10px;"><a href="@Url.Action("MembershipFormsList", "Home")" class="btn btn-sm btn-info">Membership Forms&nbsp;<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
+        <li role="button" style="padding-bottom:10px;"><a href="#" class="btn btn-sm btn-info">COPE Forms&nbsp;<span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span></a></li>
+        <li role="button" style="padding-bottom:10px;"><a href="#" class="btn btn-sm btn-info">Local&nbsp;<span class="glyphicon glyphicon-stats" aria-hidden="true"></span></a></li>
     </ul>
 </div>
     @using (Html.BeginForm("Index", "Home", FormMethod.Post))
@@ -178,11 +178,11 @@
                         @Html.DisplayFor(modelItem => item.tb_MemberPhoneNumbers.Where(t => t.MemberID == item.MemberID).Where(p => p.IsPrimary == true).FirstOrDefault().PhoneNumber)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.tb_MemberAddress.Where(t => t.MemberID == item.MemberID).FirstOrDefault().HomeStreet1),
-                        @Html.DisplayFor(modelItem => item.tb_MemberAddress.Where(t => t.MemberID == item.MemberID).FirstOrDefault().HomeStreet2)
-                        @Html.DisplayFor(modelItem => item.tb_MemberAddress.Where(t => t.MemberID == item.MemberID).FirstOrDefault().City),
-                        @Html.DisplayFor(modelItem => item.tb_MemberAddress.Where(t => t.MemberID == item.MemberID).FirstOrDefault().tb_States.StateCode),
-                        @Html.DisplayFor(modelItem => item.tb_MemberAddress.Where(t => t.MemberID == item.MemberID).FirstOrDefault().ZipCode)
+                        @Html.DisplayFor(modelItem => item.tb_MemberAddress.Where(t => t.MemberID == item.MemberID && t.IsPrimary == true).LastOrDefault().HomeStreet1),
+                        @Html.DisplayFor(modelItem => item.tb_MemberAddress.Where(t => t.MemberID == item.MemberID && t.IsPrimary == true).LastOrDefault().HomeStreet2)
+                        @Html.DisplayFor(modelItem => item.tb_MemberAddress.Where(t => t.MemberID == item.MemberID && t.IsPrimary == true).LastOrDefault().City),
+                        @Html.DisplayFor(modelItem => item.tb_MemberAddress.Where(t => t.MemberID == item.MemberID && t.IsPrimary == true).LastOrDefault().tb_States.StateCode),
+                        @Html.DisplayFor(modelItem => item.tb_MemberAddress.Where(t => t.MemberID == item.MemberID && t.IsPrimary == true).LastOrDefault().ZipCode)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.tb_Categories.CategoryName)

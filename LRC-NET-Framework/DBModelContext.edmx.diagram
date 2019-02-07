@@ -114,6 +114,13 @@
         <AssociationConnector Association="LRCModel.FK_tb_MemberNotes_AspNetUsersTakenBy" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberNotes_tb_MemberMaster" />
         <AssociationConnector Association="LRCModel.FK_tb_MemberNotes_tb_NoteType" />
+        <EntityTypeShape EntityType="LRCModel.tb_Course" Width="1.5" PointX="3.25" PointY="6.5" />
+        <EntityTypeShape EntityType="LRCModel.tb_MemberSemester" Width="1.5" PointX="3.25" PointY="11.25" />
+        <EntityTypeShape EntityType="LRCModel.tb_MemberSemesterCourse" Width="1.5" PointX="3.25" PointY="9.125" />
+        <AssociationConnector Association="LRCModel.FK_tb_MemberSemester_tb_College" />
+        <AssociationConnector Association="LRCModel.FK_tb_MemberSemesterCourse_tb_Course" />
+        <AssociationConnector Association="LRCModel.FK_tb_MemberSemester_tb_MemberMaster" />
+        <AssociationConnector Association="LRCModel.FK_tb_MemberSemesterCourse_tb_MemberSemester" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

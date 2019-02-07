@@ -319,6 +319,9 @@
     <Compile Include="tb_CopeForms.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
+    <Compile Include="tb_Course.cs">
+      <DependentUpon>DBModelContext.tt</DependentUpon>
+    </Compile>
     <Compile Include="tb_Department.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
@@ -368,6 +371,12 @@
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
     <Compile Include="tb_MemberRoles.cs">
+      <DependentUpon>DBModelContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tb_MemberSemester.cs">
+      <DependentUpon>DBModelContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tb_MemberSemesterCourse.cs">
       <DependentUpon>DBModelContext.tt</DependentUpon>
     </Compile>
     <Compile Include="tb_MembershipForms.cs">

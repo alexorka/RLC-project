@@ -75,5 +75,8 @@ namespace LRC_NET_Framework
         public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
         public virtual DbSet<tb_CopeForms> tb_CopeForms { get; set; }
         public virtual DbSet<tb_MemberNotes> tb_MemberNotes { get; set; }
+        public virtual DbSet<tb_Course> tb_Course { get; set; }
+        public virtual DbSet<tb_MemberSemester> tb_MemberSemester { get; set; }
+        public virtual DbSet<tb_MemberSemesterCourse> tb_MemberSemesterCourse { get; set; }
     }
 }

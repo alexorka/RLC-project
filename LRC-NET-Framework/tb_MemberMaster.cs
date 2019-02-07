@@ -29,6 +29,7 @@ namespace LRC_NET_Framework
             this.tb_MembershipForms = new HashSet<tb_MembershipForms>();
             this.tb_CopeForms = new HashSet<tb_CopeForms>();
             this.tb_MemberNotes = new HashSet<tb_MemberNotes>();
+            this.tb_MemberSemester = new HashSet<tb_MemberSemester>();
         }
     
         public int MemberID { get; set; }
@@ -102,5 +103,7 @@ namespace LRC_NET_Framework
         public virtual ICollection<tb_CopeForms> tb_CopeForms { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_MemberNotes> tb_MemberNotes { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tb_MemberSemester> tb_MemberSemester { get; set; }
     }
 }

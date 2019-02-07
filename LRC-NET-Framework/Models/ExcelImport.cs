@@ -1044,11 +1044,12 @@ namespace ExcelImport.Models
             }
             
             //Common Fields Check before
-            errs = CheckScheduleFields(schedules, semesterRecID);
+            //errs = CheckScheduleFields(schedules, semesterRecID);
             if (errs.Count > 0)
                 return errs;
 
             int record = 1;
+            string nextMember = String.Empty;
             foreach (var excelRec in schedules)
             {
                 record++;
@@ -1063,9 +1064,10 @@ namespace ExcelImport.Models
                 //Check is Facility Member exist in DB. Returned FM = NULL means doesnt exist
                 try
                 {
-                    var FM = db.tb_MemberMaster.Where(s => s.MemberIDNumber.ToUpper() == excelRec.EmployeeID.ToUpper()).FirstOrDefault();
-                    //if (errs.Count > 0)
-                    //    return errs;
+                    var FM = db.tb_MemberMaster.Where(s => s.MemberIDNumber.ToUpper() == excelRec.EmployeeID.ToUpper())
+                    .Include(s => s.tb_SemesterTaught).Include(d => d.tb_Department).FirstOrDefault();
+                    bool isNextMember = nextMember == FM.MemberIDNumber ? false : true;
+                    nextMember = FM.MemberIDNumber;
                     if (FM == null) // Member wasn't found
                     {
                         error.errCode = ErrorDetail.Failed;
@@ -1073,6 +1075,19 @@ namespace ExcelImport.Models
                         errs.Add(error.errMsg);
                         return errs;
                     }
+                    else
+                    {
+                        if (isNextMember)
+                        {
+                            errs = PlacePrevSheduleToHistory(FM, semesterRecID);
+                            if (error.errCode != ErrorDetail.Success)
+                            {
+                                errs.Add(error.errMsg);
+                                return errs;
+                            }
+                        }
+                    }
+
 
                     ST.MemberID = FM.MemberID;
 
@@ -1586,6 +1601,8 @@ namespace ExcelImport.Models
                     errs.Add(error.errMsg);
                     return errs;
                 }
+                else //if (endDate > selectedSemester.SemesterStartDate && endDate <= selectedSemester.SemesterEndDate)
+                    scheduleStatus = true;
             }
             catch (DbEntityValidationException ex)
             {
@@ -1604,8 +1621,6 @@ namespace ExcelImport.Models
             }
             //if (endDate >= DateTime.UtcNow)
             //    scheduleStatus = true;
-            if (endDate > selectedSemester.SemesterStartDate && endDate <= selectedSemester.SemesterEndDate)
-                scheduleStatus = true;
             return errs;
         }
 
@@ -1725,6 +1740,98 @@ namespace ExcelImport.Models
             else
                 //return StateID of founded State
                 stateID = states.FirstOrDefault().StateID;
+            return errs;
+        }
+
+        private List<string> PlacePrevSheduleToHistory(tb_MemberMaster FM, int semesterId)
+        {
+            Error error = new Error();
+            error.errCode = ErrorDetail.Success;
+            error.errMsg = ErrorDetail.GetMsg(error.errCode);
+            ExcelMembers excelMembers = new ExcelMembers();
+            List<string> errs = new List<string>();
+            //var memberSchedules = FM.tb_SemesterTaught.ToList();
+            //memberSchedules.ForEach(x => { })
+            using (LRCEntities context = new LRCEntities())
+            {
+                foreach (var item in FM.tb_SemesterTaught)
+                {
+                    if (item.SemesterRecID != semesterId)
+                    {
+                        try
+                        {
+                            tb_MemberSemester memberSemester = new tb_MemberSemester();
+                            var campusId = context.tb_Building.Where(c => c.BuildingID == item.BuildingID).FirstOrDefault().CampusID;
+                            var collegeId = context.tb_Campus.Where(c => c.CampusID == campusId).FirstOrDefault().CollegeID;
+                            memberSemester.MemberId = item.MemberID;
+                            memberSemester.SemesterId = item.SemesterRecID;
+                            memberSemester.CollegeId = collegeId;
+                            var semesters = context.tb_MemberSemester.Where(c =>
+                                c.MemberId == memberSemester.MemberId &&
+                                c.SemesterId == memberSemester.SemesterId &&
+                                c.CollegeId == memberSemester.CollegeId);
+                            if (semesters.Count() <= 0)
+                            {
+                                context.tb_MemberSemester.Add(memberSemester);
+                                context.SaveChanges();
+                            }
+                            else
+                                memberSemester = semesters.FirstOrDefault();
+
+                            tb_Course memberCourse = new tb_Course();
+                            memberCourse.CourseName = FM.tb_Department.DepartmentName;
+                            memberCourse.CampusID = campusId;
+                            memberCourse.BuildingID = item.BuildingID;
+                            memberCourse.Room = item.Room;
+                            var courses = context.tb_Course.Where(c =>
+                                c.CourseName == memberCourse.CourseName &&
+                                c.CampusID == memberCourse.CampusID &&
+                                c.BuildingID == memberCourse.BuildingID &&
+                                c.Room == memberCourse.Room);
+                            if (courses.Count() <= 0)
+                            {
+                                context.tb_Course.Add(memberCourse);
+                                context.SaveChanges();
+                            }
+                            else
+                                memberCourse = courses.FirstOrDefault();
+
+                            tb_MemberSemesterCourse memberSemesterCourse = new tb_MemberSemesterCourse()
+                            {
+                                MemberSemesterID = memberSemester.MemberSemesterID,
+                                CourseID = memberCourse.CourseID
+                            };
+                            var semestercourses = context.tb_MemberSemesterCourse.Where(c =>
+                                c.MemberSemesterID == memberSemester.MemberSemesterID &&
+                                c.CourseID == memberCourse.CourseID);
+                            if (semestercourses.Count() <= 0)
+                            {
+                                context.tb_MemberSemesterCourse.Add(memberSemesterCourse);
+                                context.SaveChanges();
+                            }
+                            tb_SemesterTaught delItem = context.tb_SemesterTaught.Find(item.SemesterTaughtID);
+                            context.tb_SemesterTaught.Remove(delItem);
+                            context.SaveChanges();
+                            
+                        }
+                        catch (DbEntityValidationException ex)
+                        {
+                            error.errCode = ErrorDetail.DataImportError;
+                            error.errMsg = ErrorDetail.GetMsg(error.errCode);
+                            foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
+                            {
+                                error.errMsg += ". Place old Member Schedule to History Error. Object: " + validationError.Entry.Entity.ToString();
+                                foreach (DbValidationError err in validationError.ValidationErrors)
+                                {
+                                    error.errMsg += ". " + err.ErrorMessage;
+                                }
+                            }
+                            errs.Add("Error #" + error.errCode.ToString() + "!" + error.errMsg);
+
+                        }
+                    }
+                }
+            }
             return errs;
         }
 

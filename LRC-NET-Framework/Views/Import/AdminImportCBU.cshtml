@@ -10,16 +10,16 @@
     </div>
 
     <div style="margin: 0 30px 0 30px;">
-        <div style="background-color:gainsboro; padding:10px 20px 5px 20px; border-radius: 0 0 7px 7px;">
+        <div style="background-color:gainsboro; padding:10px 20px 0 20px; border-radius: 0 0 7px 7px;">
             <ul class="list-inline">
-                <li role="button"><a href="@Url.Action("AddWeekDays", "SemesterTaught")" class="btn-sm btn-info viewDialog" , data-dialog-title="Add Days of Week">Days of Week&nbsp;&nbsp;<span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></li>
-                <li role="button"><a href="@Url.Action("MemberImportErrors", "Import")" class="btn-sm btn-info">Members Import Errors&nbsp;&nbsp;<span class="glyphicon glyphicon-list" aria-hidden="true"></span></a></li>
-                <li role="button"><a href="@Url.Action("ScheduleImportErrors", "Import")" class="btn-sm btn-info">Schedules Import Errors&nbsp;&nbsp;<span class="glyphicon glyphicon-list" aria-hidden="true"></span></a></li>
-                <li role="button"><a href="@Url.Action("CollegesMapping", "Import")" class="btn-sm btn-info">Colleges Mapping&nbsp;&nbsp;<span class="glyphicon glyphicon-transfer" aria-hidden="true"></span></a></li>
-                <li role="button"><a href="@Url.Action("CampusesMapping", "Import")" class="btn-sm btn-info">Campuses Mapping&nbsp;&nbsp;<span class="glyphicon glyphicon-transfer" aria-hidden="true"></span></a></li>
-                <li role="button"><a href="@Url.Action("MembersMapping", "Import")" class="btn-sm btn-info">Member Fields Mapping&nbsp;&nbsp;<span class="glyphicon glyphicon-transfer" aria-hidden="true"></span></a></li>
-                <li role="button"><a href="@Url.Action("ScheduleMapping", "Import")" class="btn-sm btn-info">Schedule Fields Mapping&nbsp;&nbsp;<span class="glyphicon glyphicon-transfer" aria-hidden="true"></span></a></li>
-                <li role="button"><a href="@Url.Action("Index", "Categories")" class="btn-sm btn-info">Manage Categories&nbsp;&nbsp;<span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></li>
+                <li role="button" style="padding-bottom:10px;"><a href="@Url.Action("AddWeekDays", "SemesterTaught")" class="btn-sm btn-info viewDialog" , data-dialog-title="Add Days of Week">Days of Week&nbsp;&nbsp;<span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></li>
+                <li role="button" style="padding-bottom:10px;"><a href="@Url.Action("MemberImportErrors", "Import")" class="btn-sm btn-info">Members Import Errors&nbsp;&nbsp;<span class="glyphicon glyphicon-list" aria-hidden="true"></span></a></li>
+                <li role="button" style="padding-bottom:10px;"><a href="@Url.Action("ScheduleImportErrors", "Import")" class="btn-sm btn-info">Schedules Import Errors&nbsp;&nbsp;<span class="glyphicon glyphicon-list" aria-hidden="true"></span></a></li>
+                <li role="button" style="padding-bottom:10px;"><a href="@Url.Action("CollegesMapping", "Import")" class="btn-sm btn-info">Colleges Mapping&nbsp;&nbsp;<span class="glyphicon glyphicon-transfer" aria-hidden="true"></span></a></li>
+                <li role="button" style="padding-bottom:10px;"><a href="@Url.Action("CampusesMapping", "Import")" class="btn-sm btn-info">Campuses Mapping&nbsp;&nbsp;<span class="glyphicon glyphicon-transfer" aria-hidden="true"></span></a></li>
+                <li role="button" style="padding-bottom:10px;"><a href="@Url.Action("MembersMapping", "Import")" class="btn-sm btn-info">Member Fields Mapping&nbsp;&nbsp;<span class="glyphicon glyphicon-transfer" aria-hidden="true"></span></a></li>
+                <li role="button" style="padding-bottom:10px;"><a href="@Url.Action("ScheduleMapping", "Import")" class="btn-sm btn-info">Schedule Fields Mapping&nbsp;&nbsp;<span class="glyphicon glyphicon-transfer" aria-hidden="true"></span></a></li>
+                <li role="button" style="padding-bottom:10px;"><a href="@Url.Action("Index", "Categories")" class="btn-sm btn-info">Manage Categories&nbsp;&nbsp;<span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></li>
             </ul>
         </div>
         @using (Html.BeginForm("UploadExcel", "Import", FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return myFunction()", id = "myform" }))
